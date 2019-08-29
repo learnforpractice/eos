@@ -810,6 +810,17 @@ class system_api : public context_aware_api {
          return API()->publication_time();
       }
 
+      /**
+       * Returns true if the specified protocol feature is activated, false if not.
+       */
+      bool is_feature_activated( const digest_type& feature_digest ) {
+         return API()->is_protocol_feature_activated( feature_digest.data(), 32 );
+      }
+
+      name get_sender() {
+         return API()->get_sender();
+      }
+
 };
 
 class context_free_system_api :  public context_aware_api {
@@ -856,11 +867,11 @@ class action_api : public context_aware_api {
       name current_receiver() {
          return API()->current_receiver();
       }
-
+#if 0
       int evm_execute(array_ptr<unsigned char> trx, size_t size) {
          return ::evm_execute(trx.value, size);
       }
-
+#endif
       int get_code_size(int64_t account) {
          size_t size = 0;
          get_chain_api()->get_code_ex( account, &size );
@@ -1810,6 +1821,8 @@ REGISTER_INTRINSICS(permission_api,
 REGISTER_INTRINSICS(system_api,
    (current_time, int64_t()       )
    (publication_time,   int64_t() )
+   (is_feature_activated,  int(int)  )
+   (get_sender,            int64_t() )
 );
 
 REGISTER_INTRINSICS(context_free_system_api,
@@ -1824,7 +1837,7 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,       int(int, int)  )
    (action_data_size,       int()          )
    (current_receiver,   int64_t()          )
-   (evm_execute,        int(int, int)      )
+//   (evm_execute,        int(int, int)      )
    (get_code_size,      int(int64_t)              )
    (get_code,           int(int64_t, int, int)      )
 );

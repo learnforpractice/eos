@@ -367,11 +367,13 @@ extern "C" void vm_api_init() {
       _vm_api.to_base58 = to_base58;
       _vm_api.from_base58 = from_base58;
 
+      _vm_api.is_protocol_feature_activated = is_protocol_feature_activated;
+      _vm_api.get_sender = get_sender;
+
       _vm_api.log = log_;
       _vm_api.is_in_apply_context = false;
       _vm_api.allow_access_apply_context = false;
       _vm_api.read_only = false;
-
    }
    vm_register_api(&_vm_api);
 }

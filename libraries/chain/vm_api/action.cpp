@@ -72,4 +72,13 @@ uint64_t  publication_time() {
    return static_cast<uint64_t>( ctx().trx_context.published.time_since_epoch().count() );
 }
 
+bool is_protocol_feature_activated(const char *digest, size_t size) {
+   digest_type feature_digest(digest, size);
+   return ctx().control.is_protocol_feature_activated( feature_digest );
+}
+
+uint64_t get_sender() {
+   return ctx().get_sender();
+}
+
 }

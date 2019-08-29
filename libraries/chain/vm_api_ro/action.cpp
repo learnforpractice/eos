@@ -60,3 +60,14 @@ void send_context_free_inline(const char *data, size_t data_len) {
 uint64_t  publication_time() {
    CALL_NOT_ALLOWED();
 }
+
+bool is_protocol_feature_activated(const char *digest, size_t size) {
+   CALL_NOT_ALLOWED();
+   return false;
+}
+
+uint64_t get_sender() {
+   CALL_NOT_ALLOWED();
+   return 0;
+}
+
