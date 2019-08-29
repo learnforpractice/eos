@@ -21,3 +21,6 @@
 [submodule "externals/eosio.contracts"]
 	path = externals/eosio.contracts
 	url = https://github.com/learnforpractice/eosio.contracts
+[submodule "externals/magic_get"]
+	path = externals/magic_get
+	url = https://github.com/EOSIO/magic_get
