@@ -41,8 +41,8 @@ set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins eosiolib_na
 
 add_library( vm_wasm-1 SHARED ${SRCS} )
 
-set(LIBEVM4EOS ${CMAKE_SOURCE_DIR}/externals/aleth/build/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
-target_link_libraries( vm_wasm-1 wabt ${WASM_DEPEND_LIBS} ${LIBEVM4EOS})
+#set(LIBEVM4EOS ${CMAKE_SOURCE_DIR}/externals/aleth/build/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
+target_link_libraries( vm_wasm-1 wabt ${WASM_DEPEND_LIBS})
 
 target_include_directories( vm_wasm-1
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 

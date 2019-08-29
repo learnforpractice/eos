@@ -43,11 +43,12 @@ target_include_directories(vm_python2 PRIVATE ${Boost_INCLUDE_DIR}
 
 target_compile_options(vm_python2 PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300)
 
-add_dependencies(vm_python2 contracts_project)
 
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
-    COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/gen.py
-    DEPENDS contracts_project ${CMAKE_BINARY_DIR}/contracts/python37/libpython37/pythonvm.wasm
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
-)
+# add_dependencies(vm_python2 contracts_project)
+
+# ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
+#     COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/gen.py
+#     DEPENDS contracts_project ${CMAKE_BINARY_DIR}/contracts/python37/libpython37/pythonvm.wasm
+#     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#     COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
+# )

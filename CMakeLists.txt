@@ -214,6 +214,7 @@ endif()
 
 message( STATUS "Using '${EOSIO_ROOT_KEY}' as public key for 'eosio' account" )
 
+add_subdirectory( externals )
 add_subdirectory( contracts )
 add_subdirectory( libraries )
 add_subdirectory( plugins )
