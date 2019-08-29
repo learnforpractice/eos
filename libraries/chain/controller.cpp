@@ -30,6 +30,8 @@
 #include <fc/scoped_exit.hpp>
 #include <fc/variant_object.hpp>
 
+void chain_api_set_controller(eosio::chain::controller *_ctrl, eosio::chain::controller::config _cfg);
+
 namespace eosio { namespace chain {
 
 using resource_limits::resource_limits_manager;
@@ -54,7 +56,8 @@ using contract_database_index_set = index_set<
    index128_index,
    index256_index,
    index_double_index,
-   index_long_double_index
+   index_long_double_index,
+   key256_value_index
 >;
 
 class maybe_session {
@@ -293,7 +296,7 @@ struct controller_impl {
         cfg.reversible_cache_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
-    wasmif( cfg.wasm_runtime, db ),
+    wasmif( cfg.wasm_runtime ),
     resource_limits( db ),
     authorization( s, db ),
     protocol_features( std::move(pfs) ),
@@ -2229,11 +2232,13 @@ const protocol_feature_manager& controller::get_protocol_feature_manager()const
 controller::controller( const controller::config& cfg )
 :my( new controller_impl( cfg, *this, protocol_feature_set{} ) )
 {
+   chain_api_set_controller(this, cfg);
 }
 
 controller::controller( const config& cfg, protocol_feature_set&& pfs )
 :my( new controller_impl( cfg, *this, std::move(pfs) ) )
 {
+   chain_api_set_controller(this, cfg);
 }
 
 controller::~controller() {

@@ -1,0 +1,10 @@
+_wasm_interface_init_*
+_wasm_interface_deinit_*
+_wasm_interface_validate_*
+_wasm_interface_apply_*
+_wasm_interface_is_busy_*
+_wasm_interface_call_*
+_register_vm_api_ro
+_get_vm_api_ro
+
+

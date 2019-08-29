@@ -29,7 +29,14 @@ namespace eosio { namespace chain {
    using namespace webassembly;
    using namespace webassembly::common;
 
-   wasm_interface::wasm_interface(vm_type vm, const chainbase::database& d) : my( new wasm_interface_impl(vm, d) ) {}
+   //vm_api.cpp
+   apply_context *get_apply_context();
+
+   apply_context& ctx() {
+      return *get_apply_context();
+   }
+
+   wasm_interface::wasm_interface(vm_type vm) : my( new wasm_interface_impl(vm) ) {}
 
    wasm_interface::~wasm_interface() {}
 
@@ -69,8 +76,8 @@ namespace eosio { namespace chain {
       my->current_lib(lib);
    }
 
-   void wasm_interface::apply( const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context ) {
-      my->get_instantiated_module(code_hash, vm_type, vm_version, context.trx_context)->apply(context);
+   void wasm_interface::apply( const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) {
+      my->get_instantiated_module(code_hash, vm_type, vm_version)->apply();
    }
 
    void wasm_interface::exit() {
@@ -86,8 +93,8 @@ namespace eosio { namespace chain {
 
 class context_aware_api {
    public:
-      context_aware_api(apply_context& ctx, bool context_free = false )
-      :context(ctx)
+      context_aware_api(bool context_free = false )
+      :context(ctx())
       {
          if( context.is_context_free() )
             EOS_ASSERT( context_free, unaccessible_api, "only context free api's can be used in this context" );
@@ -104,8 +111,8 @@ class context_aware_api {
 
 class context_free_api : public context_aware_api {
    public:
-      context_free_api( apply_context& ctx )
-      :context_aware_api(ctx, true) {
+      context_free_api()
+      :context_aware_api(true) {
          /* the context_free_data is not available during normal application because it is prunable */
          EOS_ASSERT( context.is_context_free(), unaccessible_api, "this API may only be called from context_free apply" );
       }
@@ -117,8 +124,8 @@ class context_free_api : public context_aware_api {
 
 class privileged_api : public context_aware_api {
    public:
-      privileged_api( apply_context& ctx )
-      :context_aware_api(ctx)
+      privileged_api()
+      :context_aware_api()
       {
          EOS_ASSERT( context.is_privileged(), unaccessible_api, "${code} does not have permission to call this API", ("code",context.get_receiver()) );
       }
@@ -239,8 +246,8 @@ class privileged_api : public context_aware_api {
 class softfloat_api : public context_aware_api {
    public:
       // TODO add traps on truncations for special cases (NaN or outside the range which rounds to an integer)
-      softfloat_api( apply_context& ctx )
-      :context_aware_api(ctx, true) {}
+      softfloat_api()
+      :context_aware_api(true) {}
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
@@ -717,8 +724,8 @@ class producer_api : public context_aware_api {
 
 class crypto_api : public context_aware_api {
    public:
-      explicit crypto_api( apply_context& ctx )
-      :context_aware_api(ctx,true){}
+      explicit crypto_api()
+      :context_aware_api(true){}
       /**
        * This method can be optimized out during replay as it has
        * no possible side effects other than "passing".
@@ -949,8 +956,8 @@ constexpr size_t max_assert_message = 1024;
 
 class context_free_system_api :  public context_aware_api {
 public:
-   explicit context_free_system_api( apply_context& ctx )
-   :context_aware_api(ctx,true){}
+   explicit context_free_system_api()
+   :context_aware_api(true){}
 
    void abort() {
       EOS_ASSERT( false, abort_called, "abort() called");
@@ -1003,8 +1010,8 @@ public:
 
 class action_api : public context_aware_api {
    public:
-   action_api( apply_context& ctx )
-      :context_aware_api(ctx,true){}
+   action_api()
+      :context_aware_api(true){}
 
       int read_action_data(array_ptr<char> memory, size_t buffer_size) {
          auto s = context.get_action().data.size();
@@ -1027,9 +1034,9 @@ class action_api : public context_aware_api {
 
 class console_api : public context_aware_api {
    public:
-      console_api( apply_context& ctx )
-      : context_aware_api(ctx,true)
-      , ignore(!ctx.control.contracts_console()) {}
+      console_api()
+      : context_aware_api(true)
+      , ignore(!ctx().control.contracts_console()) {}
 
       // Kept as intrinsic rather than implementing on WASM side (using prints_l and strlen) because strlen is faster on native side.
       void prints(null_terminated_ptr str) {
@@ -1320,6 +1327,69 @@ class database_api : public context_aware_api {
       int db_end_i64( uint64_t code, uint64_t scope, uint64_t table ) {
          return context.db_end_i64( code, scope, table );
       }
+      int db_get_table_count( uint64_t code, uint64_t scope, uint64_t table ) {
+         return context.db_get_table_count( code, scope, table );
+      }
+
+      int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, array_ptr<char> id, size_t id_size, array_ptr<const char> buffer, size_t buffer_size ) {         
+         EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
+         key256_t _id;
+         memcpy(_id.data(), id.value, 32);
+         return context.db_store_i256( scope, table, payer, _id, buffer, buffer_size );
+      }
+
+      void db_update_i256( int itr, uint64_t payer, array_ptr<const char> buffer, size_t buffer_size ) {
+         context.db_update_i256( itr, payer, buffer, buffer_size );
+      }
+
+      void db_remove_i256( int itr ) {
+         context.db_remove_i256( itr );
+      }
+
+      int db_get_i256( int itr, array_ptr<char> buffer, size_t buffer_size ) {
+         return context.db_get_i256( itr, buffer, buffer_size );
+      }
+
+      int db_next_i256( int itr, array_ptr<char> id, size_t id_size ) {
+         key256_t _id = {0, 0};
+         int ret = context.db_next_i256(itr, _id);
+         memcpy(id.value, _id.data(), 32);
+         return ret;
+      }
+
+      int db_previous_i256( int itr, array_ptr<char> primary, size_t id_size ) {
+         EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
+
+         key256_t _id = {0, 0};
+         int ret = context.db_previous_i256(itr, _id);
+         memcpy(primary.value, _id.data(), 32);
+         return ret;
+      }
+
+      int db_find_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, size_t id_size ) {
+         EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
+         key256_t _id;
+         memcpy(_id.data(), id.value, 32);
+         return context.db_find_i256( code, scope, table, _id );
+      }
+
+      int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, size_t id_size ) {
+         EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
+         key256_t _id;
+         memcpy(_id.data(), id.value, 32);
+         return context.db_lowerbound_i256( code, scope, table, _id );
+      }
+
+      int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, size_t id_size ) {
+         EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
+         key256_t _id;
+         memcpy(_id.data(), id.value, 32);
+         return context.db_upperbound_i256( code, scope, table, _id );
+      }
+
+      int db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
+         return context.db_end_i256( code, scope, table );
+      }
 
       DB_API_METHOD_WRAPPERS_SIMPLE_SECONDARY(idx64,  uint64_t)
       DB_API_METHOD_WRAPPERS_SIMPLE_SECONDARY(idx128, uint128_t)
@@ -1330,8 +1400,8 @@ class database_api : public context_aware_api {
 
 class memory_api : public context_aware_api {
    public:
-      memory_api( apply_context& ctx )
-      :context_aware_api(ctx,true){}
+      memory_api()
+      :context_aware_api(true){}
 
       char* memcpy( array_ptr<char> dest, array_ptr<const char> src, size_t length) {
          EOS_ASSERT((size_t)(std::abs((ptrdiff_t)dest.value - (ptrdiff_t)src.value)) >= length,
@@ -1396,8 +1466,8 @@ class transaction_api : public context_aware_api {
 
 class context_free_transaction_api : public context_aware_api {
    public:
-      context_free_transaction_api( apply_context& ctx )
-      :context_aware_api(ctx,true){}
+      context_free_transaction_api()
+      :context_aware_api(true){}
 
       int read_transaction( array_ptr<char> data, size_t buffer_size ) {
          bytes trx = context.get_packed_transaction();
@@ -1433,8 +1503,8 @@ class context_free_transaction_api : public context_aware_api {
 
 class compiler_builtins : public context_aware_api {
    public:
-      compiler_builtins( apply_context& ctx )
-      :context_aware_api(ctx,true){}
+      compiler_builtins( )
+      :context_aware_api(true){}
 
       void __ashlti3(__int128& ret, uint64_t low, uint64_t high, uint32_t shift) {
          fc::uint128_t i(high, low);
@@ -1690,8 +1760,8 @@ class compiler_builtins : public context_aware_api {
  */
 class call_depth_api : public context_aware_api {
    public:
-      call_depth_api( apply_context& ctx )
-      :context_aware_api(ctx,true){}
+      call_depth_api( )
+      :context_aware_api(true){}
       void call_depth_assert() {
          FC_THROW_EXCEPTION(wasm_execution_error, "Exceeded call depth maximum");
       }
@@ -1760,7 +1830,15 @@ REGISTER_INTRINSICS(privileged_api,
    (preactivate_feature,              void(int)                             )
 );
 
-REGISTER_INJECTED_INTRINSICS(transaction_context,
+class transaction_context_ {
+public:
+   transaction_context_() {}
+   void checktime() {
+      ctx().trx_context.checktime();
+   }
+};
+
+REGISTER_INJECTED_INTRINSICS(transaction_context_,
    (checktime,      void())
 );
 
@@ -1803,6 +1881,18 @@ REGISTER_INTRINSICS( database_api,
    (db_lowerbound_i64,   int(int64_t,int64_t,int64_t,int64_t))
    (db_upperbound_i64,   int(int64_t,int64_t,int64_t,int64_t))
    (db_end_i64,          int(int64_t,int64_t,int64_t))
+   (db_get_table_count,  int(int64_t,int64_t,int64_t))
+
+   (db_store_i256,        int(int64_t,int64_t,int64_t,int, int,int,int))
+   (db_update_i256,       void(int,int64_t,int,int))
+   (db_remove_i256,       void(int))
+   (db_get_i256,          int(int, int, int))
+   (db_next_i256,         int(int, int, int))
+   (db_previous_i256,     int(int, int, int))
+   (db_find_i256,         int(int64_t,int64_t,int64_t,int,int))
+   (db_lowerbound_i256,   int(int64_t,int64_t,int64_t,int,int))
+   (db_upperbound_i256,   int(int64_t,int64_t,int64_t,int,int))
+   (db_end_i256,          int(int64_t,int64_t,int64_t))
 
    DB_SECONDARY_INDEX_METHODS_SIMPLE(idx64)
    DB_SECONDARY_INDEX_METHODS_SIMPLE(idx128)

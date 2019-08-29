@@ -75,8 +75,23 @@ enum return_codes {
    NODE_MANAGEMENT_SUCCESS = 5
 };
 
+extern "C"
+{
+   void chain_api_init();
+   void vm_api_ro_init();
+   void vm_api_init();
+   void vm_python2_init();
+}
+
 int main(int argc, char** argv)
 {
+   vm_api_init();
+   vm_api_ro_init();
+   chain_api_init();
+   vm_python2_init();
+
+   fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+
    try {
       app().set_version(eosio::nodeos::config::version);
 
@@ -84,7 +99,7 @@ int main(int argc, char** argv)
       app().set_default_data_dir(root / "eosio" / nodeos::config::node_executable_name / "data" );
       app().set_default_config_dir(root / "eosio" / nodeos::config::node_executable_name / "config" );
       http_plugin::set_defaults({
-         .default_unix_socket_path = "",
+         .default_unix_socket_path = "uuos.sock",
          .default_http_port = 8888
       });
       if(!app().initialize<chain_plugin, net_plugin, producer_plugin>(argc, argv))

@@ -1,0 +1,42 @@
+import hashlib
+import subprocess
+import os
+import sys
+
+arg1 = ['eosio-wasm2wast', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wast', '${CMAKE_BINARY_DIR}/contracts/python37/libpython37/pythonvm.wasm']
+arg2 = ['eosio-wast2wasm', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wast']
+#arg3 = ['eosio-pp', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm-pp.wasm', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm']
+
+try:
+    ret = subprocess.check_output(arg1, stderr=subprocess.STDOUT)
+    print(ret.decode('utf8'))
+    ret = subprocess.check_output(arg2, stderr=subprocess.STDOUT)
+    print(ret.decode('utf8'))
+    '''
+    ret = subprocess.check_output(arg3, stderr=subprocess.STDOUT)
+    print(ret.decode('utf8'))
+    '''
+except subprocess.CalledProcessError as e:
+    print("error (code {}):".format(e.returncode))
+    print(e.output.decode('utf8'))
+    sys.exit(-1)
+
+with open("${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c", 'w') as f1:
+    f1.write("const unsigned char pythonvm_wasm[] = {\n")
+    with open("${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm", 'rb') as f2:
+        data = f2.read()
+        count = 0
+        for d in data:
+            f1.write('0x%x,'%(d,))
+            count += 1
+            if count % 32 == 0:
+                f1.write('\n')
+    f1.write("};\n")
+    f1.write("int pythonvm_wasm_size = %d;\n"%(len(data),))
+    hash = hashlib.sha256();
+    hash.update(data)
+    digest = hash.digest()
+    f1.write('char pythonvm_wasm_hash[] = {')
+    for d in digest:
+        f1.write('0x%x, '%(d,))
+    f1.write('};')

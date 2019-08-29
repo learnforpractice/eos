@@ -569,7 +569,7 @@ namespace WASM
 				+ module.memories.imports.size()
 				+ module.globals.imports.size();
 			serializeVarUInt32(sectionStream,size);
-			constexpr size_t max_size = eosio::chain::wasm_constraints::maximum_section_elements;
+			size_t max_size = eosio::chain::wasm_constraints::get_maximum_section_elements();
 			if(Stream::isInput)
 			{
 				for(Uptr index = 0;index < size;++index)
@@ -678,7 +678,7 @@ namespace WASM
 				// Grow the vector one element at a time:
 				// try to get a serialization exception before making a huge allocation for malformed input.
 				module.functions.defs.clear();
-				constexpr size_t max_size = eosio::chain::wasm_constraints::maximum_section_elements;
+				size_t max_size = eosio::chain::wasm_constraints::get_maximum_section_elements();
 				if ( numFunctions >= max_size )
 					throw FatalSerializationException(std::string("Too many function defs"));
 				for(Uptr functionIndex = 0;functionIndex < numFunctions;++functionIndex)

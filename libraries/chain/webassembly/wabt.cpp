@@ -6,10 +6,11 @@
 #include <src/interp.h>
 #include <src/binary-reader-interp.h>
 #include <src/error-formatter.h>
+#include <eosiolib_native/vm_api.h>
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {
 
-//yep 🤮
+//yep
 static wabt_apply_instance_vars* static_wabt_vars;
 
 using namespace wabt;
@@ -33,12 +34,12 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
             _initial_memory_configuration = _env->GetMemory(0)->page_limits;
       }
 
-      void apply(apply_context& context) override {
+      void apply() override {
          //reset mutable globals
          for(const auto& mg : _initial_globals)
             mg.first->typed_value = mg.second;
 
-         wabt_apply_instance_vars this_run_vars{nullptr, context};
+         wabt_apply_instance_vars this_run_vars{nullptr};
          static_wabt_vars = &this_run_vars;
 
          //reset memory to inital size & copy back in initial data
@@ -50,9 +51,15 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
             memcpy(memory->data.data(), _initial_memory.data(), _initial_memory.size());
          }
 
-         _params[0].set_i64(uint64_t(context.get_receiver()));
-         _params[1].set_i64(uint64_t(context.get_action().account));
-         _params[2].set_i64(uint64_t(context.get_action().name));
+         uint64_t account = 0;
+         uint64_t act_name = 0;
+         uint64_t receiver = get_vm_api()->current_receiver();
+         get_vm_api()->get_action_info(&account, &act_name);
+
+         _params[0].set_i64(receiver);
+         _params[1].set_i64(account);
+         _params[2].set_i64(act_name);
+
 
          ExecResult res = _executor.RunStartFunction(_instatiated_module);
          EOS_ASSERT( res.result == interp::Result::Ok, wasm_execution_error, "wabt start function failure (${s})", ("s", ResultToString(res.result)) );

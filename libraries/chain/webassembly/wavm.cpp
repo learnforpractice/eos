@@ -15,6 +15,8 @@
 #include <vector>
 #include <iterator>
 
+#include <eosiolib_native/vm_api.h>
+
 using namespace IR;
 using namespace Runtime;
 
@@ -73,16 +75,21 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
          detail::the_wavm_live_modules.remove_live_module(_module_ref);
       }
 
-      void apply(apply_context& context) override {
-         vector<Value> args = {Value(uint64_t(context.get_receiver())),
-	                            Value(uint64_t(context.get_action().account)),
-                               Value(uint64_t(context.get_action().name))};
+      void apply() override {
+         uint64_t account = 0;
+         uint64_t act_name = 0;
+         uint64_t receiver = get_vm_api()->current_receiver();
+         get_vm_api()->get_action_info(&account, &act_name);
 
-         call("apply", args, context);
+         vector<Value> args = {Value(uint64_t(receiver)),
+	                            Value(uint64_t(account)),
+                               Value(uint64_t(act_name))};
+
+         call("apply", args);
       }
 
    private:
-      void call(const string &entry_point, const vector <Value> &args, apply_context &context) {
+      void call(const string &entry_point, const vector <Value> &args) {
          try {
             FunctionInstance* call = asFunctionNullable(getInstanceExport(_instance,entry_point));
             if( !call )
@@ -103,7 +110,7 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
             }
 
             the_running_instance_context.memory = default_mem;
-            the_running_instance_context.apply_ctx = &context;
+//            the_running_instance_context.apply_ctx = &context;
 
             resetGlobalInstances(_instance);
             runInstanceStartFunc(_instance);

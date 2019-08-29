@@ -508,6 +508,27 @@ namespace eosio { namespace testing {
       return success();
    }
 
+   transaction_trace_ptr base_tester::push_action(uint64_t account, uint64_t acttype, vector<uint8_t>& data, uint64_t authorizer) {
+      signed_transaction trx;
+      action act;
+      act.account = account;
+      act.name = acttype;
+      act.data.resize(data.size());
+      memcpy(act.data.data(), data.data(), data.size());
+
+      if (authorizer) {
+         act.authorization = vector<permission_level>{{authorizer, config::active_name}};
+      }
+      
+      trx.actions.emplace_back(std::move(act));
+      set_transaction_headers(trx);
+      if (authorizer) {
+         trx.sign(get_private_key(authorizer, "active"), control->get_chain_id());
+      }
+      return push_transaction(trx);
+
+   }
+
    transaction_trace_ptr base_tester::push_action( const account_name& code,
                                                    const action_name& acttype,
                                                    const account_name& actor,
@@ -810,6 +831,24 @@ namespace eosio { namespace testing {
       push_transaction( trx );
    } FC_CAPTURE_AND_RETHROW( (account) )
 
+   void base_tester::set_code( account_name account, const vector<uint8_t> wasm, uint8_t vm_type, const private_key_type* signer ) try {
+      signed_transaction trx;
+      trx.actions.emplace_back( vector<permission_level>{{account,config::active_name}},
+                                setcode{
+                                   .account    = account,
+                                   .vmtype     = vm_type,
+                                   .vmversion  = 0,
+                                   .code       = bytes(wasm.begin(), wasm.end())
+                                });
+
+      set_transaction_headers(trx);
+      if( signer ) {
+         trx.sign( *signer, control->get_chain_id()  );
+      } else {
+         trx.sign( get_private_key( account, "active" ), control->get_chain_id()  );
+      }
+      push_transaction( trx );
+   } FC_CAPTURE_AND_RETHROW( (account) )
 
    void base_tester::set_abi( account_name account, const char* abi_json, const private_key_type* signer ) {
       auto abi = fc::json::from_string(abi_json).template as<abi_def>();

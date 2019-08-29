@@ -7,12 +7,22 @@
 #include <fc/exception/exception.hpp>
 #include <boost/core/typeinfo.hpp>
 
+#ifdef _EOSIO_SHARED_LIB
+#include <chain_exceptions.h>
 
+#define EOS_ASSERT( expr, exc_type, FORMAT, ... )                \
+   FC_MULTILINE_MACRO_BEGIN                                           \
+   if( !(expr) ) {                                                      \
+      chain_throw_exception( enum_##exc_type, FC_LOG_MESSAGE( error, FORMAT, __VA_ARGS__ ).get_message().c_str() );            \
+   }                                                                \
+   FC_MULTILINE_MACRO_END
+#else
 #define EOS_ASSERT( expr, exc_type, FORMAT, ... )                \
    FC_MULTILINE_MACRO_BEGIN                                           \
    if( !(expr) )                                                      \
       FC_THROW_EXCEPTION( exc_type, FORMAT, __VA_ARGS__ );            \
    FC_MULTILINE_MACRO_END
+#endif
 
 #define EOS_THROW( exc_type, FORMAT, ... ) \
     throw exc_type( FC_LOG_MESSAGE( error, FORMAT, __VA_ARGS__ ) );

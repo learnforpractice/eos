@@ -132,8 +132,9 @@ namespace Serialization
 	{ 
       if ( numBytes < eosio::chain::wasm_constraints::wasm_page_size )
          memcpy(bytes,stream.advance(numBytes),numBytes); 
-      else
+      else {
          throw FatalSerializationException(std::string("Trying to deserialize bytes of size : " + std::to_string((uint64_t)numBytes)));
+	  }
    }
 	
 	// Serialize basic C++ types.
@@ -279,7 +280,7 @@ namespace Serialization
 	template<typename Stream,typename Element,typename Allocator,typename SerializeElement>
 	void serializeArray(Stream& stream,std::vector<Element,Allocator>& vector,SerializeElement serializeElement)
 	{
-      constexpr size_t max_size = eosio::chain::wasm_constraints::maximum_func_local_bytes;
+    	size_t max_size = eosio::chain::wasm_constraints::get_maximum_func_local_bytes();
 		Uptr size = vector.size();
 		serializeVarUInt32(stream,size);
 		if(Stream::isInput)

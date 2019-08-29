@@ -1,0 +1,5 @@
+CODEABI_1.0 {
+    global: register_chain_api;get_chain_api;chain_throw_exception;
+    local: *;
+};
+

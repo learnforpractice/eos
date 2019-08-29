@@ -25,16 +25,16 @@ void data_segments_validation_visitor::validate(const Module& m ) {
       if ( ds.baseOffset.type != InitializerExpression::Type::i32_const )
          FC_THROW_EXCEPTION( wasm_execution_error, "Smart contract has unexpected memory base offset type" );
 
-      if ( static_cast<uint32_t>( ds.baseOffset.i32 ) + ds.data.size() > wasm_constraints::maximum_linear_memory_init )
+      if ( static_cast<uint32_t>( ds.baseOffset.i32 ) + ds.data.size() > wasm_constraints::get_maximum_linear_memory_init() )
          FC_THROW_EXCEPTION(wasm_execution_error, "Smart contract data segments must lie in first ${k}KiB", 
-               ("k", wasm_constraints::maximum_linear_memory_init/1024));
+               ("k", wasm_constraints::get_maximum_linear_memory_init()/1024));
    }
 }
 
 void tables_validation_visitor::validate( const Module& m ) {
-   if ( m.tables.defs.size() && m.tables.defs[0].type.size.min > wasm_constraints::maximum_table_elements )
+   if ( m.tables.defs.size() && m.tables.defs[0].type.size.min > wasm_constraints::get_maximum_table_elements() )
       FC_THROW_EXCEPTION(wasm_execution_error, "Smart contract table limited to ${t} elements", 
-            ("t", wasm_constraints::maximum_table_elements));
+            ("t", wasm_constraints::get_maximum_table_elements()));
 }
 
 void globals_validation_visitor::validate( const Module& m ) {
@@ -79,7 +79,7 @@ void ensure_apply_exported_visitor::validate( const IR::Module& m ) {
    for(const Export& exprt : m.exports) {
       if(exprt.kind != ObjectKind::function)
          continue;
-      if(exprt.name != "apply")
+      if(exprt.name != "apply" && exprt.name != "call")
          continue;
       if(m.types[m.functions.getType(exprt.index).index] == FunctionType::get(ResultType::none, {ValueType::i64, ValueType::i64, ValueType::i64})) {
          found_it = true;

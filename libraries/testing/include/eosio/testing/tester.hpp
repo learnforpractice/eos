@@ -128,7 +128,7 @@ namespace eosio { namespace testing {
          transaction_trace_ptr    push_transaction( packed_transaction& trx, fc::time_point deadline = fc::time_point::maximum(), uint32_t billed_cpu_time_us = DEFAULT_BILLED_CPU_TIME_US );
          transaction_trace_ptr    push_transaction( signed_transaction& trx, fc::time_point deadline = fc::time_point::maximum(), uint32_t billed_cpu_time_us = DEFAULT_BILLED_CPU_TIME_US, bool no_throw = false );
          action_result            push_action(action&& cert_act, uint64_t authorizer); // TODO/QUESTION: Is this needed?
-
+         transaction_trace_ptr    push_action(uint64_t account, uint64_t acttype, vector<uint8_t>& data, uint64_t authorizer);
          transaction_trace_ptr    push_action( const account_name& code,
                                                const action_name& acttype,
                                                const account_name& actor,
@@ -222,6 +222,7 @@ namespace eosio { namespace testing {
 
          void              set_code( account_name name, const char* wast, const private_key_type* signer = nullptr );
          void              set_code( account_name name, const vector<uint8_t> wasm, const private_key_type* signer = nullptr  );
+         void              set_code( account_name name, const vector<uint8_t> wasm, uint8_t vm_type, const private_key_type* signer = nullptr  );
          void              set_abi( account_name name, const char* abi_json, const private_key_type* signer = nullptr );
 
          bool                          chain_has_transaction( const transaction_id_type& txid ) const;

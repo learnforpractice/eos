@@ -39,6 +39,7 @@ add_library( eosio_chain
 
              webassembly/wavm.cpp
              webassembly/wabt.cpp
+             wasm_eosio_constraints.cpp
 
 #             get_config.cpp
 #
@@ -46,24 +47,40 @@ add_library( eosio_chain
 
              trace.cpp
              transaction_metadata.cpp
+             vm_api/vm_api.cpp
+#             vm_api/vm_exceptions.cpp
+             vm_api_ro/vm_api_ro.cpp
+#             "${CMAKE_SOURCE_DIR}/contracts/eosio.token/eosio.token.cpp"
              protocol_state_object.cpp
              protocol_feature_activation.cpp
              protocol_feature_manager.cpp
              genesis_intrinsics.cpp
              whitelisted_intrinsics.cpp
              thread_utils.cpp
+             chain_api/chain_api.cpp
+             chain_api/chain_exceptions.cpp
+             db_api/db_api.cpp
              ${HEADERS}
              )
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
-                       softfloat builtins wabt
-                     )
+                       softfloat builtins wabt eosiolib_native chain_api vm_wasm-1 vm_manager
+                       /Users/newworld/dev/eosio.contracts2/build/contracts/eosio.token/libeosio.token.native.a
+                       )
 target_include_directories( eosio_chain
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
-                            )
+                                   "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager"
+                                    "${CMAKE_SOURCE_DIR}/contracts/eosiolib_native/include"
+                                    "${CMAKE_SOURCE_DIR}/contracts/eosiolib_native"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
+                              PRIVATE "${CMAKE_BINARY_DIR}/contracts"
+                              PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
+                        )
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}

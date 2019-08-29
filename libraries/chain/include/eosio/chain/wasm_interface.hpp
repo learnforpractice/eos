@@ -76,7 +76,7 @@ namespace eosio { namespace chain {
             wabt
          };
 
-         wasm_interface(vm_type vm, const chainbase::database& db);
+         wasm_interface(vm_type vm);
          ~wasm_interface();
 
          //call before dtor to skip what can be minutes of dtor overhead with some runtimes; can cause leaks
@@ -92,7 +92,7 @@ namespace eosio { namespace chain {
          void current_lib(const uint32_t lib);
 
          //Calls apply or error on a given code
-         void apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context);
+         void apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version);
 
          //Immediately exits currently running wasm. UB is called when no wasm running
          void exit();
