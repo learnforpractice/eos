@@ -43,7 +43,7 @@ struct chain_api_cpp
 
    void (*get_resource_limits)( uint64_t account, int64_t* ram_bytes, int64_t* net_weight, int64_t* cpu_weight );
 
-   void (*enable_debug)(bool enable);
+   bool (*enable_debug)(bool enable);
    bool (*is_debug_enabled)();
    bool (*add_debug_contract)(string& contract_name, string& path);
    bool (*clear_debug_contract)(string& contract_name);

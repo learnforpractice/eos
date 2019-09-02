@@ -212,8 +212,9 @@ static bool debug_enabled = false;
 static map<string, debug_contract> debug_contract_map;
 
 
-static void enable_debug(bool enable) {
+static bool enable_debug(bool enable) {
    debug_enabled = enable;
+   return true;
 }
 
 static bool is_debug_enabled() {

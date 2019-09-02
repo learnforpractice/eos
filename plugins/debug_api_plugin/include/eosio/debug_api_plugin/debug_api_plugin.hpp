@@ -57,7 +57,7 @@ public:
    void plugin_shutdown() {}
 
    db_size_stats get();
-   void enable_debug(bool enable);
+   bool enable_debug(bool enable);
    bool is_debug_enabled();
 
    bool add_debug_contract(debug_contract_params& params);

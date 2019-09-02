@@ -31,7 +31,7 @@ using namespace eosio;
           try { \
              if (body.empty()) body = "{}"; \
              INVOKE \
-             cb(http_response_code, fc::variant("null")); \
+             cb(http_response_code, fc::variant()); \
           } catch (...) { \
              http_plugin::handle_exception(#api_name, #call_name, body, cb); \
           } \
@@ -62,14 +62,14 @@ using namespace eosio;
 void debug_api_plugin::plugin_startup() {
    app().get_plugin<http_plugin>().add_api({
        CALL(debug, this, is_debug_enabled, INVOKE_R_V(this, is_debug_enabled), 200),
-       CALL_V_R(debug, this, enable_debug, INVOKE_V_R(this, enable_debug, bool), 200),
+       CALL_R_R(debug, this, enable_debug, INVOKE_R_R(this, enable_debug, bool), 200),
        CALL_R_R(debug, this, add_debug_contract, INVOKE_R_R(this, add_debug_contract, eosio::debug_contract_params), 200),
        CALL_R_R(debug, this, clear_debug_contract, INVOKE_R_R(this, clear_debug_contract, string), 200),
    });
 }
 
-void debug_api_plugin::enable_debug(bool enable) {
-   get_chain_api()->enable_debug(enable);
+bool debug_api_plugin::enable_debug(bool enable) {
+   return get_chain_api()->enable_debug(enable);
 }
 
 bool debug_api_plugin::is_debug_enabled() {
