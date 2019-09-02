@@ -2039,27 +2039,6 @@ void read_write::send_transaction(const read_write::send_transaction_params& par
       chain_plugin::handle_db_exhaustion();
    } CATCH_AND_CALL(next);
 }
-#include <vm_manager.hpp>
-read_only::call_contract_results read_only::call_contract( const call_contract_params& params )const {
-   string s;
-   variant v;
-   try {
-//      s = db_api::get().exec_action(params.code.value, params.action.value, params.binargs);
-      s = vm_manager::get().call_contract_off_chain(params.code.value, params.action.value, params.binargs);
-      v = fc::mutable_variant_object("output", s);
-      return {v};
-   } catch( const boost::interprocess::bad_alloc& ) {
-      throw;
-   } catch( fc::exception& e ) {
-      v = mutable_variant_object("name", e.name())("code", e.code())("what", e.to_string());
-   } catch( const std::exception& e ) {
-      v = mutable_variant_object("name", BOOST_CORE_TYPEID(e).name())("code", (int64_t)fc::std_exception_code)("what", e.what());
-   } catch( ... ) {
-      fc::unhandled_exception e(FC_LOG_MESSAGE( warn, "rethrow"), std::current_exception() );
-      v = variant(e.to_detail_string());
-   }
-   return {fc::mutable_variant_object("error", v)};
-}
 
 read_only::get_abi_results read_only::get_abi( const get_abi_params& params )const {
    get_abi_results result;

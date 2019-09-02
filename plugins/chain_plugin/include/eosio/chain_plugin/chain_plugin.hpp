@@ -84,10 +84,6 @@ public:
 
    void set_shorten_abi_errors( bool f ) { shorten_abi_errors = f; }
 
-   struct call_contract_results {
-      fc::variant                 results;
-   };
-
    using get_info_params = empty;
 
    struct get_info_results {
@@ -227,14 +223,6 @@ public:
    get_abi_results get_abi( const get_abi_params& params )const;
    get_raw_code_and_abi_results get_raw_code_and_abi( const get_raw_code_and_abi_params& params)const;
    get_raw_abi_results get_raw_abi( const get_raw_abi_params& params)const;
-
-   struct call_contract_params {
-      name code;
-      name action;
-      vector<char> binargs;
-   };
-   call_contract_results call_contract(const call_contract_params& params) const;
-
 
    struct abi_json_to_bin_params {
       name         code;
@@ -775,9 +763,6 @@ FC_REFLECT( eosio::chain_apis::read_only::get_account_results,
 FC_REFLECT( eosio::chain_apis::read_only::get_code_results, (account_name)(code_hash)(wast)(wasm)(abi) )
 FC_REFLECT( eosio::chain_apis::read_only::get_code_hash_results, (account_name)(code_hash) )
 FC_REFLECT( eosio::chain_apis::read_only::get_abi_results, (account_name)(abi) )
-
-FC_REFLECT( eosio::chain_apis::read_only::call_contract_params, (code)(action)(binargs) )
-FC_REFLECT( eosio::chain_apis::read_only::call_contract_results, (results) )
 
 FC_REFLECT( eosio::chain_apis::read_only::get_account_params, (account_name)(expected_core_symbol) )
 FC_REFLECT( eosio::chain_apis::read_only::get_code_params, (account_name)(code_as_wasm) )
