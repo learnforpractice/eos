@@ -228,7 +228,9 @@ struct vm_api {
    int (*to_base58)(const char *in, size_t size1, char *out, size_t size2);
    int (*from_base58)(const char *in, size_t size1, char *out, size_t size2);
 
-   bool (*is_protocol_feature_activated)(const char *digest, size_t size);
+   bool (*is_feature_activated)(const char *digest, size_t size);
+   void (*preactivate_feature)(const char *digest, size_t size);
+
    uint64_t (*get_sender)();
 
    bool is_in_apply_context;

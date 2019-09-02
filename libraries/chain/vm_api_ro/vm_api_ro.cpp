@@ -269,7 +269,8 @@ extern "C" void vm_api_ro_init() {
       _vm_api.clear_last_error = clear_last_error;
       _vm_api.read_only = true;
 
-      _vm_api.is_protocol_feature_activated = is_protocol_feature_activated;
+      _vm_api.is_feature_activated = is_feature_activated;
+      _vm_api.preactivate_feature = preactivate_feature;
       _vm_api.get_sender = get_sender;
    }
    register_vm_api_ro(&_vm_api);

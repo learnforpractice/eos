@@ -105,7 +105,6 @@ _get_resource_limits
 _get_vm_api
 _has_auth
 _is_account
-_is_feature_active
 _is_privileged
 _now
 _printdf
@@ -143,3 +142,5 @@ _tapos_block_num
 _tapos_block_prefix
 _transaction_size
 _vm_register_api
+_is_feature_activated
+_preactivate_feature

@@ -51,6 +51,14 @@ account_name current_receiver() {
    return get_vm_api()->current_receiver();
 }
 
+bool is_feature_activated(const char *digest, size_t size) {
+   return get_vm_api()->is_feature_activated(digest, size);
+}
+
+void preactivate_feature(const char *digest, size_t size) {
+   get_vm_api()->preactivate_feature(digest, size);
+}
+
 #include <stdio.h>
 
 extern "C" {

@@ -367,7 +367,8 @@ extern "C" void vm_api_init() {
       _vm_api.to_base58 = to_base58;
       _vm_api.from_base58 = from_base58;
 
-      _vm_api.is_protocol_feature_activated = is_protocol_feature_activated;
+      _vm_api.is_feature_activated = is_feature_activated;
+      _vm_api.preactivate_feature = preactivate_feature;
       _vm_api.get_sender = get_sender;
 
       _vm_api.log = log_;

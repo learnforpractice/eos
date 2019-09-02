@@ -184,6 +184,8 @@ extern "C" {
 
    WASM_IMPORT int get_code_size(uint64_t account);
    WASM_IMPORT int get_code(uint64_t account, char *code, size_t size);
+   WASM_IMPORT bool is_feature_activated(const char *digest, size_t size);
+   WASM_IMPORT void preactivate_feature(const char *digest, size_t size);
 
    ///@ } actioncapi
 

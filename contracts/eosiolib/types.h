@@ -71,7 +71,7 @@ typedef unsigned __int128 uint128_t;
 #ifdef __WASM
    #define WASM_IMPORT  __attribute__((eosio_wasm_import))
 #else
-   #define WASM_IMPORT
+   #define WASM_IMPORT __attribute__ ((visibility ("default")))
 #endif
 
 /* macro to align/overalign a type to ensure calls to intrinsics with pointers/references are properly aligned */

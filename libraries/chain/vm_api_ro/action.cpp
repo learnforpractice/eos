@@ -61,9 +61,13 @@ uint64_t  publication_time() {
    CALL_NOT_ALLOWED();
 }
 
-bool is_protocol_feature_activated(const char *digest, size_t size) {
+bool is_feature_activated(const char *digest, size_t size) {
    CALL_NOT_ALLOWED();
    return false;
+}
+
+void preactivate_feature(const char *digest, size_t size) {
+   CALL_NOT_ALLOWED();
 }
 
 uint64_t get_sender() {

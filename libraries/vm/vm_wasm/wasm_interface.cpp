@@ -814,7 +814,7 @@ class system_api : public context_aware_api {
        * Returns true if the specified protocol feature is activated, false if not.
        */
       bool is_feature_activated( const digest_type& feature_digest ) {
-         return API()->is_protocol_feature_activated( feature_digest.data(), 32 );
+         return API()->is_feature_activated( feature_digest.data(), 32 );
       }
 
       name get_sender() {
