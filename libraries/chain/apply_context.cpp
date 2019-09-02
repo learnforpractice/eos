@@ -13,6 +13,7 @@
 #include <boost/container/flat_set.hpp>
 
 #include <vm_manager.hpp>
+#include <chain_api.hpp>
 
 using boost::container::flat_set;
 
@@ -55,6 +56,7 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 
 extern "C" {
 void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
+typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
 }
 
 void apply_context::exec_one()
@@ -96,15 +98,34 @@ void apply_context::exec_one()
                control.check_action_list( act->account, act->name );
             }
             try {
-               if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
-                  eosio_token_apply(receiver, act->account, act->name);
-               } else {
+               do {
                   if (receiver_account->vm_type == 0) {
-                     control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                     do {
+                        if (get_chain_api()->is_debug_enabled()) {
+                           get_chain_api()->pause_billing_timer();
+                           auto cleanup = fc::make_scoped_exit([&](){
+                              get_chain_api()->resume_billing_timer();
+                           });
+                           string contract_name = account_name(receiver).to_string();
+                           fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
+                           if (apply != nullptr) {
+                              dlog("debug contract ${name} ${n1} ${n2}, ${n3}", ("name",contract_name)("n1",receiver)("n2",act->account)("n3",act->name));
+                              apply(receiver, act->account, act->name);
+                              break;
+                           }
+                        }
+                        if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
+         //                  dlog("receiver is eosio.token");
+                           eosio_token_apply(receiver, act->account, act->name);
+                        } else {
+                           control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);                     
+                        }
+                     } while (false);
                   } else {
                      vm_manager::get().apply(receiver, act->account, act->name);
                   }
-               }
+                  
+               } while(false);
             } catch( const wasm_exit& ) {}
          }
 

@@ -2,8 +2,10 @@
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/resource_limits.hpp>
+#include <dlfcn.h>
 
 #include <chain_api.hpp>
+#include <eosiolib_native/vm_api.h>
 
 using namespace fc;
 using namespace eosio::chain;
@@ -197,6 +199,78 @@ static void get_resource_limits( uint64_t account, int64_t* ram_bytes, int64_t* 
    ctrl().get_resource_limits_manager().get_account_limits( account, *ram_bytes, *net_weight, *cpu_weight);
 }
 
+typedef void (*fn_vm_register_api)(vm_api* api);
+
+struct debug_contract
+{
+   void *handle;
+   void *apply_entry;
+   string path;
+};
+
+static bool debug_enabled = false;
+static map<string, debug_contract> debug_contract_map;
+
+
+static void enable_debug(bool enable) {
+   debug_enabled = enable;
+}
+
+static bool is_debug_enabled() {
+   return debug_enabled;
+}
+
+static bool add_debug_contract(string& contract_name, string& path) {
+   auto itr = debug_contract_map.find(contract_name);
+   if (itr != debug_contract_map.end()) {
+      dlclose(itr->second.handle);
+      debug_contract_map.erase(itr);
+   }
+
+   void *handle = dlopen(path.c_str(), RTLD_LAZY | RTLD_LOCAL);
+   if (handle == NULL) {
+      elog("load ${n1} failed: ${n2}", ("n1", dlerror())("n2",path));
+      return false;
+   }
+
+   void *apply_entry = dlsym(handle, "native_apply");
+   if (apply_entry == NULL) {
+      elog("load ${n1} failed: apply", ("n1", dlerror()));
+      return false;
+   }
+
+   fn_vm_register_api vm_register_api = (fn_vm_register_api)dlsym(handle, "vm_register_api");
+   if (vm_register_api != nullptr) {
+      vm_register_api(get_vm_api());
+   } else {
+      elog("vm_register_api not found in ${n}", ("n", path));
+   }
+
+   debug_contract_map[contract_name] = debug_contract{
+      .handle = handle,
+      .apply_entry = apply_entry,
+      .path = path,
+   };
+   return true;
+}
+
+static bool clear_debug_contract(string& contract_name) {
+   auto itr = debug_contract_map.find(contract_name);
+   if (itr != debug_contract_map.end()) {
+      debug_contract_map.erase(itr);
+      return true;
+   }
+   return false;
+}
+
+static void* get_debug_contract_entry(string& contract_name) {
+   auto itr = debug_contract_map.find(contract_name);
+   if (itr != debug_contract_map.end()) {
+      return itr->second.apply_entry;
+   }
+   return nullptr;   
+}
+
 //chain_exceptions.cpp
 void chain_throw_exception(int type, const char* fmt, ...);
 
@@ -223,6 +297,12 @@ extern "C" void chain_api_init() {
     s_api.get_microseconds = get_microseconds;
     s_api.get_code_by_code_hash = get_code_by_code_hash;
     s_api.get_resource_limits = get_resource_limits;
+
+   s_api.enable_debug = enable_debug;
+   s_api.is_debug_enabled = is_debug_enabled;
+   s_api.add_debug_contract = add_debug_contract;
+   s_api.clear_debug_contract = clear_debug_contract;
+   s_api.get_debug_contract_entry = get_debug_contract_entry;
 
     register_chain_api(&s_api);
 }
