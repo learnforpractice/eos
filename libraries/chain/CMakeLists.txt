@@ -65,7 +65,7 @@ add_library( eosio_chain
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt eosiolib_native chain_api vm_wasm-1 vm_manager
-                       /Users/newworld/dev/eosio.contracts2/build/contracts/eosio.token/libeosio.token.native.a
+                       ${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/eosio.token/libeosio.token.native.a
                        )
 target_include_directories( eosio_chain
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
@@ -81,6 +81,7 @@ target_include_directories( eosio_chain
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                         )
+add_dependencies(eosio_chain contracts_project)
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}

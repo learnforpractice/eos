@@ -1,5 +1,9 @@
 add_subdirectory( eosiolib )
 add_subdirectory( eosiolib_native )
+add_subdirectory( eosio.system )
+add_subdirectory( eosio.token2 )
+add_subdirectory( eosio.token3 )
+add_subdirectory( test )
 
 include(ExternalProject)
 
