@@ -91,6 +91,14 @@ void token_transfer( uint64_t from, uint64_t to, int64_t quantity, uint64_t sym,
    eosio_assert(false, __FUNCTION__);
 }
 
+void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer ) {
+   eosio_assert(false, __FUNCTION__);
+}
+
+void token_retire( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size ) {
+   eosio_assert(false, __FUNCTION__);
+}
+
 static struct vm_api _vm_api = {
 };
 

@@ -46,6 +46,8 @@ extern "C" {
    void token_create( uint64_t issuer, int64_t maximum_supply, uint64_t symbol);
    void token_issue( uint64_t to, int64_t quantity, uint64_t symbol, const char* memo, size_t size2 );
    void token_transfer( uint64_t from, uint64_t to, int64_t quantity, uint64_t symbol, const char* memo, size_t size2);
+   void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer );
+   void token_retire( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size );
 }
 
 namespace eosio {
@@ -356,6 +358,8 @@ extern "C" void vm_api_init() {
       _vm_api.token_create = token_create;
       _vm_api.token_issue = token_issue;
       _vm_api.token_transfer = token_transfer;
+      _vm_api.token_open = token_open;
+      _vm_api.token_retire = token_retire;
 
       _vm_api.get_last_error = get_last_error;
       _vm_api.set_last_error = set_last_error;
