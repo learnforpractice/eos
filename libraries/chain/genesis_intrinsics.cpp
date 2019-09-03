@@ -190,8 +190,17 @@ const std::vector<const char*> genesis_intrinsics = {
    "memmove",
    "memcmp",
    "memset",
-   "is_feature_activated",
-   "preactivate_feature"
+   "token_create",
+   "token_issue",
+   "token_transfer",
+   "call_contract",
+   "call_contract_get_extra_args",
+   "call_contract_set_results",
+   "call_contract_get_results",
+   "to_base58",
+   "from_base58",
+//   "is_feature_activated",
+//   "preactivate_feature"
 };
 
 } } // namespace eosio::chain
