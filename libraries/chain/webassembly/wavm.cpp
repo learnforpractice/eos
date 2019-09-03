@@ -15,6 +15,7 @@
 #include <vector>
 #include <iterator>
 
+#include <chain_api.hpp>
 #include <eosiolib_native/vm_api.h>
 
 using namespace IR;
@@ -86,6 +87,18 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
                                Value(uint64_t(act_name))};
 
          call("apply", args);
+      }
+
+      void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) override {
+         vector<Value> args = {
+            Value(uint64_t(func_name)),
+            Value(uint64_t(arg1)),
+            Value(uint64_t(arg2)),
+            Value(uint64_t(arg3))
+         };
+         string str_func_name;
+         get_chain_api()->n2str(func_name, str_func_name);
+         call(str_func_name, args);
       }
 
    private:

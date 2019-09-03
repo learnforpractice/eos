@@ -71,6 +71,6 @@ extern "C" bool WASM_INTERFACE_IS_BUSY( ) {
 }
 
 extern "C" bool WASM_INTERFACE_CALL(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
-    return false;
-//    return wif->call(contract, func_name, arg1, arg2, arg3);
+    wif->call(contract, func_name, arg1, arg2, arg3);
+    return true;
 }

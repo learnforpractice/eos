@@ -22,9 +22,10 @@ using namespace eosio::testing;
 
 BOOST_AUTO_TEST_SUITE(pythonvm_tests)
 
-
+#if 1
 BOOST_AUTO_TEST_CASE( test1 ) try {
-   tester c( setup_policy::preactivate_feature_and_new_bios );
+//   tester c( setup_policy::preactivate_feature_and_new_bios );
+   tester c( setup_policy::none );
    return;
    c.create_accounts( {N(alice), N(bob), N(charlie)} );
    c.produce_block();
@@ -40,6 +41,6 @@ BOOST_AUTO_TEST_CASE( test1 ) try {
 }
 
 } FC_LOG_AND_RETHROW()
-
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()

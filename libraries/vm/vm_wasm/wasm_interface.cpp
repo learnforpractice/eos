@@ -86,6 +86,18 @@ namespace eosio { namespace chain {
       my->get_instantiated_module(code_hash, vm_type, vm_version)->apply();
 //      return true;
    }
+
+   void wasm_interface::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
+      digest_type code_id;
+      const char *code;
+      size_t code_size;
+      if (!get_chain_api()->get_code(contract, code_id, &code, &code_size)) {
+         return;
+      }
+      my->get_instantiated_module(code_id, 0, 0)->call(func_name, arg1, arg2, arg3);
+      return;
+   }
+
 #if 0
    bool wasm_interface::call( uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3 ) {
       digest_type code_id;
@@ -1606,22 +1618,20 @@ class vm_apis : public context_aware_api {
       }
 
       void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, size_t size1) {
+         API()->eosio_assert(false, "call contract depth exceeded!");
 //         API()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
       }
 
       int call_contract_get_extra_args(array_ptr<char> extra_args, size_t size1) {
-         return 0;
-//         return API()->call_contract_get_extra_args(extra_args, size1);
+         return API()->call_contract_get_extra_args(extra_args, size1);
       }
 
       int call_contract_set_results(array_ptr<const char> results, size_t size1) {
-         return 0;
-//         return API()->call_contract_set_results(results, size1);
+         return API()->call_contract_set_results(results, size1);
       }
 
       int call_contract_get_results(array_ptr<char> results, size_t size1) {
-         return 0;
-//         return API()->call_contract_get_results(results, size1);
+         return API()->call_contract_get_results(results, size1);
       }
 
       int to_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
@@ -1639,11 +1649,6 @@ class vm_apis : public context_aware_api {
          ::memcpy(out, v.data(), copy_size);
          return copy_size;
       }
-
-      int db_get_table_count( uint64_t code, uint64_t scope, uint64_t table ) {
-         return API()->db_get_table_count( code, scope, table );
-      }
-
 };
 
 REGISTER_INTRINSICS(vm_apis,
@@ -1658,8 +1663,6 @@ REGISTER_INTRINSICS(vm_apis,
 
    (to_base58,       int(int, int, int, int))
    (from_base58,     int(int, int, int, int))
-   (db_get_table_count,  int(int64_t,int64_t,int64_t))
-
 );
 
 class transaction_context_ {

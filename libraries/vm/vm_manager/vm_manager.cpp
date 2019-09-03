@@ -20,6 +20,7 @@ extern "C" {
 
     void wasm_interface_init_1(int vm_type);
     bool wasm_interface_apply_1(const eosio::chain::digest_type& code_id, const uint8_t& vm_type, const uint8_t& vm_version);
+    bool wasm_interface_call_1(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3);
 }
 
 using namespace eosio::chain;
@@ -78,6 +79,18 @@ void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
 }
 
 void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t extra_args_size) {
+    int vm_type_callee = get_chain_api()->get_code_type(contract);
+
+    if (vm_type_callee == VM_TYPE_WASM) {
+    } else {
+        get_vm_api()->eosio_assert(0, "only call wasm code supported!");
+    }
+
+    call_extra_args.resize(extra_args_size);
+    memcpy(call_extra_args.data(), extra_args, extra_args_size);
+    call_returns.resize(0);
+
+    wasm_interface_call_1(contract, func_name, arg1, arg2, arg3);
 }
 
 string vm_manager::call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {

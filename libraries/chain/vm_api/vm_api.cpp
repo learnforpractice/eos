@@ -25,6 +25,8 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 
+#include <vm_manager.hpp>
+
 using namespace eosio::chain;
 #include <fstream>
 #include <dlfcn.h>
@@ -146,22 +148,19 @@ int is_contracts_console_enabled() {
 #endif
 
 void vm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t in_size) {
-//   vm_manager::get().call(contract, func_name, arg1, arg2, arg3, extra_args, in_size);
+   vm_manager::get().call(contract, func_name, arg1, arg2, arg3, extra_args, in_size);
 }
 
 int call_contract_get_extra_args(void* extra_args, size_t size1) {
-   return 0;
-//   return vm_manager::get().get_arg((char*)extra_args, size1);
+   return vm_manager::get().get_arg((char*)extra_args, size1);
 }
 
 int call_contract_set_results(const void* result, size_t size1) {
-   return 0;
-//   return vm_manager::get().set_result((const char*)result, size1);
+   return vm_manager::get().set_result((const char*)result, size1);
 }
 
 int call_contract_get_results(void* result, size_t size1) {
-   return 0;
-//   return vm_manager::get().get_result((char*)result, size1);
+   return vm_manager::get().get_result((char*)result, size1);
 }
 
 static int to_base58( const char *in, size_t size1, char *out, size_t size2 ) {
