@@ -55,7 +55,7 @@ extern "C" void eosio_apply(uint64_t receiver, uint64_t code, uint64_t action);
 void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
     int vm_type = get_chain_api()->get_code_type(receiver);
     if (vm_type == VM_TYPE_PY) {
-        #if 0
+        #if 1
         vm_python2_apply(receiver, code, action);
         #else
         eosio::chain::digest_type code_id((char *)pythonvm_wasm_hash, 32);
@@ -63,8 +63,6 @@ void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
         uint8_t vm_version = 0;
         wasm_interface_apply_1(code_id, vm_type, vm_version);
         #endif
-    } else if (vm_type == 3) {
-
     }
     #if 0
     else if (vm_type == VM_TYPE_ETH) {

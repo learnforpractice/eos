@@ -119,6 +119,9 @@ cd $( dirname "${BASH_SOURCE[0]}" )/..
 # Load eosio specific helper functions
 . ./scripts/helpers/eosio.sh
 
+#export BUILD_DIR="${REPO_ROOT}/build-debug"
+#CMAKE_BUILD_TYPE=Debug
+
 $VERBOSE && echo "Build Script Version: ${SCRIPT_VERSION}"
 echo "EOSIO Version: ${EOSIO_VERSION_FULL}"
 echo "$( date -u )"
