@@ -79,11 +79,17 @@ void ensure_apply_exported_visitor::validate( const IR::Module& m ) {
    for(const Export& exprt : m.exports) {
       if(exprt.kind != ObjectKind::function)
          continue;
-      if(exprt.name != "apply" && exprt.name != "call")
-         continue;
-      if(m.types[m.functions.getType(exprt.index).index] == FunctionType::get(ResultType::none, {ValueType::i64, ValueType::i64, ValueType::i64})) {
-         found_it = true;
-         break;
+      if(exprt.name == "apply") {
+         if(m.types[m.functions.getType(exprt.index).index] == FunctionType::get(ResultType::none, {ValueType::i64, ValueType::i64, ValueType::i64})) {
+            found_it = true;
+            break;
+         }
+      }
+      if (exprt.name == "call") {
+         if(m.types[m.functions.getType(exprt.index).index] == FunctionType::get(ResultType::none, {ValueType::i64, ValueType::i64, ValueType::i64, ValueType::i64})) {
+            found_it = true;
+            break;
+         }
       }
    }
 
