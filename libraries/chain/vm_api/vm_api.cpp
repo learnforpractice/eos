@@ -19,6 +19,7 @@
 #include <fc/crypto/sha256.hpp>
 #include <fc/crypto/sha1.hpp>
 #include <fc/io/raw.hpp>
+#include <fc/uint128.hpp>
 
 #include <softfloat.hpp>
 #include <compiler_builtins.hpp>
@@ -178,6 +179,13 @@ static int from_base58( const char *in, size_t size1, char *out, size_t size2 ) 
    ::memcpy(out, v.data(), copy_size);
    return copy_size;
 }
+
+static void __ashlti3(__int128* ret, uint64_t low, uint64_t high, uint32_t shift) {
+    fc::uint128_t i(high, low);
+    i <<= shift;
+    *ret = (unsigned __int128)i;
+}
+
 
 extern "C" void vm_api_init() {
    static bool s_init = false;
@@ -373,6 +381,8 @@ extern "C" void vm_api_init() {
       _vm_api.is_feature_activated = is_feature_activated;
       _vm_api.preactivate_feature = preactivate_feature;
       _vm_api.get_sender = get_sender;
+
+      _vm_api.__ashlti3 = __ashlti3;
 
       _vm_api.log = log_;
       _vm_api.is_in_apply_context = false;

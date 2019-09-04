@@ -236,6 +236,8 @@ struct vm_api {
 
    uint64_t (*get_sender)();
 
+   void (*__ashlti3)(__int128* ret, uint64_t low, uint64_t high, uint32_t shift);
+
    bool is_in_apply_context;
    bool allow_access_apply_context;
    bool read_only;

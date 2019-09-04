@@ -3,11 +3,13 @@ add_library(vm_api4c STATIC
     chain_api.cpp
     softfloat.cpp
     eosio_injection.cpp
+    compiler_builtins.cpp
+    privileged.cpp
     wasm-rt-impl.c
     vm_memory.cpp
 )
 
-target_link_libraries(vm_api4c PRIVATE eosiolib_native chain_api)
+target_link_libraries(vm_api4c PRIVATE eosiolib_native chain_api fc)
 
 target_include_directories(vm_api4c PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include

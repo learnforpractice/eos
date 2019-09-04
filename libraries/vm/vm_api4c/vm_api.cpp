@@ -5,6 +5,8 @@
 #include "wasm-rt.h"
 #include <eosiolib/types.h>
 #include <eosiolib_native/vm_api.h>
+#include <chain_api.hpp>
+
 #include "src/interp.h"
 
 using namespace wabt::interp;
@@ -254,24 +256,6 @@ u64 (*Z_envZ_get_permission_last_usedZ_jjj)(u64, u64);
 u64 (*Z_envZ_get_account_creation_timeZ_jj)(u64);
 #include "permission.cpp"
 
-//privileged.cpp
-void (*Z_envZ_get_resource_limitsZ_vjiii)(u64, u32, u32, u32);
-/* import: 'env' 'set_resource_limits' */
-void (*Z_envZ_set_resource_limitsZ_vjjjj)(u64, u64, u64, u64);
-/* import: 'env' 'set_proposed_producers' */
-u64 (*Z_envZ_set_proposed_producersZ_jii)(u32, u32);
-/* import: 'env' 'is_privileged' */
-u32 (*Z_envZ_is_privilegedZ_ij)(u64);
-/* import: 'env' 'set_privileged' */
-void (*Z_envZ_set_privilegedZ_vji)(u64, u32);
-/* import: 'env' 'set_blockchain_parameters_packed' */
-void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
-/* import: 'env' 'get_blockchain_parameters_packed' */
-u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
-/* import: 'env' 'activate_feature' */
-void (*Z_envZ_activate_featureZ_vj)(u64);
-#include "privileged.cpp"
-
 
 //system.cpp
 /* import: 'env' 'eosio_assert' */
@@ -328,8 +312,6 @@ void init_eosio_injection();
 void (*Z_envZ_wasm_syscallZ_vv)(void);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 
-extern void (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))(void);
-
 void init_vm_api4c() {
     Z_envZ_printiZ_vj = _printi;
     Z_envZ_printsZ_vi = _prints;
@@ -377,17 +359,6 @@ void init_vm_api4c() {
     Z_envZ_get_permission_last_usedZ_jjj = get_permission_last_used;
     Z_envZ_get_account_creation_timeZ_jj = get_account_creation_time;
 
-
-//privileged.cpp
-    Z_envZ_get_resource_limitsZ_vjiii = get_resource_limits;
-    Z_envZ_set_resource_limitsZ_vjjjj = set_resource_limits;
-    Z_envZ_set_proposed_producersZ_jii = set_proposed_producers;
-    Z_envZ_is_privilegedZ_ij = is_privileged;
-    Z_envZ_set_privilegedZ_vji = set_privileged;
-    Z_envZ_set_blockchain_parameters_packedZ_vii = set_blockchain_parameters_packed;
-    Z_envZ_get_blockchain_parameters_packedZ_iii = get_blockchain_parameters_packed;
-    Z_envZ_activate_featureZ_vj = activate_feature;
-
 //system.cpp
     Z_envZ_eosio_assertZ_vii = eosio_assert;
     Z_envZ_eosio_assert_codeZ_vij = eosio_assert_code;
@@ -431,10 +402,6 @@ void init_vm_api4c() {
     init_eosio_injection();
     printf("++++%s %d\n", __FUNCTION__, __LINE__);
     WASM_RT_ADD_PREFIX(init)();
-    printf("++++%s %d\n", __FUNCTION__, __LINE__);
-   (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))();
-    printf("++++%s %d\n", __FUNCTION__, __LINE__);
-
 }
 
 
