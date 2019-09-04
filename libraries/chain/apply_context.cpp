@@ -58,6 +58,7 @@ extern "C" {
    void native_eosio_system_apply(uint64_t a, uint64_t b, uint64_t c);
    void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
    typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
+   void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size);
 }
 
 void apply_context::exec_one()
@@ -103,28 +104,35 @@ void apply_context::exec_one()
                   if (receiver_account->vm_type == 0) {
                      do {
                         if (get_chain_api()->is_debug_enabled()) {
-                           get_chain_api()->pause_billing_timer();
-                           auto cleanup = fc::make_scoped_exit([&](){
-                              get_chain_api()->resume_billing_timer();
-                           });
                            string contract_name = account_name(receiver).to_string();
                            fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
                            if (apply != nullptr) {
                               dlog("debug contract ${name} ${n1} ${n2}, ${n3}", ("name",contract_name)("n1",receiver)("n2",act->account)("n3",act->name));
+                              get_chain_api()->pause_billing_timer();
+                              auto cleanup = fc::make_scoped_exit([&](){
+                                 get_chain_api()->resume_billing_timer();
+                              });
                               apply(receiver, act->account, act->name);
                               break;
                            }
                         }
+                        do {
+                           if (receiver == N(eosio)) {
+                              fn_contract_apply eosio_system_apply = (fn_contract_apply)get_native_eosio_system_apply_entry((uint8_t*)receiver_account->code_hash.data(), 32);
+                              if (eosio_system_apply == nullptr) {
+                              } else {
+//                                 wlog("+++eosio_system_apply: receiver_account->code_hash: ${hash}", ("hash", receiver_account->code_hash));
+                                 eosio_system_apply(receiver, act->account, act->name);
+                                 break;
+                              }
+                           } else if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
+            //                  dlog("receiver is eosio.token");
+                              eosio_token_apply(receiver, act->account, act->name);
+                              break;
+                           }
+                           control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                        } while (false);
 
-                        if (receiver = N(eosio)) {
-                           dlog("debug eosio contract ${n1} ${n2}, ${n3}", ("n1",receiver)("n2",act->account)("n3",act->name));
-                           native_eosio_system_apply(receiver, act->account, act->name);
-                        } else if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
-         //                  dlog("receiver is eosio.token");
-                           eosio_token_apply(receiver, act->account, act->name);
-                        } else {
-                           control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);                     
-                        }
                      } while (false);
                   } else {
                      vm_manager::get().apply(receiver, act->account, act->name);

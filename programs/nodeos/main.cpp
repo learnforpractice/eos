@@ -81,6 +81,7 @@ extern "C"
    void vm_api_ro_init();
    void vm_api_init();
    void vm_python2_init();
+   void native_eosio_system_init();
 }
 
 int main(int argc, char** argv)
@@ -89,6 +90,7 @@ int main(int argc, char** argv)
    vm_api_ro_init();
    chain_api_init();
    vm_python2_init();
+   native_eosio_system_init();
 
    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 

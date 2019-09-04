@@ -1,7 +1,7 @@
 add_library(eosio.system SHARED
     main.cpp
     wasm-rt-impl.c
-    eosio.system.c38f27660719f14b488b81f854c89c7f904191ee744601aea9a5180d78702e87.c
+    eosio.system.c
 )
 
 target_link_libraries(eosio.system PRIVATE eosiolib_native vm_api4c)
