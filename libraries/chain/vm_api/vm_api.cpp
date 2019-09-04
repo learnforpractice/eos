@@ -152,7 +152,7 @@ void vm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2
 }
 
 int call_contract_get_extra_args(void* extra_args, size_t size1) {
-   return vm_manager::get().get_arg((char*)extra_args, size1);
+   return vm_manager::get().get_extra_args((char*)extra_args, size1);
 }
 
 int call_contract_set_results(const void* result, size_t size1) {

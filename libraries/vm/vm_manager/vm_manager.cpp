@@ -54,6 +54,7 @@ void vm_manager::setcode(int vm_type, uint64_t account, const bytes& code, bytes
 extern "C" void eosio_apply(uint64_t receiver, uint64_t code, uint64_t action);
 
 void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
+    call_returns.resize(0);
     int vm_type = get_chain_api()->get_code_type(receiver);
     if (vm_type == VM_TYPE_PY) {
         #if 1
@@ -106,7 +107,7 @@ string vm_manager::call_contract_off_chain(uint64_t contract, uint64_t action, c
     return string("");
 }
 
-int vm_manager::get_arg(char* args, size_t size) {
+int vm_manager::get_extra_args(char* args, size_t size) {
     if (!args || size == 0) {
         return call_extra_args.size();
     }
