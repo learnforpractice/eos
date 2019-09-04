@@ -133,6 +133,10 @@ void apply_eosio_setcode(apply_context& context) {
    context.require_authorization(act.account);
 
 //   EOS_ASSERT( act.vmtype == 0, invalid_contract_vm_type, "code should be 0" );
+   if (act.vmtype == 1) {
+      EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvn not activated!" );
+   }
+
    EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
 
    fc::sha256 code_hash; /// default is the all zeros hash
