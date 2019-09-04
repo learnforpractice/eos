@@ -3090,11 +3090,6 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
    }
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> fba9a9bdc3e476472e2f468bf11ad2da871df7e9
 template<>
 void controller_impl::on_activation<builtin_protocol_feature_t::webauthn_key>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {

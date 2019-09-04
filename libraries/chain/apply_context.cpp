@@ -55,8 +55,9 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 }
 
 extern "C" {
-void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
-typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
+   void native_eosio_system_apply(uint64_t a, uint64_t b, uint64_t c);
+   void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
+   typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
 }
 
 void apply_context::exec_one()
@@ -114,7 +115,11 @@ void apply_context::exec_one()
                               break;
                            }
                         }
-                        if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
+
+                        if (receiver = N(eosio)) {
+                           dlog("debug eosio contract ${n1} ${n2}, ${n3}", ("n1",receiver)("n2",act->account)("n3",act->name));
+                           native_eosio_system_apply(receiver, act->account, act->name);
+                        } else if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
          //                  dlog("receiver is eosio.token");
                            eosio_token_apply(receiver, act->account, act->name);
                         } else {

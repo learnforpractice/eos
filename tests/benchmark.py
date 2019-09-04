@@ -127,9 +127,12 @@ code_hash = m.hexdigest()
 r = eosapi.get_code('eosio.msig')
 if code_hash != r['code_hash']:
     r = eosapi.set_contract('eosio.msig', code, abi, 0)
+try:
+    eosapi.schedule_protocol_feature_activations(['0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd'])
+    time.sleep(1.0)
+except Exception as e:
+    print(e)
 
-eosapi.schedule_protocol_feature_activations(['0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd'])
-time.sleep(1.0)
 code_path = os.path.join(contract_path, 'eosio.system/eosio.system.wasm')
 abi_path = os.path.join(contract_path, 'eosio.system/eosio.system.abi')
 

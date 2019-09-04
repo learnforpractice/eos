@@ -42,21 +42,32 @@ static void __udivti3(unsigned __int128& ret, uint64_t la, uint64_t ha, uint64_t
 /* import: 'env' '__ashlti3' */
 extern "C" {
 
-void Z_envZ___ashlti3Z_vijji(u32 ret, u64 low, u64 high, u32 shift) {
+static void ashlti3(u32 ret, u64 low, u64 high, u32 shift) {
    __int128* _ret = (__int128 *)offset_to_ptr(ret, sizeof(unsigned __int128));
    __ashlti3(*_ret, low, high, shift);
 }
 
-/* import: 'env' '__multi3' */
-void Z_envZ___multi3Z_vijjjj(u32 ret, u64 la, u64 ha, u64 lb, u64 hb) {
+static void multi3(u32 ret, u64 la, u64 ha, u64 lb, u64 hb) {
    __int128* _ret = (__int128 *)offset_to_ptr(ret, sizeof(unsigned __int128));
    __multi3(*_ret, la, ha, lb, hb);
 }
 
 /* import: 'env' '__udivti3' */
-void Z_envZ___udivti3Z_vijjjj(u32 ret, u64 la, u64 ha, u64 lb, u64 hb) {
+void udivti3(u32 ret, u64 la, u64 ha, u64 lb, u64 hb) {
    unsigned __int128* _ret = (unsigned __int128 *)offset_to_ptr(ret, sizeof(unsigned __int128));
    __udivti3(*_ret, la, ha, lb, hb);
+}
+
+void (*Z_envZ___ashlti3Z_vijji)(u32 ret, u64 low, u64 high, u32 shift);
+/* import: 'env' '__multi3' */
+void (*Z_envZ___multi3Z_vijjjj)(u32 ret, u64 la, u64 ha, u64 lb, u64 hb);
+/* import: 'env' '__udivti3' */
+void (*Z_envZ___udivti3Z_vijjjj)(u32 ret, u64 la, u64 ha, u64 lb, u64 hb);
+
+void init_compiler_builtins() {
+    Z_envZ___ashlti3Z_vijji = ashlti3;
+    Z_envZ___multi3Z_vijjjj = multi3;
+    Z_envZ___udivti3Z_vijjjj = udivti3;
 }
 
 }

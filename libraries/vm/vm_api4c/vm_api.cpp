@@ -256,7 +256,6 @@ u64 (*Z_envZ_get_permission_last_usedZ_jjj)(u64, u64);
 u64 (*Z_envZ_get_account_creation_timeZ_jj)(u64);
 #include "permission.cpp"
 
-
 //system.cpp
 /* import: 'env' 'eosio_assert' */
 void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
@@ -309,6 +308,9 @@ void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
 void init_softfloat();
 void init_eosio_injection();
 
+void init_privileged();
+void init_compiler_builtins();
+
 void (*Z_envZ_wasm_syscallZ_vv)(void);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 
@@ -358,6 +360,12 @@ void init_vm_api4c() {
     Z_envZ_check_permission_authorizationZ_ijjiiiij = check_permission_authorization;
     Z_envZ_get_permission_last_usedZ_jjj = get_permission_last_used;
     Z_envZ_get_account_creation_timeZ_jj = get_account_creation_time;
+
+//privileged.cpp
+    init_privileged();
+
+//compiler_builtins.cpp
+    init_compiler_builtins();
 
 //system.cpp
     Z_envZ_eosio_assertZ_vii = eosio_assert;

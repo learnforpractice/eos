@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "eosio.system.h"
+#include "eosio.system.c38f27660719f14b488b81f854c89c7f904191ee744601aea9a5180d78702e87.h"
 #define UNLIKELY(x) __builtin_expect(!!(x), 0)
 #define LIKELY(x) __builtin_expect(!!(x), 1)
 
@@ -181734,4 +181734,8 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   init_memory();
   init_table();
   init_exports();
+}
+
+wasm_rt_memory_t* get_wasm_rt_memory() {
+  return &M0;
 }

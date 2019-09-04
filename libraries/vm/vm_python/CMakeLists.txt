@@ -21,6 +21,7 @@ endif (APPLE)
 
 set(SRCS vm_python2.cpp
     pythonvm.c
+    wasm-rt-impl.c
     ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 )
 

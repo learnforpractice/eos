@@ -1,0 +1,5 @@
+CODEABI_1.0 {
+    global: native_init;native_eosio_system_apply;
+    local: *;
+};
+

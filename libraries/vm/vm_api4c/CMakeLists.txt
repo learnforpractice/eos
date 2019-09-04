@@ -5,8 +5,8 @@ add_library(vm_api4c STATIC
     eosio_injection.cpp
     compiler_builtins.cpp
     privileged.cpp
-    wasm-rt-impl.c
     vm_memory.cpp
+#    wasm-rt-impl.c
 )
 
 target_link_libraries(vm_api4c PRIVATE eosiolib_native chain_api fc)
