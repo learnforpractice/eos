@@ -213,6 +213,17 @@ Allows contracts to read code version of any account
 */
             {}
          } )
+         (  builtin_protocol_feature_t::ethereum_vm, builtin_protocol_feature_spec{
+            "ETHEREUM_VM",
+            fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
+            // SHA256 hash of the raw message below within the comment delimiters (do not modify message below).
+/*
+Builtin protocol feature: CODE_VERSION
+
+Allows contracts to read code version of any account
+*/
+            {}
+         } )
    ;
 
 

@@ -1039,6 +1039,11 @@ class action_api : public context_aware_api {
       name current_receiver() {
          return context.get_receiver();
       }
+
+      int evm_execute(array_ptr<unsigned char> trx, size_t size) {
+         return 0;
+//         return ::evm_execute(trx.value, size);
+      }
 };
 
 class console_api : public context_aware_api {
@@ -2017,6 +2022,7 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,       int(int, int)  )
    (action_data_size,       int()          )
    (current_receiver,   int64_t()          )
+   (evm_execute,        int(int, int)      )
 );
 
 REGISTER_INTRINSICS(authorization_api,

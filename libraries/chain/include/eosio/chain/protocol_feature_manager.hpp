@@ -28,7 +28,8 @@ enum class builtin_protocol_feature_t : uint32_t {
    webauthn_key,
    wtmsig_block_signatures,
    code_version,
-   pythonvm
+   pythonvm,
+   ethereum_vm
 };
 
 struct protocol_feature_subjective_restrictions {

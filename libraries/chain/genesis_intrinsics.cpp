@@ -157,8 +157,6 @@ const std::vector<const char*> genesis_intrinsics = {
    "read_action_data",
    "action_data_size",
    "current_receiver",
-   "evm_execute",
-   "evm_apply",
    "require_recipient",
    "require_auth",
    "require_auth2",
