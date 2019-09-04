@@ -50,3 +50,14 @@ target_include_directories( vm_wasm-1
                             )
 target_compile_options(vm_wasm-1     PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB)
 set_target_properties(vm_wasm-1  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+
+
+
+add_executable( wasm_injector main.cpp ${SRCS} )
+target_link_libraries( wasm_injector wabt ${WASM_DEPEND_LIBS})
+
+target_include_directories( wasm_injector
+                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
+                            PUBLIC ${HEADERS}
+                            )
+target_compile_options(wasm_injector  PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB)
