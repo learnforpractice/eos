@@ -15,6 +15,24 @@
 using namespace std;
 using namespace eosio::chain;
 
+enum class enum_builtin_protocol_feature : uint32_t {
+   preactivate_feature,
+   only_link_to_existing_permission,
+   replace_deferred,
+   no_duplicate_deferred_id,
+   fix_linkauth_restriction,
+   disallow_empty_producer_schedule,
+   restrict_action_to_self,
+   only_bill_first_authorizer,
+   forward_setcode,
+   get_sender,
+   ram_restrictions,
+   webauthn_key,
+   wtmsig_block_signatures,
+   code_version,
+   pythonvm
+};
+
 struct chain_api_cpp
 {
    int64_t (*get_current_exception)(std::string& what);
@@ -48,6 +66,7 @@ struct chain_api_cpp
    bool (*add_debug_contract)(string& contract_name, string& path);
    bool (*clear_debug_contract)(string& contract_name);
    void* (*get_debug_contract_entry)(string& contract_name);
+   bool (*is_builtin_activated)(uint32_t feature);
 };
 
 extern "C" void register_chain_api(struct chain_api_cpp* api);

@@ -1362,7 +1362,7 @@ BOOST_AUTO_TEST_CASE( code_version_test ) { try {
                            eosio_assert_message_is( "code version not match" ) );
 
    BOOST_CHECK_EXCEPTION(  c.push_action( tester1_account, N(reqversion), tester1_account, mutable_variant_object()
-                                             ("name", N(nonexisting).to_string())
+                                             ("name", N(nonexisting))
                                              ("version", empty_version.str()) ),
                            action_validate_exception,
                            fc_exception_message_is( "account 'nonexisting' does not exist" ) );

@@ -272,6 +272,10 @@ static void* get_debug_contract_entry(string& contract_name) {
    return nullptr;   
 }
 
+static bool is_builtin_activated(uint32_t feature) {
+   return ctrl().is_builtin_activated(static_cast<builtin_protocol_feature_t>(feature));
+}
+
 //chain_exceptions.cpp
 void chain_throw_exception(int type, const char* fmt, ...);
 
@@ -282,29 +286,31 @@ extern "C" void chain_api_init() {
     }
     init = true;
 
-    s_api.n2str = n2str;
-    s_api.str2n = str2n;
-    s_api.get_code = get_code;
-    s_api.get_code_ex = get_code_ex;
-    s_api.get_code_id = get_code_id;
-    s_api.get_code_type = get_code_type;
+    s_api = chain_api_cpp {
+      .n2str = n2str,
+      .str2n = str2n,
+      .get_code = get_code,
+      .get_code_ex = get_code_ex,
+      .get_code_id = get_code_id,
+      .get_code_type = get_code_type,
 
-    s_api.get_state_dir = get_state_dir;
-    s_api.contracts_console = contracts_console;
-    s_api.resume_billing_timer = resume_billing_timer;
-    s_api.pause_billing_timer = pause_billing_timer;
-    s_api.is_producing_block = is_producing_block;
-    s_api.throw_exception = chain_throw_exception;
-    s_api.get_microseconds = get_microseconds;
-    s_api.get_code_by_code_hash = get_code_by_code_hash;
-    s_api.get_resource_limits = get_resource_limits;
+      .get_state_dir = get_state_dir,
+      .contracts_console = contracts_console,
+      .resume_billing_timer = resume_billing_timer,
+      .pause_billing_timer = pause_billing_timer,
+      .is_producing_block = is_producing_block,
+      .throw_exception = chain_throw_exception,
+      .get_microseconds = get_microseconds,
+      .get_code_by_code_hash = get_code_by_code_hash,
+      .get_resource_limits = get_resource_limits,
 
-   s_api.enable_debug = enable_debug;
-   s_api.is_debug_enabled = is_debug_enabled;
-   s_api.add_debug_contract = add_debug_contract;
-   s_api.clear_debug_contract = clear_debug_contract;
-   s_api.get_debug_contract_entry = get_debug_contract_entry;
-
+      .enable_debug = enable_debug,
+      .is_debug_enabled = is_debug_enabled,
+      .add_debug_contract = add_debug_contract,
+      .clear_debug_contract = clear_debug_contract,
+      .get_debug_contract_entry = get_debug_contract_entry,
+      .is_builtin_activated = is_builtin_activated,
+    };
     register_chain_api(&s_api);
 }
 

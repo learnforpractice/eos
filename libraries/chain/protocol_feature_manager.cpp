@@ -202,6 +202,17 @@ Allows contracts to read code version of any account
 */
             {}
          } )
+         (  builtin_protocol_feature_t::pythonvm, builtin_protocol_feature_spec{
+            "PYTHONVM",
+            fc::variant("7038ce787c6483212925640412f60458702e96a478c61f8a10ba6db2ae9a2175").as<digest_type>(),
+            // SHA256 hash of the raw message below within the comment delimiters (do not modify message below).
+/*
+Builtin protocol feature: CODE_VERSION
+
+Allows contracts to read code version of any account
+*/
+            {}
+         } )
    ;
 
 
