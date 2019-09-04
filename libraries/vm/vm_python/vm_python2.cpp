@@ -57,6 +57,8 @@ extern "C" {
    /* export: 'call' */
    extern void (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(u64, u64, u64, u64);
 
+   extern void (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))(void);
+
    void export_vm_apply(uint64_t receiver, uint64_t code, uint64_t action) {
       (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(receiver, code, action);
    }
@@ -119,6 +121,7 @@ void vm_python2_init() {
 
    Z_envZ_find_frozen_codeZ_iiiii = _find_frozen_code;
    init_vm_api4c();
+   (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))();
 
    _vm_memory->init_smart_contract = true;
 

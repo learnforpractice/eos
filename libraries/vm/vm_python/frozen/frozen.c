@@ -386,7 +386,7 @@ static struct _frozen _PyImport_FrozenModules_for_pythonvm[] = {
 
 void find_frozen_code(const char *name, const char **code, int *size)
 {
-	printf("++++find_frozen_code %s\n", name);
+//	printf("++++find_frozen_code %s\n", name);
     const struct _frozen *p;
     if (name == NULL) {
         *size = 0;
@@ -398,7 +398,7 @@ void find_frozen_code(const char *name, const char **code, int *size)
             *size = 0;
             return;
         }
-		printf("++++find_frozen_code p->name %s\n", p->name);
+//		printf("++++find_frozen_code p->name %s\n", p->name);
         if (strcmp(name, p->name) == 0) {
             break;
         }
