@@ -320,6 +320,7 @@ struct controller_impl {
       set_activation_handler<builtin_protocol_feature_t::code_version>();
       set_activation_handler<builtin_protocol_feature_t::pythonvm>();
       set_activation_handler<builtin_protocol_feature_t::ethereum_vm>();
+      set_activation_handler<builtin_protocol_feature_t::native_eosio_system>();
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
@@ -3124,6 +3125,10 @@ void controller_impl::on_activation<builtin_protocol_feature_t::ethereum_vm>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
       add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "evm_execute" );
    } );
+}
+
+template<>
+void controller_impl::on_activation<builtin_protocol_feature_t::native_eosio_system>() {
 }
 
 /// End of protocol feature activation handlers

@@ -29,7 +29,8 @@ enum class builtin_protocol_feature_t : uint32_t {
    wtmsig_block_signatures,
    code_version,
    pythonvm,
-   ethereum_vm
+   ethereum_vm,
+   native_eosio_system,
 };
 
 struct protocol_feature_subjective_restrictions {

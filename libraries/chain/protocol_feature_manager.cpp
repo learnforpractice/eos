@@ -205,23 +205,16 @@ Allows contracts to read code version of any account
          (  builtin_protocol_feature_t::pythonvm, builtin_protocol_feature_spec{
             "PYTHONVM",
             fc::variant("7038ce787c6483212925640412f60458702e96a478c61f8a10ba6db2ae9a2175").as<digest_type>(),
-            // SHA256 hash of the raw message below within the comment delimiters (do not modify message below).
-/*
-Builtin protocol feature: CODE_VERSION
-
-Allows contracts to read code version of any account
-*/
             {}
          } )
          (  builtin_protocol_feature_t::ethereum_vm, builtin_protocol_feature_spec{
             "ETHEREUM_VM",
             fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
-            // SHA256 hash of the raw message below within the comment delimiters (do not modify message below).
-/*
-Builtin protocol feature: CODE_VERSION
-
-Allows contracts to read code version of any account
-*/
+            {}
+         } )
+         (  builtin_protocol_feature_t::native_eosio_system, builtin_protocol_feature_spec{
+            "NATIVE_EOSIO_SYSTEM",
+            fc::variant("46f34b8c5a9e1fca7fb6acad64260edb8a359cd7ad10e0ef83d843a894f1fd77").as<digest_type>(),
             {}
          } )
    ;
