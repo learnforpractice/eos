@@ -186,6 +186,21 @@ static void __ashlti3(__int128* ret, uint64_t low, uint64_t high, uint32_t shift
     *ret = (unsigned __int128)i;
 }
 
+static bool get_code_version(uint64_t contract, char *hash, size_t size) {
+   if (hash == nullptr || size != 32) {
+      return false;
+   }
+   if (!is_account(contract)) {
+      return false;
+   }
+   try {
+      const auto& account = ctx().control.db().get<account_metadata_object,by_name>(contract);
+      memcpy(hash, account.code_hash.data(), 32);
+      return true;
+   } catch (...) {
+   }
+   return false;
+}
 
 extern "C" void vm_api_init() {
    static bool s_init = false;
@@ -383,6 +398,7 @@ extern "C" void vm_api_init() {
       _vm_api.get_sender = get_sender;
 
       _vm_api.__ashlti3 = __ashlti3;
+      _vm_api.get_code_version = get_code_version;
 
       _vm_api.log = log_;
       _vm_api.is_in_apply_context = false;
