@@ -136,9 +136,9 @@ int get_code_type( uint64_t receiver) {
 }
 
 static bool get_code_by_code_hash(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, const char** code, size_t* size, uint32_t* first_block_used) {
-   printf("++++++get_code_by_code_hash\n");
+//   printf("++++++get_code_by_code_hash\n");
    if (0 == memcmp(pythonvm_wasm_hash, code_hash.data(), 32)) {
-      printf("++++++get_code_by_code_hash 111\n");
+//      printf("++++++get_code_by_code_hash 111\n");
       *code = (const char *)pythonvm_wasm;
       *size = pythonvm_wasm_size;
       *first_block_used = 0;
