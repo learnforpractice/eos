@@ -32,8 +32,6 @@ typedef int64_t s64;
 typedef float f32;
 typedef double f64;
 
-Memory *_vm_memory = nullptr;
-
 extern "C" {
 void *offset_to_ptr(u32 offset, u32 size);
 void *offset_to_char_ptr(u32 offset);
@@ -107,41 +105,6 @@ static void _printui(u64 u) {
     get_vm_api()->printui(u);
 }
 
-uint8_t *vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages) {
-  if (_vm_memory) {
-      return (uint8_t *)_vm_memory->data.data();
-  }
-
-  wabt::Limits limits(initial_pages, max_pages);
-  _vm_memory = new Memory(limits);
-
-  vmdlog("initial_pages %d, max_pages %d\n", initial_pages, max_pages);
-
-  _vm_memory->data.resize(initial_pages * PAGE_SIZE);
-  _vm_memory->base_address = _vm_memory->data.data();
-  memset(_vm_memory->data.data(), 0,  _vm_memory->data.size());
-  return (uint8_t *)_vm_memory->data.data();
-}
-
-uint8_t *vm_grow_memory(uint32_t delta) {
-  uint64_t old_pages = _vm_memory->page_limits.initial;
-  uint64_t new_pages = _vm_memory->page_limits.initial + delta;
-  if (new_pages < old_pages || new_pages > _vm_memory->page_limits.max) {
-      get_vm_api()->eosio_assert(0, "memory exceeded in grow!");
-  }
-  _vm_memory->page_limits.initial = new_pages;
-  _vm_memory->data.resize(new_pages * PAGE_SIZE);
-  _vm_memory->base_address = _vm_memory->data.data();
-  memset(_vm_memory->data.data() + old_pages * PAGE_SIZE, 0, delta * PAGE_SIZE);
-  return (uint8_t *)_vm_memory->data.data();
-}
-
-void vm_load_memory(uint32_t offset_start, uint32_t length) {
-    LoadDataToWritableMemory(_vm_memory, offset_start, length);
-}
-
-//vm_python2.cpp
-void vm_load_memory(uint32_t offset_start, uint32_t length);
 
 void pythonvm_get_memory(char **start, uint32_t *size);
 
@@ -158,34 +121,6 @@ u32 _n2s(u64 n, u32 out_offset, u32 length);
 
 
 #include "db.cpp"
-
-extern wasm_rt_memory_t* get_wasm_rt_memory(void);
-
-void *offset_to_ptr(u32 offset, u32 size) {
-    wasm_rt_memory_t *memory = get_wasm_rt_memory();
-    vm_load_memory(offset, size);
-//    printf("++++++offset %u, size %u\n", offset, size);
-//    get_vm_api()->eosio_assert(offset + size <= memory->size && offset + size >= offset, "memory access out of bounds");
-    return memory->data + offset;
-}
-
-void pythonvm_get_memory(char **start, uint32_t *size) {
-    wasm_rt_memory_t *memory = get_wasm_rt_memory();
-    *start = (char *)memory->data;
-    *size = memory->size;
-}
-
-void *offset_to_char_ptr(u32 offset) {
-    wasm_rt_memory_t *memory = get_wasm_rt_memory();
-    for (int i=offset;i<memory->size;i++) {
-        vm_load_memory(i, 1);
-        if (memory->data[i] == '\0') {
-            return memory->data + offset; 
-        }
-    }
-    get_vm_api()->eosio_assert(0, "not a valid c string!");
-    return NULL;
-}
 
 /* import: 'env' 'get_code' */
 u32 (*Z_envZ_get_codeZ_ijii)(u64, u32, u32);
