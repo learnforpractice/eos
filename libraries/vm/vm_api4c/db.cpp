@@ -26,6 +26,8 @@ void (*Z_envZ_db_idx128_updateZ_viji)(u32, u64, u32);
 void (*Z_envZ_db_idx128_removeZ_vi)(u32);
 /* import: 'env' 'db_idx128_upperbound' */
 u32 (*Z_envZ_db_idx128_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_idx256_store' */
+u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
 /* import: 'env' 'db_idx256_end' */
 u32 (*Z_envZ_db_idx256_endZ_ijjj)(u64, u64, u64);
 /* import: 'env' 'db_idx256_find_primary' */
@@ -486,6 +488,7 @@ static void init_db() {
    Z_envZ_db_idx128_removeZ_vi = db_idx128_remove;
    Z_envZ_db_idx128_upperboundZ_ijjjii = db_idx128_upperbound ;
 
+   Z_envZ_db_idx256_storeZ_ijjjjii = db_idx256_store;
    Z_envZ_db_idx256_endZ_ijjj = db_idx256_end ;
    Z_envZ_db_idx256_find_primaryZ_ijjjiij = db_idx256_find_primary ;
    Z_envZ_db_idx256_find_secondaryZ_ijjjiii = db_idx256_find_secondary ;

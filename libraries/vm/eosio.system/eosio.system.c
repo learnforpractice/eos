@@ -8,8 +8,10 @@
 #define LIKELY(x) __builtin_expect(!!(x), 1)
 
 #define TRAP(x) (wasm_rt_trap(WASM_RT_TRAP_##x), 0)
+void vm_checktime();
 
 #define FUNC_PROLOGUE                                            \
+  vm_checktime();                                                \
   if (++wasm_rt_call_stack_depth > WASM_RT_MAX_CALL_STACK_DEPTH) \
     TRAP(EXHAUSTION)
 
@@ -181736,6 +181738,6 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   init_exports();
 }
 
-wasm_rt_memory_t* get_wasm_rt_memory() {
+wasm_rt_memory_t* get_eosio_system_memory() {
   return &M0;
 }
