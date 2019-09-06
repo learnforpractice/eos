@@ -7,6 +7,12 @@
 
 using namespace std;
 
+//contracts.cpp
+extern "C" {
+   void init_contracts();
+   wasm_rt_memory_t *get_contract_memory(std::array<uint8_t, 32> hash);
+}
+
 struct native_calls
 {
 //    void (*init)();
@@ -18,7 +24,10 @@ static map<std::array<uint8_t, 32>, native_calls> call_map;
 extern "C" {
     void WASM_RT_ADD_PREFIX(init)(void);
     void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
-    
+
+    void (*WASM_RT_ADD_PREFIX(eosio_token_apply))(u64, u64, u64);
+    void WASM_RT_ADD_PREFIX(eosio_token_init)(void);
+
     wasm_rt_memory_t* get_wasm_rt_memory();
 }
 
@@ -73,15 +82,16 @@ void vm_on_trap(wasm_rt_trap_t code) {
    }
 }
 
-extern "C" void native_eosio_system_init() {
-    (*WASM_RT_ADD_PREFIX(init))();
+extern "C" void native_contracts_init() {
     init_eosio_system();
     init_vm_api4c();
+    init_contracts();
     wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try();
     if (code != 0) {
         printf("A trap occurred with code: %d\n", code);
         vm_on_trap(code);
     }
+    (*WASM_RT_ADD_PREFIX(init))();
 }
 
 extern "C" void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size) {
@@ -96,16 +106,57 @@ extern "C" void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size)
 }
 
 extern "C" void native_eosio_system_apply(uint64_t a, uint64_t b, uint64_t c) {
-    static bool initialized = false;
-    if (!initialized) {
-        init_vm_api4c();
-        (*WASM_RT_ADD_PREFIX(init))();
-        initialized = true;
-    }
     (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(a, b, c);
 }
 
+#if 0
 void *offset_to_ptr(u32 offset, u32 size) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
+//    get_vm_api()->eosio_assert(offset + size <= memory->size, "memory access overflow!");
      return memory->data + offset;
+}
+#endif
+
+extern "C" wasm_rt_memory_t* get_eosio_system_memory();
+extern "C" wasm_rt_memory_t* get_eosio_token_memory();
+
+extern "C" wasm_rt_memory_t* get_wasm_rt_memory() {
+#if 0
+    if (receiver == 6138663577826885632) { //eosio
+       return get_eosio_system_memory();
+    } else if (receiver == 6138663591592764928) {//eosio.token
+      return get_eosio_token_memory();
+    }
+#endif
+    uint64_t receiver = get_vm_api()->current_receiver();
+    std::array<uint8_t,32> hash;
+    get_vm_api()->get_code_version(receiver, (char *)hash.data(), 32);
+   return get_contract_memory(hash);
+
+   get_vm_api()->eosio_assert(0, "memory not found!");
+   return nullptr;
+}
+
+extern "C" void *offset_to_ptr(u32 offset, u32 size) {
+    wasm_rt_memory_t *memory = get_wasm_rt_memory();
+//    printf("++++++offset %u, size %u\n", offset, size);
+    get_vm_api()->eosio_assert(memory != nullptr, "memory should not be null");
+    get_vm_api()->eosio_assert(offset + size <= memory->size && offset + size >= offset, "memory access out of bounds");
+    return memory->data + offset;
+}
+
+extern "C" void *offset_to_char_ptr(u32 offset) {
+    wasm_rt_memory_t *memory = get_wasm_rt_memory();
+    get_vm_api()->eosio_assert(memory != nullptr, "memory should not be null");
+    for (int i=offset;i<memory->size;i++) {
+        if (memory->data[i] == '\0') {
+            return memory->data + offset; 
+        }
+    }
+    get_vm_api()->eosio_assert(0, "not a valid c string!");
+    return NULL;
+}
+
+extern "C" void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
+    (*WASM_RT_ADD_PREFIX(eosio_token_apply))(receiver, first_receiver, action);
 }
