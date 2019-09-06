@@ -1,0 +1,171 @@
+import os
+import subprocess
+
+file_names = []
+
+for file in os.listdir('contracts'):
+    if not file.endswith('.wasm'):
+        continue
+#    print(file)
+    contract_name = file.split('-')[0]
+    if contract_name == 'eosio' or contract_name == 'eosio.token':
+        file_names.append(file.replace('.wasm', '').replace('-', '_').replace('.', '_'))
+
+    file_name_without_ext = file.replace('.wasm', '')
+    file = os.path.join('contracts', file)
+    file_injected = file.replace('.wasm', '.wasm2')
+    src_file = file.replace('.wasm', '.c')
+
+    if os.path.exists(src_file):
+        continue
+
+    wasm_injector = [
+        "../libraries/vm/vm_wasm/wasm_injector",
+        file,
+        file_injected
+    ]
+
+    wasm2c = [
+        "/Users/newworld/dev/wasm/wabt/build/wasm2c",
+        '-o',
+        src_file,
+        file_injected
+    ]
+
+    try:
+        print(' '.join(wasm_injector))
+        ret = subprocess.check_output(wasm_injector, stderr=subprocess.STDOUT)
+        print(ret.decode('utf8'))
+
+        print(' '.join(wasm2c))
+        ret = subprocess.check_output(wasm2c, stderr=subprocess.STDOUT)
+        print(ret.decode('utf8'))
+    except subprocess.CalledProcessError as e:
+        file_injected
+        print("error (code {}):".format(e.returncode))
+        print(e.output.decode('utf8'))
+
+    file_name_without_ext = file_name_without_ext.replace('-', '_')
+    file_name_without_ext = file_name_without_ext.replace('.', '_')
+
+    with open(src_file, 'r') as f:
+        src = f.read()
+        src = src.replace('Z_applyZ_vjjj', 'apply_' + file_name_without_ext)
+        init = f'void WASM_RT_ADD_PREFIX(init_{file_name_without_ext})(void)'
+        src = src.replace('void WASM_RT_ADD_PREFIX(init)(void)', init)
+    if src.find('static wasm_rt_memory_t memory') >= 0:
+        src += '''
+wasm_rt_memory_t* get_memory_%s() {
+    return &memory;
+}
+        '''%(file_name_without_ext,)
+    elif src.find('static wasm_rt_memory_t M0') >= 0:
+        src += '''
+wasm_rt_memory_t* get_memory_%s() {
+    return &M0;
+}
+        '''%(file_name_without_ext,)
+    else:
+        raise Exception('memory declaration not found!')
+
+    with open(src_file, 'w') as f:
+        f.write(src)
+
+code = '''
+#include <stdint.h>
+#include <map>
+#include <array>
+
+#include <wasm-rt.h>
+
+#define WASM_RT_ADD_PREFIX(x) x
+
+
+typedef uint8_t u8;
+typedef int8_t s8;
+typedef uint16_t u16;
+typedef int16_t s16;
+typedef uint32_t u32;
+typedef int32_t s32;
+typedef uint64_t u64;
+typedef int64_t s64;
+typedef float f32;
+typedef double f64;
+
+struct contract
+{
+    bool initialized = false;
+    void (*init)();
+    void (*apply)(uint64_t, uint64_t, uint64_t);
+    wasm_rt_memory_t* (*get_memory)();
+};
+extern "C" {
+std::map<std::array<uint8_t, 32>, contract> contracts_map;
+'''
+print(code)
+
+init_list = []
+get_memory_list = []
+for file in file_names:
+    print(f'void WASM_RT_ADD_PREFIX(init_{file})(void);')
+print()
+
+for file in file_names:
+    print(f'wasm_rt_memory_t* get_memory_{file}(void);')
+print()
+
+for file in file_names:
+    print(f'void WASM_RT_ADD_PREFIX(apply_{file})(u64, u64, u64);')
+print()
+
+for file in file_names:
+    print(f'wasm_rt_memory_t* get_memory_{file}();')
+print()
+
+
+print('void init_contracts() {')
+for file in file_names:
+    end = file.rfind('_')
+    hash = file[end-64:end]
+    hash = bytes.fromhex(hash)
+    s = '{'
+    for c in hash:
+        s +='0x%02x,'%(c,)
+    s += '}'
+    code = '''
+contracts_map[std::array<uint8_t, 32>%s] = contract{
+    .initialized = false,
+    .init = WASM_RT_ADD_PREFIX(init_%s),
+    .get_memory = get_memory_%s,
+    .apply = apply_%s,
+ };
+    '''%(s, file, file, file)
+    print(code)
+
+print('}\n')
+
+code = '''
+void *get_apply_entry(std::array<uint8_t, 32> hash) {
+    auto itr = contracts_map.find(hash);
+    if (itr == contracts_map.end()) {
+        return nullptr;
+    }
+    if (!itr->second.initialized) {
+        itr->second.init();
+    }
+    return (void *)itr->second.apply;
+}
+
+wasm_rt_memory_t *get_contract_memory(std::array<uint8_t, 32> hash) {
+    auto itr = contracts_map.find(hash);
+    if (itr == contracts_map.end()) {
+        return nullptr;
+    }
+    if (!itr->second.initialized) {
+        itr->second.init();
+    }
+    return itr->second.get_memory();
+}
+'''
+print(code)
+print("}")
