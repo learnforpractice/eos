@@ -202,6 +202,8 @@ static bool get_code_version(uint64_t contract, char *hash, size_t size) {
    return false;
 }
 
+using namespace eosio;
+
 extern "C" void vm_api_init() {
    static bool s_init = false;
    if (!s_init){

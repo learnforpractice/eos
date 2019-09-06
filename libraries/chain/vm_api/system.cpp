@@ -2,7 +2,6 @@
  *  @file
  *  @copyright defined in eos/LICENSE.txt
  */
-extern "C" {
 
 constexpr size_t max_assert_message = 1024;
 
@@ -95,6 +94,4 @@ void set_copy_memory_range(int start, int end) {
 void get_copy_memory_range(int *start, int *end) {
    *start = g_grow_memory_start;
    *end = g_grow_memory_end;
-}
-
 }

@@ -4,7 +4,6 @@
  */
 #include <sstream>
 
-extern "C" {
 void prints( const char* cstr ) {
 //   wlog("++++++${n}", ("n", cstr));
    if (!get_ctx_no_access_check().control.contracts_console()) {
@@ -135,4 +134,3 @@ void printhex( const void* data, uint32_t datalen ) {
    ctx().console_append(fc::to_hex((char*)data, datalen));
 }
 
-}

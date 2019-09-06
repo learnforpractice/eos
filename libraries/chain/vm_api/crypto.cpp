@@ -17,7 +17,7 @@ struct checksum512 {
 
 template<class Encoder> auto encode(const char* data, size_t datalen) {
    Encoder e;
-   const size_t bs = eosio::chain::config::hashing_checktime_block_size;
+   const size_t bs = config::hashing_checktime_block_size;
    while ( datalen > bs ) {
       e.write( data, bs );
       data += bs;
@@ -27,7 +27,7 @@ template<class Encoder> auto encode(const char* data, size_t datalen) {
    e.write( data, datalen );
    return e.result();
 }
-extern "C" {
+
 void assert_sha256( const char* data, uint32_t datalen, const struct checksum256* hash ) {
 //   FC_ASSERT(data != nullptr && datalen != 0 && hash!= nullptr);
    auto result = encode<fc::sha256::encoder>( data, datalen );
@@ -103,5 +103,3 @@ int recover_key( const struct checksum256* digest, const char* sig, size_t sigle
    return pubds.tellp();
 }
 
-
-}

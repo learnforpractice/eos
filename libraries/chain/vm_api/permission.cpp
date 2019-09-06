@@ -2,7 +2,6 @@
  *  @file
  *  @copyright defined in eos/LICENSE.txt
  */
-extern "C" {
 
 void unpack_provided_keys( flat_set<public_key_type>& keys, const char* pubkeys_data, size_t pubkeys_size ) {
    keys.clear();
@@ -93,4 +92,3 @@ int64_t get_account_creation_time( uint64_t account ) {
 }
 
 
-}

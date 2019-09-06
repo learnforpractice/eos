@@ -1,5 +1,3 @@
-extern "C" {
-
 void set_resource_limits( uint64_t account, int64_t ram_bytes, int64_t net_weight, int64_t cpu_weight ) {
    EOS_ASSERT(ram_bytes >= -1, wasm_execution_error, "invalid value for ram resource limit expected [-1,INT64_MAX]");
    EOS_ASSERT(net_weight >= -1, wasm_execution_error, "invalid value for net resource weight expected [-1,INT64_MAX]");
@@ -68,6 +66,4 @@ uint32_t get_blockchain_parameters_packed(char* packed_blockchain_parameters, ui
 
 void activate_feature( int64_t f ) {
    EOS_ASSERT( false, unsupported_feature, "Unsupported Hardfork Detected" );
-}
-
 }

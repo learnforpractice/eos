@@ -2,7 +2,6 @@
  *  @file
  *  @copyright defined in eos/LICENSE.txt
  */
-extern "C" {
 
 uint32_t read_action_data( void* msg, uint32_t buffer_size ) {
    auto s = ctx().get_action().data.size();
@@ -85,6 +84,4 @@ void preactivate_feature(const char *digest, size_t size) {
 
 uint64_t get_sender() {
    return ctx().get_sender();
-}
-
 }
