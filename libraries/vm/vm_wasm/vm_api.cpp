@@ -13,9 +13,3 @@ extern "C" void register_vm_api_ro(struct vm_api* api) {
    s_api = api;
 }
 
-extern "C" struct vm_api* get_vm_api_ro() {
-   if (!s_api) {
-      throw std::runtime_error("vm api not specified!!!");
-   }
-   return s_api;
-}

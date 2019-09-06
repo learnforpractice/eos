@@ -284,4 +284,8 @@ extern "C" void vm_api_ro_init() {
    register_vm_api_ro(&_vm_api);
 }
 
+extern "C" struct vm_api* get_vm_api_ro() {
+   return &_vm_api;
+}
+
 }}
