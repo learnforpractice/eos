@@ -458,7 +458,7 @@ class db_api {
       db_api(const action& a, bool rw=false);
 
    public:
-
+      db_api(string& path, bool rw=false);
       inline static db_api& get() {
          static db_api *_instance = nullptr;
          static action act;

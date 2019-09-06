@@ -32,6 +32,35 @@ fc::path get_path() {
    return fc::path(get_chain_api()->get_state_dir());
 }
 
+db_api::db_api(string& path, bool rw):
+db(fc::path(path), rw ? chainbase::database::read_write: chainbase::database::read_only, config::default_state_size, true),
+act(action()),
+idx64(*this),
+idx128(*this),
+idx256(*this),
+idx_double(*this),
+idx_long_double(*this) {
+   db.add_index<account_index>();
+   db.add_index<account_metadata_index>();
+   db.add_index<account_ram_correction_index>();
+   db.add_index<global_property_multi_index>();
+   db.add_index<protocol_state_multi_index>();
+   db.add_index<dynamic_global_property_multi_index>();
+   db.add_index<block_summary_multi_index>();
+   db.add_index<transaction_multi_index>();
+   db.add_index<generated_transaction_multi_index>();
+   db.add_index<table_id_multi_index>();
+   db.add_index<code_index>();
+
+   db.add_index<key_value_index>();
+   db.add_index<index64_index>();
+   db.add_index<index128_index>();
+   db.add_index<index256_index>();
+   db.add_index<index_double_index>();
+   db.add_index<index_long_double_index>();
+   db.add_index<key256_value_index>();
+}
+
 db_api::db_api(const action& a, bool rw) :
 db(get_path(), rw ? chainbase::database::read_write: chainbase::database::read_only, config::default_state_size, true),
 act(a),
