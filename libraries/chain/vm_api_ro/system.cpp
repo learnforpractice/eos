@@ -38,6 +38,7 @@ void  eosio_exit( int32_t code ) {
 
 uint64_t  current_time() {
    CALL_NOT_ALLOWED();
+   return 0;
 }
 
 uint32_t  now() {

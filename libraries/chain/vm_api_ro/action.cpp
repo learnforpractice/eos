@@ -59,6 +59,7 @@ void send_context_free_inline(const char *data, size_t data_len) {
 
 uint64_t  publication_time() {
    CALL_NOT_ALLOWED();
+   return 0;
 }
 
 bool is_feature_activated(const char *digest, size_t size) {
