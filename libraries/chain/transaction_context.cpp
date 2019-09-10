@@ -466,7 +466,6 @@ namespace bacc = boost::accumulators;
    }
 
    void transaction_context::checktime()const {
-      return;
       if(BOOST_LIKELY(_deadline_timer.expired == false))
          return;
       auto now = fc::time_point::now();
