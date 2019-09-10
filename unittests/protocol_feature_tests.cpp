@@ -1356,13 +1356,13 @@ BOOST_AUTO_TEST_CASE( code_version_test ) { try {
    c.produce_block();
 
    BOOST_CHECK_EXCEPTION(  c.push_action( tester1_account, N(reqversion), tester1_account, mutable_variant_object()
-                                             ("name", tester1_account)
+                                             ("name", "tester1")
                                              ("version", empty_version.str()) ),
                            eosio_assert_message_exception,
                            eosio_assert_message_is( "code version not match" ) );
 
    BOOST_CHECK_EXCEPTION(  c.push_action( tester1_account, N(reqversion), tester1_account, mutable_variant_object()
-                                             ("name", N(nonexisting))
+                                             ("name", "nonexisting")
                                              ("version", empty_version.str()) ),
                            action_validate_exception,
                            fc_exception_message_is( "account 'nonexisting' does not exist" ) );
@@ -1378,14 +1378,14 @@ BOOST_AUTO_TEST_CASE( code_version_test ) { try {
    );
 
    BOOST_CHECK_EXCEPTION(  c.push_action( tester1_account, N(reqtime), tester1_account, mutable_variant_object()
-                                             ("name", tester1_account)
+                                             ("name", "tester1")
                                              ("last_code_update", time_point()) ),
                            eosio_assert_message_exception,
                            eosio_assert_message_is( "last update time not match" ) );
 
    auto acct = c.control->db().get<account_metadata_object,by_name>(tester1_account);
    c.push_action( tester1_account, N(reqtime), tester1_account, mutable_variant_object()
-      ("name", tester1_account)
+      ("name", "tester1")
       ("last_code_update", acct.last_code_update)
    );
 
