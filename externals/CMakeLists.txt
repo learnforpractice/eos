@@ -16,6 +16,20 @@ if( EOSIO_COMPILE_TEST_CONTRACTS )
       INSTALL_COMMAND ""
       BUILD_ALWAYS 1
    )
+
+   # message( STATUS "Building contracts in directory `eos/unittests/test-contracts/`" )
+   # ExternalProject_Add(
+   #    contracts_tests_project
+   #    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eosio.contracts/tests
+   #    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eosio.contracts/tests
+   #    CMAKE_ARGS -Deosio_DIR=${CMAKE_BINARY_DIR}/modules -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_TEST_CONTRACTS=${EOSIO_COMPILE_TEST_CONTRACTS}
+   #    UPDATE_COMMAND ""
+   #    PATCH_COMMAND ""
+   #    TEST_COMMAND ""
+   #    INSTALL_COMMAND ""
+   #    BUILD_ALWAYS 1
+   # )
+
    ExternalProject_Add(
       contracts_debug_project
       SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eosio.contracts/contracts
@@ -31,3 +45,5 @@ else()
   message( STATUS "Not building contracts in directory `eos/unittests/test-contracts/`" )
 #  add_subdirectory(test-contracts)
 endif()
+
+add_subdirectory(test-contracts)
