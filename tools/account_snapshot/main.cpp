@@ -18,8 +18,12 @@
 
 #include "config.hpp"
 
+#include <iostream>
+#include <fstream>
+
 using namespace appbase;
 using namespace eosio;
+using namespace std;
 
 namespace detail {
 
@@ -126,10 +130,27 @@ int main(int argc, char** argv)
       auto idx = db.get_index<account_metadata_index>().indices();
       auto itr = idx.get<by_name>().end();
       auto itr2 = idx.get<by_name>().upper_bound(itr->name);
+
+      string file_name = "accmounts.bin";
+      fstream file(file_name, ios::out | ios::binary);
+
+      int counter = 0;
       while (itr2 != idx.get<by_name>().end()) {
-         ilog("++++${n} ${n2}", ("n", itr2->name)("n2", token_get_balance(itr2->name.value, "UUOS")));
+//         ilog("++++${n} ${n2}", ("n", itr2->name)("n2", token_get_balance(itr2->name.value, "EOS")));
+         uint64_t value = itr2->name.value;
+         file.write((char *)&value, 8);
+
+         value = token_get_balance(itr2->name.value, "EOS");
+         file.write((char *)&value, 8);
+
          itr2 = idx.get<by_name>().upper_bound(itr2->name);
+         counter += 1;
+         if (counter % 1000 == 0) {
+            ilog("++++counter ${n}", ("n", counter));
+         }
       }
+      file.close();
+
 //      app().exec();
    } catch( const extract_genesis_state_exception& e ) {
       return EXTRACTED_GENESIS;
