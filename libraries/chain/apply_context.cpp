@@ -59,6 +59,8 @@ extern "C" {
    void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
    typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
    void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size);
+   void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action);
+   void *get_apply_entry(std::array<uint8_t, 32> hash);
 }
 
 void apply_context::exec_one()
@@ -117,20 +119,20 @@ void apply_context::exec_one()
                            }
                         }
                         do {
-                           if (receiver == N(eosio)) {
-                              fn_contract_apply eosio_system_apply = (fn_contract_apply)get_native_eosio_system_apply_entry((uint8_t*)receiver_account->code_hash.data(), 32);
-                              if (eosio_system_apply == nullptr) {
-                              } else {
-//                                 wlog("+++eosio_system_apply: receiver_account->code_hash: ${hash}", ("hash", receiver_account->code_hash));
-                                 eosio_system_apply(receiver, act->account, act->name);
+                           #if 0
+                           if (receiver == N(eosio) || receiver == N(eosio.token)) {
+                              std::array<uint8_t, 32> hash;
+                              memcpy(hash.data(), receiver_account->code_hash.data(), 32);
+                              fn_contract_apply apply = (fn_contract_apply)get_apply_entry(hash);
+                              if (apply) {
+                                 string contract_name = account_name(receiver).to_string();
+//                                 dlog("debug contract ${name} ${hash} ${n1} ${n2}, ${n3}", ("name",contract_name)("hash",receiver_account->code_hash)("n1",receiver)("n2",act->account)("n3",act->name));
+                                 (*apply)(receiver, act->account, act->name);
                                  break;
                               }
-                           } else if (receiver == N(eosio.token)) {// && receiver_account->code_hash == ??) {
-            //                  dlog("receiver is eosio.token");
-                              eosio_token_apply(receiver, act->account, act->name);
-                              break;
                            }
-                           control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                           #endif
+                           control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
                         } while (false);
 
                      } while (false);
