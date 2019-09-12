@@ -44,7 +44,7 @@ struct vm_state_backup {
 };
 
 //static std::map<uint64_t, std::shared_ptr<struct vm_state_backup>>      _contract_state_backup;
-static std::map<digest_type, std::shared_ptr<struct vm_state_backup>>      _contract_state_backup;
+static std::map<std::array<uint8_t,32>, std::shared_ptr<struct vm_state_backup>>      _contract_state_backup;
 
 Memory *_vm_memory = nullptr;
 
@@ -239,7 +239,7 @@ void vm_on_trap(wasm_rt_trap_t code) {
    }
 }
 
-void take_snapshoot(digest_type& code_id) {
+void take_snapshoot(std::array<uint8_t,32>& code_id) {
    char *mem_start;
    uint32_t vm_memory_size;
    pythonvm_get_memory(&mem_start, &vm_memory_size);
@@ -307,8 +307,8 @@ void take_snapshoot(digest_type& code_id) {
 }
 
 int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
-   digest_type code_id;
-   get_chain_api()->get_code_id(receiver, code_id);
+   std::array<uint8_t,32> code_id;
+   get_chain_api()->get_code_id(receiver, code_id.data(), 32);
 
    if (_vm_memory->counter == 0xffffffff) {
       //reset counter make IsWriteMemoryInUse function properly 

@@ -26,10 +26,12 @@
    if( !(expr) )                                                      \
       FC_THROW_EXCEPTION( exc_type, FORMAT, __VA_ARGS__ );            \
    FC_MULTILINE_MACRO_END
-#endif
 
 #define EOS_THROW( exc_type, FORMAT, ... ) \
     throw exc_type( FC_LOG_MESSAGE( error, FORMAT, __VA_ARGS__ ) );
+
+#endif
+
 
 /**
  * Macro inspired from FC_RETHROW_EXCEPTIONS

@@ -112,13 +112,14 @@ static uint32_t get_code_first_block_used(uint64_t contract) {
    return 0;
 }
 
-static bool get_code_id( uint64_t receiver,  digest_type& code_id) {
+static bool get_code_id( uint64_t receiver, uint8_t* code_id, size_t size) {
    if (!is_account(receiver)) {
       return false;
    }
+   get_vm_api()->eosio_assert(size == 32, "bad code id size!");
    try {
       const auto& account = ctrl().db().get<account_metadata_object,by_name>(receiver);
-      code_id = account.code_hash;
+      memcpy(code_id, account.code_hash.data(), 32);
       return true;
    } catch (...) {
    }

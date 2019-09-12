@@ -8,7 +8,8 @@ if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
    message(WARNING "CMAKE_INSTALL_PREFIX is set to /usr/local. This is not recommended.")
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libraries/fc/CMakeModules")
+#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libraries/fc/CMakeModules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/fc/CMakeModules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
 if (UNIX AND APPLE)
@@ -103,6 +104,7 @@ IF( WIN32 )
 ENDIF(WIN32)
 ### Remove after Boost 1.70 CMake fixes are in place
 set( Boost_NO_BOOST_CMAKE ON CACHE STRING "ON or OFF" )
+
 find_package(Boost 1.67 REQUIRED COMPONENTS
     date_time
     filesystem
@@ -243,6 +245,7 @@ else()
     target_compile_options(frozen PRIVATE -fPIC)
     target_compile_options(vm_api4c PRIVATE -fPIC)
     target_compile_options(fc PRIVATE -fPIC)
+    target_compile_options(boost_1_67_0 PRIVATE -fPIC)
 endif()
 
 install_directory_permissions(DIRECTORY ${CMAKE_INSTALL_FULL_SYSCONFDIR}/eosio)

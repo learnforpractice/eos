@@ -32,7 +32,7 @@ endif (APPLE)
 
 set_target_properties(chain_api  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
-#target_link_libraries( chain_api fc)
+target_link_libraries( chain_api boost_1_67_0)
 
 target_include_directories( chain_api
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 

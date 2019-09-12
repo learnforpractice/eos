@@ -41,7 +41,7 @@ struct chain_api_cpp
 
    bool (*get_code)(uint64_t contract, digest_type& code_id, const char** code, size_t* size);
    const char* (*get_code_ex)( uint64_t contract, size_t* size );
-   bool (*get_code_id)( uint64_t receiver,  digest_type& code_id);
+   bool (*get_code_id)( uint64_t receiver, uint8_t* code_id, size_t size);
    int (*get_code_type)( uint64_t receiver);
 
    bool (*get_code_by_code_hash)(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, const char** code, size_t* size, uint32_t* first_block_used);
