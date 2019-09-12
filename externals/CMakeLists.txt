@@ -47,3 +47,4 @@ else()
 endif()
 
 add_subdirectory(test-contracts)
+add_subdirectory(boost_1_67_0)
