@@ -5,6 +5,8 @@
 #include <dlfcn.h>
 
 #include <chain_api.hpp>
+#include <eosio/chain/db_api.hpp>
+
 #include <eosiolib_native/vm_api.h>
 
 using namespace fc;
@@ -276,6 +278,19 @@ static bool is_builtin_activated(uint32_t feature) {
    return ctrl().is_builtin_activated(static_cast<builtin_protocol_feature_t>(feature));
 }
 
+static string call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {
+    vm_api *api_ro = get_vm_api_ro();
+    vm_api *api = get_vm_api();
+    vm_register_api(api_ro);
+    auto cleanup = fc::make_scoped_exit([&](){
+        vm_register_api(api);
+    });
+    if (get_chain_api()->get_code_type(contract) == 0) {
+        return db_api::get().exec_action(contract, action, binargs);
+    }
+    return string("");
+}
+
 //chain_exceptions.cpp
 void chain_throw_exception(int type, const char* fmt, ...);
 
@@ -310,6 +325,7 @@ extern "C" void chain_api_init() {
       .clear_debug_contract = clear_debug_contract,
       .get_debug_contract_entry = get_debug_contract_entry,
       .is_builtin_activated = is_builtin_activated,
+      .call_contract_off_chain = call_contract_off_chain,
     };
     register_chain_api(&s_api);
 }

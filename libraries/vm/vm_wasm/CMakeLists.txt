@@ -54,7 +54,7 @@ set_target_properties(vm_wasm-1  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 
 add_executable( wasm_injector main.cpp ${SRCS} )
-target_link_libraries( wasm_injector wabt ${WASM_DEPEND_LIBS})
+target_link_libraries( wasm_injector wabt ${WASM_DEPEND_LIBS} fc)
 
 target_include_directories( wasm_injector
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 

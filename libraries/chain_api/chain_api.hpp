@@ -67,6 +67,7 @@ struct chain_api_cpp
    bool (*clear_debug_contract)(string& contract_name);
    void* (*get_debug_contract_entry)(string& contract_name);
    bool (*is_builtin_activated)(uint32_t feature);
+   string (*call_contract_off_chain)(uint64_t contract, uint64_t action, const vector<char>& binargs);
 };
 
 extern "C" void register_chain_api(struct chain_api_cpp* api);
@@ -74,4 +75,3 @@ extern "C" struct chain_api_cpp* get_chain_api();
 extern "C" [[ noreturn ]] void chain_throw_exception(int type, const char* fmt, ...);
 
 #endif /* CHAIN_API_HPP_ */
-

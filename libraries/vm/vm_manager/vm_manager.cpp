@@ -11,6 +11,11 @@ extern "C" const unsigned char pythonvm_wasm[];
 extern "C" int pythonvm_wasm_size;
 extern "C" char pythonvm_wasm_hash[];
 
+static vm_api _vm_api;
+extern "C" struct vm_api* get_vm_api_ro() {
+   return &_vm_api;
+}
+
 extern "C" {
     size_t get_last_error(char* error, size_t size);
     int evm_apply(uint64_t receiver, uint64_t code, uint64_t action);
@@ -98,16 +103,7 @@ void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint
 }
 
 string vm_manager::call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {
-    vm_api *api_ro = get_vm_api_ro();
-    vm_api *api = get_vm_api();
-    vm_register_api(api_ro);
-    auto cleanup = fc::make_scoped_exit([&](){
-        vm_register_api(api);
-    });
-    if (get_chain_api()->get_code_type(contract) == 0) {
-        return db_api::get().exec_action(contract, action, binargs);
-    }
-    return string("");
+    return get_chain_api()->call_contract_off_chain(contract, action, binargs);
 }
 
 int vm_manager::get_extra_args(char* args, size_t size) {

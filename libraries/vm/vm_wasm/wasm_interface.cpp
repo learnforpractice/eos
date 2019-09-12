@@ -40,6 +40,11 @@ extern "C" int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
 
 #define API() get_vm_api()
 
+namespace fc
+{
+   sha1::sha1() { memset( _hash, 0, sizeof(_hash) ); }
+}
+
 namespace eosio { namespace chain {
    using namespace webassembly;
    using namespace webassembly::common;
@@ -1341,9 +1346,12 @@ class compiler_builtins : public context_aware_api {
       :context_aware_api(true){}
 
       void __ashlti3(__int128& ret, uint64_t low, uint64_t high, uint32_t shift) {
+         /*
          fc::uint128_t i(high, low);
          i <<= shift;
          ret = (unsigned __int128)i;
+         */
+         API()->__ashlti3(&ret, low, high, shift);
       }
 
       void __ashrti3(__int128& ret, uint64_t low, uint64_t high, uint32_t shift) {
@@ -1355,15 +1363,21 @@ class compiler_builtins : public context_aware_api {
       }
 
       void __lshlti3(__int128& ret, uint64_t low, uint64_t high, uint32_t shift) {
+         /*
          fc::uint128_t i(high, low);
          i <<= shift;
          ret = (unsigned __int128)i;
+         */
+         API()->__ashlti3(&ret, low, high, shift);
       }
 
       void __lshrti3(__int128& ret, uint64_t low, uint64_t high, uint32_t shift) {
+         /*
          fc::uint128_t i(high, low);
          i >>= shift;
          ret = (unsigned __int128)i;
+         */
+        API()->__lshrti3(&ret, low, high, shift);
       }
 
       void __divti3(__int128& ret, uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb) {

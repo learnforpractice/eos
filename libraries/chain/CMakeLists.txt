@@ -39,7 +39,7 @@ add_library( eosio_chain
 
              webassembly/wavm.cpp
              webassembly/wabt.cpp
-             wasm_eosio_constraints.cpp
+#             wasm_eosio_constraints.cpp
 
 #             get_config.cpp
 #
