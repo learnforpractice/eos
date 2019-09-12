@@ -24,6 +24,10 @@
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/resource_limits.hpp>
 
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 namespace eosio { namespace chain {
 
 
@@ -82,12 +86,14 @@ void apply_eosio_newaccount(apply_context& context) {
    auto name_str = name(create.name).to_string();
 
    EOS_ASSERT( !create.name.empty(), action_validate_exception, "account name cannot be empty" );
-   EOS_ASSERT( name_str.size() <= 12, action_validate_exception, "account names can only be 12 chars long" );
+   EOS_ASSERT( name_str.size() <= 13, action_validate_exception, "account names can only be 13 chars long" );
 
    // Check if the creator is privileged
    const auto &creator = db.get<account_metadata_object, by_name>(create.creator);
    if( !creator.is_privileged() ) {
       EOS_ASSERT( name_str.find( "eosio." ) != 0, action_validate_exception,
+                  "only privileged accounts can have names that start with 'eosio.'" );
+      EOS_ASSERT( name_str.find( "uuosio." ) != 0, action_validate_exception,
                   "only privileged accounts can have names that start with 'eosio.'" );
    }
 
@@ -144,10 +150,21 @@ void apply_eosio_setcode(apply_context& context) {
    int64_t code_size = (int64_t)act.code.size();
 
    if( code_size > 0 ) {
-     code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
-     if (act.vmtype == 0) {
-        wasm_interface::validate(context.control, act.code);
-     }
+      code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
+      if (act.vmtype == 0 && act.account != N(eosio)) {
+         wasm_interface::validate(context.control, act.code);
+      }
+#if 0
+      string file_name = "contracts/" + act.account.to_string();
+      file_name += "-";
+      file_name += code_hash.str();
+      file_name += "-";
+      file_name += std::to_string(context.control.head_block_num());
+      file_name += ".wasm";
+      fstream file(file_name, ios::out | ios::binary);
+      file.write(act.code.data(), act.code.size());
+      file.close();
+#endif
    }
 
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
