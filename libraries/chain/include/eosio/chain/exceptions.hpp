@@ -16,6 +16,10 @@
       chain_throw_exception( enum_##exc_type, FC_LOG_MESSAGE( error, FORMAT, __VA_ARGS__ ).get_message().c_str() );            \
    }                                                                \
    FC_MULTILINE_MACRO_END
+
+#define EOS_THROW( exc_type, FORMAT, ... ) \
+   chain_throw_exception( enum_##exc_type, FC_LOG_MESSAGE( error, FORMAT, __VA_ARGS__ ).get_message().c_str() );
+
 #else
 #define EOS_ASSERT( expr, exc_type, FORMAT, ... )                \
    FC_MULTILINE_MACRO_BEGIN                                           \

@@ -63,8 +63,9 @@ namespace eosio { namespace chain {
             EOS_ASSERT(module.memories.defs.size(), wasm_exception, "");
             const U32 base_offset = data_segment.baseOffset.i32;
             const Uptr memory_size = (module.memories.defs[0].type.size.min << IR::numBytesPerPageLog2);
-            if(base_offset >= memory_size || base_offset + data_segment.data.size() > memory_size)
-               FC_THROW_EXCEPTION(wasm_execution_error, "WASM data segment outside of valid memory range");
+            if(base_offset >= memory_size || base_offset + data_segment.data.size() > memory_size) {
+               EOS_THROW(wasm_execution_error, "WASM data segment outside of valid memory range");
+            }
             if(base_offset + data_segment.data.size() > mem_image.size())
                mem_image.resize(base_offset + data_segment.data.size(), 0x00);
             memcpy(mem_image.data() + base_offset, data_segment.data.data(), data_segment.data.size());

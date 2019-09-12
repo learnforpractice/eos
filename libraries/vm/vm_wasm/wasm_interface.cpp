@@ -1649,19 +1649,11 @@ class vm_apis : public context_aware_api {
       }
 
       int to_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
-         std::vector<char> v(in.value, in.value+size1);
-         std::string s = fc::to_base58( v );
-         auto copy_size = std::min(size2, s.size());
-         ::memcpy(out, s.c_str(), copy_size);
-         return copy_size;
+         return API()->to_base58(in, size1, out, size2);
       }
 
       int from_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
-         string s(in.value, size1);
-         auto v = fc::from_base58(s);
-         auto copy_size = std::min(v.size(), size2);
-         ::memcpy(out, v.data(), copy_size);
-         return copy_size;
+         return API()->from_base58(in, size1, out, size2);
       }
 };
 
