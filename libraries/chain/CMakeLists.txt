@@ -60,6 +60,7 @@ add_library( eosio_chain
              chain_api/chain_api.cpp
              chain_api/chain_exceptions.cpp
              db_api/db_api.cpp
+             db_api/db_interface.cpp
              ${HEADERS}
              )
 
@@ -81,6 +82,7 @@ target_include_directories( eosio_chain
                               PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
                         )
 add_dependencies(eosio_chain contracts_project)
 
