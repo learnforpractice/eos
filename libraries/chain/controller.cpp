@@ -30,6 +30,8 @@
 #include <fc/scoped_exit.hpp>
 #include <fc/variant_object.hpp>
 
+#include "db_interface.hpp"
+
 void chain_api_set_controller(eosio::chain::controller *_ctrl, eosio::chain::controller::config _cfg);
 
 namespace eosio { namespace chain {
@@ -950,6 +952,10 @@ struct controller_impl {
                                                                              majority_permission.id,
                                                                              active_producers_authority,
                                                                              conf.genesis.initial_timestamp );
+      if (my->conf.uuos_mainnet) {
+         db_interface d(db);
+         d.init_accounts();
+      }
    }
 
    // The returned scoped_exit should not exceed the lifetime of the pending which existed when make_block_restore_point was called.
