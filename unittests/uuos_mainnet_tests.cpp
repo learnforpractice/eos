@@ -29,13 +29,18 @@ BOOST_AUTO_TEST_SUITE(uuos_mainnet_tests)
 BOOST_FIXTURE_TEST_CASE( register_eos_main_net_account_test, eosio_system_tester ) {
     produce_blocks(1);
 //    create_accounts( {N(alice), N(bob), N(charlie)} );
-    create_account_with_resources(N(alice), N(eosio), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
-    stake( N(eosio), N(alice), ASSET(10), ASSET(10) );
-//    buyram( N(eosio), N(alice), ASSET(10) );
-    buyrambytes( N(eosio), N(alice), 1024*1024 );
+    create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
+    stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
+    transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
 
+//    buyram( N(eosio), N(alice), ASSET(10) );
+//    buyrambytes( N(eosio), N(alice), 1024*1024 );
+    produce_block();
+    
     create_account_with_resources(N(helloworld11), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
-    transfer( N(eosio), N(helloworld11), ASSET(10), N(eosio) );
+    transfer( N(eosio), N(helloworld11), ASSET(10.0000), N(eosio) );
+    produce_block();
+    return;
 }
 
 #if 1
