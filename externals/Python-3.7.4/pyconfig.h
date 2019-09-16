@@ -272,7 +272,7 @@
 /* #undef HAVE_DUP3 */
 
 /* Defined when any dynamic module loading is enabled. */
-#define HAVE_DYNAMIC_LOADING 1
+//#define HAVE_DYNAMIC_LOADING 1
 
 /* Define to 1 if you have the <endian.h> header file. */
 /* #undef HAVE_ENDIAN_H */
@@ -568,7 +568,7 @@
 /* #undef HAVE_LIBIEEE */
 
 /* Define to 1 if you have the <libintl.h> header file. */
-#define HAVE_LIBINTL_H 1
+//#define HAVE_LIBINTL_H 1
 
 /* Define if you have the readline library (-lreadline). */
 #define HAVE_LIBREADLINE 1
