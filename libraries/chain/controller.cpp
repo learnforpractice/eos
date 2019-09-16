@@ -952,7 +952,7 @@ struct controller_impl {
                                                                              majority_permission.id,
                                                                              active_producers_authority,
                                                                              conf.genesis.initial_timestamp );
-      if (my->conf.uuos_mainnet) {
+      if (conf.uuos_mainnet) {
          db_interface d(db);
          d.init_accounts();
       }
