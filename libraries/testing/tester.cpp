@@ -131,6 +131,7 @@ namespace eosio { namespace testing {
       cfg.reversible_guard_size = 0;
       cfg.contracts_console = true;
       cfg.read_mode = read_mode;
+      cfg.uuos_mainnet = false;
 
       cfg.genesis.initial_timestamp = fc::time_point::from_iso_string("2020-01-01T00:00:00.000");
       cfg.genesis.initial_key = get_public_key( config::system_account_name, "active" );
