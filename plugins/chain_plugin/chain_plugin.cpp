@@ -252,6 +252,8 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
           "Chain validation mode (\"full\" or \"light\").\n"
           "In \"full\" mode all incoming blocks will be fully validated.\n"
           "In \"light\" mode all incoming blocks headers will be fully validated; transactions in those validated blocks will be trusted \n")
+         ("uuos-mainnet", bpo::bool_switch()->default_value(false),
+          "uuos main network \n")
          ("disable-ram-billing-notify-checks", bpo::bool_switch()->default_value(false),
           "Disable the check which subjectively fails a transaction if a contract bills more RAM to another account within the context of a notification handler (i.e. when the receiver is not the code of the action).")
          ("trusted-producer", bpo::value<vector<string>>()->composing(), "Indicate a producer whose blocks headers signed by it will be fully validated, but transactions in those validated blocks will be trusted.")
@@ -888,6 +890,10 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
 
       if ( options.count("validation-mode") ) {
          my->chain_config->block_validation_mode = options.at("validation-mode").as<validation_mode>();
+      }
+
+      if ( options.count("uuos-mainnet") ) {
+         my->chain_config->uuos_mainnet = options.at("uuos-mainnet").as<bool>();
       }
 
       my->chain_config->db_map_mode = options.at("database-map-mode").as<pinnable_mapped_file::map_mode>();
