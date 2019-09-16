@@ -94,7 +94,7 @@ namespace eosio { namespace testing {
 
          virtual ~base_tester() {};
 
-         void              init(const setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE);
+         void              init(const setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE, bool uuos_mainnet=false);
          void              init(controller::config config, const snapshot_reader_ptr& snapshot = nullptr);
          void              init(controller::config config, protocol_feature_set&& pfs, const snapshot_reader_ptr& snapshot = nullptr);
          void              execute_setup_policy(const setup_policy policy);
@@ -323,8 +323,8 @@ namespace eosio { namespace testing {
 
    class tester : public base_tester {
    public:
-      tester(setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE) {
-         init(policy, read_mode);
+      tester(setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE, bool uuos_mainnet=false) {
+         init(policy, read_mode, uuos_mainnet);
       }
 
       tester(controller::config config) {
@@ -393,10 +393,16 @@ namespace eosio { namespace testing {
          return vcfg;
       }
 
-      validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>()) {
+      validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>(), bool uuos_mainnet=false) {
          vcfg = default_config();
 
          vcfg.trusted_producers = trusted_producers;
+         vcfg.uuos_mainnet = uuos_mainnet;
+         
+         if (uuos_mainnet) {
+            vcfg.state_size = 1024*1024*600;
+            vcfg.reversible_cache_size = 1024*1024*600;
+         }
 
          validating_node = std::make_unique<controller>(vcfg, make_protocol_feature_set());
          validating_node->add_indices();

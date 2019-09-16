@@ -31,7 +31,9 @@ class eosio_system_tester : public TESTER {
 public:
 
    eosio_system_tester()
-   : eosio_system_tester([](TESTER& ) {}){}
+   : eosio_system_tester([](TESTER& ) {}){
+      TESTER(flat_set<account_name>(), true);
+   }
 
    template<typename Lambda>
    eosio_system_tester(Lambda setup) {
