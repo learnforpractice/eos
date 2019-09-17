@@ -86,15 +86,20 @@ void apply_eosio_newaccount(apply_context& context) {
    auto name_str = name(create.name).to_string();
 
    EOS_ASSERT( !create.name.empty(), action_validate_exception, "account name cannot be empty" );
-   EOS_ASSERT( name_str.size() <= 13, action_validate_exception, "account names can only be 13 chars long" );
+   if ( context.control.get_config().uuos_mainnet ) {
+      EOS_ASSERT( name_str.size() <= 13, action_validate_exception, "account names can only be 13 chars long" );
+   } else {
+      EOS_ASSERT( name_str.size() <= 12, action_validate_exception, "account names can only be 12 chars long" );
+   }
 
    // Check if the creator is privileged
    const auto &creator = db.get<account_metadata_object, by_name>(create.creator);
    if( !creator.is_privileged() ) {
-      EOS_ASSERT( name_str.find( "eosio." ) != 0, action_validate_exception,
-                  "only privileged accounts can have names that start with 'eosio.'" );
-      EOS_ASSERT( name_str.find( "uuosio." ) != 0, action_validate_exception,
-                  "only privileged accounts can have names that start with 'eosio.'" );
+      if ( name_str.find( "eosio." ) == 0 || name_str.find( "uuos." ) == 0 || name_str.find( "uuosio." ) == 0 ) {
+         EOS_ASSERT( false , action_validate_exception,
+                     "only privileged accounts can have names that start with 'eosio.'" );
+
+      }
    }
 
    auto existing_account = db.find<account_object, by_name>(create.name);
@@ -151,7 +156,7 @@ void apply_eosio_setcode(apply_context& context) {
 
    if( code_size > 0 ) {
       code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
-      if (act.vmtype == 0 && act.account != N(eosio)) {
+      if (act.vmtype == 0) {
          wasm_interface::validate(context.control, act.code);
       }
 #if 0
