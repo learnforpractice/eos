@@ -31,12 +31,17 @@ class eosio_system_tester : public TESTER {
 public:
 
    eosio_system_tester()
-   : eosio_system_tester([](TESTER& ) {}){
-      TESTER(flat_set<account_name>(), true);
+   : eosio_system_tester([](TESTER& ) {}, false){
+      
+   }
+
+   eosio_system_tester(bool uuos_mainnet)
+   : eosio_system_tester([](TESTER& ) {}, uuos_mainnet){
+      
    }
 
    template<typename Lambda>
-   eosio_system_tester(Lambda setup) {
+    eosio_system_tester(Lambda setup, bool uuos_mainnet) : TESTER(flat_set<account_name>(), uuos_mainnet) {
       setup(*this);
 
       produce_blocks( 2 );
