@@ -638,7 +638,7 @@ void db_interface::init_accounts() {
       memcpy(&account, &accounts.data()[i], 8);
       memcpy(raw_data, &accounts.data()[i+32], 34);
       db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), account, raw_data, sizeof(raw_data));
-      if (i % (66*10000) == 0) {
+      if (i % (66*100000) == 0) {
          vmdlog("+++++initialize accounts %d\n", i/66);
       }
    }
