@@ -408,7 +408,7 @@ namespace eosio { namespace testing {
          validating_node->add_indices();
          validating_node->startup( []() { return false; } );
 
-         init();
+         init(setup_policy::full, db_read_mode::SPECULATIVE, uuos_mainnet);
       }
 
       validating_tester(controller::config config) {
