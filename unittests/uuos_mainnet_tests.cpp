@@ -26,20 +26,41 @@ using namespace eosio_system;
 
 BOOST_AUTO_TEST_SUITE(uuos_mainnet_tests)
 
-BOOST_FIXTURE_TEST_CASE( register_eos_main_net_account_test, eosio_system_tester ) {
-    produce_blocks(1);
+BOOST_AUTO_TEST_CASE( register_eos_main_net_account_test ) {
+    eosio_system_tester t(true);
+    t.produce_blocks(1);
+
 //    create_accounts( {N(alice), N(bob), N(charlie)} );
-    create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
-    stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
-    transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
+    dlog("+++++++++++++${n}", ("n", __LINE__));
+    t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
+    t.stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
+    t.transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
+
+    t.set_code( config::system_account_name, contracts::eosio_system_wasm_latest() );
+    t.set_abi( config::system_account_name, contracts::eosio_system_abi_latest().data() );
+
 
 //    buyram( N(eosio), N(alice), ASSET(10) );
 //    buyrambytes( N(eosio), N(alice), 1024*1024 );
-    produce_block();
-    
-    create_account_with_resources(N(helloworld11), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
-    transfer( N(eosio), N(helloworld11), ASSET(10.0000), N(eosio) );
-    produce_block();
+    t.produce_block();
+
+    t.create_account_with_resources(N(uuoscontract), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
+    t.produce_block();
+
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(uuoscontrac), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+                            eosio_assert_message_exception, eosio_assert_message_is( "no active bid for name" ) );
+
+    //create an account that does not exists on EOS main network
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(uuoscontracy), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+                            eosio_assert_message_exception, eosio_assert_message_is( "account name does not exists on EOS mainnet" ) );
+
+    //create a 13 characters account
+    t.create_account_with_resources(N(uuoscontract1), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
+
+    t.produce_block();
+
+    t.transfer( N(eosio), N(uuoscontract), ASSET(10.0000), N(eosio) );
+    t.produce_block();
     return;
 }
 
