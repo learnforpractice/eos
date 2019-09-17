@@ -77,7 +77,7 @@ namespace eosio { namespace chain {
             bool                     contracts_console      =  false;
             bool                     allow_ram_billing_in_notify = false;
             bool                     disable_all_subjective_mitigations = false; //< for testing purposes only
-            bool                     uuos_mainnet = true;
+            bool                     uuos_mainnet = false;
 
             genesis_state            genesis;
             wasm_interface::vm_type  wasm_runtime = chain::config::default_wasm_runtime;
@@ -245,6 +245,8 @@ namespace eosio { namespace chain {
          void remove_resource_greylist(const account_name &name);
          bool is_resource_greylisted(const account_name &name) const;
          const flat_set<account_name> &get_resource_greylist() const;
+         const controller::config& get_config() const;
+
 
          void validate_expiration( const transaction& t )const;
          void validate_tapos( const transaction& t )const;

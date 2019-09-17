@@ -3035,6 +3035,9 @@ const flat_set<account_name> &controller::get_resource_greylist() const {
    return  my->conf.resource_greylist;
 }
 
+const controller::config& controller::get_config() const {
+   return  my->conf;
+}
 
 void controller::add_to_ram_correction( account_name account, uint64_t ram_bytes ) {
    if( auto ptr = my->db.find<account_ram_correction_object, by_name>( account ) ) {
