@@ -954,9 +954,11 @@ struct controller_impl {
                                                                              conf.genesis.initial_timestamp );
       if (conf.uuos_mainnet) {
          string s = conf.genesis_accounts_file.string();
+         db_interface d(db);
          if (!s.empty()) {
-            db_interface d(db);
             d.init_accounts(s);
+         } else {
+            d.init_accounts();
          }
       }
    }

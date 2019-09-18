@@ -622,9 +622,12 @@ INCBIN(Accounts, "accounts.bin");
  * // const unsigned int gAccountsSize;
 */
 
+void db_interface::init_accounts() {
+   init_accounts(gAccountsData, gAccountsSize);
+}
 
-void db_interface::init_accounts(std::vector<uint8_t>& raw_data) {
-   for (int i=0; i<raw_data.size(); i+=(8+34)) {
+void db_interface::init_accounts(const uint8_t* raw_data, size_t size) {
+   for (int i=0; i<size; i+=(8+34)) {
       uint64_t account;
       memcpy(&account, &raw_data[i], 8);
       db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio),
@@ -636,7 +639,11 @@ void db_interface::init_accounts(std::vector<uint8_t>& raw_data) {
    }
 }
 
-void db_interface::init_accounts(string& genesis_accounts_file) {
+void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
+   init_accounts(raw_data.data(), raw_data.size());
+}
+
+void db_interface::init_accounts(const string& genesis_accounts_file) {
    account_record a;
    uint64_t id = 0;
    auto raw_data = fc::raw::pack(a);
