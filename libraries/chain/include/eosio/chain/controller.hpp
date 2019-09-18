@@ -78,6 +78,7 @@ namespace eosio { namespace chain {
             bool                     allow_ram_billing_in_notify = false;
             bool                     disable_all_subjective_mitigations = false; //< for testing purposes only
             bool                     uuos_mainnet = false;
+            path                     genesis_accounts_file;
 
             genesis_state            genesis;
             wasm_interface::vm_type  wasm_runtime = chain::config::default_wasm_runtime;

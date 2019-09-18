@@ -284,6 +284,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 
    cli.add_options()
          ("genesis-json", bpo::value<bfs::path>(), "File to read Genesis State from")
+         ("genesis-accounts", bpo::value<bfs::path>(), "File to read Genesis accounts from")
          ("genesis-timestamp", bpo::value<string>(), "override the initial timestamp in the Genesis State file")
          ("print-genesis-json", bpo::bool_switch()->default_value(false),
           "extract genesis_state from blocks.log as JSON, print to console, and exit")
@@ -894,6 +895,18 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
 
       if ( options.count("uuos-mainnet") ) {
          my->chain_config->uuos_mainnet = options.at("uuos-mainnet").as<bool>();
+      }
+
+      if( options.count( "genesis-accounts" )) {
+         auto genesis_path = options.at( "genesis-accounts" ).as<bfs::path>();
+         if( genesis_path.is_relative() ) {
+            genesis_path = bfs::current_path() / genesis_path;
+         }
+         EOS_ASSERT( fc::is_regular_file( genesis_path ),
+                     plugin_config_exception,
+                     "Specified genesis accounts file '${genesis}' does not exist.",
+                     ("genesis", genesis_path.generic_string()));
+         my->chain_config->genesis_accounts_file = genesis_path;
       }
 
       my->chain_config->db_map_mode = options.at("database-map-mode").as<pinnable_mapped_file::map_mode>();

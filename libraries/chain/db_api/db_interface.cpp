@@ -614,34 +614,45 @@ int db_interface::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
    return key256val_cache.cache_table( *tab );
 }
 
-void db_interface::init_accounts() {
+#include "../../../unittests/incbin.h"
+INCBIN(Accounts, "accounts.bin");
+/*
+ * // const unsigned char gAccountsData[];
+ * // const unsigned char *const <prefix>FooEnd;
+ * // const unsigned int gAccountsSize;
+*/
+
+
+void db_interface::init_accounts(std::vector<uint8_t>& raw_data) {
+   for (int i=0; i<raw_data.size(); i+=(8+34)) {
+      uint64_t account;
+      memcpy(&account, &raw_data[i], 8);
+      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio),
+                  account,
+                  (char *)&raw_data[i+8], 34);
+      if (i % (42*100000) == 0) {
+         vmdlog("+++++initialize accounts %d\n", i);
+      }
+   }
+}
+
+void db_interface::init_accounts(string& genesis_accounts_file) {
    account_record a;
    uint64_t id = 0;
    auto raw_data = fc::raw::pack(a);
 
-   string file_name = "/Users/newworld/dev/eosio/build/programs/accounts.bin";
-   std::ifstream accounts_file(file_name, std::ios::binary);
+   std::ifstream accounts_file(genesis_accounts_file, std::ios::binary);
    FC_ASSERT( accounts_file.is_open(), "accounts file cannot be found" );
    accounts_file.seekg(0, std::ios::end);
    std::vector<uint8_t> accounts;
    int len = accounts_file.tellg();
    FC_ASSERT( len >= 0, "accounts file length is -1" );
-   FC_ASSERT( len % (32+34) == 0, "accounts file length is -1" );
+   FC_ASSERT( len % (8+34) == 0, "bad file" );
    accounts.resize(len);
    accounts_file.seekg(0, std::ios::beg);
    accounts_file.read((char*)accounts.data(), accounts.size());
    accounts_file.close();
-
-   for (int i=0;i<accounts.size();i+=66) {
-      char raw_data[34];
-      int64_t account;
-      memcpy(&account, &accounts.data()[i], 8);
-      memcpy(raw_data, &accounts.data()[i+32], 34);
-      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), account, raw_data, sizeof(raw_data));
-      if (i % (66*100000) == 0) {
-         vmdlog("+++++initialize accounts %d\n", i/66);
-      }
-   }
+   init_accounts(accounts);
 }
 
 

@@ -953,8 +953,11 @@ struct controller_impl {
                                                                              active_producers_authority,
                                                                              conf.genesis.initial_timestamp );
       if (conf.uuos_mainnet) {
-         db_interface d(db);
-         d.init_accounts();
+         string s = conf.genesis_accounts_file.string();
+         if (!s.empty()) {
+            db_interface d(db);
+            d.init_accounts(s);
+         }
       }
    }
 
