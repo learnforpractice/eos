@@ -31,17 +31,17 @@ class eosio_system_tester : public TESTER {
 public:
 
    eosio_system_tester()
-   : eosio_system_tester([](TESTER& ) {}, false){
+   : eosio_system_tester([](TESTER& ) {}, false, ""){
       
    }
 
-   eosio_system_tester(bool uuos_mainnet)
-   : eosio_system_tester([](TESTER& ) {}, uuos_mainnet){
+   eosio_system_tester(bool uuos_mainnet, string genesis_file)
+   : eosio_system_tester([](TESTER& ) {}, uuos_mainnet, genesis_file){
       
    }
 
    template<typename Lambda>
-    eosio_system_tester(Lambda setup, bool uuos_mainnet) : TESTER(flat_set<account_name>(), uuos_mainnet) {
+    eosio_system_tester(Lambda setup, bool uuos_mainnet, string genesis_file) : TESTER(flat_set<account_name>(), uuos_mainnet, genesis_file) {
       setup(*this);
 
       produce_blocks( 2 );
@@ -160,6 +160,41 @@ public:
                                    .name     = a,
                                    .owner    = owner_auth,
                                    .active   = authority( get_public_key( a, "active" ) )
+                                });
+
+      trx.actions.emplace_back( get_action( config::system_account_name, N(buyram), vector<permission_level>{{creator,config::active_name}},
+                                            mvo()
+                                            ("payer", creator)
+                                            ("receiver", a)
+                                            ("quant", ramfunds) )
+                              );
+
+      trx.actions.emplace_back( get_action( config::system_account_name, N(delegatebw), vector<permission_level>{{creator,config::active_name}},
+                                            mvo()
+                                            ("from", creator)
+                                            ("receiver", a)
+                                            ("stake_net_quantity", net )
+                                            ("stake_cpu_quantity", cpu )
+                                            ("transfer", 0 )
+                                          )
+                                );
+
+      set_transaction_headers(trx);
+      trx.sign( get_private_key( creator, "active" ), control->get_chain_id()  );
+      return push_transaction( trx );
+   }
+
+   transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, authority owner_auth, authority active_auth, asset ramfunds = core_from_string("10.0000"),
+                                                        asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000") ) {
+      signed_transaction trx;
+      set_transaction_headers(trx);
+
+      trx.actions.emplace_back( vector<permission_level>{{creator,config::active_name}},
+                                newaccount{
+                                   .creator  = creator,
+                                   .name     = a,
+                                   .owner    = owner_auth,
+                                   .active   = active_auth,
                                 });
 
       trx.actions.emplace_back( get_action( config::system_account_name, N(buyram), vector<permission_level>{{creator,config::active_name}},

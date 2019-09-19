@@ -14,6 +14,7 @@
 
 #define CORE_SYM_STR ( _STRINGIZE2(CORE_SYM_PRECISION) "," CORE_SYM_NAME )
 #define CORE_SYM  ( ::eosio::chain::string_to_symbol_c( CORE_SYM_PRECISION, CORE_SYM_NAME ) )
+#define TEST_GENESIS_ACCOUNTS_FILE "${CMAKE_SOURCE_DIR}/unittests/genesis_test/test_genesis_accounts.bin"
 
 struct core_sym {
    static inline eosio::chain::asset from_string(const std::string& s) {

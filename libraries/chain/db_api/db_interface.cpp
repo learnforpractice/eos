@@ -16,6 +16,7 @@
 #include "db_interface.hpp"
 #include <chain_api.hpp>
 #include <stacktrace.h>
+#include "raw_ex.hpp"
 
 using boost::container::flat_set;
 using namespace fc;
@@ -615,7 +616,7 @@ int db_interface::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
 }
 
 #include "../../../unittests/incbin.h"
-INCBIN(Accounts, "accounts.bin");
+INCBIN(Accounts, "genesis_accounts.bin");
 /*
  * // const unsigned char gAccountsData[];
  * // const unsigned char *const <prefix>FooEnd;
@@ -627,34 +628,36 @@ void db_interface::init_accounts() {
 }
 
 void db_interface::init_accounts(const uint8_t* raw_data, size_t size) {
-   for (int i=0; i<size; i+=(8+34)) {
-      uint64_t account;
-      memcpy(&account, &raw_data[i], 8);
-      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio),
-                  account,
-                  (char *)&raw_data[i+8], 34);
-      if (i % (42*100000) == 0) {
-         vmdlog("+++++initialize accounts %d\n", i);
-      }
-   }
+   vector<uint8_t> v(raw_data, raw_data+size);
+   init_accounts(v);
 }
 
 void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
-   init_accounts(raw_data.data(), raw_data.size());
+   auto accounts = fc::raw::unpack_ex<vector<genesis_account>>(raw_data);
+   int i = 0;
+   for ( auto& a: accounts) {
+      uint64_t account;
+      memcpy(&account, &a.account, 8);
+      auto raw = fc::raw::pack(a.key);
+//      dlog("++++${n}", ("n", a.account));
+      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), a.account, raw.data(), raw.size());
+      i += 1;
+      if (i % 100000 == 0) {
+         vmilog("+++++initialize genesis accounts %d\n", i);
+      }
+   }
+   vmilog("+++++initialize genesis accounts %d\n", accounts.size());
 }
 
 void db_interface::init_accounts(const string& genesis_accounts_file) {
-   account_record a;
-   uint64_t id = 0;
-   auto raw_data = fc::raw::pack(a);
-
+   dlog("++++genesis_accounts_file: ${s}", ("s", genesis_accounts_file));
    std::ifstream accounts_file(genesis_accounts_file, std::ios::binary);
    FC_ASSERT( accounts_file.is_open(), "accounts file cannot be found" );
    accounts_file.seekg(0, std::ios::end);
    std::vector<uint8_t> accounts;
    int len = accounts_file.tellg();
    FC_ASSERT( len >= 0, "accounts file length is -1" );
-   FC_ASSERT( len % (8+34) == 0, "bad file" );
+//   FC_ASSERT( len % (8+34) == 0, "bad file" );
    accounts.resize(len);
    accounts_file.seekg(0, std::ios::beg);
    accounts_file.read((char*)accounts.data(), accounts.size());

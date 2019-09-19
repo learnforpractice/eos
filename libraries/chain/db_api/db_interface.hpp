@@ -14,10 +14,16 @@
 #include <eosio/chain/transaction.hpp>
 #include <eosio/chain/contract_table_objects.hpp>
 #include <eosio/chain/exceptions.hpp>
+#include <fc/io/raw.hpp>
 
 namespace chainbase { class database; }
 
 namespace eosio { namespace chain {
+
+struct genesis_account {
+   account_name account;
+   public_key_type key;
+};
 
 struct account_record {
    name              account;
@@ -651,3 +657,4 @@ class db_interface {
 
 //FC_REFLECT(eosio::chain::apply_context::apply_results, (applied_actions)(deferred_transaction_requests)(deferred_transactions_count))
 FC_REFLECT(eosio::chain::account_record, (account)(key))
+FC_REFLECT(eosio::chain::genesis_account, (account)(key) )

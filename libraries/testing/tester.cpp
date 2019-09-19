@@ -122,7 +122,7 @@ namespace eosio { namespace testing {
      return control->head_block_id() == other.control->head_block_id();
    }
 
-   void base_tester::init(const setup_policy policy, db_read_mode read_mode, bool uuos_mainnet) {
+   void base_tester::init(const setup_policy policy, db_read_mode read_mode, bool uuos_mainnet, string genesis_accounts_file) {
       cfg.blocks_dir      = tempdir.path() / config::default_blocks_dir_name;
       cfg.state_dir  = tempdir.path() / config::default_state_dir_name;
       if (uuos_mainnet) {
@@ -136,6 +136,7 @@ namespace eosio { namespace testing {
       cfg.contracts_console = true;
       cfg.read_mode = read_mode;
       cfg.uuos_mainnet = uuos_mainnet;
+      cfg.genesis_accounts_file = genesis_accounts_file;
 
       cfg.genesis.initial_timestamp = fc::time_point::from_iso_string("2020-01-01T00:00:00.000");
       cfg.genesis.initial_key = get_public_key( config::system_account_name, "active" );

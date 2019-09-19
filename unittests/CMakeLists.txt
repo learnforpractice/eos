@@ -41,17 +41,19 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/contracts.hpp.in ${CMAKE_CURRENT_BINA
 file(GLOB UNIT_TESTS "*.cpp") # find all unit test suites
 add_executable( unit_test ${UNIT_TESTS}) # build unit tests as one executable
 
-target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} )
+target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} python3-ss)
 
 target_compile_options(unit_test PUBLIC -DDISABLE_EOSLIB_SERIALIZE)
 target_include_directories( unit_test PUBLIC
                             ${CMAKE_SOURCE_DIR}/libraries/testing/include
+                            ${CMAKE_SOURCE_DIR}/libraries/chain/db_api
                             ${CMAKE_SOURCE_DIR}/test-contracts
                             ${CMAKE_BINARY_DIR}/contracts
                             ${CMAKE_CURRENT_SOURCE_DIR}/contracts
+                            ${CMAKE_CURRENT_SOURCE_DIR}/genesis_test
                             ${CMAKE_CURRENT_BINARY_DIR}/contracts
-                            PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libpython37/python37
-                            PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libpython37/python37/Include
+                            PRIVATE ${CMAKE_SOURCE_DIR}/externals/Python-3.7.4
+                            PRIVATE ${CMAKE_SOURCE_DIR}/externals/Python-3.7.4/Include
                             ${CMAKE_CURRENT_BINARY_DIR}/include )
 
 ### MARK TEST SUITES FOR EXECUTION ###

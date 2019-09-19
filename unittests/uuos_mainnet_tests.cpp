@@ -18,6 +18,8 @@
 #include "fork_test_utilities.hpp"
 #include "eosio_system_tester.hpp"
 
+#include "db_interface.hpp"
+
 using namespace eosio::chain;
 using namespace eosio::testing;
 using namespace eosio_system;
@@ -26,12 +28,25 @@ using namespace eosio_system;
 
 BOOST_AUTO_TEST_SUITE(uuos_mainnet_tests)
 
-BOOST_AUTO_TEST_CASE( register_eos_main_net_account_test ) {
-    eosio_system_tester t(true);
+#include "incbin.h"
+INCBIN(Accounts, "test_genesis_accounts.bin");
+
+BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
+    eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
     t.produce_blocks(1);
 
+/*
+{
+    db_interface d(*((database*)&t.control->db()));
+    d.init_accounts(gAccountsData, gAccountsSize);
+}
+{
+    db_interface d(*((database*)&t.validating_node->db()));
+    d.init_accounts(gAccountsData, gAccountsSize);
+}
+*/
+
 //    create_accounts( {N(alice), N(bob), N(charlie)} );
-    dlog("+++++++++++++${n}", ("n", __LINE__));
     t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
     t.stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
     t.transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
@@ -44,25 +59,36 @@ BOOST_AUTO_TEST_CASE( register_eos_main_net_account_test ) {
 //    buyrambytes( N(eosio), N(alice), 1024*1024 );
     t.produce_block();
 
-    t.create_account_with_resources(N(uuoscontract), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld11), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+                            eosio_assert_message_exception, eosio_assert_message_is( "public key not match!" ) );
     t.produce_block();
 
-    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(uuoscontrac), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+    //create an account that does not exists on main network
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld21), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+                            eosio_assert_message_exception, eosio_assert_message_is( "account name does not exists on EOS mainnet" ) );
+
+    string str_key("EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV");
+    public_key_type key(str_key);
+    authority auth( key );
+    t.create_account_with_resources( N(helloworld11), N(alice), auth, auth );
+
+
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
                             eosio_assert_message_exception, eosio_assert_message_is( "no active bid for name" ) );
 
-    //create an account that does not exists on EOS main network
-    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(uuoscontracy), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
-                            eosio_assert_message_exception, eosio_assert_message_is( "account name does not exists on EOS mainnet" ) );
 
     //create a 13 characters account
     t.create_account_with_resources(N(uuoscontract1), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
 
     t.produce_block();
 
-    t.transfer( N(eosio), N(uuoscontract), ASSET(10.0000), N(eosio) );
+    dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
+    t.transfer( N(eosio), N(helloworld11), ASSET(10.0000), N(eosio) );
     t.produce_block();
+    dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
     return;
 }
+
 
 #if 1
 BOOST_AUTO_TEST_CASE( test1 ) try {

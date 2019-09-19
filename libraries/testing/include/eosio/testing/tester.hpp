@@ -94,7 +94,7 @@ namespace eosio { namespace testing {
 
          virtual ~base_tester() {};
 
-         void              init(const setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE, bool uuos_mainnet=false);
+         void              init(const setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE, bool uuos_mainnet=false, string genesis_accounts_file="");
          void              init(controller::config config, const snapshot_reader_ptr& snapshot = nullptr);
          void              init(controller::config config, protocol_feature_set&& pfs, const snapshot_reader_ptr& snapshot = nullptr);
          void              execute_setup_policy(const setup_policy policy);
@@ -380,6 +380,7 @@ namespace eosio { namespace testing {
          vcfg.reversible_guard_size = 0;
          vcfg.contracts_console = false;
          vcfg.uuos_mainnet = false;
+         vcfg.genesis_accounts_file = "";
 
          vcfg.genesis.initial_timestamp = fc::time_point::from_iso_string("2020-01-01T00:00:00.000");
          vcfg.genesis.initial_key = get_public_key( config::system_account_name, "active" );
@@ -393,11 +394,12 @@ namespace eosio { namespace testing {
          return vcfg;
       }
 
-      validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>(), bool uuos_mainnet=false) {
+      validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>(), bool uuos_mainnet = false, string genesis_accounts_file = "") {
          vcfg = default_config();
 
          vcfg.trusted_producers = trusted_producers;
          vcfg.uuos_mainnet = uuos_mainnet;
+         vcfg.genesis_accounts_file = genesis_accounts_file;
          
          if (uuos_mainnet) {
             vcfg.state_size = 1024*1024*600;
@@ -408,7 +410,7 @@ namespace eosio { namespace testing {
          validating_node->add_indices();
          validating_node->startup( []() { return false; } );
 
-         init(setup_policy::full, db_read_mode::SPECULATIVE, uuos_mainnet);
+         init(setup_policy::full, db_read_mode::SPECULATIVE, uuos_mainnet, genesis_accounts_file);
       }
 
       validating_tester(controller::config config) {
