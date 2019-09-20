@@ -47,28 +47,30 @@ BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
 //    buyrambytes( N(eosio), N(alice), 1024*1024 );
     t.produce_block();
 
-    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld11), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld11), N(eosio), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
                             eosio_assert_message_exception, eosio_assert_message_is( "public key not match!" ) );
     t.produce_block();
-
+    dlog("++++++++++++");
     //create an account that does not exists on main network
-    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld21), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld21), N(eosio), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
                             eosio_assert_message_exception, eosio_assert_message_is( "account name does not exists on EOS mainnet" ) );
-
+    dlog("++++++++++++");
+    //create an account that less than 12 characters with privileged account
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld), N(eosio), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+                            eosio_assert_message_exception, eosio_assert_message_is( "account name does not exists on EOS mainnet" ) );
+    dlog("++++++++++++");
+    //create an account that less than 12 characters
+    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
+                            eosio_assert_message_exception, eosio_assert_message_is( "no active bid for name" ) );
+    dlog("++++++++++++");
+    //create a 13 characters account
+    t.create_account_with_resources(N(uuoscontract1), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
+    dlog("++++++++++++");
     string str_key("EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV");
     public_key_type key(str_key);
     authority auth( key );
-    t.create_account_with_resources( N(helloworld11), N(alice), auth, auth );
-
-
-    BOOST_REQUIRE_EXCEPTION( t.create_account_with_resources(N(helloworld), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000)),
-                            eosio_assert_message_exception, eosio_assert_message_is( "no active bid for name" ) );
-
-
-    //create a 13 characters account
-    t.create_account_with_resources(N(uuoscontract1), N(alice), ASSET(10.0000), false, ASSET(10.0000), ASSET(10.0000));
-
-    t.produce_block();
+    t.create_account_with_resources( N(helloworld11), N(eosio), auth, auth );
+    dlog("++++++++++++");
 
     dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
     t.transfer( N(eosio), N(helloworld11), ASSET(10.0000), N(eosio) );
@@ -77,45 +79,103 @@ BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
     return;
 }
 
+
 BOOST_AUTO_TEST_CASE( active_account_test ) {
     eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
     t.produce_blocks(1);
+    dlog("++++++++++++");
 
 //    create_accounts( {N(alice), N(bob), N(charlie)} );
     t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
     t.stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
     t.transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
 
+    dlog("++++++++++++");
+
     t.set_code( config::system_account_name, contracts::eosio_system_wasm_latest() );
     t.set_abi( config::system_account_name, contracts::eosio_system_abi_latest().data() );
 
 
     string str_key("EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV");
+/*
     public_key_type key(str_key);
     authority auth( key );
     t.create_account_with_resources( N(helloworld11), N(alice), auth, auth );
-
-
+*/
+    dlog("++++++++++++");
+{
     signed_transaction trx;
-
     sha256 hash = sha256::hash("hello", 5);
-    string str_priv_key("5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3");
+    string str_priv_key("5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc");
     private_key_type priv_key(str_priv_key); 
-    signature sign = priv_key.sign( hash );
+    signature_type sign = priv_key.sign( hash );
 
     trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
-                                           vector<permission_level>{{N(helloworld11), config::active_name}},
+                                           vector<permission_level>{{N(alice), config::active_name}},
                                            mutable_variant_object()
-                                             ("account", N(helloworld11))
+                                             ("account", "helloworld11")
                                              ("sign", sign)
     ) );
 
     t.set_transaction_headers(trx);
-    trx.sign( priv_key, t.control->get_chain_id()  );
+    trx.sign( get_private_key( N(alice), "active" ), t.control->get_chain_id()  );
     t.push_transaction( trx );
+    t.produce_block();
 }
 
-#if 1
+{
+    signed_transaction trx;
+    sha256 hash = sha256::hash("hello", 5);
+    string str_priv_key("5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc");
+    private_key_type priv_key(str_priv_key); 
+    signature_type sign = priv_key.sign( hash );
+
+    trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
+                                           vector<permission_level>{{N(alice), config::active_name}},
+                                           mutable_variant_object()
+                                             ("account", "helloworld11")
+                                             ("sign", sign)
+    ) );
+
+    t.set_transaction_headers(trx);
+    trx.sign( get_private_key( N(alice), "active" ), t.control->get_chain_id()  );
+    BOOST_REQUIRE_EXCEPTION( t.push_transaction( trx ),
+                            eosio_assert_message_exception, eosio_assert_message_is( "account has already been activated" ) );
+    t.produce_block();
+}
+
+{
+    signed_transaction trx;
+    sha256 hash = sha256::hash("hello", 5);
+    string str_priv_key("5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3");
+    private_key_type priv_key(str_priv_key); 
+    signature_type sign = priv_key.sign( hash );
+
+    trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
+                                           vector<permission_level>{{N(alice), config::active_name}},
+                                           mutable_variant_object()
+                                             ("account", "helloworld12")
+                                             ("sign", sign)
+    ) );
+
+    t.set_transaction_headers(trx);
+    trx.sign( get_private_key( N(alice), "active" ), t.control->get_chain_id()  );
+    BOOST_REQUIRE_EXCEPTION( t.push_transaction( trx ),
+                            eosio_assert_message_exception, eosio_assert_message_is( "public key mismatch" ) );
+
+    t.produce_block();
+}
+
+
+//
+
+    dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
+    t.transfer( N(eosio), N(helloworld11), ASSET(10.0000), N(eosio) );
+    t.produce_block();
+    dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
+}
+
+#if 0
 BOOST_AUTO_TEST_CASE( test1 ) try {
 //   tester c( setup_policy::preactivate_feature_and_new_bios );
    tester c( setup_policy::none );
