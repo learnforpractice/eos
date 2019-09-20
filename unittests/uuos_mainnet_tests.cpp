@@ -160,6 +160,7 @@ BOOST_AUTO_TEST_CASE( active_account_test ) {
 
     t.set_transaction_headers(trx);
     trx.sign( get_private_key( N(alice), "active" ), t.control->get_chain_id()  );
+    t.push_transaction( trx );
     BOOST_REQUIRE_EXCEPTION( t.push_transaction( trx ),
                             eosio_assert_message_exception, eosio_assert_message_is( "public key mismatch" ) );
 
@@ -174,6 +175,59 @@ BOOST_AUTO_TEST_CASE( active_account_test ) {
     t.produce_block();
     dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
 }
+
+
+BOOST_AUTO_TEST_CASE( producer_test ) try {
+    eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
+    t.produce_blocks(1);
+
+//    create_accounts( {N(alice), N(bob), N(charlie)} );
+    t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(1000000.0000), ASSET(10.0000), true);
+    t.create_account_with_resources(N(bob), N(eosio), ASSET(1000.0000), false, ASSET(999999.0000), ASSET(0.9000), true);
+
+    t.set_code( config::system_account_name, contracts::eosio_system_wasm_latest() );
+    t.set_abi( config::system_account_name, contracts::eosio_system_abi_latest().data() );
+    t.push_action( N(alice), N(regproducer), mutable_variant_object()
+                                             ("producer", "alice")
+                                             ("producer_key", "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV")
+                                             ("url", "https://uuos.io")
+                                             ("location", 1)
+    );
+
+#if 1
+    signed_transaction trx;
+    trx.actions.emplace_back( t.get_action( N(eosio), N(regproducer),
+                                           vector<permission_level>{{N(bob), config::active_name}},
+                                           mutable_variant_object()
+                                             ("producer", "bob")
+                                             ("producer_key", "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV")
+                                             ("url", "https://uuos.io")
+                                             ("location", 1)
+    ) );
+    t.set_transaction_headers(trx);
+    trx.sign( get_private_key( N(bob), "active" ), t.control->get_chain_id() );
+    BOOST_REQUIRE_EXCEPTION(t.push_transaction( trx ),
+                            eosio_assert_message_exception,
+                            eosio_assert_message_is("no enough staking")
+    );
+#endif
+#if 0
+    BOOST_REQUIRE_EXCEPTION(t.regproducer(N(bob)),
+                            eosio_assert_message_exception,
+                            eosio_assert_message_is("no enough staking")
+    );
+
+    BOOST_REQUIRE_EXCEPTION(t.push_action( N(bob), N(regproducer), mutable_variant_object()
+                                             ("producer", "bob")
+                                             ("producer_key", "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV")
+                                             ("url", "https://uuos.io")
+                                             ("location", 1)
+                            ),
+                            eosio_assert_message_exception,
+                            eosio_assert_message_is("no enough staking")
+    );
+#endif
+} FC_LOG_AND_RETHROW()
 
 #if 0
 BOOST_AUTO_TEST_CASE( test1 ) try {
