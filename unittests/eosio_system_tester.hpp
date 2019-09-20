@@ -142,7 +142,7 @@ public:
    }
 
    transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, asset ramfunds, bool multisig,
-                                                        asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000") ) {
+                                                        asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000"), bool transfer = false ) {
       signed_transaction trx;
       set_transaction_headers(trx);
 
@@ -175,7 +175,7 @@ public:
                                             ("receiver", a)
                                             ("stake_net_quantity", net )
                                             ("stake_cpu_quantity", cpu )
-                                            ("transfer", 0 )
+                                            ("transfer", transfer )
                                           )
                                 );
 
