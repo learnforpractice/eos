@@ -40,6 +40,8 @@ namespace eosio {
 
          unique_ptr<zmq::context_t> context;
          unique_ptr<zmq::socket_t> publisher;
+         unique_ptr<zmq::context_t> context_ipc;
+         unique_ptr<zmq::socket_t> publisher_ipc;
 
           bool filter(const action_trace& act) {
             bool pass_on = false;
@@ -202,7 +204,9 @@ namespace eosio {
    action_publisher_plugin::action_publisher_plugin() : my(std::make_shared<action_publisher_plugin_impl>()) {
       my->context = std::make_unique<zmq::context_t>(1);
       my->publisher = std::make_unique<zmq::socket_t>(*my->context, ZMQ_PUB);
-      my->publisher->bind("tcp://*:5556");
+
+      my->context_ipc = std::make_unique<zmq::context_t>(1);
+      my->publisher_ipc = std::make_unique<zmq::socket_t>(*my->context_ipc, ZMQ_PUB);
    }
 
    action_publisher_plugin::~action_publisher_plugin() {
@@ -217,10 +221,32 @@ namespace eosio {
             ("filter-action-out,F", bpo::value<vector<string>>()->composing(),
              "Do not track actions which match receiver:action:actor. Action and Actor both blank excludes all from Reciever. Actor blank excludes all from reciever:action. Receiver may not be blank.")
             ;
+      cfg.add_options()
+            ("zmq-ipc-address", bpo::value<string>(),
+             "zmq ipc address")
+            ;
+      cfg.add_options()
+            ("zmq-tcp-address", bpo::value<string>(),
+             "zmq ipc address")
+            ;
    }
 
    void action_publisher_plugin::plugin_initialize(const variables_map& options) {
       try {
+         if( options.count( "zmq-ipc-address" )) {
+            auto ipc = options.at( "zmq-ipc-address" ).as<string>();
+            my->publisher_ipc->bind(ipc);
+         } else {
+            my->publisher_ipc->bind("ipc:///tmp/0");
+         }
+
+         if( options.count( "zmq-tcp-address" )) {
+            auto tcp = options.at( "zmq-tcp-address" ).as<string>();
+            my->publisher_ipc->bind(tcp);
+         } else {
+            my->publisher_ipc->bind("tcp://*:5556");
+         }
+
          if( options.count( "filter-action-on" )) {
             auto fo = options.at( "filter-action-on" ).as<vector<string>>();
             for( auto& s : fo ) {
