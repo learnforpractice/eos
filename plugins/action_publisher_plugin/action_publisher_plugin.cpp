@@ -160,7 +160,6 @@ namespace eosio {
 
          void on_action_trace( const action_trace& at ) {
             if( filter( at ) ) {
-               dlog("++++++on_action_trace");
                s_sendmore (*publisher, "1111");
                s_send (*publisher, fc::json::to_string(at));
                //idump((fc::json::to_pretty_string(at)));
@@ -204,14 +203,12 @@ namespace eosio {
       my->context = std::make_unique<zmq::context_t>(1);
       my->publisher = std::make_unique<zmq::socket_t>(*my->context, ZMQ_PUB);
       my->publisher->bind("tcp://*:5556");
-      dlog("++++++++++hello,world");
    }
 
    action_publisher_plugin::~action_publisher_plugin() {
    }
 
    void action_publisher_plugin::set_program_options(options_description& cli, options_description& cfg) {
-      dlog("++++++++++hello,world");
       cfg.add_options()
             ("filter-action-on,f", bpo::value<vector<string>>()->composing(),
              "Track actions which match receiver:action:actor. Actor may be blank to include all. Action and Actor both blank allows all from Recieiver. Receiver may not be blank.")
