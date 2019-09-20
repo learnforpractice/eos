@@ -34,18 +34,6 @@ INCBIN(Accounts, "test_genesis_accounts.bin");
 BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
     eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
     t.produce_blocks(1);
-
-/*
-{
-    db_interface d(*((database*)&t.control->db()));
-    d.init_accounts(gAccountsData, gAccountsSize);
-}
-{
-    db_interface d(*((database*)&t.validating_node->db()));
-    d.init_accounts(gAccountsData, gAccountsSize);
-}
-*/
-
 //    create_accounts( {N(alice), N(bob), N(charlie)} );
     t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
     t.stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
@@ -89,6 +77,43 @@ BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
     return;
 }
 
+BOOST_AUTO_TEST_CASE( active_account_test ) {
+    eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
+    t.produce_blocks(1);
+
+//    create_accounts( {N(alice), N(bob), N(charlie)} );
+    t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
+    t.stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
+    t.transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
+
+    t.set_code( config::system_account_name, contracts::eosio_system_wasm_latest() );
+    t.set_abi( config::system_account_name, contracts::eosio_system_abi_latest().data() );
+
+
+    string str_key("EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV");
+    public_key_type key(str_key);
+    authority auth( key );
+    t.create_account_with_resources( N(helloworld11), N(alice), auth, auth );
+
+
+    signed_transaction trx;
+
+    sha256 hash = sha256::hash("hello", 5);
+    string str_priv_key("5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3");
+    private_key_type priv_key(str_priv_key); 
+    signature sign = priv_key.sign( hash );
+
+    trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
+                                           vector<permission_level>{{N(helloworld11), config::active_name}},
+                                           mutable_variant_object()
+                                             ("account", N(helloworld11))
+                                             ("sign", sign)
+    ) );
+
+    t.set_transaction_headers(trx);
+    trx.sign( priv_key, t.control->get_chain_id()  );
+    t.push_transaction( trx );
+}
 
 #if 1
 BOOST_AUTO_TEST_CASE( test1 ) try {
