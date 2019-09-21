@@ -36,6 +36,9 @@ void chain_api_set_controller(eosio::chain::controller *_ctrl, eosio::chain::con
 
 namespace eosio { namespace chain {
 
+void apply_eosio_addaccounts(apply_context&);
+
+
 using resource_limits::resource_limits_manager;
 
 using controller_index_set = index_set<
@@ -58,8 +61,8 @@ using contract_database_index_set = index_set<
    index128_index,
    index256_index,
    index_double_index,
-   index_long_double_index,
-   key256_value_index
+   index_long_double_index
+//   key256_value_index
 >;
 
 class maybe_session {
@@ -346,6 +349,7 @@ struct controller_impl {
 */
 
    SET_APP_HANDLER( eosio, eosio, canceldelay );
+//   SET_APP_HANDLER( eosio, eosio, addaccounts );
    }
 
    /**
@@ -710,7 +714,9 @@ struct controller_impl {
 
       controller_index_set::add_indices(db);
       contract_database_index_set::add_indices(db);
-
+      if (conf.uuos_mainnet) {
+         db.add_index<key256_value_index>();
+      }
       authorization.add_indices();
       resource_limits.add_indices();
    }
