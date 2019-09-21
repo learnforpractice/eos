@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
 }
 
 
-BOOST_AUTO_TEST_CASE( active_account_test ) {
+BOOST_AUTO_TEST_CASE( active_account_test ) try {
     eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
     t.produce_blocks(1);
     dlog("++++++++++++");
@@ -160,21 +160,18 @@ BOOST_AUTO_TEST_CASE( active_account_test ) {
 
     t.set_transaction_headers(trx);
     trx.sign( get_private_key( N(alice), "active" ), t.control->get_chain_id()  );
-    t.push_transaction( trx );
     BOOST_REQUIRE_EXCEPTION( t.push_transaction( trx ),
-                            eosio_assert_message_exception, eosio_assert_message_is( "public key mismatch" ) );
-
+                            eosio_assert_message_exception,
+                            eosio_assert_message_is( "public key mismatch" ) 
+    );
     t.produce_block();
 }
-
-
-//
 
     dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
     t.transfer( N(eosio), N(helloworld11), ASSET(10.0000), N(eosio) );
     t.produce_block();
     dlog("+++++${n}", ("n", t.get_balance(N(helloworld11))));
-}
+} FC_LOG_AND_RETHROW()
 
 
 BOOST_AUTO_TEST_CASE( producer_test ) try {
