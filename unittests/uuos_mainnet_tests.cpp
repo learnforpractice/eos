@@ -191,7 +191,13 @@ BOOST_AUTO_TEST_CASE( producer_test ) try {
                                              ("location", 1)
     );
 
-#if 1
+    t.push_action2( N(eosio), N(undelegatebw), N(alice), mvo()
+                          ("from",     "alice")
+                          ("receiver", "alice")
+                          ("unstake_net_quantity", ASSET(900000.0000))
+                          ("unstake_cpu_quantity", ASSET(1.0000))
+    );
+
     signed_transaction trx;
     trx.actions.emplace_back( t.get_action( N(eosio), N(regproducer),
                                            vector<permission_level>{{N(bob), config::active_name}},
@@ -207,7 +213,8 @@ BOOST_AUTO_TEST_CASE( producer_test ) try {
                             eosio_assert_message_exception,
                             eosio_assert_message_is("no enough staking")
     );
-#endif
+
+
 #if 0
     BOOST_REQUIRE_EXCEPTION(t.regproducer(N(bob)),
                             eosio_assert_message_exception,

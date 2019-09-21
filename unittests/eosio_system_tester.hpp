@@ -282,6 +282,17 @@ public:
          return base_tester::push_action( std::move(act), auth ? uint64_t(signer) : signer == N(bob111111111) ? N(alice1111111) : N(bob111111111) );
    }
 
+   transaction_trace_ptr push_action2( const account_name& code,
+                                                   const action_name& acttype,
+                                                   const account_name& actor,
+                                                   const variant_object& data,
+                                                   uint32_t expiration = 60,
+                                                   uint32_t delay_sec = 0
+                                                 )
+   {
+      return base_tester::push_action( code, acttype, actor, data, expiration, delay_sec );
+   }
+
    action_result stake( const account_name& from, const account_name& to, const asset& net, const asset& cpu ) {
       return push_action( name(from), N(delegatebw), mvo()
                           ("from",     from)
