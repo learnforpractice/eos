@@ -51,4 +51,5 @@ add_subdirectory(boost_1_67_0)
 add_subdirectory(Python-3.7.4)
 add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
+add_dependencies(cppzmq libzmq)
 
