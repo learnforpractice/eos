@@ -14,7 +14,7 @@ int main () {
 
     while (1) {
         //  Write two messages, each with an envelope and content
-        s_sendmore (publisher, "1111");
+        s_sendmore (publisher, "2222");
         s_send (publisher, "We don't want to see this");
         s_sendmore (publisher, "1111");
         s_send (publisher, "We would like to see this");
