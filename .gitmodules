@@ -29,4 +29,4 @@
 	url = https://github.com/zeromq/libzmq
 [submodule "externals/cppzmq"]
 	path = externals/cppzmq
-	url = https://github.com/zeromq/cppzmq
+	url = https://github.com/learnforpractice/cppzmq
