@@ -38,8 +38,8 @@ namespace eosio {
          chain_plugin*          chain_plug = nullptr;
          fc::optional<scoped_connection> applied_transaction_connection;
 
-         unique_ptr<zmq::context_t> context;
-         unique_ptr<zmq::socket_t> publisher;
+         unique_ptr<zmq::context_t> context_tcp;
+         unique_ptr<zmq::socket_t> publisher_tcp;
          unique_ptr<zmq::context_t> context_ipc;
          unique_ptr<zmq::socket_t> publisher_ipc;
 
@@ -162,8 +162,15 @@ namespace eosio {
 
          void on_action_trace( const action_trace& at ) {
             if( filter( at ) ) {
-               s_sendmore (*publisher, "1111");
-               s_send (*publisher, fc::json::to_string(at));
+               string str_action = fc::json::to_string(at);
+               string receiver = at.receiver.to_string();
+
+               s_sendmore (*publisher_tcp, receiver);
+               s_send (*publisher_tcp, str_action);
+
+               s_sendmore (*publisher_ipc, receiver);
+               s_send (*publisher_ipc, str_action);
+
                //idump((fc::json::to_pretty_string(at)));
                #if 0
                auto& chain = chain_plug->chain();
@@ -185,6 +192,7 @@ namespace eosio {
                   record_account_action( a, at );
                }
                #endif
+            } else {
             }
             if( at.receiver == chain::config::system_account_name )
                on_system_action( at );
@@ -202,8 +210,8 @@ namespace eosio {
    };
 
    action_publisher_plugin::action_publisher_plugin() : my(std::make_shared<action_publisher_plugin_impl>()) {
-      my->context = std::make_unique<zmq::context_t>(1);
-      my->publisher = std::make_unique<zmq::socket_t>(*my->context, ZMQ_PUB);
+      my->context_tcp = std::make_unique<zmq::context_t>(1);
+      my->publisher_tcp = std::make_unique<zmq::socket_t>(*my->context_tcp, ZMQ_PUB);
 
       my->context_ipc = std::make_unique<zmq::context_t>(1);
       my->publisher_ipc = std::make_unique<zmq::socket_t>(*my->context_ipc, ZMQ_PUB);
@@ -214,11 +222,11 @@ namespace eosio {
 
    void action_publisher_plugin::set_program_options(options_description& cli, options_description& cfg) {
       cfg.add_options()
-            ("filter-action-on,f", bpo::value<vector<string>>()->composing(),
+            ("filter-action-on", bpo::value<vector<string>>()->composing(),
              "Track actions which match receiver:action:actor. Actor may be blank to include all. Action and Actor both blank allows all from Recieiver. Receiver may not be blank.")
             ;
       cfg.add_options()
-            ("filter-action-out,F", bpo::value<vector<string>>()->composing(),
+            ("filter-action-out", bpo::value<vector<string>>()->composing(),
              "Do not track actions which match receiver:action:actor. Action and Actor both blank excludes all from Reciever. Actor blank excludes all from reciever:action. Receiver may not be blank.")
             ;
       cfg.add_options()
@@ -242,9 +250,11 @@ namespace eosio {
 
          if( options.count( "zmq-tcp-address" )) {
             auto tcp = options.at( "zmq-tcp-address" ).as<string>();
-            my->publisher_ipc->bind(tcp);
+            dlog("++++++++++++zmq-tcp-address is ${n}", ("n", tcp));
+            my->publisher_tcp->bind(tcp);
          } else {
-            my->publisher_ipc->bind("tcp://*:5556");
+            dlog("++++++++++++set default zmq-tcp-address tcp://*:5556");
+            my->publisher_tcp->bind("tcp://*:5556");
          }
 
          if( options.count( "filter-action-on" )) {
