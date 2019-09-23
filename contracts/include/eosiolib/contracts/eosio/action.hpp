@@ -4,7 +4,7 @@
  */
 #pragma once
 #include <cstdlib>
-
+#include "../../capi/eosio/types.h"
 #include "../../core/eosio/serialize.hpp"
 #include "../../core/eosio/datastream.hpp"
 #include "../../core/eosio/name.hpp"

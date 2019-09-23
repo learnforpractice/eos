@@ -27,6 +27,8 @@ extern "C" {
 #define ALIGNED(X) __attribute__ ((aligned (16))) X
 
 typedef uint64_t capi_name;
+typedef unsigned __int128 uint128_t;
+typedef __int128 int128_t;
 
 /**
  * EOSIO Public Key. It is 34 bytes.
