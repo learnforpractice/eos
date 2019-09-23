@@ -40,7 +40,14 @@ extern "C" {
 
 
 #ifndef _MSC_VER
-  #include "pyconfig.h"
+//  #include "pyconfig.h"
+#ifdef __WASM
+#include "pyconfig-wasm.h"
+#elif defined(__APPLE__)
+#include "pyconfig-mac.h"
+#else
+#include "pyconfig-linux.h"
+#endif
 #endif
 
 #include <stdio.h>
