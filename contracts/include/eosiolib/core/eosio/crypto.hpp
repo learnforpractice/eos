@@ -3,7 +3,6 @@
  *  @copyright defined in eos/LICENSE
  */
 #pragma once
-
 #include "fixed_bytes.hpp"
 #include "varint.hpp"
 #include "serialize.hpp"
