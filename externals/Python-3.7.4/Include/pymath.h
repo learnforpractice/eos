@@ -1,7 +1,16 @@
 #ifndef Py_PYMATH_H
 #define Py_PYMATH_H
 
-#include "pyconfig.h" /* include for defines */
+//#include "pyconfig.h" /* include for defines */
+
+#ifdef __WASM
+#include "pyconfig-wasm.h"
+#elif defined(__APPLE__)
+#include "pyconfig-mac.h"
+#else
+#include "pyconfig-linux.h"
+#endif
+
 
 /**************************************************************************
 Symbols and macros to supply platform-independent interfaces to mathematical

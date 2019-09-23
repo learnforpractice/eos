@@ -2,7 +2,15 @@
 #ifndef Py_PYTIME_H
 #define Py_PYTIME_H
 
-#include "pyconfig.h" /* include for defines */
+//#include "pyconfig.h" /* include for defines */
+#ifdef __WASM
+#include "pyconfig-wasm.h"
+#elif defined(__APPLE__)
+#include "pyconfig-mac.h"
+#else
+#include "pyconfig-linux.h"
+#endif
+
 #include "object.h"
 
 /**************************************************************************

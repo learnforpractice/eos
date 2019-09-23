@@ -5,7 +5,15 @@
 /* Include nearly all Python header files */
 
 #include "patchlevel.h"
-#include "pyconfig.h"
+//#include "pyconfig.h"
+#ifdef __WASM
+#include "pyconfig-wasm.h"
+#elif defined(__APPLE__)
+#include "pyconfig-mac.h"
+#else
+#include "pyconfig-linux.h"
+#endif
+
 #include "pymacconfig.h"
 
 #include <limits.h>

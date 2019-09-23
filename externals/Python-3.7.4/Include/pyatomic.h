@@ -4,7 +4,13 @@
 
 #include "dynamic_annotations.h"
 
-#include "pyconfig.h"
+#ifdef __WASM
+#include "pyconfig-wasm.h"
+#elif defined(__APPLE__)
+#include "pyconfig-mac.h"
+#else
+#include "pyconfig-linux.h"
+#endif
 
 #if defined(HAVE_STD_ATOMIC)
 #include <stdatomic.h>
