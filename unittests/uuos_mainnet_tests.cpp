@@ -28,8 +28,8 @@ using namespace eosio_system;
 
 BOOST_AUTO_TEST_SUITE(uuos_mainnet_tests)
 
-#include "incbin.h"
-INCBIN(Accounts, "test_genesis_accounts.bin");
+//#include "incbin.h"
+//INCBIN(Accounts, "test_genesis_accounts.bin");
 
 BOOST_AUTO_TEST_CASE( genesis_accounts_test ) {
     eosio_system_tester t(true, TEST_GENESIS_ACCOUNTS_FILE);
