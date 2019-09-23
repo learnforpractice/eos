@@ -46,7 +46,7 @@ else()
 #  add_subdirectory(test-contracts)
 endif()
 
-add_subdirectory(test-contracts)
+#add_subdirectory(test-contracts)
 add_subdirectory(boost_1_67_0)
 add_subdirectory(Python-3.7.4)
 add_subdirectory(libzmq)
