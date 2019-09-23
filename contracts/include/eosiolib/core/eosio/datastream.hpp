@@ -3,6 +3,8 @@
  *  @copyright defined in eos/LICENSE
  */
 #pragma once
+#include <string.h>
+
 #include "check.hpp"
 #include "varint.hpp"
 
