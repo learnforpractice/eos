@@ -61,3 +61,10 @@ target_include_directories( wasm_injector
                             PUBLIC ${HEADERS}
                             )
 target_compile_options(wasm_injector  PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB)
+
+install(TARGETS vm_wasm-1
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

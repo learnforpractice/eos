@@ -1,4 +1,4 @@
-add_library(eosiolib.native SHARED 
+add_library(eosiolib.native STATIC 
    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosiolib/crypto.cpp
    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosiolib/eosiolib.cpp
 )
@@ -15,3 +15,10 @@ target_include_directories( eosiolib.native
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/eosiolib/contracts"
                         )
 target_compile_options( eosiolib.native PRIVATE -DEOSIO_NATIVE -Wno-unknown-attributes )
+
+install(TARGETS eosio.token.native
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

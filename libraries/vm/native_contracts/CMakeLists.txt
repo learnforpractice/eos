@@ -40,3 +40,11 @@ set_target_properties(native_contracts  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 #target_compile_options(eosio.system PRIVATE -fvisibility=hidden)
 
+
+install(TARGETS native_contracts
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
