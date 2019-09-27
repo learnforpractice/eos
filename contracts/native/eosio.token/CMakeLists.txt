@@ -15,3 +15,10 @@ target_include_directories( eosio.token.native
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/eosiolib/contracts"
                         )
 target_compile_options( eosio.token.native PRIVATE -DEOSIO_NATIVE -Wno-unknown-attributes )
+
+install(TARGETS eosio.token.native
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
