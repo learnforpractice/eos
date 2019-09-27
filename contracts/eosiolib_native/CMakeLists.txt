@@ -59,3 +59,10 @@ target_include_directories(eosiolib_native PRIVATE ${Boost_INCLUDE_DIR}
 #    PUBLIC ${CMAKE_SOURCE_DIR}/libraries/fc/include
 #    PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include
 # )
+
+install(TARGETS eosiolib_native
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
