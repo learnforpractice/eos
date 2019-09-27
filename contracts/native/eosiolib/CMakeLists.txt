@@ -16,7 +16,7 @@ target_include_directories( eosiolib.native
                         )
 target_compile_options( eosiolib.native PRIVATE -DEOSIO_NATIVE -Wno-unknown-attributes )
 
-install(TARGETS eosio.token.native
+install(TARGETS eosiolib.native
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
