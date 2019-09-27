@@ -235,7 +235,7 @@ namespace eosio {
             ;
       cfg.add_options()
             ("zmq-tcp-address", bpo::value<string>(),
-             "zmq ipc address")
+             "zmq tcp address")
             ;
    }
 
