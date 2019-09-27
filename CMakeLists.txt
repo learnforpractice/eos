@@ -246,6 +246,7 @@ else()
     target_compile_options(vm_api4c PRIVATE -fPIC)
     target_compile_options(fc PRIVATE -fPIC)
     target_compile_options(boost_1_67_0 PRIVATE -fPIC)
+    target_compile_options(eosiolib.native PRIVATE -fPIC)
 endif()
 
 install_directory_permissions(DIRECTORY ${CMAKE_INSTALL_FULL_SYSCONFDIR}/eosio)
