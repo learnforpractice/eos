@@ -16,10 +16,10 @@
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/exception/diagnostic_information.hpp>
 
-#include "config.hpp"
-
 #include <iostream>
 #include <fstream>
+
+#include "config.hpp"
 
 using namespace appbase;
 using namespace eosio;
@@ -96,8 +96,8 @@ int main(int argc, char** argv)
    vm_api_init();
    vm_api_ro_init();
    chain_api_init();
-   vm_python2_init();
-   native_contracts_init();
+//   vm_python2_init();
+//   native_contracts_init();
 
    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 
@@ -139,10 +139,8 @@ int main(int argc, char** argv)
 //         ilog("++++${n} ${n2}", ("n", itr2->name)("n2", token_get_balance(itr2->name.value, "EOS")));
          uint64_t value = itr2->name.value;
          file.write((char *)&value, 8);
-
          value = token_get_balance(itr2->name.value, "EOS");
          file.write((char *)&value, 8);
-
          itr2 = idx.get<by_name>().upper_bound(itr2->name);
          counter += 1;
          if (counter % 1000 == 0) {
