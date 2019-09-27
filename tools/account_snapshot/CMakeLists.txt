@@ -56,7 +56,7 @@ target_link_libraries( account_snapshot
         PRIVATE chain_plugin http_plugin producer_plugin http_client_plugin
         PRIVATE eosio_chain fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} 
         eosiolib_native
-        /Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts/eosio.token/libeosio.token.native.a
+        eosio.token.native
         )
 
 if(BUILD_MONGO_DB_PLUGIN)
