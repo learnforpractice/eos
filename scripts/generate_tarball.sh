@@ -4,6 +4,7 @@ set -eo pipefail
 NAME=$1
 EOS_PREFIX=${PREFIX}/${SUBPREFIX}
 mkdir -p ${PREFIX}/bin/
+mkdir -p ${PREFIX}/lib/
 #mkdir -p ${PREFIX}/lib/cmake/${PROJECT}
 mkdir -p ${EOS_PREFIX}/bin
 mkdir -p ${EOS_PREFIX}/licenses/eosio
