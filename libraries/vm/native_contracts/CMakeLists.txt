@@ -48,3 +48,4 @@ install(TARGETS native_contracts
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+copy_lib(native_contracts)

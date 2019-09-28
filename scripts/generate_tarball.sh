@@ -19,7 +19,7 @@ cp -R ${BUILD_DIR}/bin/* ${EOS_PREFIX}/bin  || exit 1
 cp -R ${BUILD_DIR}/licenses/eosio/* ${EOS_PREFIX}/licenses || exit 1
 
 # install libraries
-#cp -R ${BUILD_DIR}/lib/* ${EOS_PREFIX}/lib
+cp -R ${BUILD_DIR}/lib/* ${EOS_PREFIX}/lib
 
 # install cmake modules
 #sed "s/_PREFIX_/\/${SPREFIX}/g" ${BUILD_DIR}/modules/EosioTesterPackage.cmake &> ${EOS_PREFIX}/lib/cmake/${PROJECT}/EosioTester.cmake
