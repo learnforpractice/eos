@@ -31,3 +31,5 @@ install(TARGETS eosio.system.native
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+copy_lib(eosio.system.native)

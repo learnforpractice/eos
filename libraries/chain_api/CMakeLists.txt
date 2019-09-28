@@ -45,4 +45,6 @@ install(TARGETS chain_api
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-                          
+
+copy_lib(chain_api)
+
