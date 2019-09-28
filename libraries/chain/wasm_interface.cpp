@@ -1798,6 +1798,18 @@ class vm_apis : public context_aware_api {
          get_vm_api()->token_transfer(from, to, quantity, symbol, memo, size2);
       }
 
+      void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer ) {
+         get_vm_api()->token_open(owner, _symbol, ram_payer);
+      }
+
+      void token_retire( int64_t amount, uint64_t _symbol, array_ptr<const char> memo, size_t memo_size ) {
+         get_vm_api()->token_retire(amount, _symbol, memo, memo_size);
+      }
+
+      void token_close( uint64_t owner, uint64_t symbol ) {
+         get_vm_api()->token_close( owner, symbol );
+      }
+
       void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, size_t size1) {
          get_vm_api()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
       }
@@ -1838,6 +1850,10 @@ REGISTER_INTRINSICS(vm_apis,
    (token_create,    void(int64_t, int64_t, int64_t)  )
    (token_issue,     void(int64_t, int64_t, int64_t, int, int)           )
    (token_transfer,  void(int64_t, int64_t, int64_t, int64_t, int, int)  )
+   (token_open,      void(int64_t, int64_t, int64_t))
+   (token_retire,    void(int64_t, int64_t, int, int ))
+   (token_close,     void(int64_t, int64_t))
+
    (call_contract,            void(int64_t, int64_t, int64_t, int64_t, int64_t, int, int)  )
    (call_contract_get_extra_args, int(int, int))
    (call_contract_set_results, int(int, int))

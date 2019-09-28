@@ -38,6 +38,8 @@ namespace eosio {
          static std::vector<uint8_t> eosio_system_wasm_latest() { return read_wasm("${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/eosio.system/eosio.system.wasm"); } \
          static std::vector<char> eosio_system_abi_latest() { return read_abi("${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/eosio.system/eosio.system.abi"); }
 
+         static std::vector<uint8_t> eosio_token_v2_wasm() { return read_wasm("${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/eosio.token.v2/eosio.token.v2.wasm"); } \
+         static std::vector<char> eosio_token_v2_abi() { return read_abi("${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/eosio.token.v2/eosio.token.v2.abi"); }
 
          MAKE_READ_WASM_ABI(eosio_token,  eosio.token,  contracts)
          MAKE_READ_WASM_ABI(eosio_wrap,   eosio.wrap,   contracts)
