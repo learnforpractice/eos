@@ -252,7 +252,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
           "Chain validation mode (\"full\" or \"light\").\n"
           "In \"full\" mode all incoming blocks will be fully validated.\n"
           "In \"light\" mode all incoming blocks headers will be fully validated; transactions in those validated blocks will be trusted \n")
-         ("uuos-mainnet", bpo::bool_switch()->default_value(false),
+         ("uuos-mainnet", boost::program_options::value<bool>()->default_value(true),
           "uuos main network \n")
          ("disable-ram-billing-notify-checks", bpo::bool_switch()->default_value(false),
           "Disable the check which subjectively fails a transaction if a contract bills more RAM to another account within the context of a notification handler (i.e. when the receiver is not the code of the action).")
