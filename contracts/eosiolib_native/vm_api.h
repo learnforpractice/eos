@@ -213,7 +213,7 @@ struct vm_api {
    void (*token_transfer)( uint64_t from, uint64_t to, int64_t quantity, uint64_t symbol, const char* memo, size_t size2 );
    void (*token_open)( uint64_t owner, uint64_t _symbol, uint64_t ram_payer );
    void (*token_retire)( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size );
-
+   void (*token_close)( uint64_t owner, uint64_t _symbol );
 
    int (*call_contract_get_extra_args)(void *extra_args, size_t size1);
    int (*call_contract_set_results)(const void *result, size_t size1);
