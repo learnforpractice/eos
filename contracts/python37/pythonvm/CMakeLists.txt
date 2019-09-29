@@ -1,5 +1,3 @@
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gen.py.in ${CMAKE_CURRENT_BINARY_DIR}/gen.py)
-
 set(PYTHON_INC_FOLDERS 
 ${CMAKE_SOURCE_DIR}/emscripten/system/include/libcxx
 ${CMAKE_SOURCE_DIR}/emscripten/system/lib/libcxxabi/include
@@ -32,7 +30,7 @@ set(WASM_LINK_FLAGS --gc-sections
 -stack-first --lto-O3 -error-limit=0
 --allow-undefined-file=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../eosio.imports)
 
-add_executable(pythonvm main.cpp)
+add_executable(pythonvm pythonvm.c main.cpp)
 
 #./python37/Modules/config-wasm.c ./eosiolib_wrapper/db.c ./eosiolib_wrapper/utility.c
 
@@ -49,14 +47,14 @@ target_include_directories(pythonvm
    ${CMAKE_SOURCE_DIR}/libpython37/python37/Include
 )
 
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
-    COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/gen.py
-    DEPENDS pythonvm ${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
-)
+# ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
+#     COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/gen.py
+#     DEPENDS pythonvm ${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm
+#     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#     COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
+# )
 
-add_custom_target (gen_pythonvm_wasm ALL
-   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
-)
+# add_custom_target (gen_pythonvm_wasm ALL
+#    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
+# )
 

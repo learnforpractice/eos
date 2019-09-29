@@ -1,2 +1,0 @@
-import subprocess
-subprocess.check_output(['${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c', '-o', '${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.c', '${CMAKE_BINARY_DIR}/contracts/pythonvm/pythonvm.wasm'])

@@ -36,9 +36,11 @@ PyOS_FiniInterrupts(void)
 {
 }
 
+/*
 void __cxa_finalize(void *dso)
 {
 }
+*/
 
 #endif
 
