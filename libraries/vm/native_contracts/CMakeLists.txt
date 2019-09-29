@@ -1,9 +1,9 @@
-add_library(native_contracts SHARED
+add_library(native_contracts STATIC
     main.cpp
     wasm-rt-impl.c
     eosio.system.c
 #    eosio.token.c
-    contracts.cpp
+    native_contracts.cpp
 
     contracts/eosio-047c7e09c81da6dec89ab970603696268049d1cc3ded37987ff9b8d89dedd371-1722535.c
     contracts/eosio-254247a18af399e237f47ea63e7b5970a8f9d6819150efe443d8e711895915ed-12246.c

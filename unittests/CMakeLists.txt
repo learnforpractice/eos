@@ -39,9 +39,49 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/contracts.hpp.in ${CMAKE_CURRENT_BINA
 
 ### BUILD UNIT TEST EXECUTABLE ###
 file(GLOB UNIT_TESTS "*.cpp") # find all unit test suites
-add_executable( unit_test ${UNIT_TESTS}) # build unit tests as one executable
+add_executable( unit_test
+  abi_tests.cpp
+  bootseq_tests.cpp
+  eosio.token_tests.v2.cpp	
+  message_buffer_tests.cpp	
+  protocol_feature_tests.cpp	
+  special_accounts_tests.cpp
+  api_tests.cpp			
+  currency_tests.cpp		
+  eth_account_tests.cpp		
+  misc_tests.cpp			
+  pythonvm_tests.cpp		
+  uuos_mainnet_tests.cpp
+  auth_tests.cpp
+  database_tests.cpp
+  fork_test_utilities.cpp
+  native_contract_test.cpp
+  ram_tests.cpp
+  wasm_tests.cpp
+  block_tests.cpp
+  delay_tests.cpp
+  forked_tests.cpp
+  payloadless_tests.cpp
+  resource_limits_test.cpp
+  whitelist_blacklist_tests.cpp
+  block_timestamp_tests.cpp	
+  eosio.token_tests.cpp
+  main.cpp
+  producer_schedule_tests.cpp	snapshot_tests.cpp
 
-target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} ) #python3-ss)
+  ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
+  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
+  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp
+) # build unit tests as one executable
+
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
+    COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/wasm2c.py native_contract_test native_contract_test.wasm
+    DEPENDS test_contracts_project
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test
+    COMMENT "Generating ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c"
+)
+
+target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} vm_api4c native_contracts ) #python3-ss)
 
 target_compile_options(unit_test PUBLIC -DDISABLE_EOSLIB_SERIALIZE)
 target_include_directories( unit_test PUBLIC
@@ -52,9 +92,14 @@ target_include_directories( unit_test PUBLIC
                             ${CMAKE_CURRENT_SOURCE_DIR}/contracts
                             ${CMAKE_CURRENT_SOURCE_DIR}/genesis_test
                             ${CMAKE_CURRENT_BINARY_DIR}/contracts
+                            ${CMAKE_CURRENT_BINARY_DIR}/test-contracts
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/Python-3.7.4
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/Python-3.7.4/Include
-                            ${CMAKE_CURRENT_BINARY_DIR}/include )
+                            ${CMAKE_CURRENT_BINARY_DIR}/include 
+                            ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts
+                            )
+
+add_dependencies(unit_test test_contracts_project)
 
 ### MARK TEST SUITES FOR EXECUTION ###
 foreach(TEST_SUITE ${UNIT_TESTS}) # create an independent target for each test suite

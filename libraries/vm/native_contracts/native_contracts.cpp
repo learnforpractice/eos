@@ -1,33 +1,13 @@
+#include "native_contracts.hpp"
+#include "wasm-rt-impl.h"
+#include <eosiolib_native/vm_api.h>
 
-#include <stdint.h>
-#include <map>
-#include <array>
-
-#include <wasm-rt.h>
-
-#define WASM_RT_ADD_PREFIX(x) x
-
-
-typedef uint8_t u8;
-typedef int8_t s8;
-typedef uint16_t u16;
-typedef int16_t s16;
-typedef uint32_t u32;
-typedef int32_t s32;
-typedef uint64_t u64;
-typedef int64_t s64;
-typedef float f32;
-typedef double f64;
-
-struct contract
-{
-    bool initialized = false;
-    void (*init)();
-    void (**apply)(uint64_t, uint64_t, uint64_t);
-    wasm_rt_memory_t* (*get_memory)();
-};
 extern "C" {
 std::map<std::array<uint8_t, 32>, contract> contracts_map;
+
+void add_native_contract(std::array<uint8_t, 32>& hash, contract _contract) {
+    contracts_map[hash] = _contract;
+}
 
 extern void WASM_RT_ADD_PREFIX(init_eosio_5e8e655a05b34e782467684d7148244404b591a6c1ec2687eacb268926a37e59_127)(void);
 extern void WASM_RT_ADD_PREFIX(init_eosio_token_e536996bc480ccc3486b630f0c42ca1ef3b9f477595e885dcf8862848a2185bb_0)(void);
@@ -133,19 +113,31 @@ contracts_map[std::array<uint8_t, 32>{0x5e,0x8e,0x65,0x5a,0x05,0xb3,0x4e,0x78,0x
 }
 
 
+
 void *get_apply_entry(std::array<uint8_t, 32> hash) {
     auto itr = contracts_map.find(hash);
     if (itr == contracts_map.end()) {
         return nullptr;
     }
     if (!itr->second.initialized) {
+        wasm_rt_memory_t *mem;
         itr->second.init();
         itr->second.initialized = true;
+        mem = itr->second.get_memory();
+        mem->data_backup = (uint8_t*)calloc(mem->size, 1);
+        mem->data_backup_size = mem->size;
+        memcpy(mem->data_backup, mem->data, mem->size);
+    } else {
+        wasm_rt_memory_t *mem;
+        mem = itr->second.get_memory();
+        memcpy(mem->data, mem->data_backup, mem->data_backup_size);
+        memset(mem->data + mem->data_backup_size, 0, mem->initial_pages * PAGE_SIZE-mem->data_backup_size);
     }
     return (void *)(**itr->second.apply);
 }
 
 wasm_rt_memory_t *get_contract_memory(std::array<uint8_t, 32> hash) {
+    wasm_rt_memory_t *mem;
     auto itr = contracts_map.find(hash);
     if (itr == contracts_map.end()) {
         return nullptr;
@@ -153,8 +145,65 @@ wasm_rt_memory_t *get_contract_memory(std::array<uint8_t, 32> hash) {
     if (!itr->second.initialized) {
         itr->second.init();
         itr->second.initialized = true;
+        mem = itr->second.get_memory();
+        mem->data_backup = (uint8_t*)calloc(mem->size, 1);
+        mem->data_backup_size = mem->size;
+        memcpy(mem->data_backup, mem->data, mem->size);
+    } else {
+        mem = itr->second.get_memory();
     }
-    return itr->second.get_memory();
+    return mem;
 }
+
+void vm_on_trap(wasm_rt_trap_t code) {
+   get_vm_api()->eosio_assert(0, "vm runtime error");
+   switch (code) {
+      case WASM_RT_TRAP_NONE:
+         get_vm_api()->eosio_assert(0, "vm no error");
+         break;
+      case WASM_RT_TRAP_OOB:
+         get_vm_api()->eosio_assert(0, "vm error out of bounds");
+         break;
+      case WASM_RT_TRAP_INT_OVERFLOW:
+         get_vm_api()->eosio_assert(0, "vm error int overflow");
+         break;
+      case WASM_RT_TRAP_DIV_BY_ZERO:
+         get_vm_api()->eosio_assert(0, "vm error divide by zeror");
+         break;
+      case WASM_RT_TRAP_INVALID_CONVERSION:
+         get_vm_api()->eosio_assert(0, "vm error invalid conversion");
+         break;
+      case WASM_RT_TRAP_UNREACHABLE:
+         get_vm_api()->eosio_assert(0, "vm error unreachable");
+         break;
+      case WASM_RT_TRAP_CALL_INDIRECT:
+         get_vm_api()->eosio_assert(0, "vm error call indirect");
+         break;
+      case WASM_RT_TRAP_EXHAUSTION:
+         get_vm_api()->eosio_assert(0, "vm error exhaustion");
+         break;
+      default:
+         get_vm_api()->eosio_assert(0, "vm unknown error");
+         break;
+   }
+}
+
+typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
+
+bool native_apply(std::array<uint8_t, 32>& hash, uint64_t receiver, uint64_t first_receiver, uint64_t action) {
+    fn_contract_apply apply = (fn_contract_apply)get_apply_entry(hash);
+    if (!apply) {
+        return false;
+    }
+
+    wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try2();
+    if (code != 0) {
+        printf("A trap occurred with code: %d\n", code);
+        vm_on_trap(code);
+    }
+    (*apply)(receiver, first_receiver, action);
+    return true;
+}
+
 
 }
