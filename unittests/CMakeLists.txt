@@ -75,13 +75,13 @@ add_executable( unit_test
 ) # build unit tests as one executable
 
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
-    COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/wasm2c.py native_contract_test native_contract_test.wasm
-    DEPENDS test_contracts_project
+    COMMAND python3 ${CMAKE_BINARY_DIR}/tools/wasm2c.py native_contract_test native_contract_test.wasm
+    DEPENDS test_contracts_project ${CMAKE_CURRENT_SOURCE_DIR}/test-contracts/native_contract_test/native_contract_test.cpp
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test
     COMMENT "Generating ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c"
 )
 
-target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} vm_api4c native_contracts ) #python3-ss)
+target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} vm_api4c native_contracts python3-ss)
 
 target_compile_options(unit_test PUBLIC -DDISABLE_EOSLIB_SERIALIZE)
 target_include_directories( unit_test PUBLIC
@@ -100,6 +100,7 @@ target_include_directories( unit_test PUBLIC
                             )
 
 add_dependencies(unit_test test_contracts_project)
+add_dependencies(unit_test wasm_injector)
 
 ### MARK TEST SUITES FOR EXECUTION ###
 foreach(TEST_SUITE ${UNIT_TESTS}) # create an independent target for each test suite

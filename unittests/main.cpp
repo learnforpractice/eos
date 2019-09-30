@@ -74,5 +74,6 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
    }
    std::cout << "EOS_TESTING_GENESIS_TIMESTAMP is " << EOS_TESTING_GENESIS_TIMESTAMP << std::endl;
    */
+   Py_FinalizeEx();
    return nullptr;
 }
