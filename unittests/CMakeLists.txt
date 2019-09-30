@@ -29,6 +29,11 @@ if( GPERFTOOLS_FOUND )
    list( APPEND PLATFORM_SPECIFIC_LIBS tcmalloc )
 endif()
 
+if (APPLE)
+else()
+  list( APPEND PLATFORM_SPECIFIC_LIBS util )
+endif()
+
 find_package(LLVM 4.0 REQUIRED CONFIG)
 
 link_directories(${LLVM_LIBRARY_DIR})
@@ -42,15 +47,15 @@ file(GLOB UNIT_TESTS "*.cpp") # find all unit test suites
 add_executable( unit_test
   abi_tests.cpp
   bootseq_tests.cpp
-  eosio.token_tests.v2.cpp	
-  message_buffer_tests.cpp	
-  protocol_feature_tests.cpp	
+  eosio.token_tests.v2.cpp
+  message_buffer_tests.cpp
+  protocol_feature_tests.cpp
   special_accounts_tests.cpp
-  api_tests.cpp			
-  currency_tests.cpp		
-  eth_account_tests.cpp		
-  misc_tests.cpp			
-  pythonvm_tests.cpp		
+  api_tests.cpp
+  currency_tests.cpp
+  eth_account_tests.cpp
+  misc_tests.cpp
+  pythonvm_tests.cpp
   uuos_mainnet_tests.cpp
   auth_tests.cpp
   database_tests.cpp
@@ -64,14 +69,14 @@ add_executable( unit_test
   payloadless_tests.cpp
   resource_limits_test.cpp
   whitelist_blacklist_tests.cpp
-  block_timestamp_tests.cpp	
+  block_timestamp_tests.cpp
   eosio.token_tests.cpp
   main.cpp
   producer_schedule_tests.cpp	snapshot_tests.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
   ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
-  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp
+#  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp
 ) # build unit tests as one executable
 
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c

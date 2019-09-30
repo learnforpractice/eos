@@ -1,3 +1,4 @@
+#include <string.h>
 #include "native_contracts.hpp"
 #include "wasm-rt-impl.h"
 #include <eosiolib_native/vm_api.h>
