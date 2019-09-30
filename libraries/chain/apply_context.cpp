@@ -61,6 +61,7 @@ extern "C" {
    void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size);
    void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action);
    void *get_apply_entry(std::array<uint8_t, 32> hash);
+   bool native_apply(std::array<uint8_t, 32>& hash, uint64_t receiver, uint64_t first_receiver, uint64_t action);
 }
 
 void apply_context::exec_one()
@@ -119,15 +120,12 @@ void apply_context::exec_one()
                            }
                         }
                         do {
-                           #if 0
-                           if (receiver == N(eosio) || receiver == N(eosio.token)) {
+                           #if 1
+                           if (1) { //receiver == N(eosio) || receiver == N(eosio.token)) {
                               std::array<uint8_t, 32> hash;
                               memcpy(hash.data(), receiver_account->code_hash.data(), 32);
-                              fn_contract_apply apply = (fn_contract_apply)get_apply_entry(hash);
-                              if (apply) {
-                                 string contract_name = account_name(receiver).to_string();
-//                                 dlog("debug contract ${name} ${hash} ${n1} ${n2}, ${n3}", ("name",contract_name)("hash",receiver_account->code_hash)("n1",receiver)("n2",act->account)("n3",act->name));
-                                 (*apply)(receiver, act->account, act->name);
+                              if (native_apply(hash, receiver, act->account, act->name)) {
+                                 ilog("+++++++receiver: ${receiver}, hash ${hash}", ("receiver", receiver)("hash", receiver_account->code_hash.str()));
                                  break;
                               }
                            }
