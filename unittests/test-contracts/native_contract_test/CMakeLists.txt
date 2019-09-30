@@ -1,5 +1,3 @@
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wasm2c.py.in ${CMAKE_CURRENT_BINARY_DIR}/wasm2c.py)
-
 if( EOSIO_COMPILE_TEST_CONTRACTS )
    add_contract( native_contract_test native_contract_test native_contract_test.cpp )
 else()

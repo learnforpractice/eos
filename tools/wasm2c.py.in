@@ -18,13 +18,13 @@ def wasm2c(contract_name, wasm_file):
     src_file = contract_name + '.c'
 
     wasm_injector = [
-        "${CMAKE_BINARY_DIR}/../../libraries/vm/vm_wasm/wasm_injector",
+        "${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector",
         wasm_file,
         file_injected
     ]
 
     wasm2c = [
-        "/Users/newworld/dev/wasm/wabt/build/wasm2c",
+        "${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c",
         '-o',
         src_file,
         file_injected
