@@ -43,8 +43,10 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
    vm_api_ro_init();
    chain_api_init();
 
-   Py_InitFrozenMain(argc, argv);
-   PyRun_SimpleString("print('hello from unit test')");
+   // Py_InitFrozenMain(argc, argv);
+   // PyRun_SimpleString("print('hello from unit test')");
+   // Py_FinalizeEx();
+
 //   Py_FrozenMain(argc, argv);
 
    bool is_verbose = false;
@@ -74,6 +76,5 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
    }
    std::cout << "EOS_TESTING_GENESIS_TIMESTAMP is " << EOS_TESTING_GENESIS_TIMESTAMP << std::endl;
    */
-   Py_FinalizeEx();
    return nullptr;
 }

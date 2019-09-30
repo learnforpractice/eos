@@ -43,6 +43,13 @@ using namespace eosio::chain;
 using namespace eosio::testing;
 using namespace fc;
 
+using mvo = mutable_variant_object;
+
+INCBIN(BasicTests, "basic_tests.py");
+INCBIN(APITests, "api_tests.py");
+INCBIN(DBTests, "db_tests.py");
+
+
 #include <memory>
 #include "src/interp.h"
 extern "C" uint8_t *vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages);
@@ -100,280 +107,78 @@ public:
     abi_serializer abi_ser;
 };
 
-#define TEST_SOURCE_PATH ""
-
-#define SET_CODE(src_path) \
-{ \
-   const char *src_file = TEST_SOURCE_PATH "/" src_path; \
-   int compiled_code_size; \
-   char *compiled_code = compile_python_source_file(src_file, &compiled_code_size); \
-   vector<char> v(compiled_code, compiled_code + compiled_code_size); \
-   free(compiled_code); \
-   set_code(N(noop), 1, v); \
-}
 
 
 BOOST_AUTO_TEST_SUITE(pythonvm_tests)
 
-
-extern "C" void wasm_interface_run_module_4(const char* data, size_t size);
-extern "C" void wasm_interface_run_module_3(const char* data, size_t size);
-
-#define wasm_interface_run_module wasm_interface_run_module_3
-
-const char *python_wasm_path = "/Users/newworld/dev/eos/build/contracts/pythontest/pythontest.wasm";
-//const char *python_wasm_path = "/Users/newworld/dev/wasm/cpython-emscripten/examples/01-print/python.asm.wasm";
-//const char *python_wasm_path = "/Users/newworld/dev/research/wasm/t.wasm";
-const char *python_test_script_file = "/Users/newworld/dev/eos/unittests/python/test.py.m";
-//const char *python_test_script_file = "/Users/newworld/dev/eos/unittests/python/large_file_test.py.m";
-//const char *python_test_script_file = "/Users/newworld/dev/eos.bk/contracts/libpython/Python-3.5.2/Tools/freeze/classtest.pyc";
-
-char *read_file(const char *wasm_path, int *size) {
-    FILE * pFile;
-    long lSize;
-    char * buffer;
-    size_t result;
-
-    pFile = fopen (wasm_path, "rb");
-    if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
-
-    // obtain file size:
-    fseek (pFile , 0 , SEEK_END);
-    lSize = ftell (pFile);
-    rewind (pFile);
-
-    // allocate memory to contain the whole file:
-    buffer = (char*) malloc (sizeof(char)*lSize);
-    if (buffer == NULL) {fputs ("Memory error",stderr); exit (2);}
-
-    // copy the file into the buffer:
-    result = fread (buffer,1,lSize,pFile);
-    if (result != lSize) {fputs ("Reading error",stderr); exit (3);}
-
-    /* the whole file is now loaded in the memory buffer. */
-    printf("+++++lSize %ld \n", lSize);
-    *size = lSize;
-//    wasm_interface_run_module(buffer, lSize);
-
-    // terminate
-    fclose (pFile);
-    return buffer;
-}
-// extra 1 byte for store  '\0'
-char *read_python_file(const char *python_path, int *size) {
-    FILE * pFile;
-    long lSize;
-    char * buffer;
-    size_t result;
-
-    pFile = fopen (python_path, "rb");
-    if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
-
-    // obtain file size:
-    fseek (pFile , 0 , SEEK_END);
-    lSize = ftell (pFile);
-    rewind (pFile);
-
-    // allocate memory to contain the whole file:
-    buffer = (char*) malloc (sizeof(char)*lSize+sizeof(char));
-    if (buffer == NULL) {fputs ("Memory error",stderr); exit (2);}
-    buffer[lSize] = 0;
-    // copy the file into the buffer:
-    result = fread (buffer,1,lSize,pFile);
-    if (result != lSize) {fputs ("Reading error",stderr); exit (3);}
-
-    /* the whole file is now loaded in the memory buffer. */
-    printf("+++++lSize %ld \n", lSize);
-    *size = lSize;
-//    wasm_interface_run_module(buffer, lSize);
-
-    // terminate
-    fclose (pFile);
-    return buffer;
-}
-
-char *compile_python_source(const char *src, int *compiled_size) {
-   *compiled_size = 0;
-   PyObject *code = Py_CompileStringExFlags(src, "contract", Py_file_input, NULL, 0);
-   if (code == NULL)
-      return NULL;
+vector<char> compile_python_source(std::string& src) {
+   PyObject *code = Py_CompileStringExFlags(src.c_str(), "contract", Py_file_input, NULL, 0);
+   if (code == NULL) {
+      return {};
+   }
 
    PyObject *marshalled = PyMarshal_WriteObjectToString(code, Py_MARSHAL_VERSION);
    Py_CLEAR(code);
-   if (marshalled == NULL)
-      return NULL;
+   if (marshalled == NULL) {
+      return {};
+   }
 
    assert(PyBytes_CheckExact(marshalled));
    const char *data = (char *) PyBytes_AS_STRING(marshalled);
    int data_size = PyBytes_GET_SIZE(marshalled);
+ 
+   vector<char> v(data, data+data_size);
    Py_CLEAR(marshalled);
-   *compiled_size = data_size;
-   char *_data = (char *)malloc(data_size);
-   memcpy(_data, data, data_size);
-   return _data;
+   return v;
 }
 
-char *compile_python_source_file(const char *filename, int *compiled_size) {
-   int source_file_size;
-   char *source_code = read_python_file(filename, &source_file_size);
-   if (source_code == NULL) {
-      return NULL;
-   }
-   char * compiled_code = compile_python_source(source_code, compiled_size);
-   FC_ASSERT(compiled_code != NULL, "compile code failed");
-   free(source_code);
-   return compiled_code;
-}
 
-int python_test() {
-   return 0;
-    int size = 0;
-    char *buffer = read_file(python_wasm_path, &size);
-    if (buffer) {
-//        wasm_interface_run_module(buffer, size);
-    }
-    free (buffer);
-    return 0;
-}
+extern "C" int Py_InitFrozenMain(int argc, char **argv);
+const char *argv[] = {"pythonvm", "test"};
 
-/// Test processing of unbalanced strings
-BOOST_AUTO_TEST_CASE(testpythonvm)
+BOOST_FIXTURE_TEST_CASE(basic_test, pythonvm_tester) try {
+   dlog("+++++++++++++++++++++++++");
+   auto cleanup = fc::make_scoped_exit([&](){
+      Py_FinalizeEx();
+   });
+
+   Py_InitFrozenMain(2, (char **)argv);
+
+
+   produce_blocks(2);
+   create_accounts( {N(noop), N(alice)} );
+   produce_block();
+
+   std::string src((char*)gBasicTestsData, gBasicTestsSize);
+   vector<char> v = compile_python_source(src);
+
+   set_code(N(noop), 1, v);
+
+   produce_block();
+
 {
-
-#if 1
-   python_test();
-#endif
+   vector<uint8_t> data;
+   push_action(N(noop), N(test1), data, N(noop));
 }
 
-BOOST_FIXTURE_TEST_CASE(testpythonvm2, TESTER) try {
+{
+   vector<uint8_t> data;
+   push_action(N(noop), N(test2), data, N(noop));
+}
+
+//global variable test
+{
+   vector<uint8_t> data;
+   push_action(N(noop), N(test3), data, N(noop));
+}
+   produce_block();
+{
+   vector<uint8_t> data;
+   push_action(N(noop), N(test3), data, N(noop));
+}
+
 
 } FC_LOG_AND_RETHROW()
-
-
-//INCBIN(fuzz1, "fuzz1.wasm");
-
-BOOST_FIXTURE_TEST_CASE(testpythonvm3, pythonvm_tester) try {
-   produce_blocks(2);
-   create_accounts( {N(noop), N(alice)} );
-   produce_block();
-
-   wlog("++++++++++set code begin...\n");
-   SET_CODE("python/test.py")
-
-   const auto& accnt  = control->db().get<account_object,by_name>(N(noop));
-   abi_def abi;
-   BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
-   abi_serializer abi_ser(abi, abi_serializer_max_time);
-   for (int i=0;i<3;i++)
-   {
-      produce_blocks(5);
-      signed_transaction trx;
-      action act;
-      act.account = N(noop);
-      act.name = N(anyaction);
-      act.authorization = vector<permission_level>{{N(noop), config::active_name}};
-
-      act.data = abi_ser.variant_to_binary("anyaction", mutable_variant_object()
-                                           ("from", "noop")
-                                           ("type", "some type")
-                                           ("data", "some data goes here"),
-                                           abi_serializer_max_time
-                                           );
-
-      trx.actions.emplace_back(std::move(act));
-
-      set_transaction_headers(trx);
-      trx.sign(get_private_key(N(noop), "active"), control->get_chain_id());
-      auto r =push_transaction(trx);
-      vmdlog("r->elapsed.count() %ld\n", r->elapsed.count());
-      produce_block();
-
-      BOOST_REQUIRE_EQUAL(true, chain_has_transaction(trx.id()));
-   }
-
- } FC_LOG_AND_RETHROW()
-
-
-BOOST_FIXTURE_TEST_CASE(testpythonvm4, pythonvm_tester) try {
-   produce_blocks(2);
-   create_accounts( {N(noop), N(alice)} );
-   produce_block();
-
-   wlog("++++++++++set abi begin...\n");
-
-#if 1
-//    vector<char> wasm(gfuzz1Data, gfuzz1Data + gfuzz1Size);
-#else
-    int size = 0;
-    const char *script = "/Users/newworld/dev/eos/build/contracts/hello/hello.wast";
-    char *buffer = read_file(script, &size);
-    vmdlog("++++++++++++++++++++script size %d\n", size);
-    vector<char> wasm(buffer, buffer + size);
-#endif
-   
-   SET_CODE("python/test.py")
-
-   const auto& accnt  = control->db().get<account_object,by_name>(N(noop));
-   abi_def abi;
-   BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
-   abi_serializer abi_ser(abi, abi_serializer_max_time);
-   
-   wlog("++++++++++send anyaction begin...\n"); 
-
-   {
-      produce_blocks(5);
-      signed_transaction trx;
-      action act;
-      act.account = N(noop);
-      act.name = N(anyaction);
-      act.authorization = vector<permission_level>{{N(noop), config::active_name}};
-
-      act.data = abi_ser.variant_to_binary("anyaction", mutable_variant_object()
-                                           ("from", "noop")
-                                           ("type", "some type")
-                                           ("data", "some data goes here"),
-                                           abi_serializer_max_time
-                                           );
-
-      trx.actions.emplace_back(std::move(act));
-
-      set_transaction_headers(trx);
-      trx.sign(get_private_key(N(noop), "active"), control->get_chain_id());
-      auto r =push_transaction(trx);
-      vmdlog("r->elapsed.count() %ld\n", r->elapsed.count());
-      produce_block();
-
-      BOOST_REQUIRE_EQUAL(true, chain_has_transaction(trx.id()));
-   }
-
-   for (int i=0;i<3;i++)
-   {
-      produce_blocks(5);
-      signed_transaction trx;
-      action act;
-      act.account = N(noop);
-      act.name = N(anyaction);
-      act.authorization = vector<permission_level>{{N(noop), config::active_name}};
-
-      act.data = abi_ser.variant_to_binary("anyaction", mutable_variant_object()
-                                           ("from", "noop")
-                                           ("type", "some type")
-                                           ("data", "some data goes here"),
-                                           abi_serializer_max_time
-                                           );
-
-      trx.actions.emplace_back(std::move(act));
-
-      set_transaction_headers(trx);
-      trx.sign(get_private_key(N(noop), "active"), control->get_chain_id());
-      auto r =push_transaction(trx);
-      vmdlog("r->elapsed.count() %ld\n", r->elapsed.count());
-      produce_block();
-
-      BOOST_REQUIRE_EQUAL(true, chain_has_transaction(trx.id()));
-   }
-
- } FC_LOG_AND_RETHROW()
 
 
 struct vm_state_backup {

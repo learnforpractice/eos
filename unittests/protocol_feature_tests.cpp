@@ -1418,25 +1418,31 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
       0x05,0x00,0x00,0x00,0x72,0x05,0x00,0x00,0x00,0x72,0x05,0x00,0x00,0x00,0x72,0x06,
       0x00,0x00,0x00,0xda,0x08,0x3c,0x6d,0x6f,0x64,0x75,0x6c,0x65,0x3e,0x02,0x00,0x00,
       0x00,0xf3,0x00,0x00,0x00,0x00,};
+   ilog("+++++++++++");
 
    BOOST_CHECK_EXCEPTION(  c.set_code( tester1_account, pythonvm_code, 1, nullptr ),
-                           invalid_contract_vm_type,
+                           set_exact_code,
                            fc_exception_message_is( "pythonvn not activated!" ) );
+   ilog("+++++++++++");
 
    const auto& pfm = c.control->get_protocol_feature_manager();
    const auto& d = pfm.get_builtin_digest( builtin_protocol_feature_t::pythonvm );
    BOOST_REQUIRE( d );
+   ilog("+++++++++++");
 
    c.preactivate_protocol_features( {*d} );
    c.produce_block();
 
    c.set_code( tester1_account, pythonvm_code, 1, nullptr );
+   ilog("+++++++++++");
+
    c.produce_block();
 
    vector<uint8_t> data;
    c.push_action( N(tester1), N(sayhello), data, N(tester1));
    c.produce_block();
    c.push_action( N(tester1), N(sayhello), data, N(tester1));
+   ilog("+++++++++++");
 
 
 } FC_LOG_AND_RETHROW() }

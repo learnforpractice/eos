@@ -93,6 +93,7 @@ target_include_directories( unit_test PUBLIC
                             ${CMAKE_CURRENT_SOURCE_DIR}/genesis_test
                             ${CMAKE_CURRENT_BINARY_DIR}/contracts
                             ${CMAKE_CURRENT_BINARY_DIR}/test-contracts
+                            ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm_test
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/Python-3.7.4
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/Python-3.7.4/Include
                             ${CMAKE_CURRENT_BINARY_DIR}/include 
