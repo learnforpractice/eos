@@ -18,7 +18,6 @@ static constexpr uint64_t inv_double_eps = 0x4330000000000000;
 /* import: 'eosio_injection' 'checktime' */
 void (*Z_eosio_injectionZ_checktimeZ_vv)(void);
 void vm_checktime() {
-    return;
     if (get_vm_api()->is_in_apply_context) {
         get_vm_api()->checktime();
     }
@@ -26,9 +25,7 @@ void vm_checktime() {
 /* import: 'eosio_injection' 'call_depth_assert' */
 void (*Z_eosio_injectionZ_call_depth_assertZ_vv)(void);
 static void call_depth_assert() {
-    if (get_vm_api()->is_in_apply_context) {
-        get_vm_api()->eosio_assert(0, "Exceeded call depth maximum");
-    }
+    get_vm_api()->eosio_assert(0, "Exceeded call depth maximum");
 }
 
 static bool is_nan( const float32_t f ) {
