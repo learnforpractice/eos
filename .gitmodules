@@ -30,3 +30,6 @@
 [submodule "externals/cppzmq"]
 	path = externals/cppzmq
 	url = https://github.com/learnforpractice/cppzmq
+[submodule "externals/aleth"]
+	path = externals/aleth
+	url = https://github.com/learnforpractice/aleth
