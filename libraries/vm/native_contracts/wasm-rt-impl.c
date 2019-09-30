@@ -96,6 +96,7 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
                              uint32_t initial_pages,
                              uint32_t max_pages) {
   memory->pages = initial_pages;
+  memory->initial_pages = initial_pages;
   memory->max_pages = max_pages;
   memory->size = initial_pages * PAGE_SIZE;
   memory->data = calloc(memory->size, 1);
