@@ -28,6 +28,8 @@ extern "C"
    void vm_api_init();
    int Py_FrozenMain(int argc, char **argv);
    int run_python(int argc, char **argv);
+
+   int Py_InitFrozenMain(int argc, char **argv);
 }
 
 
@@ -40,6 +42,10 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
    vm_api_init();
    vm_api_ro_init();
    chain_api_init();
+
+   Py_InitFrozenMain(argc, argv);
+   PyRun_SimpleString("print('hello from unit test')");
+//   Py_FrozenMain(argc, argv);
 
    bool is_verbose = false;
    std::string verbose_arg = "--verbose";
