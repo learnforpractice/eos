@@ -101,6 +101,7 @@ static inline apply_context& get_ctx_no_access_check() {
 #include "print.cpp"
 #include "permission.cpp"
 
+#define MAX_BUFFER_SIZE 1024
 static vector<char> print_buffer;
 static char output[1024];
 
@@ -112,7 +113,7 @@ void log_(int level, int line, const char *file, const char *func, const char *f
    va_end(args);
 
    for (int i=0;i<len;i++) {
-      if (output[i] == '\n') {
+      if (output[i] == '\n' || print_buffer.size()>MAX_BUFFER_SIZE) {
          string s(print_buffer.data(), print_buffer.size());
 
          FC_MULTILINE_MACRO_BEGIN
