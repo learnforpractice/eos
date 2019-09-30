@@ -7,6 +7,7 @@
 #include "eosio.system.h"
 #include <eosiolib_native/vm_api.h>
 #include "wasm-rt-impl.h"
+#include <vm_defines.h>
 
 using namespace std;
 
@@ -85,18 +86,6 @@ void vm_on_trap(wasm_rt_trap_t code) {
    }
 }
 
-extern "C" void native_contracts_init() {
-    init_eosio_system();
-    init_vm_api4c();
-    init_contracts();
-    wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try();
-    if (code != 0) {
-        printf("A trap occurred with code: %d\n", code);
-        vm_on_trap(code);
-    }
-    (*WASM_RT_ADD_PREFIX(init))();
-}
-
 extern "C" void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size) {
     std::array<uint8_t, 32> arr;
 //    get_vm_api()->eosio_assert(size == 32, "bad hash size!");
@@ -140,7 +129,7 @@ extern "C" wasm_rt_memory_t* get_wasm_rt_memory() {
    return nullptr;
 }
 
-extern "C" void *offset_to_ptr(u32 offset, u32 size) {
+static void *offset_to_ptr_s(u32 offset, u32 size) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
 //    printf("++++++offset %u, size %u\n", offset, size);
     get_vm_api()->eosio_assert(memory != nullptr, "memory should not be null");
@@ -148,7 +137,7 @@ extern "C" void *offset_to_ptr(u32 offset, u32 size) {
     return memory->data + offset;
 }
 
-extern "C" void *offset_to_char_ptr(u32 offset) {
+static void *offset_to_char_ptr_s(u32 offset) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
     get_vm_api()->eosio_assert(memory != nullptr, "memory should not be null");
     for (int i=offset;i<memory->size;i++) {
@@ -158,6 +147,20 @@ extern "C" void *offset_to_char_ptr(u32 offset) {
     }
     get_vm_api()->eosio_assert(0, "not a valid c string!");
     return NULL;
+}
+
+
+extern "C" void native_contracts_init() {
+    set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
+    init_eosio_system();
+    init_vm_api4c();
+    init_contracts();
+    wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try();
+    if (code != 0) {
+        printf("A trap occurred with code: %d\n", code);
+        vm_on_trap(code);
+    }
+    (*WASM_RT_ADD_PREFIX(init))();
 }
 
 extern "C" void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action) {

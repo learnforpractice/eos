@@ -75,7 +75,7 @@ add_executable( unit_test
   producer_schedule_tests.cpp	snapshot_tests.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
-  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
+#  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp
 ) # build unit tests as one executable
 

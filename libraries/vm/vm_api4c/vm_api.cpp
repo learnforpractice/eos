@@ -8,6 +8,7 @@
 #include <chain_api.hpp>
 
 #include "src/interp.h"
+#include "vm_defines.h"
 
 using namespace wabt::interp;
 
@@ -347,5 +348,20 @@ void init_vm_api4c() {
 //    WASM_RT_ADD_PREFIX(init)();
 }
 
+static fn_offset_to_ptr g_offset_to_ptr = 0;
+static fn_offset_to_char_ptr g_offset_to_char_ptr = 0;
+
+void set_memory_converter(fn_offset_to_ptr f1, fn_offset_to_char_ptr f2) {
+    g_offset_to_ptr = f1;
+    g_offset_to_char_ptr = f2;
+}
+
+void *offset_to_ptr(u32 offset, u32 size) {
+    return g_offset_to_ptr(offset, size);
+}
+
+void *offset_to_char_ptr(u32 offset) {
+    return g_offset_to_char_ptr(offset);
+}
 
 }

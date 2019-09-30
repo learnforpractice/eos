@@ -11,6 +11,7 @@
 #include <memory>
 
 #include "wasm-rt-impl.h"
+#include "vm_defines.h"
 
 #define PAGE_SIZE (65536)
 
@@ -142,7 +143,7 @@ void vm_load_memory(uint32_t offset_start, uint32_t length) {
     LoadDataToWritableMemory(_vm_memory, offset_start, length);
 }
 
-void *offset_to_ptr(u32 offset, u32 size) {
+static void *offset_to_ptr_s(u32 offset, u32 size) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
     vm_load_memory(offset, size);
 //    printf("++++++offset %u, size %u\n", offset, size);
@@ -150,7 +151,7 @@ void *offset_to_ptr(u32 offset, u32 size) {
     return memory->data + offset;
 }
 
-void *offset_to_char_ptr(u32 offset) {
+static void *offset_to_char_ptr_s(u32 offset) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
     for (int i=offset;i<memory->size;i++) {
         vm_load_memory(i, 1);
@@ -182,6 +183,8 @@ void vm_python2_init() {
       return;
    }
    initialized = 1;
+
+   set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
 
    Z_envZ_find_frozen_codeZ_iiiii = _find_frozen_code;
    init_vm_api4c();
