@@ -344,7 +344,7 @@ void init_vm_api4c() {
     init_softfloat();
     init_eosio_injection();
     printf("++++%s %d\n", __FUNCTION__, __LINE__);
-    WASM_RT_ADD_PREFIX(init)();
+//    WASM_RT_ADD_PREFIX(init)();
 }
 
 

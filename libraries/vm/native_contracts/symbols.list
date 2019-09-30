@@ -5,6 +5,8 @@ _get_apply_entry
 _get_contract_memory
 _native_apply
 _add_native_contract
+_offset_to_ptr
+_offset_to_char_ptr
 
 
 
