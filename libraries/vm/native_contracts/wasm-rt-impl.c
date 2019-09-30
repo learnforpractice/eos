@@ -16,11 +16,13 @@
 
 #include "wasm-rt-impl.h"
 
-#include <assert.h>
+//#include <assert.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+#include <eosiolib/system.h>
 
 #define PAGE_SIZE 65536U
 
@@ -39,7 +41,7 @@ FuncType* g_func_types;
 uint32_t g_func_type_count;
 
 void wasm_rt_trap(wasm_rt_trap_t code) {
-  assert(code != WASM_RT_TRAP_NONE);
+  eosio_assert(code != WASM_RT_TRAP_NONE, "code != WASM_RT_TRAP_NONE");
   wasm_rt_call_stack_depth = g_saved_call_stack_depth;
   longjmp(g_jmp_buf, code);
 }
@@ -94,6 +96,7 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
                              uint32_t initial_pages,
                              uint32_t max_pages) {
   memory->pages = initial_pages;
+  memory->initial_pages = initial_pages;
   memory->max_pages = max_pages;
   memory->size = initial_pages * PAGE_SIZE;
   memory->data = calloc(memory->size, 1);

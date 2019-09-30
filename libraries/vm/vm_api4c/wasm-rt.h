@@ -32,7 +32,7 @@ extern "C" {
  * ```
  * */
 #ifndef WASM_RT_MAX_CALL_STACK_DEPTH
-#define WASM_RT_MAX_CALL_STACK_DEPTH 500
+#define WASM_RT_MAX_CALL_STACK_DEPTH 100
 #endif
 
 /** Reason a trap occurred. Provide this to `wasm_rt_trap`. */
@@ -78,6 +78,9 @@ typedef struct {
   uint32_t pages, max_pages;
   /** The current size of the linear memory, in bytes. */
   uint32_t size;
+  uint8_t* data_backup;
+  uint32_t data_backup_size;
+  uint32_t initial_pages;
 } wasm_rt_memory_t;
 
 /** A Table object. */

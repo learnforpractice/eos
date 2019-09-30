@@ -149,6 +149,165 @@ SET(SRC_FILES
 ./Modules/_tracemalloc.c
 )
 
+set(FROZEN_MODULES 
+    ./M/M_importlib___bootstrap.c
+    ./M/M_email__header.c
+    ./M/M_runpy.c
+    ./M/M_sre_parse.c
+    ./M/M_email__policy.c
+    ./M/M_weakref.c
+    ./M/M_ntpath.c
+    ./M/M_xml__parsers__expat.c
+    ./M/M_unittest.c
+    ./M/M_tokenize.c
+    ./M/M_shutil.c
+    ./M/M_copyreg.c
+    ./M/M___future__.c
+    ./M/M_traceback.c
+    ./M/M_unittest__case.c
+    ./M/M_rlcompleter.c
+    ./M/M_email__message.c
+    ./M/M_hashlib.c
+    ./M/M_email___encoded_words.c
+    ./M/M_operator.c
+    ./M/M_sre_constants.c
+    ./M/M_inspect.c
+    ./M/M_textwrap.c
+    ./M/M_xml.c
+    ./M/M_tempfile.c
+    ./M/M_pydoc_data__topics.c
+    ./M/M_re.c
+    ./M/M_email__charset.c
+    ./M/M_ast.c
+    ./M/M_ssl.c
+    ./M/M_os.c
+    ./M/M_datetime.c
+    ./M/M_zipfile.c
+    ./M/M__frozen_importlib.c
+    ./M/M_encodings__utf_8.c
+    ./M/M_optparse.c
+    ./M/M_calendar.c
+    ./M/M_unittest__result.c
+    ./M/M_base64.c
+    ./M/M_locale.c
+    ./M/M_email__headerregistry.c
+    ./M/M_xml__parsers.c
+    ./M/M_fnmatch.c
+    ./M/M_types.c
+    ./M/M_email__errors.c
+    ./M/M_encodings__latin_1.c
+    ./M/M_argparse.c
+    ./M/M_pdb.c
+    ./M/M_gettext.c
+    ./M/M_signal.c
+    ./M/M_typing.c
+    ./M/M__bootlocale.c
+    ./M/M_cmd.c
+    ./M/M_codeop.c
+    ./M/M_http__server.c
+    ./M/M_pkgutil.c
+    ./M/M_copy.c
+    ./M/M_bdb.c
+    ./M/M_reprlib.c
+    ./M/M_unittest__util.c
+    ./M/M_email__base64mime.c
+    ./M/M_email__parser.c
+    ./M/M_socketserver.c
+    ./M/M_getopt.c
+    ./M/M__frozen_importlib_external.c
+    ./M/M_warnings.c
+    ./M/M_abc.c
+    ./M/M_glob.c
+    ./M/M_struct.c
+    ./M/M_uu.c
+    ./M/M_email.c
+    ./M/M_pydoc.c
+    ./M/M_subprocess.c
+    ./M/M_email__quoprimime.c
+    ./M/M_pprint.c
+    ./M/M__compat_pickle.c
+    ./M/M_encodings__aliases.c
+    ./M/M__sitebuiltins.c
+    ./M/M_genericpath.c
+    ./M/M___main__.c
+    ./M/M_email__generator.c
+    ./M/M_collections__abc.c
+    ./M/M_threading.c
+    ./M/M_gzip.c
+    ./M/M_heapq.c
+    ./M/M_email__contentmanager.c
+    ./M/M_tty.c
+    ./M/M_bz2.c
+    ./M/M_codecs.c
+    ./M/M__strptime.c
+    ./M/M_dis.c
+    ./M/M_unittest__signals.c
+    ./M/M_posixpath.c
+    ./M/M_lzma.c
+    ./M/M_sre_compile.c
+    ./M/M_logging.c
+    ./M/M_encodings.c
+    ./M/M_linecache.c
+    ./M/M_importlib__util.c
+    ./M/M_unittest__suite.c
+    ./M/M_http__client.c
+    ./M/M_enum.c
+    ./M/M_email__iterators.c
+    ./M/M_tracemalloc.c
+    ./M/M_pickle.c
+    ./M/config.c
+    ./M/M__compression.c
+    ./M/M_importlib__machinery.c
+    ./M/M_difflib.c
+    ./M/M_http.c
+    ./M/M_token.c
+    ./M/M_shlex.c
+    ./M/M_email___parseaddr.c
+    ./M/M__collections_abc.c
+    ./M/M_platform.c
+    ./M/M_html.c
+    ./M/M_contextlib.c
+    ./M/M__weakrefset.c
+    ./M/M_bisect.c
+    ./M/M_io.c
+    ./M/M__threading_local.c
+    ./M/M_email__encoders.c
+    ./M/M_unittest__loader.c
+    ./M/M_stat.c
+    ./M/M_webbrowser.c
+    ./M/M_tarfile.c
+    ./M/M_collections.c
+    ./M/M__py_abc.c
+    ./M/M_site.c
+    ./M/M_unittest__main.c
+    ./M/M_importlib___bootstrap_external.c
+    ./M/M_doctest.c
+    ./M/M_py_compile.c
+    ./M/M_opcode.c
+    ./M/M_selectors.c
+    ./M/M_mimetypes.c
+    ./M/M_keyword.c
+    ./M/M_email___policybase.c
+    ./M/M_code.c
+    ./M/M_email__feedparser.c
+    ./M/M_socket.c
+    ./M/M_plistlib.c
+    ./M/M_urllib.c
+    ./M/M_importlib__abc.c
+    ./M/M_importlib.c
+    ./M/M_string.c
+    ./M/M_unittest__runner.c
+    ./M/M_email__utils.c
+    ./M/M_html__entities.c
+    ./M/M_email___header_value_parser.c
+    ./M/M_encodings__mbcs.c
+    ./M/M_pydoc_data.c
+    ./M/M_urllib__parse.c
+    ./M/M_quopri.c
+    ./M/M_random.c
+    ./M/M_functools.c
+)
+
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.5" -DVPATH="" -DPYTHONPATH="")
 
 set(PYTHON_INC_FOLDERS 
@@ -158,7 +317,9 @@ set(PYTHON_INC_FOLDERS
 add_library( python3-ss
           STATIC
           ${SRC_FILES}
+          ${FROZEN_MODULES}
           ./Modules/config.c
+          ./M/frozen.c
 )
 
 set(PYTHON_FLAGS -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")

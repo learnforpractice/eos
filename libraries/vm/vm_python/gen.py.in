@@ -3,7 +3,7 @@ import subprocess
 import os
 import sys
 
-arg1 = ['eosio-wasm2wast', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wast', '${CMAKE_BINARY_DIR}/contracts/python37/libpython37/pythonvm.wasm']
+arg1 = ['eosio-wasm2wast', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wast', '${CMAKE_BINARY_DIR}/contracts/python37/pythonvm/pythonvm.wasm']
 arg2 = ['eosio-wast2wasm', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wast']
 #arg3 = ['eosio-pp', '-o', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm-pp.wasm', '${CMAKE_CURRENT_BINARY_DIR}/pythonvm.wasm']
 
