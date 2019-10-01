@@ -1,4 +1,4 @@
-add_executable( account_snapshot main.cpp )
+add_executable( accounts_snapshot main.cpp )
 
 if( UNIX AND NOT APPLE )
   set(rt_library rt )
@@ -6,7 +6,7 @@ endif()
 
 find_package( Gperftools QUIET )
 if( GPERFTOOLS_FOUND )
-    message( STATUS "Found gperftools; compiling account_snapshot with TCMalloc")
+    message( STATUS "Found gperftools; compiling accounts_snapshot with TCMalloc")
     list( APPEND PLATFORM_SPECIFIC_LIBS tcmalloc )
 endif()
 
@@ -29,7 +29,7 @@ endif()
 
 configure_file(config.hpp.in config.hpp ESCAPE_QUOTES)
 
-target_include_directories(account_snapshot PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+target_include_directories(accounts_snapshot PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/contracts
 )
 
@@ -49,7 +49,7 @@ else()
   set(build_id_flag "")
 endif()
 
-target_link_libraries( account_snapshot
+target_link_libraries( accounts_snapshot
         PRIVATE appbase
         PRIVATE -Wl,${whole_archive_flag} net_plugin                 -Wl,${no_whole_archive_flag}
         PRIVATE -Wl,${build_id_flag}
@@ -60,14 +60,14 @@ target_link_libraries( account_snapshot
         )
 
 if(BUILD_MONGO_DB_PLUGIN)
-  target_link_libraries( account_snapshot PRIVATE -Wl,${whole_archive_flag} mongo_db_plugin -Wl,${no_whole_archive_flag} eosiolib_native)
+  target_link_libraries( accounts_snapshot PRIVATE -Wl,${whole_archive_flag} mongo_db_plugin -Wl,${no_whole_archive_flag} eosiolib_native)
 endif()
 
 include(additionalPlugins)
 
-copy_bin( account_snapshot )
+copy_bin( accounts_snapshot )
 install( TARGETS
-   account_snapshot RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR} COMPONENT base
+   accounts_snapshot RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR} COMPONENT base
 )
 install(DIRECTORY DESTINATION ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/log/eosio
         DIRECTORY_PERMISSIONS OWNER_READ

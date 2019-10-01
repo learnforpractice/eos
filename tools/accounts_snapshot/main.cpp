@@ -110,8 +110,17 @@ public_key_type find_public_key_by_name(const chainbase::database& db, account_n
    while( perm != permissions.end() && perm->owner == name ) {
       if (perm->auth.keys.size() != 0) {
          return perm->auth.keys[0].key;
-      } else if (perm->auth.accounts.size() != 0) {
-         return find_public_key_by_name2(db, perm->auth.accounts[0].permission.actor);
+      }
+      ++perm;
+   }
+
+   perm = permissions.lower_bound( boost::make_tuple( name ) );
+   while( perm != permissions.end() && perm->owner == name ) {
+      if (perm->auth.accounts.size() != 0) {
+         auto public_key = find_public_key_by_name2(db, perm->auth.accounts[0].permission.actor);
+         if (public_key != public_key_type()) {
+            return public_key;
+         }
       }
       ++perm;
    }
