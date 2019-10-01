@@ -1,4 +1,4 @@
-add_library(native_contracts  STATIC
+add_library(native_contracts STATIC
     main.cpp
     wasm-rt-impl.c
     eosio.system.c

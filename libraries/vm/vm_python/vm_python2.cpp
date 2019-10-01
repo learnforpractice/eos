@@ -11,7 +11,7 @@
 #include <memory>
 
 #include "wasm-rt-impl.h"
-#include "vm_defines.h"
+#include "vm_api4c.h"
 
 #define PAGE_SIZE (65536)
 
@@ -57,8 +57,9 @@ extern "C" {
    extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
    /* export: 'call' */
    extern void (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(u64, u64, u64, u64);
-
    extern void (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))(void);
+   //pythonvm.c.bin
+   extern void WASM_RT_ADD_PREFIX(init)(void);
 
    void export_vm_apply(uint64_t receiver, uint64_t code, uint64_t action) {
       (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(receiver, code, action);
@@ -82,7 +83,6 @@ extern "C" {
    uint8_t *vm_grow_memory(uint32_t delta);
    void vm_load_memory(uint32_t offset_start, uint32_t length);
 
-   void init_vm_api4c();
 
 
 void find_frozen_code(const char *name, const char **code, int *size);
@@ -188,6 +188,8 @@ void vm_python2_init() {
 
    Z_envZ_find_frozen_codeZ_iiiii = _find_frozen_code;
    init_vm_api4c();
+   WASM_RT_ADD_PREFIX(init)();
+
    (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))();
 
    _vm_memory->init_smart_contract = true;

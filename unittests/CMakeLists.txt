@@ -86,7 +86,7 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_cont
     COMMENT "Generating ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c"
 )
 
-target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} vm_api4c native_contracts python3-ss)
+target_link_libraries( unit_test eosio_chain chainbase eosio_testing fc appbase ${PLATFORM_SPECIFIC_LIBS} native_contracts python3-ss)
 
 target_compile_options(unit_test PUBLIC -DDISABLE_EOSLIB_SERIALIZE)
 target_include_directories( unit_test PUBLIC

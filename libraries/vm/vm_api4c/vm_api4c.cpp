@@ -128,7 +128,6 @@ u32 (*Z_envZ_get_codeZ_ijii)(u64, u32, u32);
 /* import: 'env' 'get_code_size' */
 u32 (*Z_envZ_get_code_sizeZ_ij)(u64);
 
-extern void WASM_RT_ADD_PREFIX(init)(void);
 static void _set_copy_memory_range(u32 start, u32 end) {
     get_vm_api()->set_copy_memory_range((int)start, (int)end);
 }
@@ -345,7 +344,6 @@ void init_vm_api4c() {
     init_softfloat();
     init_eosio_injection();
     printf("++++%s %d\n", __FUNCTION__, __LINE__);
-//    WASM_RT_ADD_PREFIX(init)();
 }
 
 static fn_offset_to_ptr g_offset_to_ptr = 0;
