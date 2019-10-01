@@ -1,5 +1,5 @@
 CODEABI_1.0 {
-    global: native_contracts_init;get_native_eosio_system_apply_entry;native_eosio_token_apply;get_apply_entry;get_contract_memory;native_apply;add_native_contract;offset_to_ptr;offset_to_char_ptr;
+    global: native_contracts_init;get_native_eosio_system_apply_entry;native_eosio_token_apply;get_apply_entry;get_contract_memory;native_contract_apply;add_native_contract;offset_to_ptr;offset_to_char_ptr;
     local: *;
 };
 

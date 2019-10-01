@@ -191,7 +191,7 @@ void vm_on_trap(wasm_rt_trap_t code) {
 
 typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
 
-bool native_apply(std::array<uint8_t, 32>& hash, uint64_t receiver, uint64_t first_receiver, uint64_t action) {
+bool native_contract_apply(std::array<uint8_t, 32>& hash, uint64_t receiver, uint64_t first_receiver, uint64_t action) {
     fn_contract_apply apply = (fn_contract_apply)get_apply_entry(hash);
     if (!apply) {
         return false;

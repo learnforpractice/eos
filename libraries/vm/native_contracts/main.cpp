@@ -44,11 +44,6 @@ void init_eosio_system() {
     };
 }
 
-#define init native_init
-#define apply native_apply
-#undef init
-#undef apply
-
 }
 
 void vm_on_trap(wasm_rt_trap_t code) {
@@ -122,9 +117,6 @@ extern "C" wasm_rt_memory_t* get_wasm_rt_memory() {
     std::array<uint8_t,32> hash;
     get_vm_api()->get_code_version(receiver, (char *)hash.data(), 32);
    return get_contract_memory(hash);
-
-   get_vm_api()->eosio_assert(0, "memory not found!");
-   return nullptr;
 }
 
 static void *offset_to_ptr_s(u32 offset, u32 size) {
