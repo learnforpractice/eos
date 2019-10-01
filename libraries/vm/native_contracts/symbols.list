@@ -7,7 +7,9 @@ _native_contract_apply
 _add_native_contract
 _offset_to_ptr
 _offset_to_char_ptr
-
-
-
-
+_wasm_rt_allocate_memory
+_wasm_rt_allocate_table
+_wasm_rt_call_stack_depth
+_wasm_rt_grow_memory
+_wasm_rt_register_func_type
+_wasm_rt_trap
