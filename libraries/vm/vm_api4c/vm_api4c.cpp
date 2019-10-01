@@ -8,7 +8,7 @@
 #include <chain_api.hpp>
 
 #include "src/interp.h"
-#include "vm_defines.h"
+#include "vm_api4c.h"
 
 using namespace wabt::interp;
 

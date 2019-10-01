@@ -1,5 +1,5 @@
 add_library(vm_api4c STATIC 
-    vm_api.cpp
+    vm_api4c.cpp
     chain_api.cpp
     softfloat.cpp
     eosio_injection.cpp

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "vm_defines.h"
+#include "vm_api4c.h"
 #include <softfloat.hpp>
 #include <eosiolib_native/vm_api.h>
 

@@ -1,5 +1,5 @@
 
-#include "vm_defines.h"
+#include "vm_api4c.h"
 #include <string.h>
 #include <softfloat.hpp>
 

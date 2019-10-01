@@ -7,11 +7,11 @@
 #include "eosio.system.h"
 #include <eosiolib_native/vm_api.h>
 #include "wasm-rt-impl.h"
-#include <vm_defines.h>
+#include <vm_api4c.h>
 
 using namespace std;
 
-//contracts.cpp
+//native_contracts.cpp
 extern "C" {
    void init_contracts();
    wasm_rt_memory_t *get_contract_memory(std::array<uint8_t, 32> hash);
@@ -50,8 +50,6 @@ void init_eosio_system() {
 #undef apply
 
 }
-
-extern "C" void init_vm_api4c();
 
 void vm_on_trap(wasm_rt_trap_t code) {
    get_vm_api()->eosio_assert(0, "vm runtime error");
