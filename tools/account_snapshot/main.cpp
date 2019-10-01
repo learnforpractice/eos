@@ -15,6 +15,7 @@
 
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+#include <eosio/chain/permission_object.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -91,6 +92,32 @@ extern "C"
 
 #include <eosiolib_native/vm_api.h>
 
+public_key_type find_public_key_by_name2(const chainbase::database& db, account_name name) {
+   const auto& permissions = db.get_index<permission_index,by_owner>();
+   auto perm = permissions.lower_bound( boost::make_tuple( name ) );
+   while( perm != permissions.end() && perm->owner == name ) {
+      if (perm->auth.keys.size() != 0) {
+         return perm->auth.keys[0].key;
+      }
+      ++perm;
+   }
+   return public_key_type();
+}
+
+public_key_type find_public_key_by_name(const chainbase::database& db, account_name name) {
+   const auto& permissions = db.get_index<permission_index,by_owner>();
+   auto perm = permissions.lower_bound( boost::make_tuple( name ) );
+   while( perm != permissions.end() && perm->owner == name ) {
+      if (perm->auth.keys.size() != 0) {
+         return perm->auth.keys[0].key;
+      } else if (perm->auth.accounts.size() != 0) {
+         return find_public_key_by_name2(db, perm->auth.accounts[0].permission.actor);
+      }
+      ++perm;
+   }
+   return public_key_type();
+}
+
 int main(int argc, char** argv)
 {
    vm_api_init();
@@ -127,28 +154,28 @@ int main(int argc, char** argv)
       auto& db = app().get_plugin<chain_plugin>().chain().db();
       vm_register_api(api_ro);
 
-      auto idx = db.get_index<account_metadata_index>().indices();
-      auto itr = idx.get<by_name>().end();
-      auto itr2 = idx.get<by_name>().upper_bound(itr->name);
+      const auto& accounts = db.get_index<account_metadata_index, by_name>();
+      auto itr = accounts.upper_bound(account_name(0));
 
-      string file_name = "accmounts.bin";
+      string file_name = "genesis_accmounts.bin";
       fstream file(file_name, ios::out | ios::binary);
 
       int counter = 0;
-      while (itr2 != idx.get<by_name>().end()) {
-//         ilog("++++${n} ${n2}", ("n", itr2->name)("n2", token_get_balance(itr2->name.value, "EOS")));
-         uint64_t value = itr2->name.value;
-         file.write((char *)&value, 8);
-         value = token_get_balance(itr2->name.value, "EOS");
-         file.write((char *)&value, 8);
-         itr2 = idx.get<by_name>().upper_bound(itr2->name);
+      while (itr != accounts.end()) {
+         file.write((char*)&itr->name.value, 8);
+         auto public_key = find_public_key_by_name(db, itr->name);
+         auto raw = fc::raw::pack(public_key);
+         file.write(raw.data(), raw.size());
+         if (public_key == public_key_type()) {
+            ilog("++++counter ${n} ${key}", ("n", itr->name)("key", public_key));
+         }
          counter += 1;
          if (counter % 1000 == 0) {
-            ilog("++++counter ${n}", ("n", counter));
+//            ilog("++++counter ${n}", ("n", counter));
          }
+         itr++;
       }
       file.close();
-
 //      app().exec();
    } catch( const extract_genesis_state_exception& e ) {
       return EXTRACTED_GENESIS;
