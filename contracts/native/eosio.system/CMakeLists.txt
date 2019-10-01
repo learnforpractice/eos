@@ -9,6 +9,7 @@ add_library(eosio.system.native SHARED
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/rex.cpp
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/voting.cpp
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/activate_accounts.cpp
+    main.cpp
 )
 
 target_link_libraries( eosio.system.native PRIVATE eosiolib.native eosiolib_native )
