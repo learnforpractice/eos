@@ -92,15 +92,38 @@ extern "C"
 
 #include <eosiolib_native/vm_api.h>
 
-public_key_type find_public_key_by_name2(const chainbase::database& db, account_name name) {
+public_key_type find_public_key_by_name2(const chainbase::database& db, account_name name, permission_name perm_name, int depth) {
+//   ilog("+++++++${name} ${perm_name}", ("name", name)("perm_name", perm_name));
    const auto& permissions = db.get_index<permission_index,by_owner>();
    auto perm = permissions.lower_bound( boost::make_tuple( name ) );
-   while( perm != permissions.end() && perm->owner == name ) {
+   while( perm != permissions.end() && perm->owner == name ) {//&& perm->name == perm_name) {
       if (perm->auth.keys.size() != 0) {
          return perm->auth.keys[0].key;
       }
       ++perm;
    }
+
+   depth -= 1;
+   if (depth <= 0) {
+      return public_key_type();
+   }
+   
+   perm = permissions.lower_bound( boost::make_tuple( name ) );
+   while( perm != permissions.end() && perm->owner == name ) {//&& perm->name == perm_name) {
+      for (auto& account: perm->auth.accounts) {
+         if (N(eosio.code) == account.permission.permission.value) {
+            continue;
+         }
+         auto public_key = find_public_key_by_name2(db, account.permission.actor, account.permission.permission, depth);
+//         ilog("+++++++${name} ${perm_name} ${public_key}", ("name", account.permission.actor)("perm_name", account.permission.permission)("public_key", public_key));
+         if (public_key != public_key_type()) {
+//            ilog("+++++++got it ${key}", ("key", public_key));
+            return public_key;
+         }
+      }
+      ++perm;
+   }
+//   ilog("+++++++${name}", ("name", name));
    return public_key_type();
 }
 
@@ -116,8 +139,12 @@ public_key_type find_public_key_by_name(const chainbase::database& db, account_n
 
    perm = permissions.lower_bound( boost::make_tuple( name ) );
    while( perm != permissions.end() && perm->owner == name ) {
-      if (perm->auth.accounts.size() != 0) {
-         auto public_key = find_public_key_by_name2(db, perm->auth.accounts[0].permission.actor);
+      for (auto& account: perm->auth.accounts) {
+         if (N(eosio.code) == account.permission.permission.value) {
+            continue;
+         }
+//         ilog("----${name} ${perm_name}", ("name", account.permission.actor)("perm_name", account.permission.permission));
+         auto public_key = find_public_key_by_name2(db, account.permission.actor, account.permission.permission, 5);
          if (public_key != public_key_type()) {
             return public_key;
          }
@@ -127,6 +154,110 @@ public_key_type find_public_key_by_name(const chainbase::database& db, account_n
    return public_key_type();
 }
 
+map<account_name, bool> ignore_accounts;
+
+void init_ignore_accounts() {
+    for (auto& a : vector<string>{
+                     "eosio.bpay",
+                     "eosio.msig",
+                     "eosio.names",
+                     "eosio.ram",
+                     "eosio.ramfee",
+                     "eosio.saving",
+                     "eosio.stake",
+                     "eosio.token",
+                     "eosio.vpay",
+                     "eosio.rex",
+
+                     "blacklistmee",
+                     "ge2dmmrqgene",
+                     "gu2timbsguge",
+                     "ge4tsmzvgege",
+                     "gezdonzygage",
+                     "ha4tkobrgqge",
+                     "ha4tamjtguge",
+                     "gq4dkmzzhege",
+                     "gu2teobyg4ge",
+                     "gq4demryhage",
+                     "q4dfv32fxfkx",
+                     "ktl2qk5h4bor",
+                     "haydqnbtgene",
+                     "g44dsojygyge",
+                     "guzdonzugmge",
+                     "ha4doojzgyge",
+                     "gu4damztgyge",
+                     "haytanjtgige",
+                     "exchangegdax",
+                     "cmod44jlp14k",
+                     "2fxfvlvkil4e",
+                     "yxbdknr3hcxt",
+                     "yqjltendhyjp",
+                     "pm241porzybu",
+                     "xkc2gnxfiswe",
+                     "ic433gs42nky",
+                     "fueaji11lhzg",
+                     "w1ewnn4xufob",
+                     "ugunxsrux2a3",
+                     "gz3q24tq3r21",
+                     "u5rlltjtjoeo",
+                     "k5thoceysinj",
+                     "ebhck31fnxbi",
+                     "pvxbvdkces1x",
+                     "oucjrjjvkrom",
+                     "neverlandwal",
+                     "tseol5n52kmo",
+                     "potus1111111",
+                     "craigspys211",
+                     "eosfomoplay1",
+                     "wangfuhuahua",
+                     "ha4timrzguge",
+                     "guytqmbuhege",
+                     "huobldeposit",
+                     "gm3dcnqgenes",
+                     "gm34qnqrepqt",
+                     "gt3ftnqrrpqp",
+                     "gtwvtqptrpqp",
+                     "gm31qndrspqr",
+                     "lxl2atucpyos",
+                     "g4ytenbxgqge",
+                     "jinwen121212",
+                     "ha4tomztgage",
+                     "my1steosobag",
+                     "iloveyouplay",
+                     "eoschinaeos2",
+                     "eosholderkev",
+                     "dreams12true",
+                     "imarichman55",
+                     "gizdcnjyg4ge",
+                     "gyzdmmjsgige",
+                     "guzdanrugene",
+                     "earthsop1sys",
+                     "refundwallet",
+                     "jhonnywalker",
+                     "alibabaioeos",
+                     "whitegroupes",
+                     "24cryptoshop",
+                     "minedtradeos",
+                     "newdexmobapp",
+                     "ftsqfgjoscma",
+                     "hpbcc4k42nxy",
+                     "3qyty1khhkhv",
+                     "xzr2fbvxwtgt",
+                     "myqdqdj4qbge",
+                     "shprzailrazt",
+                     "qkwrmqowelyu",
+                     "lhjuy3gdkpq4",
+                     "lmfsopxpr324",
+                     "lcxunh51a1gt",
+                     "geydddsfkk5e",
+                     "pnsdiia1pcuy",
+                     "kwmvzswquqpb",
+                     "guagddoefdqu",
+    }) {
+      ignore_accounts[account_name(a)] = true;
+    }
+}
+
 int main(int argc, char** argv)
 {
    vm_api_init();
@@ -134,6 +265,8 @@ int main(int argc, char** argv)
    chain_api_init();
 //   vm_python2_init();
 //   native_contracts_init();
+
+   init_ignore_accounts();
 
    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 
@@ -171,6 +304,10 @@ int main(int argc, char** argv)
 
       int counter = 0;
       while (itr != accounts.end()) {
+         if (ignore_accounts.find(itr->name.value) != ignore_accounts.end()) {
+            itr++;
+            continue;
+         }
          file.write((char*)&itr->name.value, 8);
          auto public_key = find_public_key_by_name(db, itr->name);
          auto raw = fc::raw::pack(public_key);
