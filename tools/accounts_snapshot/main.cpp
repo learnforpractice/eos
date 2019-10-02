@@ -96,7 +96,7 @@ public_key_type find_public_key_by_name2(const chainbase::database& db, account_
 //   ilog("+++++++${name} ${perm_name}", ("name", name)("perm_name", perm_name));
    const auto& permissions = db.get_index<permission_index,by_owner>();
    auto perm = permissions.lower_bound( boost::make_tuple( name ) );
-   while( perm != permissions.end() && perm->owner == name ) {//&& perm->name == perm_name) {
+   while( perm != permissions.end() && perm->owner == name ) {// && perm->name == perm_name) {
       if (perm->auth.keys.size() != 0) {
          return perm->auth.keys[0].key;
       }
@@ -109,7 +109,7 @@ public_key_type find_public_key_by_name2(const chainbase::database& db, account_
    }
    
    perm = permissions.lower_bound( boost::make_tuple( name ) );
-   while( perm != permissions.end() && perm->owner == name ) {//&& perm->name == perm_name) {
+   while( perm != permissions.end() && perm->owner == name ) {// && perm->name == perm_name) {
       for (auto& account: perm->auth.accounts) {
          if (N(eosio.code) == account.permission.permission.value) {
             continue;
@@ -310,17 +310,20 @@ int main(int argc, char** argv)
          }
          file.write((char*)&itr->name.value, 8);
          auto public_key = find_public_key_by_name(db, itr->name);
+         if (public_key == public_key_type()) {
+            ilog("++++${n} ${key}", ("n", itr->name)("key", public_key));
+            itr++;
+            continue;
+         }
          auto raw = fc::raw::pack(public_key);
          file.write(raw.data(), raw.size());
-         if (public_key == public_key_type()) {
-            ilog("++++counter ${n} ${key}", ("n", itr->name)("key", public_key));
-         }
          counter += 1;
-         if (counter % 1000 == 0) {
-//            ilog("++++counter ${n}", ("n", counter));
+         if (counter % 10000 == 0) {
+            ilog("++++counter ${n}", ("n", counter));
          }
          itr++;
       }
+      ilog("++++counter ${n}", ("n", counter));
       file.close();
 //      app().exec();
    } catch( const extract_genesis_state_exception& e ) {
