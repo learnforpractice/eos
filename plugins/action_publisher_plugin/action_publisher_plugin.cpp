@@ -298,12 +298,11 @@ namespace eosio {
       } FC_LOG_AND_RETHROW()
    }
 
-   bool action_publisher_plugin::set_filter_in(string& s) {
+   bool action_publisher_plugin::set_filter_on(string& s) {
       if( s == "*" || s == "\"*\"" ) {
          my->bypass_filter = true;
          my->filter_on.clear();
-         my->filter_out.clear();
-         wlog( "--filter-on * enabled. This can fill shared_mem, causing nodeos to stop." );
+         wlog( "filter-on * enabled." );
          return true;
       }
       std::vector<std::string> v;
@@ -317,6 +316,11 @@ namespace eosio {
    }
 
    bool action_publisher_plugin::set_filter_out(string& s) {
+      if (s == "" || s == "\"\"") {
+         my->filter_out.clear();
+         wlog( "filter-out disabled." );
+         return true;
+      }
       std::vector<std::string> v;
       boost::split( v, s, boost::is_any_of( ":" ));
       EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-out", ("s", s));
@@ -324,6 +328,19 @@ namespace eosio {
       EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
                   "Invalid value ${s} for --filter-out", ("s", s));
       my->filter_out.insert( fe );
+      return true;
+   }
+
+   bool action_publisher_plugin::clear_filter_on() {
+      my->bypass_filter = false;
+      my->filter_on.clear();
+      wlog( "filter-on disabled." );
+      return true;
+   }
+
+   bool action_publisher_plugin::clear_filter_out() {
+      my->filter_out.clear();
+      wlog( "filter-out disabled." );
       return true;
    }
 
@@ -340,12 +357,25 @@ namespace eosio {
           } \
        }}
 
+#define CALL_V_R(api_name, api_handle, type, call_name) \
+{std::string("/v1/" #api_name "/" #call_name), \
+   [api_handle](string, string body, url_response_callback cb) mutable { \
+          try { \
+             fc::variant result( api_handle.call_name() ); \
+             cb(200, std::move(result)); \
+          } catch (...) { \
+             http_plugin::handle_exception(#api_name, #call_name, body, cb); \
+          } \
+       }}
+
    void action_publisher_plugin::plugin_startup() {
       ilog( "starting action_publisher_plugin" );
       auto plugin = app().get_plugin<action_publisher_plugin>();
       app().get_plugin<http_plugin>().add_api({
-         CALL(action_publisher, plugin, string, set_filter_in),
+         CALL(action_publisher, plugin, string, set_filter_on),
          CALL(action_publisher, plugin, string, set_filter_out),
+         CALL_V_R(action_publisher, plugin, string, clear_filter_on),
+         CALL_V_R(action_publisher, plugin, string, clear_filter_out),
       });
    }
 

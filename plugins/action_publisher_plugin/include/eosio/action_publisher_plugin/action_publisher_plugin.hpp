@@ -44,8 +44,10 @@ class action_publisher_plugin : public plugin<action_publisher_plugin> {
       void plugin_startup();
       void plugin_shutdown();
 
-      bool set_filter_in(string& filter_in);
+      bool set_filter_on(string& filter_in);
       bool set_filter_out(string& filter_out);
+      bool clear_filter_on();
+      bool clear_filter_out();
 
    private:
       history_ptr my;
