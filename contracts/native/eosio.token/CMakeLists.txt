@@ -1,7 +1,8 @@
 add_library(eosio.token.native SHARED 
-${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/src/eosio.token.cpp
-${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include/eosio.token/eosio.token.hpp
-main.cpp)
+    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/src/eosio.token.cpp
+    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include/eosio.token/eosio.token.hpp
+    main.cpp
+    )
 
 target_link_libraries( eosio.token.native PRIVATE eosiolib_native )
 

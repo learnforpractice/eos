@@ -1,5 +1,7 @@
 #add_contract( utility utility utility.cpp )
-add_library(eth_account eth_account.cpp)
+add_library(eth_account eth_account.cpp
+    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/src/eosio.token.cpp
+)
 
 target_include_directories(eth_account
    PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
