@@ -64,11 +64,15 @@ add_library( eosio_chain
              ${HEADERS}
              )
 
+set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
+
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt eosiolib_native chain_api vm_wasm-1 vm_manager
                        eosio.token.native
                        native_contracts
+                       ${LIBEVM4EOS}
                        )
+
 target_include_directories( eosio_chain
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
@@ -85,6 +89,7 @@ target_include_directories( eosio_chain
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
                         )
 add_dependencies(eosio_chain contracts_project)
+add_dependencies(eosio_chain aleth)
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}

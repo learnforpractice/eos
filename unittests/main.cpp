@@ -23,6 +23,7 @@ void translate_fc_exception(const fc::exception &e) {
 
 extern "C"
 {
+   void evm_init();
    void chain_api_init();
    void vm_api_ro_init();
    void vm_api_init();
@@ -38,7 +39,7 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
    // To have verbose enabled, call "tests/chain_test -- --verbose"
 //   run_python(argc, argv);
 //   return nullptr;
-
+   evm_init();
    vm_api_init();
    vm_api_ro_init();
    chain_api_init();

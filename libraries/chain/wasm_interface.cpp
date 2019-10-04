@@ -27,6 +27,10 @@
 
 #include <eosiolib_native/vm_api.h>
 
+extern "C" {
+   int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
+}
+
 namespace eosio { namespace chain {
    using namespace webassembly;
    using namespace webassembly::common;
@@ -1041,8 +1045,7 @@ class action_api : public context_aware_api {
       }
 
       int evm_execute(array_ptr<unsigned char> trx, size_t size) {
-         return 0;
-//         return ::evm_execute(trx.value, size);
+         return ::evm_execute(trx.value, size);
       }
 };
 
