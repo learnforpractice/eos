@@ -46,10 +46,23 @@ else()
 #  add_subdirectory(test-contracts)
 endif()
 
+ExternalProject_Add(
+   aleth
+   SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/aleth
+   BINARY_DIR ${CMAKE_BINARY_DIR}/aleth
+#   CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+   UPDATE_COMMAND ""
+   PATCH_COMMAND ""
+   TEST_COMMAND ""
+   INSTALL_COMMAND ""
+   BUILD_ALWAYS 1
+)
+
 #add_subdirectory(test-contracts)
 add_subdirectory(boost_1_67_0)
 add_subdirectory(Python-3.7.4)
 add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
 add_dependencies(cppzmq libzmq)
+add_dependencies(aleth eth_account)
 
