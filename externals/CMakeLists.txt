@@ -59,7 +59,7 @@ ExternalProject_Add(
 )
 
 #add_subdirectory(test-contracts)
-add_subdirectory(boost_1_67_0)
+add_subdirectory(boost)
 add_subdirectory(Python-3.7.4)
 add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
