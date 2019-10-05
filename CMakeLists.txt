@@ -39,7 +39,7 @@ else()
 endif()
 
 set( CLI_CLIENT_EXECUTABLE_NAME cleos )
-set( NODE_EXECUTABLE_NAME node-uuos )
+set( NODE_EXECUTABLE_NAME uuos )
 set( KEY_STORE_EXECUTABLE_NAME keosd )
 set( GUI_CLIENT_EXECUTABLE_NAME eosio )
 set( CUSTOM_URL_SCHEME "gcs" )
