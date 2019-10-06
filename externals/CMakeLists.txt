@@ -50,7 +50,7 @@ ExternalProject_Add(
    aleth
    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/aleth
    BINARY_DIR ${CMAKE_BINARY_DIR}/aleth
-   CMAKE_ARGS -DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+#   CMAKE_ARGS -DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
    UPDATE_COMMAND ""
    PATCH_COMMAND ""
    TEST_COMMAND ""
