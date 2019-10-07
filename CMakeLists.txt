@@ -164,6 +164,7 @@ add_subdirectory( scripts )
 add_subdirectory( unittests )
 add_subdirectory( tests )
 add_subdirectory( tools )
+add_subdirectory( externals )
 
 if (NOT DISABLE_WASM_SPEC_TESTS)
 add_subdirectory( eosio-wasm-spec-tests/generated-tests )
