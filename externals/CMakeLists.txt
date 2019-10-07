@@ -1,6 +1,8 @@
 add_subdirectory(boost)
 
-set (BOOST_VERSION  1.71.0)
+#set (BOOST_VERSION  1.71.0)
+
+if (BOOST_VERSION)
 
 message (STATUS "Adding Boost ${BOOST_VERSION} as an external project.")
 
@@ -41,3 +43,5 @@ ExternalProject_Add (boost
     LOG_BUILD ON
     LOG_INSTALL ON
 )
+
+endif()
