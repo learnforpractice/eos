@@ -186,7 +186,7 @@ class db_api {
 
 //               context.require_write_lock( scope );
 
-               const auto& tab = context.find_or_create_table( context.receiver, scope, table, payer );
+               const auto& tab = context.find_or_create_table( context.receiver, name(scope), name(table), name(payer) );
 
                const auto& obj = context.db.create<ObjectType>( [&]( auto& o ){
                   o.t_id          = tab.id;
@@ -250,7 +250,7 @@ class db_api {
             }
 
             int find_secondary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_const_type secondary, uint64_t& primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -264,7 +264,7 @@ class db_api {
             }
 
             int lowerbound_secondary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_type secondary, uint64_t& primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -281,7 +281,7 @@ class db_api {
             }
 
             int upperbound_secondary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_type secondary, uint64_t& primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -298,7 +298,7 @@ class db_api {
             }
 
             int end_secondary( uint64_t code, uint64_t scope, uint64_t table ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                return itr_cache.cache_table( *tab );
@@ -352,7 +352,7 @@ class db_api {
             }
 
             int find_primary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_type secondary, uint64_t primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -365,7 +365,7 @@ class db_api {
             }
 
             int lowerbound_primary( uint64_t code, uint64_t scope, uint64_t table, uint64_t primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if (!tab) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -379,7 +379,7 @@ class db_api {
             }
 
             int upperbound_primary( uint64_t code, uint64_t scope, uint64_t table, uint64_t primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if ( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -478,11 +478,11 @@ class db_api {
       }
 
       uint64_t get_receiver_ex() {
-         return receiver.value;
+         return receiver.to_uint64_t();
       }
 
       void set_receiver_ex(uint64_t _receiver) {
-         receiver.value = _receiver;
+         receiver = name(_receiver);
       }
 
       const action& get_action()const { return act; }

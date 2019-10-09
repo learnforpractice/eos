@@ -19,15 +19,11 @@ namespace eosio { namespace chain {
        * @param wasm - the wasm_interface to use
        * @return
        */
-      static auto value() {
-         return T();
+      static auto value(apply_context& ctx) {
+         return T(ctx);
       }
    };
 
-<<<<<<< HEAD
-#if 0
-=======
->>>>>>> origin/develop
    template<>
    struct class_from_wasm<transaction_context> {
       /**
@@ -52,7 +48,6 @@ namespace eosio { namespace chain {
          return ctx;
       }
    };
-#endif
 
    /**
     * class to represent an in-wasm-memory array
@@ -80,27 +75,6 @@ namespace eosio { namespace chain {
       T *value;
    };
 
-   template<typename T>
-   struct memory_addr {
-      explicit memory_addr (T * value) : value(value) {}
-
-      typename std::add_lvalue_reference<T>::type operator*() const {
-         return *value;
-      }
-
-      T *operator->() const noexcept {
-         return value;
-      }
-
-      template<typename U>
-      operator U *() const {
-         return static_cast<U *>(value);
-      }
-
-      T *value;
-   }; 
-
-
    /**
     * class to represent an in-wasm-memory char array that must be null terminated
     */
@@ -123,4 +97,3 @@ namespace eosio { namespace chain {
    };
 
  } } // eosio::chain
- 

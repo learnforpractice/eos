@@ -84,7 +84,7 @@ namespace eosio { namespace chain {
       id_type               id;
       table_id              t_id;
       std::array<uint128_t, 2>              primary_key;
-      account_name          payer = 0;
+      account_name          payer;
       shared_string         value;
    };
 

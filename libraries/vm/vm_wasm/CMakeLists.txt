@@ -39,21 +39,32 @@ endif (APPLE)
 
 set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins eosiolib_native chain_api frozen)
 
-add_library( vm_wasm-1 SHARED ${SRCS} )
+# add_library( vm_wasm-1 SHARED ${SRCS} )
 
-#set(LIBEVM4EOS ${CMAKE_SOURCE_DIR}/externals/aleth/build/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
-target_link_libraries( vm_wasm-1 wabt ${WASM_DEPEND_LIBS} fc)
+# #set(LIBEVM4EOS ${CMAKE_SOURCE_DIR}/externals/aleth/build/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
+# target_link_libraries( vm_wasm-1 wabt ${WASM_DEPEND_LIBS} fc)
 
-target_include_directories( vm_wasm-1
-                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
-                            PUBLIC ${HEADERS}
-                            )
-target_compile_options(vm_wasm-1     PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB)
-set_target_properties(vm_wasm-1  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+# target_include_directories( vm_wasm-1
+#                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
+#                             PUBLIC ${HEADERS}
+#                             )
+# target_compile_options(vm_wasm-1     PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB)
+# set_target_properties(vm_wasm-1  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 
+set(SRCS_INJECTOR 
+#    vm_wasm.cpp
+#    wasm_interface.cpp
+    vm_api.cpp
+    ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_injection.cpp
+    ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_validation.cpp
+    ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_constraints.cpp
+#    ${CMAKE_SOURCE_DIR}/libraries/chain/webassembly/wabt.cpp
+#    ${CMAKE_SOURCE_DIR}/libraries/chain/webassembly/wavm.cpp
+    ${CMAKE_SOURCE_DIR}/libraries/chain/whitelisted_intrinsics.cpp
+)
 
-add_executable( wasm_injector main.cpp ${SRCS} )
+add_executable( wasm_injector main.cpp ${SRCS_INJECTOR} )
 target_link_libraries( wasm_injector wabt ${WASM_DEPEND_LIBS} fc)
 
 target_include_directories( wasm_injector
@@ -63,11 +74,11 @@ target_include_directories( wasm_injector
 
 target_compile_options(wasm_injector  PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB -DWASM_INJECTOR)
 
-install(TARGETS vm_wasm-1
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+# install(TARGETS vm_wasm-1
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# )
 
-copy_lib(vm_wasm-1)
+# copy_lib(vm_wasm-1)

@@ -28,6 +28,8 @@
 
 #include <vm_manager.hpp>
 
+#include <eosio/chain/protocol_state_object.hpp>
+
 using namespace eosio::chain;
 #include <fstream>
 #include <dlfcn.h>
@@ -202,7 +204,7 @@ static bool get_code_version(uint64_t contract, char *hash, size_t size) {
       return false;
    }
    try {
-      const auto& account = ctx().control.db().get<account_metadata_object,by_name>(contract);
+      const auto& account = ctx().control.db().get<account_metadata_object,by_name>(name(contract));
       memcpy(hash, account.code_hash.data(), 32);
       return true;
    } catch (...) {

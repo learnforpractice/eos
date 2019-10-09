@@ -64,8 +64,8 @@ int32_t check_permission_authorization( uint64_t account,
    try {
       ctx().control
              .get_authorization_manager()
-             .check_authorization( account,
-                                   permission,
+             .check_authorization( name(account),
+                                   name(permission),
                                    provided_keys,
                                    provided_permissions,
                                    fc::microseconds(delay_us),
@@ -80,13 +80,13 @@ int32_t check_permission_authorization( uint64_t account,
 
 int64_t get_permission_last_used( uint64_t account, uint64_t permission ) {
    const auto& am = ctx().control.get_authorization_manager();
-   return am.get_permission_last_used( am.get_permission({account, permission}) ).time_since_epoch().count();
+   return am.get_permission_last_used( am.get_permission({name(account), name(permission)}) ).time_since_epoch().count();
 }
 
 int64_t get_account_creation_time( uint64_t account ) {
-   auto* acct = ctx().db.find<account_object, by_name>(account);
+   auto* acct = ctx().db.find<account_object, by_name>(name(account));
    EOS_ASSERT( acct != nullptr, action_validate_exception,
-               "account '${account}' does not exist", ("account", account) );
+               "account '${account}' does not exist", ("account", name(account)) );
    return time_point(acct->creation_date).time_since_epoch().count();
 
 }

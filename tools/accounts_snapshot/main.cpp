@@ -2,6 +2,10 @@
  *  @file
  *  @copyright defined in eosio/LICENSE.txt
  */
+#include <stdint.h>
+#include <stdlib.h>
+#include <eosiolib_native/vm_api.h>
+
 #include <appbase/application.hpp>
 
 #include <eosio/chain_plugin/chain_plugin.hpp>
@@ -89,8 +93,6 @@ extern "C"
    void native_contracts_init();
    int64_t token_get_balance(uint64_t owner, const char *str_symbol);
 }
-
-#include <eosiolib_native/vm_api.h>
 
 public_key_type find_public_key_by_name2(const chainbase::database& db, account_name name, permission_name perm_name, int depth) {
 //   ilog("+++++++${name} ${perm_name}", ("name", name)("perm_name", perm_name));
@@ -304,7 +306,7 @@ int main(int argc, char** argv)
 
       int counter = 0;
       while (itr != accounts.end()) {
-         if (ignore_accounts.find(itr->name.value) != ignore_accounts.end()) {
+         if (ignore_accounts.find(itr->name) != ignore_accounts.end()) {
             itr++;
             continue;
          }

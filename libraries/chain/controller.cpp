@@ -1082,7 +1082,7 @@ struct controller_impl {
                                                                              config::minority_producers_permission_name,
                                                                              majority_permission.id,
                                                                              active_producers_authority,
-                                                                             conf.genesis.initial_timestamp );
+                                                                             genesis.initial_timestamp );
       if (conf.uuos_mainnet) {
          string s = conf.genesis_accounts_file.string();
          db_interface d(db);

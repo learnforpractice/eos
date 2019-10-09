@@ -27,24 +27,24 @@ uint64_t current_receiver() {
    return ctx().get_receiver();
 }
 
-void require_recipient( uint64_t name ) {
-   ctx().require_recipient(name);
+void require_recipient( uint64_t account ) {
+   ctx().require_recipient(name(account));
 }
 
-void require_auth( uint64_t name ) {
-   ctx().require_authorization(name);
+void require_auth( uint64_t account ) {
+   ctx().require_authorization(name(account));
 }
 
-void require_auth2( uint64_t name, uint64_t permission ) {
-   ctx().require_authorization(name, permission);
+void require_auth2( uint64_t account, uint64_t permission ) {
+   ctx().require_authorization(name(account), name(permission));
 }
 
-bool has_auth( uint64_t name ) {
-   return ctx().has_authorization(name);
+bool has_auth( uint64_t account ) {
+   return ctx().has_authorization(name(account));
 }
 
-bool is_account( uint64_t name ) {
-   return ctx().is_account(name);
+bool is_account( uint64_t account ) {
+   return ctx().is_account(name(account));
 }
 
 void send_inline(const char *data, size_t data_len) {

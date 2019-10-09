@@ -115,7 +115,7 @@ void apply_context::exec_one()
                               auto cleanup = fc::make_scoped_exit([&](){
                                  get_chain_api()->resume_billing_timer();
                               });
-                              apply(receiver, act->account, act->name);
+                              apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
                               break;
                            }
                         }
@@ -125,17 +125,17 @@ void apply_context::exec_one()
                               std::array<uint8_t, 32> hash;
                               memcpy(hash.data(), receiver_account->code_hash.data(), 32);
 //                              ilog("+++++++receiver: ${receiver}, hash ${hash}", ("receiver", receiver)("hash", receiver_account->code_hash.str()));
-                              if (native_contract_apply(hash, receiver, act->account, act->name)) {
+                              if (native_contract_apply(hash, receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t())) {
                                  break;
                               }
                            }
                            #endif
-                           control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                           control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                         } while (false);
 
                      } while (false);
                   } else {
-                     vm_manager::get().apply(receiver, act->account, act->name);
+                     vm_manager::get().apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
                   }
                   
                } while(false);
@@ -902,19 +902,19 @@ int apply_context::db_end_i64( name code, name scope, name table ) {
 }
 
 uint32_t apply_context::db_get_table_count(uint64_t code, uint64_t scope, uint64_t table) {
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return 0;
    return tab->count;
 }
 
 
 int apply_context::db_store_i256( uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
-   return db_store_i256( get_receiver(), scope, table, payer, id, buffer, buffer_size);
+   return db_store_i256( get_receiver().to_uint64_t(), scope, table, payer, id, buffer, buffer_size);
 }
 
 int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
-   const auto& tab = find_or_create_table( code, scope, table, payer );
+   const auto& tab = find_or_create_table( name(code), name(scope), name(table), name(payer) );
    auto tableid = tab.id;
 
    EOS_ASSERT( payer != account_name(), invalid_table_payer, "must specify a valid account to pay for new record" );
@@ -1010,7 +1010,7 @@ int apply_context::db_get_i256( int iterator, char* buffer, size_t buffer_size )
 int apply_context::db_find_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -1071,7 +1071,7 @@ int apply_context::db_next_i256( int iterator, key256_t& primary ) {
 int apply_context::db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -1087,7 +1087,7 @@ int apply_context::db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t t
 int apply_context::db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -1103,7 +1103,7 @@ int apply_context::db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t t
 int apply_context::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    return key256val_cache.cache_table( *tab );

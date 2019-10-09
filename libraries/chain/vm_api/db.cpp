@@ -11,17 +11,17 @@ bool is_nan( const float128_t& f ) {
 }
    
 int32_t db_store_i64(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len) {
-   return ctx().db_store_i64(scope, table, payer, id, data, len);
+   return ctx().db_store_i64(name(scope), name(table), name(payer), id, data, len);
 }
 
 #if 0
 int32_t db_store_i64_ex(uint64_t code, uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len) {
-   return ctx().db_store_i64(code, scope, table, payer, id, data, len);
+   return ctx().db_store_i64(code, scope, table, name(payer), id, data, len);
 }
 #endif
 
 void db_update_i64(int32_t iterator, uint64_t payer, const char* data, uint32_t len) {
-   ctx().db_update_i64(iterator, payer, data, len);
+   ctx().db_update_i64(iterator, name(payer), data, len);
 }
 
 void db_remove_i64(int32_t iterator) {
@@ -49,27 +49,27 @@ int32_t db_previous_i64(int32_t iterator, uint64_t* primary) {
 }
 
 int32_t db_find_i64(uint64_t code, uint64_t scope, uint64_t table, uint64_t id) {
-   return ctx().db_find_i64(code, scope, table, id);
+   return ctx().db_find_i64(name(code), name(scope), name(table), id);
 }
 
 int32_t db_lowerbound_i64(uint64_t code, uint64_t scope, uint64_t table, uint64_t id) {
-   return ctx().db_lowerbound_i64(code, scope, table, id);
+   return ctx().db_lowerbound_i64(name(code), name(scope), name(table), id);
 }
 
 int32_t db_upperbound_i64(uint64_t code, uint64_t scope, uint64_t table, uint64_t id) {
-   return ctx().db_upperbound_i64(code, scope, table, id);
+   return ctx().db_upperbound_i64(name(code), name(scope), name(table), id);
 }
 
 int32_t db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
-   return ctx().db_end_i64(code, scope, table);
+   return ctx().db_end_i64(name(code), name(scope), name(table));
 }
 
 #define DB_API_METHOD_WRAPPERS_SIMPLE_SECONDARY_(IDX, TYPE)\
       int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const TYPE* secondary ) {\
-         return ctx().IDX.store( scope, table, payer, id, *secondary );\
+         return ctx().IDX.store( scope, table, name(payer), id, *secondary );\
       }\
       void db_##IDX##_update( int iterator, uint64_t payer, const TYPE* secondary ) {\
-         ctx().IDX.update( iterator, payer, *secondary );\
+         ctx().IDX.update( iterator, name(payer), *secondary );\
       }\
       void db_##IDX##_remove( int iterator ) {\
          ctx().IDX.remove( iterator );\
@@ -102,14 +102,14 @@ int32_t db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
-         return ctx().IDX.store(scope, table, payer, id, (const ARR_ELEMENT_TYPE*)data);\
+         return ctx().IDX.store(scope, table, name(payer), id, (const ARR_ELEMENT_TYPE*)data);\
       }\
       void db_##IDX##_update( int iterator, uint64_t payer, const void* data, size_t data_len ) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
-         ctx().IDX.update(iterator, payer, (const ARR_ELEMENT_TYPE*)data);\
+         ctx().IDX.update(iterator, name(payer), (const ARR_ELEMENT_TYPE*)data);\
       }\
       void db_##IDX##_remove( int iterator ) {\
          ctx().IDX.remove(iterator);\
@@ -155,11 +155,11 @@ int32_t db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
 #define DB_API_METHOD_WRAPPERS_FLOAT_SECONDARY_(IDX, TYPE)\
       int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const TYPE* secondary ) {\
          EOS_ASSERT( !is_nan( *secondary ), transaction_exception, "NaN is not an allowed value for a secondary key" );\
-         return ctx().IDX.store( scope, table, payer, id, *secondary );\
+         return ctx().IDX.store( scope, table, name(payer), id, *secondary );\
       }\
       void db_##IDX##_update( int iterator, uint64_t payer, const TYPE* secondary ) {\
          EOS_ASSERT( !is_nan( *secondary ), transaction_exception, "NaN is not an allowed value for a secondary key" );\
-         ctx().IDX.update( iterator, payer, *secondary );\
+         ctx().IDX.update( iterator, name(payer), *secondary );\
       }\
       void db_##IDX##_remove( int iterator ) {\
          ctx().IDX.remove( iterator );\
@@ -200,11 +200,11 @@ int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int
    eosio_assert(size <= sizeof(key256_t), "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
-   return ctx().db_store_i256( scope, table, payer, key, buffer, buffer_size);
+   return ctx().db_store_i256( name(scope), name(table), name(payer), key, buffer, buffer_size);
 }
 
 void db_update_i256( int iterator, uint64_t payer, const char* buffer, size_t buffer_size ) {
-   return ctx().db_update_i256(iterator, payer, buffer, buffer_size, false);
+   return ctx().db_update_i256(iterator, name(payer), buffer, buffer_size, false);
 }
 
 void db_remove_i256( int iterator ) {

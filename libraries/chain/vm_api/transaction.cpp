@@ -2,7 +2,7 @@ void _send_deferred(const uint128_t* sender_id, uint64_t payer, const char *data
    try {
       transaction trx;
       fc::raw::unpack<transaction>(data, data_len, trx);
-      ctx().schedule_deferred_transaction(*sender_id, payer, std::move(trx), replace_existing);
+      ctx().schedule_deferred_transaction(*sender_id, name(payer), std::move(trx), replace_existing);
    } FC_CAPTURE_AND_RETHROW((fc::to_hex(data, data_len)));
 }
 
