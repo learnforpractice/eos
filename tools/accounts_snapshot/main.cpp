@@ -4,6 +4,7 @@
  */
 #include <stdint.h>
 #include <stdlib.h>
+#include <softfloat_types.h>
 #include <eosiolib_native/vm_api.h>
 
 #include <appbase/application.hpp>
