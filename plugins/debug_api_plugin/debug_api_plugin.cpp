@@ -65,6 +65,7 @@ void debug_api_plugin::plugin_startup() {
        CALL_R_R(debug, this, enable_debug, INVOKE_R_R(this, enable_debug, bool), 200),
        CALL_R_R(debug, this, add_debug_contract, INVOKE_R_R(this, add_debug_contract, eosio::debug_contract_params), 200),
        CALL_R_R(debug, this, clear_debug_contract, INVOKE_R_R(this, clear_debug_contract, string), 200),
+       CALL_R_R(debug, this, set_logger_level, INVOKE_R_R(this, set_logger_level, eosio::set_logger_level_params), 200),
    });
 }
 
@@ -82,6 +83,23 @@ bool debug_api_plugin::add_debug_contract(debug_contract_params& params) {
 
 bool debug_api_plugin::clear_debug_contract(string& contract_name) {
    return get_chain_api()->clear_debug_contract(contract_name);
+}
+
+bool debug_api_plugin::set_logger_level(set_logger_level_params& params) {
+   if (params.level == "debug") {
+      fc::logger::get(params.logger).set_log_level(fc::log_level::debug);
+   } else if (params.level == "info") {
+      fc::logger::get(params.logger).set_log_level(fc::log_level::info);
+   } else if (params.level == "warn") {
+      fc::logger::get(params.logger).set_log_level(fc::log_level::warn);
+   } else if (params.level == "error") {
+      fc::logger::get(params.logger).set_log_level(fc::log_level::error);
+   } else if (params.level == "off") {
+      fc::logger::get(params.logger).set_log_level(fc::log_level::off);
+   } else {
+      return false;
+   }
+   return true;
 }
 
 #undef INVOKE_R_V
