@@ -152,6 +152,10 @@ int is_contracts_console_enabled() {
 }
 #endif
 
+void wasm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
+   ctx().control.get_wasm_interface().call(contract, func_name, arg1, arg2, arg3, ctx());
+}
+
 void vm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t in_size) {
    vm_manager::get().call(contract, func_name, arg1, arg2, arg3, extra_args, in_size);
 }
@@ -384,6 +388,7 @@ extern "C" void vm_api_init() {
 
 
       _vm_api.vm_call = vm_call;
+      _vm_api.wasm_call = wasm_call;
 
       _vm_api.call_contract_get_extra_args = call_contract_get_extra_args;
       _vm_api.call_contract_set_results = call_contract_set_results;

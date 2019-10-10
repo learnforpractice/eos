@@ -46,8 +46,11 @@ void run_compile(wrapped_fd&& response_sock, wrapped_fd&& wasm_code) noexcept { 
       result_message.start = code_offset{function_to_offsets.at(module.startFunctionIndex-module.functions.imports.size())};
 
    for(const Export& exprt : module.exports) {
-      if(exprt.name == "apply")
+      if(exprt.name == "apply") {
          result_message.apply_offset = function_to_offsets.at(exprt.index-module.functions.imports.size());
+      } else if (exprt.name == "call") {
+         result_message.call_offset = function_to_offsets.at(exprt.index-module.functions.imports.size());
+      }
    }
 
    result_message.starting_memory_pages = -1;

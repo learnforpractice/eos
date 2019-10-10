@@ -25,7 +25,7 @@ class executor {
       ~executor();
 
       void execute(const code_descriptor& code, const memory& mem, apply_context& context);
-
+      void call(const code_descriptor& code, const memory& mem, apply_context& context, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3);
    private:
       uint8_t* code_mapping;
       size_t code_mapping_size;

@@ -223,6 +223,82 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
    }
 }
 
+void executor::call(const code_descriptor& code, const memory& mem, apply_context& context, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
+   if(mapping_is_executable == false) {
+      mprotect(code_mapping, code_mapping_size, PROT_EXEC|PROT_READ);
+      mapping_is_executable = true;
+   }
+
+   //prepare initial memory, mutable globals, and table data
+   if(code.starting_memory_pages > 0 ) {
+      arch_prctl(ARCH_SET_GS, (unsigned long*)(mem.zero_page_memory_base()+code.starting_memory_pages*memory::stride));
+      memset(mem.full_page_memory_base(), 0, 64u*1024u*code.starting_memory_pages);
+   }
+   else
+      arch_prctl(ARCH_SET_GS, (unsigned long*)mem.zero_page_memory_base());
+   memcpy(mem.full_page_memory_base() - code.initdata_prologue_size, code_mapping + code.initdata_begin, code.initdata_size);
+
+   control_block* const cb = mem.get_control_block();
+   cb->magic = signal_sentinel;
+   cb->execution_thread_code_start = (uintptr_t)code_mapping;
+   cb->execution_thread_code_length = code_mapping_size;
+   cb->execution_thread_memory_start = (uintptr_t)mem.start_of_memory_slices();
+   cb->execution_thread_memory_length = mem.size_of_memory_slice_mapping();
+   cb->ctx = &context;
+   executors_exception_ptr = nullptr;
+   cb->eptr = &executors_exception_ptr;
+   cb->current_call_depth_remaining = eosio::chain::wasm_constraints::maximum_call_depth+2;
+   cb->current_linear_memory_pages = code.starting_memory_pages;
+   cb->first_invalid_memory_address = code.starting_memory_pages*64*1024;
+   cb->full_linear_memory_start = (char*)mem.full_page_memory_base();
+   cb->jmp = &executors_sigjmp_buf;
+   cb->bounce_buffers = &executors_bounce_buffers;
+   cb->running_code_base = (uintptr_t)(code_mapping + code.code_begin);
+   cb->is_running = true;
+
+   context.trx_context.transaction_timer.set_expiration_callback([](void* user) {
+      executor* self = (executor*)user;
+      syscall(SYS_mprotect, self->code_mapping, self->code_mapping_size, PROT_NONE);
+      self->mapping_is_executable = false;
+   }, this);
+   context.trx_context.checktime(); //catch any expiration that might have occurred before setting up callback
+
+   auto cleanup = fc::make_scoped_exit([cb, &tt=context.trx_context.transaction_timer](){
+      cb->is_running = false;
+      cb->bounce_buffers->clear();
+      tt.set_expiration_callback(nullptr, nullptr);
+   });
+
+   void(*call_func)(uint64_t, uint64_t, uint64_t, uint64_t) = (void(*)(uint64_t, uint64_t, uint64_t, uint64_t))(cb->running_code_base + code.call_offset);
+
+   switch(sigsetjmp(*cb->jmp, 0)) {
+      case 0:
+         code.start.visit(overloaded {
+            [&](const no_offset&) {},
+            [&](const intrinsic_ordinal& i) {
+               void(*start_func)() = (void(*)())(*(uintptr_t*)((uintptr_t)mem.zero_page_memory_base() - memory::first_intrinsic_offset - i.ordinal*8));
+               start_func();
+            },
+            [&](const code_offset& offs) {
+               void(*start_func)() = (void(*)())(cb->running_code_base + offs.offset);
+               start_func();
+            }
+         });
+         call_func(func_name, arg1, arg2, arg3);
+         break;
+      //case 1: clean eosio_exit
+      case EOSVMOC_EXIT_CHECKTIME_FAIL:
+         context.trx_context.checktime();
+         break;
+      case EOSVMOC_EXIT_SEGV:
+         EOS_ASSERT(false, wasm_execution_error, "access violation");
+         break;
+      case EOSVMOC_EXIT_EXCEPTION: //exception
+         std::rethrow_exception(*cb->eptr);
+         break;
+   }
+}
+
 executor::~executor() {
    arch_prctl(ARCH_SET_GS, nullptr);
 }
