@@ -47,7 +47,8 @@ namespace eosio { namespace chain {
                                              const signed_transaction& t,
                                              const transaction_id_type& trx_id,
                                              transaction_checktime_timer&& tmr,
-                                             fc::time_point s )
+                                             fc::time_point s,
+                                             bool read_only )
    :control(c)
    ,trx(t)
    ,id(trx_id)
@@ -57,6 +58,7 @@ namespace eosio { namespace chain {
    ,transaction_timer(std::move(tmr))
    ,net_usage(trace->net_usage)
    ,pseudo_start(s)
+   ,read_only(read_only)
    {
       if (!c.skip_db_sessions()) {
          undo_session = c.mutable_db().start_undo_session(true);
@@ -562,7 +564,7 @@ namespace eosio { namespace chain {
    }
 
    void transaction_context::execute_action( uint32_t action_ordinal, uint32_t recurse_depth ) {
-      apply_context acontext( control, *this, action_ordinal, recurse_depth );
+      apply_context acontext( control, *this, action_ordinal, recurse_depth, read_only );
       acontext.exec();
    }
 

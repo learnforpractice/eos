@@ -294,6 +294,8 @@ namespace eosio { namespace chain {
          vm::wasm_allocator&  get_wasm_allocator();
 #endif
 
+         transaction_trace_ptr call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs);
+
          static fc::optional<uint64_t> convert_exception_to_error_code( const fc::exception& e );
 
          signal<void(const signed_block_ptr&)>         pre_accepted_block;
@@ -348,7 +350,7 @@ namespace eosio { namespace chain {
          friend class transaction_context;
 
          chainbase::database& mutable_db()const;
-
+         chainbase::database& get_db(bool read_only)const;
          std::unique_ptr<controller_impl> my;
 
    };

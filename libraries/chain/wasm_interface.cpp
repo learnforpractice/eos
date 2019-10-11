@@ -210,6 +210,7 @@ class privileged_api : public context_aware_api {
        *  Also fails if the feature was already activated or pre-activated.
        */
       void preactivate_feature( const digest_type& feature_digest ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          context.control.preactivate_feature( feature_digest );
       }
 
@@ -223,7 +224,7 @@ class privileged_api : public context_aware_api {
        * @param cpu_weight - the weight for determining share of compute capacity
        */
       void set_resource_limits( account_name account, int64_t ram_bytes, int64_t net_weight, int64_t cpu_weight) {
-         EOS_ASSERT(!context.read_only, wasm_execution_error, "read only context");
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          EOS_ASSERT(ram_bytes >= -1, wasm_execution_error, "invalid value for ram resource limit expected [-1,INT64_MAX]");
          EOS_ASSERT(net_weight >= -1, wasm_execution_error, "invalid value for net resource weight expected [-1,INT64_MAX]");
          EOS_ASSERT(cpu_weight >= -1, wasm_execution_error, "invalid value for cpu resource weight expected [-1,INT64_MAX]");
@@ -237,7 +238,7 @@ class privileged_api : public context_aware_api {
       }
 
       int64_t set_proposed_producers_common( vector<producer_authority> && producers, bool validate_keys ) {
-         EOS_ASSERT(!context.read_only, wasm_execution_error, "read only context");
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          EOS_ASSERT(producers.size() <= config::max_producers, wasm_execution_error, "Producer schedule exceeds the maximum producer count for this chain");
          EOS_ASSERT( producers.size() > 0
                      || !context.control.is_builtin_activated( builtin_protocol_feature_t::disallow_empty_producer_schedule ),
@@ -286,6 +287,8 @@ class privileged_api : public context_aware_api {
       }
 
       int64_t set_proposed_producers( array_ptr<char> packed_producer_schedule, uint32_t datalen ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
+
          datastream<const char*> ds( packed_producer_schedule, datalen );
          vector<producer_authority> producers;
 
@@ -331,6 +334,7 @@ class privileged_api : public context_aware_api {
       }
 
       void set_blockchain_parameters_packed( array_ptr<char> packed_blockchain_parameters, uint32_t datalen) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          datastream<const char*> ds( packed_blockchain_parameters, datalen );
          chain::chain_config cfg;
          fc::raw::unpack(ds, cfg);
@@ -346,6 +350,7 @@ class privileged_api : public context_aware_api {
       }
 
       void set_privileged( account_name n, bool is_priv ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          const auto& a = context.db.get<account_metadata_object, by_name>( n );
          context.db.modify( a, [&]( auto& ma ){
             ma.set_privileged( is_priv );
@@ -1075,10 +1080,12 @@ class system_api : public context_aware_api {
       using context_aware_api::context_aware_api;
 
       uint64_t current_time() {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          return static_cast<uint64_t>( context.control.pending_block_time().time_since_epoch().count() );
       }
 
       uint64_t publication_time() {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          return static_cast<uint64_t>( context.trx_context.published.time_since_epoch().count() );
       }
 
@@ -1316,12 +1323,15 @@ class console_api : public context_aware_api {
 
 #define DB_API_METHOD_WRAPPERS_SIMPLE_SECONDARY(IDX, TYPE)\
       int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const TYPE& secondary ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          return context.IDX.store( scope, table, account_name(payer), id, secondary );\
       }\
       void db_##IDX##_update( int iterator, uint64_t payer, const TYPE& secondary ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          return context.IDX.update( iterator, account_name(payer), secondary );\
       }\
       void db_##IDX##_remove( int iterator ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          return context.IDX.remove( iterator );\
       }\
       int db_##IDX##_find_secondary( uint64_t code, uint64_t scope, uint64_t table, const TYPE& secondary, uint64_t& primary ) {\
@@ -1348,13 +1358,15 @@ class console_api : public context_aware_api {
 
 #define DB_API_METHOD_WRAPPERS_ARRAY_SECONDARY(IDX, ARR_SIZE, ARR_ELEMENT_TYPE)\
       int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, array_ptr<const ARR_ELEMENT_TYPE> data, uint32_t data_len) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          EOS_ASSERT( data_len == ARR_SIZE,\
                     db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
          return context.IDX.store(scope, table, account_name(payer), id, data.value);\
       }\
-      void db_##IDX##_update( int iterator, uint64_t payer, array_ptr<const ARR_ELEMENT_TYPE> data, uint32_t data_len ) {\
+      void db_##IDX##_update( int iterator, uint64_t payer, array_ptr<const ARR_ELEMENT_TYPE> data, uint32_t data_len ) { \
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          EOS_ASSERT( data_len == ARR_SIZE,\
                     db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
@@ -1362,6 +1374,7 @@ class console_api : public context_aware_api {
          return context.IDX.update(iterator, account_name(payer), data.value);\
       }\
       void db_##IDX##_remove( int iterator ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          return context.IDX.remove(iterator);\
       }\
       int db_##IDX##_find_secondary( uint64_t code, uint64_t scope, uint64_t table, array_ptr<const ARR_ELEMENT_TYPE> data, uint32_t data_len, uint64_t& primary ) {\
@@ -1404,14 +1417,17 @@ class console_api : public context_aware_api {
 
 #define DB_API_METHOD_WRAPPERS_FLOAT_SECONDARY(IDX, TYPE)\
       int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const TYPE& secondary ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          EOS_ASSERT( !softfloat_api::is_nan( secondary ), transaction_exception, "NaN is not an allowed value for a secondary key" );\
          return context.IDX.store( scope, table, account_name(payer), id, secondary );\
       }\
       void db_##IDX##_update( int iterator, uint64_t payer, const TYPE& secondary ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          EOS_ASSERT( !softfloat_api::is_nan( secondary ), transaction_exception, "NaN is not an allowed value for a secondary key" );\
          return context.IDX.update( iterator, account_name(payer), secondary );\
       }\
       void db_##IDX##_remove( int iterator ) {\
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" ); \
          return context.IDX.remove( iterator );\
       }\
       int db_##IDX##_find_secondary( uint64_t code, uint64_t scope, uint64_t table, const TYPE& secondary, uint64_t& primary ) {\
@@ -1444,12 +1460,15 @@ class database_api : public context_aware_api {
       using context_aware_api::context_aware_api;
 
       int db_store_i64( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, array_ptr<const char> buffer, uint32_t buffer_size ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          return context.db_store_i64( name(scope), name(table), account_name(payer), id, buffer, buffer_size );
       }
       void db_update_i64( int itr, uint64_t payer, array_ptr<const char> buffer, uint32_t buffer_size ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          context.db_update_i64( itr, account_name(payer), buffer, buffer_size );
       }
       void db_remove_i64( int itr ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          context.db_remove_i64( itr );
       }
       int db_get_i64( int itr, array_ptr<char> buffer, uint32_t buffer_size ) {
@@ -1478,6 +1497,7 @@ class database_api : public context_aware_api {
       }
 
       int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, array_ptr<char> id, uint32_t id_size, array_ptr<const char> buffer, uint32_t buffer_size ) {         
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
          key256_t _id;
          memcpy(_id.data(), id.value, 32);
@@ -1485,10 +1505,12 @@ class database_api : public context_aware_api {
       }
 
       void db_update_i256( int itr, uint64_t payer, array_ptr<const char> buffer, uint32_t buffer_size ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          context.db_update_i256( itr, name(payer), buffer, buffer_size );
       }
 
       void db_remove_i256( int itr ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          context.db_remove_i256( itr );
       }
 
@@ -1578,6 +1600,7 @@ class transaction_api : public context_aware_api {
       using context_aware_api::context_aware_api;
 
       void send_inline( array_ptr<char> data, uint32_t data_len ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          //TODO: Why is this limit even needed? And why is it not consistently checked on actions in input or deferred transactions
          EOS_ASSERT( data_len < context.control.get_global_properties().configuration.max_inline_action_size, inline_action_too_big,
                     "inline action too big" );
@@ -1588,6 +1611,7 @@ class transaction_api : public context_aware_api {
       }
 
       void send_context_free_inline( array_ptr<char> data, uint32_t data_len ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          //TODO: Why is this limit even needed? And why is it not consistently checked on actions in input or deferred transactions
          EOS_ASSERT( data_len < context.control.get_global_properties().configuration.max_inline_action_size, inline_action_too_big,
                    "inline action too big" );
@@ -1598,12 +1622,14 @@ class transaction_api : public context_aware_api {
       }
 
       void send_deferred( const uint128_t& sender_id, account_name payer, array_ptr<char> data, uint32_t data_len, uint32_t replace_existing) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          transaction trx;
          fc::raw::unpack<transaction>(data, data_len, trx);
          context.schedule_deferred_transaction(sender_id, payer, std::move(trx), replace_existing);
       }
 
       bool cancel_deferred( const unsigned __int128& val ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          fc::uint128_t sender_id(val>>64, uint64_t(val) );
          return context.cancel_deferred_transaction( (unsigned __int128)sender_id );
       }
@@ -1632,13 +1658,16 @@ class context_free_transaction_api : public context_aware_api {
       }
 
       int expiration() {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
         return context.trx_context.trx.expiration.sec_since_epoch();
       }
 
       int tapos_block_num() {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
         return context.trx_context.trx.ref_block_num;
       }
       int tapos_block_prefix() {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
         return context.trx_context.trx.ref_block_prefix;
       }
 
@@ -1920,26 +1949,32 @@ class vm_apis : public context_aware_api {
       :context_aware_api(ctx,true){}
 
       void token_create( uint64_t issuer, uint64_t maximum_supply, uint64_t symbol ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          get_vm_api()->token_create(issuer, maximum_supply, symbol);
       }
 
       void token_issue( uint64_t to, uint64_t quantity, uint64_t symbol, array_ptr<const char> memo, uint32_t size2 ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          get_vm_api()->token_issue(to, quantity, symbol, memo, size2);
       }
 
       void token_transfer( uint64_t from, uint64_t to, uint64_t quantity, uint64_t symbol, array_ptr<const char> memo, uint32_t size2 ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          get_vm_api()->token_transfer(from, to, quantity, symbol, memo, size2);
       }
 
       void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          get_vm_api()->token_open(owner, _symbol, ram_payer);
       }
 
       void token_retire( int64_t amount, uint64_t _symbol, array_ptr<const char> memo, uint32_t memo_size ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          get_vm_api()->token_retire(amount, _symbol, memo, memo_size);
       }
 
       void token_close( uint64_t owner, uint64_t symbol ) {
+         EOS_ASSERT( !context.read_only, unaccessible_api, "Attempt to use unaccessible API" );
          get_vm_api()->token_close( owner, symbol );
       }
 

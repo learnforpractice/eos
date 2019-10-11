@@ -39,7 +39,7 @@ namespace eosio { namespace chain {
                               const signed_transaction& t,
                               const transaction_id_type& trx_id,
                               transaction_checktime_timer&& timer,
-                              fc::time_point start = fc::time_point::now() );
+                              fc::time_point start = fc::time_point::now(), bool read_only=false );
 
          void init_for_implicit_trx( uint64_t initial_net_usage = 0 );
 
@@ -152,6 +152,7 @@ namespace eosio { namespace chain {
          fc::time_point                pseudo_start;
          fc::microseconds              billed_time;
          fc::microseconds              billing_timer_duration_limit;
+         bool                          read_only;
    };
 
 } }

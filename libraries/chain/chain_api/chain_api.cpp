@@ -2,6 +2,8 @@
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/resource_limits.hpp>
+#include <fc/io/json.hpp>
+
 #include <dlfcn.h>
 
 #include <chain_api.hpp>
@@ -44,8 +46,8 @@ static inline controller::config& cfg() {
    return s_cfg;
 }
 
-bool is_account(name account) {
-   return nullptr != ctrl().db().find<account_object,by_name>( account );
+bool is_account(uint64_t account) {
+   return nullptr != ctrl().db().find<account_object,by_name>( name(account) );
 }
 
 static void n2str(uint64_t n, string& str_name) {
@@ -67,7 +69,7 @@ static uint64_t str2n(string& str_name) {
 
 static bool get_code(uint64_t contract, digest_type& code_id, const char** code, size_t *size) {
    try {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(contract);
+      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(contract));
       bool existing_code = (account.code_hash != digest_type());
       code_id = account.code_hash;
       if( existing_code ) {
@@ -87,7 +89,7 @@ static const char* get_code_ex( uint64_t receiver, size_t* size ) {
       return nullptr;
    }
    try {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(receiver);
+      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(receiver));
       bool existing_code = (account.code_hash != digest_type());
       if( existing_code ) {
          const code_object& code_entry = ctrl().db().get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
@@ -101,7 +103,7 @@ static const char* get_code_ex( uint64_t receiver, size_t* size ) {
 
 static uint32_t get_code_first_block_used(uint64_t contract) {
    try {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(contract);
+      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(contract));
       bool existing_code = (account.code_hash != digest_type());
       if( existing_code ) {
          const code_object& code_entry = ctrl().db().get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
@@ -118,7 +120,7 @@ static bool get_code_id( uint64_t receiver, uint8_t* code_id, size_t size) {
    }
    get_vm_api()->eosio_assert(size == 32, "bad code id size!");
    try {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(receiver);
+      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(receiver));
       memcpy(code_id, account.code_hash.data(), 32);
       return true;
    } catch (...) {
@@ -131,7 +133,7 @@ int get_code_type( uint64_t receiver) {
       return -1;
    }
    try {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(receiver);
+      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(receiver));
       return account.vm_type;
    } catch (...) {
    }
@@ -199,7 +201,7 @@ static uint64_t get_microseconds() {
 }
 
 static void get_resource_limits( uint64_t account, int64_t* ram_bytes, int64_t* net_weight, int64_t* cpu_weight ) {
-   ctrl().get_resource_limits_manager().get_account_limits( account, *ram_bytes, *net_weight, *cpu_weight);
+   ctrl().get_resource_limits_manager().get_account_limits( name(account), *ram_bytes, *net_weight, *cpu_weight);
 }
 
 typedef void (*fn_vm_register_api)(vm_api* api);
@@ -280,16 +282,11 @@ static bool is_builtin_activated(uint32_t feature) {
 }
 
 static string call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {
-    vm_api *api_ro = get_vm_api_ro();
-    vm_api *api = get_vm_api();
-    vm_register_api(api_ro);
-    auto cleanup = fc::make_scoped_exit([&](){
-        vm_register_api(api);
-    });
-    if (get_chain_api()->get_code_type(contract) == 0) {
-        return db_api::get().exec_action(contract, action, binargs);
-    }
-    return string("");
+   try {
+      auto trace = ctrl().call_contract(contract, action, binargs);
+      return fc::json::to_string(trace);
+   }FC_CAPTURE_AND_LOG((contract));
+   return "";
 }
 
 //chain_exceptions.cpp

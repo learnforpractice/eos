@@ -35,18 +35,19 @@ static inline void print_debug(account_name receiver, const action_trace& ar) {
 //vm_api.cpp
 void set_apply_context(apply_context *ctx);
 
-apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth)
+apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth, bool read_only)
 :control(con)
-,db(con.mutable_db())
+,db(con.get_db(read_only))
 ,trx_context(trx_ctx)
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
-,idx64(*this)
-,idx128(*this)
-,idx256(*this)
-,idx_double(*this)
-,idx_long_double(*this)
+,idx64(*this, read_only)
+,idx128(*this, read_only)
+,idx256(*this, read_only)
+,idx_double(*this, read_only)
+,idx_long_double(*this, read_only)
+,read_only(read_only)
 {
    action_trace& trace = trx_ctx.get_action_trace(action_ordinal);
    act = &trace.act;
@@ -712,6 +713,8 @@ int apply_context::db_store_i64( name scope, name table, const account_name& pay
 
 int apply_context::db_store_i64( name code, name scope, name table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const auto& tab = find_or_create_table( code, scope, table, payer );
    auto tableid = tab.id;
 
@@ -739,6 +742,7 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    EOS_ASSERT( table_obj.code == receiver, table_access_violation, "db access violation" );
 
 //   require_write_lock( table_obj.scope );
@@ -766,6 +770,8 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
 }
 
 void apply_context::db_remove_i64( int iterator ) {
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
@@ -914,6 +920,8 @@ int apply_context::db_store_i256( uint64_t scope, uint64_t table, const account_
 
 int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const auto& tab = find_or_create_table( name(code), name(scope), name(table), name(payer) );
    auto tableid = tab.id;
 
@@ -939,6 +947,7 @@ int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table,
 }
 
 void apply_context::db_update_i256( int iterator, account_name payer, const char* buffer, size_t buffer_size, bool check_code ) {
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    const key256_value_object& obj = key256val_cache.get( iterator );
 
    const auto& table_obj = key256val_cache.get_table( obj.t_id );
@@ -972,6 +981,7 @@ void apply_context::db_update_i256( int iterator, account_name payer, const char
 }
 
 void apply_context::db_remove_i256( int iterator, bool check_code ) {
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    const key256_value_object& obj = key256val_cache.get( iterator );
 
    const auto& table_obj = key256val_cache.get_table( obj.t_id );
@@ -1111,23 +1121,29 @@ int apply_context::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) 
 
 uint64_t apply_context::next_global_sequence() {
    const auto& p = control.get_dynamic_global_properties();
-   db.modify( p, [&]( auto& dgp ) {
-      ++dgp.global_action_sequence;
-   });
+   if (!read_only) {
+      db.modify( p, [&]( auto& dgp ) {
+         ++dgp.global_action_sequence;
+      });
+   }
    return p.global_action_sequence;
 }
 
 uint64_t apply_context::next_recv_sequence( const account_metadata_object& receiver_account ) {
-   db.modify( receiver_account, [&]( auto& ra ) {
-      ++ra.recv_sequence;
-   });
+   if (!read_only) {
+      db.modify( receiver_account, [&]( auto& ra ) {
+         ++ra.recv_sequence;
+      });
+   }
    return receiver_account.recv_sequence;
 }
 uint64_t apply_context::next_auth_sequence( account_name actor ) {
    const auto& amo = db.get<account_metadata_object,by_name>( actor );
-   db.modify( amo, [&](auto& am ){
-      ++am.auth_sequence;
-   });
+   if (!read_only) {
+      db.modify( amo, [&](auto& am ){
+         ++am.auth_sequence;
+      });
+   }
    return amo.auth_sequence;
 }
 
