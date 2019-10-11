@@ -37,7 +37,8 @@ public:
    }
 
    template<typename Lambda>
-   eosio_system_tester(Lambda setup, bool uuos_mainnet, string genesis_file) {
+   eosio_system_tester(Lambda setup, bool uuos_mainnet, string genesis_file) : 
+   TESTER(flat_set<account_name>(), uuos_mainnet, genesis_file) {
       setup(*this);
 
       produce_blocks( 2 );
