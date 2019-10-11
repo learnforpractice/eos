@@ -29,6 +29,11 @@ if( GPERFTOOLS_FOUND )
    list( APPEND PLATFORM_SPECIFIC_LIBS tcmalloc )
 endif()
 
+if (APPLE)
+else()
+  list( APPEND PLATFORM_SPECIFIC_LIBS util )
+endif()
+
 add_subdirectory(contracts)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/contracts.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/contracts.hpp ESCAPE_QUOTES)
 
