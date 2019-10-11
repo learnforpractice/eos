@@ -35,19 +35,19 @@ static inline void print_debug(account_name receiver, const action_trace& ar) {
 //vm_api.cpp
 void set_apply_context(apply_context *ctx);
 
-apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth, bool _read_only)
+apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth, bool ro)
 :control(con)
-,db(con.get_db(_read_only))
+,db(con.get_db(ro))
 ,trx_context(trx_ctx)
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
-,idx64(*this, _read_only)
-,idx128(*this, _read_only)
-,idx256(*this, _read_only)
-,idx_double(*this, _read_only)
-,idx_long_double(*this, _read_only)
-,read_only(_read_only)
+,idx64(*this, ro)
+,idx128(*this, false)
+,idx256(*this, ro)
+,idx_double(*this, ro)
+,idx_long_double(*this, ro)
+,read_only(ro)
 {
    action_trace& trace = trx_ctx.get_action_trace(action_ordinal);
    act = &trace.act;

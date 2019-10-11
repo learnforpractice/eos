@@ -171,7 +171,7 @@ class apply_context {
 
             using secondary_key_helper_t = secondary_key_helper<secondary_key_type, secondary_key_proxy_type, secondary_key_proxy_const_type>;
 
-            generic_index( apply_context& c, bool read_only=false ):context(c){}
+            generic_index( apply_context& c, bool ro=false ):context(c), read_only(ro){}
 
             int store( uint64_t scope, uint64_t table, const account_name& payer,
                        uint64_t id, secondary_key_proxy_const_type value )
@@ -452,7 +452,7 @@ class apply_context {
 
    /// Constructor
    public:
-      apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth=0, bool _read_only=false);
+      apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth=0, bool ro=false);
 
    /// Execution methods:
    public:
