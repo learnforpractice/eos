@@ -285,3 +285,12 @@ extern "C" void vm_api_ro_init() {
 }
 
 }}
+
+static struct vm_api* s_api = nullptr;
+
+extern "C" void register_vm_api_ro(struct vm_api* api) {
+   if (!api) {
+      throw std::runtime_error("vm_api pointer can not be NULL!");
+   }
+   s_api = api;
+}

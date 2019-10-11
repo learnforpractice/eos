@@ -468,11 +468,11 @@ class db_interface {
       db_interface(chainbase::database& _db);
 
       uint64_t get_receiver_ex() {
-         return receiver.value;
+         return receiver.to_uint64_t();
       }
 
       void set_receiver_ex(uint64_t _receiver) {
-         receiver.value = _receiver;
+         receiver = name(_receiver);
       }
 
       const action& get_action()const { return act; }

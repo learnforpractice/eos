@@ -40,7 +40,7 @@ vm_manager::vm_manager() {
 
 void vm_manager::init() {
     vm_python2_init();
-    wasm_interface_init_1(1);
+//    wasm_interface_init_1(1);
 }
 
 vm_manager::~vm_manager() {
@@ -98,7 +98,8 @@ void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint
     memcpy(call_extra_args.data(), extra_args, extra_args_size);
     call_returns.resize(0);
 
-    wasm_interface_call_1(contract, func_name, arg1, arg2, arg3);
+    get_vm_api()->wasm_call(contract, func_name, arg1, arg2, arg3);
+//    wasm_interface_call_1(contract, func_name, arg1, arg2, arg3);
 }
 
 string vm_manager::call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {

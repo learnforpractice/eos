@@ -101,7 +101,7 @@ string db_api::exec_action(uint64_t code, uint64_t action, const vector<char>& a
    static bool init = false;
    if (!init) {
       init = true;
-      wasm_interface_init_1(0);
+//      wasm_interface_init_1(0);
    }
    call_start = fc::time_point::now();
    _pending_console_output.clear();
@@ -113,7 +113,7 @@ string db_api::exec_action(uint64_t code, uint64_t action, const vector<char>& a
    act.data = args;
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
    bool existing_code = (account.code_hash != digest_type());
-   wasm_interface_apply_1(account.code_hash, account.vm_type, account.vm_version);
+//   wasm_interface_apply_1(account.code_hash, account.vm_type, account.vm_version);
    return _pending_console_output;
 }
 
