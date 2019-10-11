@@ -27,9 +27,6 @@
 
 #include <eosiolib_native/vm_api.h>
 
-extern "C" {
-   int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
-}
 #if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
 #include <eosio/vm/allocator.hpp>
 #endif
@@ -1180,8 +1177,8 @@ class action_api : public context_aware_api {
          return context.get_receiver();
       }
 
-      int evm_execute(array_ptr<unsigned char> trx, uint32_t size) {
-         return ::evm_execute(trx.value, size);
+      int evm_execute(array_ptr<char> trx, uint32_t size) {
+         return get_vm_api()->evm_execute(trx.value, size);
       }
 };
 
@@ -2199,7 +2196,7 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,       int(int, int)  )
    (action_data_size,       int()          )
    (current_receiver,       int64_t()      )
-   (evm_execute,        int(int, int)      )
+   (evm_execute,            int(int, int)  )
 );
 
 REGISTER_INTRINSICS(authorization_api,
