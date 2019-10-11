@@ -46,14 +46,11 @@ add_executable( unit_test
   special_accounts_tests.cpp
   api_tests.cpp
   currency_tests.cpp
-  eth_account_tests.cpp
   misc_tests.cpp
-  pythonvm_tests.cpp
-  uuos_mainnet_tests.cpp
+
   auth_tests.cpp
   database_tests.cpp
   fork_test_utilities.cpp
-  native_contract_test.cpp
   ram_tests.cpp
   wasm_tests.cpp
   block_tests.cpp
@@ -67,6 +64,10 @@ add_executable( unit_test
   main.cpp
   producer_schedule_tests.cpp	snapshot_tests.cpp
 
+  pythonvm_tests.cpp
+  uuos_mainnet_tests.cpp
+  eth_account_tests.cpp
+  native_contract_test.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp

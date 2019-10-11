@@ -515,40 +515,15 @@ namespace eosio { namespace testing {
       }
       controller::config vcfg;
 
-      static controller::config default_config() {
-         fc::temp_directory tempdir;
-         controller::config vcfg;
-         vcfg.blocks_dir      = tempdir.path() / std::string("v_").append(config::default_blocks_dir_name);
-         vcfg.state_dir  = tempdir.path() /  std::string("v_").append(config::default_state_dir_name);
-         vcfg.state_size = 1024*1024*8;
-         vcfg.state_guard_size = 0;
-         vcfg.reversible_cache_size = 1024*1024*8;
-         vcfg.reversible_guard_size = 0;
-         vcfg.contracts_console = false;
-         vcfg.uuos_mainnet = false;
-         vcfg.genesis_accounts_file = "";
-
-         vcfg.genesis.initial_timestamp = fc::time_point::from_iso_string("2020-01-01T00:00:00.000");
-         vcfg.genesis.initial_key = get_public_key( config::system_account_name, "active" );
-
-         for(int i = 0; i < boost::unit_test::framework::master_test_suite().argc; ++i) {
-            if(boost::unit_test::framework::master_test_suite().argv[i] == std::string("--wavm"))
-               vcfg.wasm_runtime = chain::wasm_interface::vm_type::wavm;
-            else if(boost::unit_test::framework::master_test_suite().argv[i] == std::string("--wabt"))
-               vcfg.wasm_runtime = chain::wasm_interface::vm_type::wabt;
-         }
-         return vcfg;
-      }
-
       validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>(), bool uuos_mainnet = false, string genesis_accounts_file = "") {
-         vcfg = default_config();
+         auto def_conf = default_config(tempdir);
 
          vcfg = def_conf.first;
          config_validator(vcfg);
          vcfg.trusted_producers = trusted_producers;
          vcfg.uuos_mainnet = uuos_mainnet;
          vcfg.genesis_accounts_file = genesis_accounts_file;
-         
+
          if (uuos_mainnet) {
             vcfg.state_size = 1024*1024*600;
             vcfg.reversible_cache_size = 1024*1024*600;
@@ -556,7 +531,16 @@ namespace eosio { namespace testing {
 
          validating_node = create_validating_node(vcfg, def_conf.second, true);
 
-         init(setup_policy::full, db_read_mode::SPECULATIVE, uuos_mainnet, genesis_accounts_file);
+         def_conf.first.uuos_mainnet = uuos_mainnet;
+         def_conf.first.genesis_accounts_file = genesis_accounts_file;
+
+         if (uuos_mainnet) {
+            def_conf.first.state_size = 1024*1024*600;
+            def_conf.first.reversible_cache_size = 1024*1024*600;
+         }
+
+         init(def_conf.first, def_conf.second);
+         execute_setup_policy(setup_policy::full);
       }
 
       static void config_validator(controller::config& vcfg) {
