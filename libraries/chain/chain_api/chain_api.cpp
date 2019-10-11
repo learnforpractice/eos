@@ -282,10 +282,11 @@ static bool is_builtin_activated(uint32_t feature) {
 }
 
 static string call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {
-   try {
-      auto trace = ctrl().call_contract(contract, action, binargs);
-      return fc::json::to_string(trace);
-   }FC_CAPTURE_AND_LOG((contract));
+   auto trace = ctrl().call_contract(contract, action, binargs);
+   if (trace->action_traces.size() > 0) {
+      return trace->action_traces[0].console;
+   }
+//      return fc::json::to_string(trace);
    return "";
 }
 
