@@ -1833,7 +1833,7 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
 
    BOOST_CHECK_EXCEPTION(  c.set_code( tester1_account, pythonvm_code, 1, nullptr ),
                            set_exact_code,
-                           fc_exception_message_is( "pythonvn not activated!" ) );
+                           fc_exception_message_is( "pythonvm not activated!" ) );
    ilog("+++++++++++");
 
    const auto& pfm = c.control->get_protocol_feature_manager();

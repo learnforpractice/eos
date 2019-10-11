@@ -63,7 +63,7 @@ void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
     int vm_type = get_chain_api()->get_code_type(receiver);
     if (vm_type == VM_TYPE_PY) {
         bool b = get_chain_api()->is_builtin_activated((uint32_t)enum_builtin_protocol_feature::pythonvm);
-        get_vm_api()->eosio_assert(b, "pythonvn not activated!");
+        get_vm_api()->eosio_assert(b, "pythonvm not activated!");
         #if 1
         vm_python2_apply(receiver, code, action);
         #else
