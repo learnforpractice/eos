@@ -77,13 +77,17 @@ int main(int argc, char **argv) {
         WASM::serialize(stream, module);
         module.userSections.clear();
     } catch(const Serialization::FatalSerializationException& e) {
-        EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
+        printf("error: %s\n", e.message.c_str());
+        return -1;
     } catch(const IR::ValidationException& e) {
-        EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
-    }
+        printf("error: %s\n", e.message.c_str());
+        return -1;
+    } EOS_CAPTURE_AND_RETHROW(fc::exception)
 
-    wasm_injections::wasm_binary_injection<true> injector(module);
-    injector.inject();
+    try {
+        wasm_injections::wasm_binary_injection<true> injector(module);
+        injector.inject();
+    } EOS_CAPTURE_AND_RETHROW(fc::exception)
 
     std::vector<U8> bytes;
     try {
@@ -94,8 +98,11 @@ int main(int argc, char **argv) {
         fwrite(bytes.data(), 1, bytes.size(), fp);
         fclose(fp);
     } catch(const Serialization::FatalSerializationException& e) {
-        EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
+        printf("error: %s\n", e.message.c_str());
+        return -1;
     } catch(const IR::ValidationException& e) {
-        EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
-    }
+        printf("error: %s\n", e.message.c_str());
+        return -1;
+    } EOS_CAPTURE_AND_RETHROW(fc::exception)
+    return 0;
 }

@@ -827,6 +827,13 @@ namespace WASM
 			case SectionType::data: serializeDataSection(moduleStream,module); break;
 			case SectionType::user:
 			{
+#ifdef WASM_INJECTOR_FOR_PYTHON_VM
+				static bool only_once = false;
+				if (only_once) {
+					return;
+				}
+				only_once = true;
+#endif
 				UserSection& userSection = *module.userSections.insert(module.userSections.end(),UserSection());
 				serialize(moduleStream,userSection);
 				break;

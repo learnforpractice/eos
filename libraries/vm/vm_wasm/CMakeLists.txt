@@ -72,7 +72,7 @@ target_include_directories( wasm_injector
                             PUBLIC ${HEADERS}
                             )
 
-target_compile_options(wasm_injector  PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB -DWASM_INJECTOR)
+target_compile_options(wasm_injector  PRIVATE -D_INDEX=1 -DWASM_INJECTOR_FOR_PYTHON_VM)
 
 # install(TARGETS vm_wasm-1
 #     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

@@ -384,6 +384,7 @@ void vm_python2_init() {
    (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))();
 
    _vm_memory->init_smart_contract = true;
+   _vm_memory->counter = 1;
 
 //   pythonvm_get_memory(&mem_start, &size);
 //   _vm_memory->data_backup.resize(size);
