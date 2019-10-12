@@ -8,14 +8,15 @@ PyMODINIT_FUNC PyInit__sha1(void);
 PyObject *PyImport_ImportModuleObject(PyObject *name, const char *code, size_t size);
 
 void python_init(void) {
+    static int initialized = 0;
+
     Py_IgnoreEnvironmentFlag = 1;
 	Py_NoSiteFlag = 1;
-    static int initialized = 0;
     if (!initialized) {
         initialized = 1;
         Py_InitializeEx(0);
+        prints("+++++++++++++++++++++++++python initialized!!!\n");
 #if 0
-        prints("+++++++++++++++++++++++++intialize __hello__\n");
         /* Import _importlib through its frozen version, _frozen_importlib. */
         if (PyImport_ImportFrozenModule("__hello__") <= 0) {
             Py_FatalError("Py_Initialize: can't import __hello__");
@@ -23,6 +24,7 @@ void python_init(void) {
 #endif
         //import io, 
         PyRun_SimpleString("import struct, hashlib, db, sys, base58");
+//        PyRun_SimpleString("print('++hello,world')");
         if (PyErr_Occurred()) {
             PyErr_Print();
         }
@@ -60,13 +62,59 @@ void python_call_module(void *m, uint64_t receiver, uint64_t code, uint64_t acti
     Py_DECREF(args);
 }
 
-void python_vm_apply(uint64_t receive, uint64_t code, uint64_t action) {
-    return;
-}
-
 void check_error(void) {
     if (PyErr_Occurred()) {
         PyErr_Print();
         eosio_assert(0, "python call exit with exceptions!");
     }
 }
+
+
+void *get_current_memory(void);
+void *get_code_memory(void);
+
+__attribute__((eosio_wasm_import))
+void set_copy_memory_range(int start, int end);
+
+__attribute__((eosio_wasm_import))
+int get_code_size(uint64_t account);
+
+__attribute__((eosio_wasm_import))
+int get_code(uint64_t account, char *code, size_t size);
+
+
+static int initialized = 0;
+static int g_counter = 0;
+static void *current_module;
+
+
+void python_vm_apply( uint64_t receiver, uint64_t code, uint64_t action ) {
+    if (!current_module) {
+        return;
+    }
+    python_call_module(current_module, receiver, code, action);
+}
+
+void python_vm_call( uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action ) {
+    if (action == 0) {
+        g_counter += 1;
+        python_init();
+        initialized = 1;
+    }
+    else if (1 == action) {
+        int start, end;
+        start = get_current_memory();
+//        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
+        int code_size = get_code_size(receiver);
+        char *str_code = (char *)get_code_memory();//malloc(code_size);
+//        prints("++++++++++++code buffer ");printi(str_code);prints("\n");
+        int size = get_code(receiver, str_code, code_size);
+        current_module = python_load_module(str_code, code_size);
+//        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
+        memset(str_code, 0, code_size);
+        end = get_current_memory();
+        set_copy_memory_range(start, end);
+        check_error();
+    }
+}
+

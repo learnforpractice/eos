@@ -13,6 +13,9 @@
 #include "wasm-rt-impl.h"
 #include "vm_api4c.h"
 
+#include <python_vm_config.h>
+
+
 #define PAGE_SIZE (65536)
 
 typedef uint8_t u8;
@@ -176,35 +179,8 @@ u32 _find_frozen_code(u32 name_offset, u32 name_length, u32 code_offset, u32 cod
     return __find_frozen_code(name, name_length, code, code_size);
 }
 
-void vm_python2_init() {
-   static int initialized = 0;
-   printf("+++++++vm_python2_init %d\n", initialized);
-   if (initialized) {
-      return;
-   }
-   initialized = 1;
-
-   set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
-
-   Z_envZ_find_frozen_codeZ_iiiii = _find_frozen_code;
-   init_vm_api4c();
-   WASM_RT_ADD_PREFIX(init)();
-
-   (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))();
-
-   _vm_memory->init_smart_contract = true;
-
-//   pythonvm_get_memory(&mem_start, &size);
-//   _vm_memory->data_backup.resize(size);
-//   memcpy(_vm_memory->data_backup.data(), mem_start, size);
-
-   _vm_memory->backup_memory();
-   _vm_memory->init_cache();
-//   export_vm_call(0, 0, 0, 0);
-}
-
-void vm_python2_deinit() {
-   printf("vm_example: deinit\n");
+extern "C" void print_function(const char *name, int line, int stack_pos) {
+   printf("++++++++++++++%s %d %d\n", name, line, stack_pos);
 }
 
 int vm_python2_setcode(uint64_t account) {
@@ -212,7 +188,7 @@ int vm_python2_setcode(uint64_t account) {
 }
 
 void vm_on_trap(wasm_rt_trap_t code) {
-   get_vm_api()->eosio_assert(0, "vm runtime error");
+//   get_vm_api()->eosio_assert(0, "vm runtime error");
    switch (code) {
       case WASM_RT_TRAP_NONE:
          get_vm_api()->eosio_assert(0, "vm no error");
@@ -382,6 +358,44 @@ int vm_python2_load(uint64_t account) {
 
 int vm_python2_unload(uint64_t account) {
    return 0;
+}
+
+void vm_python2_init() {
+   static int initialized = 0;
+   printf("+++++++vm_python2_init %d\n", initialized);
+   if (initialized) {
+      return;
+   }
+   initialized = 1;
+
+   wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try2();
+   if (code != 0) {
+     printf("A trap occurred with code: %d\n", code);
+     vm_on_trap(code);
+   }
+
+   set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
+
+   Z_envZ_find_frozen_codeZ_iiiii = _find_frozen_code;
+   init_vm_api4c();
+
+   WASM_RT_ADD_PREFIX(init)();
+
+   (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))();
+
+   _vm_memory->init_smart_contract = true;
+
+//   pythonvm_get_memory(&mem_start, &size);
+//   _vm_memory->data_backup.resize(size);
+//   memcpy(_vm_memory->data_backup.data(), mem_start, size);
+
+   _vm_memory->backup_memory();
+   _vm_memory->init_cache();
+//   export_vm_call(0, 0, 0, 0);
+}
+
+void vm_python2_deinit() {
+   printf("vm_example: deinit\n");
 }
 
 }

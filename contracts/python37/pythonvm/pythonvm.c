@@ -477,66 +477,19 @@ int get_code_size(uint64_t account);
 __attribute__((eosio_wasm_import))
 int get_code(uint64_t account, char *code, size_t size);
 
-int eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
-void python_init(void);
-void call( uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action );
 
+extern void python_vm_apply( uint64_t receiver, uint64_t code, uint64_t action );
+extern void python_vm_call( uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action );
+extern void python_init(void);
+
+int fool_compiler = 0;
 void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
-    prints("++++++g_counter:");printi(g_counter++);prints("\n");
-    python_init();
-    return;
-//    prints("+++current_module:");printi(current_module);prints("\n");
-#if 0
-    if (eosio_token_apply(receiver, code, action)) {
-        return;
-    }
-#endif
-    python_call_module(current_module, receiver, code, action);
-
-    if (!current_module) {
-        return;
-    }
-    if (receiver == 0) {
-        call(0, receiver, code, action);
-    } else {
-        python_call_module(current_module, receiver, code, action);
-    }
-//    prints("++++++++++++get_current_memory ");printi(get_current_memory());prints("\n");
-}
-
-void check_error(void);
-
-void call( uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action ) {
-    if (action == 0) {
-        g_counter += 1;
+    python_vm_apply(receiver, code, action);
+    if (fool_compiler) {
+        python_vm_call(0, 0, 0, 0);
         python_init();
-        initialized = 1;
-    }
-    else if (1 == action) {
-        int start, end;
-        start = get_current_memory();
-//        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
-        int code_size = get_code_size(receiver);
-        char *str_code = (char *)get_code_memory();//malloc(code_size);
-//        prints("++++++++++++code buffer ");printi(str_code);prints("\n");
-        int size = get_code(receiver, str_code, code_size);
-        current_module = python_load_module(str_code, code_size);
-//        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
-        memset(str_code, 0, code_size);
-        end = get_current_memory();
-        set_copy_memory_range(start, end);
-        check_error();
     }
 }
 
-//EOSIO_ABI( eosio::token, (create)(issue)(transfer) )
 
-
-#include <stdlib.h>
-
-void python_call_module(void *m, uint64_t receiver, uint64_t code, uint64_t action);
-void sayhello(void) {
-    python_call_module(0, 0, 0, 0);
-    printf("hello,world");
-}
 

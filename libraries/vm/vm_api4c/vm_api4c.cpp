@@ -106,9 +106,6 @@ static void _printui(u64 u) {
     get_vm_api()->printui(u);
 }
 
-
-void pythonvm_get_memory(char **start, uint32_t *size);
-
 u32 _get_code_size(u64 account);
 u32 _get_code(u64 account, u32 memory_offset, u32 buffer_size);
 u64 _s2n(u32 in_offset, u32 in_len);
