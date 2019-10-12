@@ -1,4 +1,5 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gen.py.in ${CMAKE_CURRENT_BINARY_DIR}/gen.py)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/python_vm_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/python_vm_config.h)
 
 add_subdirectory( frozen )
 
@@ -22,6 +23,7 @@ endif (APPLE)
 set(SRCS vm_python2.cpp
     pythonvm.c
     wasm-rt-impl.c
+    vm_memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 )
 
@@ -38,6 +40,7 @@ target_include_directories(vm_python2 PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/vm/vm_api4c
 )

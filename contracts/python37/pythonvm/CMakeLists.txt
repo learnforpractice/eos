@@ -20,7 +20,7 @@ set(CMAKE_C_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <
 set(CMAKE_CXX_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
 set(WASM_LINK_FLAGS --gc-sections
--zstack-size=8192
+-zstack-size=${PYTHON_VM_STACK_SIZE} #20480
 --merge-data-segments
 --export-table
 -e apply

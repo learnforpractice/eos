@@ -90,6 +90,8 @@ extern "C"
 
 int main(int argc, char** argv)
 {
+//   fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+
    try {
       evm_init();
       vm_api_init();
@@ -97,8 +99,6 @@ int main(int argc, char** argv)
       chain_api_init();
       vm_python2_init();
       native_contracts_init();
-
-//      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 
       app().set_version(eosio::nodeos::config::version);
 
