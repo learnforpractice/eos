@@ -1,4 +1,5 @@
 #include "src/interp.h"
+#include <python_vm_config.h>
 
 #define COPY_UNIT (8) //8 bytes alignment
 

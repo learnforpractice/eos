@@ -5,7 +5,7 @@ add_library(vm_api4c STATIC
     eosio_injection.cpp
     compiler_builtins.cpp
     privileged.cpp
-    vm_memory.cpp
+#    vm_memory.cpp
 #    wasm-rt-impl.c
 )
 
