@@ -216,7 +216,7 @@ void take_snapshoot(char *data, uint32_t vm_memory_size, char *data_backup, vm_s
       memcpy(segment.data.data(), &ptr2[start], (i-start)*sizeof(uint64_t));
       backup->memory_backup.emplace_back(std::move(segment));
 
-      printf("++++++++++++++++offset %lu, size %lu\n", start*sizeof(uint64_t), (i-start)*sizeof(uint64_t));
+//      printf("++++++++++++++++offset %lu, size %lu\n", start*sizeof(uint64_t), (i-start)*sizeof(uint64_t));
       i += 1;
    }
 }
@@ -231,6 +231,9 @@ BOOST_FIXTURE_TEST_CASE(testpythonvm5, pythonvm_tester) try {
    vm_memory.backup_memory();
    vm_memory.init_cache();
    vm_memory.memory_end = vm_memory.data.size();
+   
+   vmdlog("++++++++++vm_memory.counter %d\n", vm_memory.counter);
+   vm_memory.counter = 1;
 
    vm_state_backup backup;
 
@@ -254,7 +257,7 @@ BOOST_FIXTURE_TEST_CASE(testpythonvm5, pythonvm_tester) try {
 //      wabt::interp::LoadDataToWritableMemory(&vm_memory, i/8);
       for (int j=i;j<i+8;j++) {
          if (data_backup[j] != vm_memory.data[j]) {
-            printf("++++++++++error at index: %d %d %d\n", j, (char)j, vm_memory.data[j]);
+            printf("++++++++++error at index: %d %d %d\n", j, data_backup[j], vm_memory.data[j]);
             BOOST_REQUIRE_EQUAL(true, (char)j == vm_memory.data[j]);
          }
       }
