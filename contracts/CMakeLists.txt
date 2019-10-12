@@ -9,18 +9,19 @@ set(EOSIO_WASM_OLD_BEHAVIOR "Off")
 find_package(eosio.cdt REQUIRED)
 
 #message( STATUS "Building contracts in directory utility" )
-#ExternalProject_Add(
-#   pythonvm_project
-#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/python37
-#   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/python37
-#   CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_CONTRACTS=TRUE
-#   UPDATE_COMMAND ""
-#   PATCH_COMMAND ""
-#   TEST_COMMAND ""
-#   INSTALL_COMMAND ""
-#   BUILD_ALWAYS 1
-#)
-
+if (BUILD_PYTHON_VM)
+  ExternalProject_Add(
+    pythonvm_project
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/python37
+    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/python37
+    CMAKE_ARGS -DPYTHON_VM_STACK_SIZE=${PYTHON_VM_STACK_SIZE} -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_CONTRACTS=TRUE
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    TEST_COMMAND ""
+    INSTALL_COMMAND ""
+    BUILD_ALWAYS 1
+  )
+endif()
 
 # ExternalProject_Add(
 #    native_project
