@@ -47,8 +47,8 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 ,idx256(*this, ro)
 ,idx_double(*this, ro)
 ,idx_long_double(*this, ro)
-,read_only(ro)
 {
+   read_only = ro;
    action_trace& trace = trx_ctx.get_action_trace(action_ordinal);
    act = &trace.act;
    receiver = trace.receiver;
