@@ -1515,6 +1515,7 @@ sys_getandroidapilevel(PyObject *self, void *Py_UNUSED(ignored))
 
 static PyMethodDef sys_methods[] = {
     /* Might as well keep this in alphabetic order */
+#ifndef __WASM
     {"breakpointhook",  (PyCFunction)sys_breakpointhook,
      METH_FASTCALL | METH_KEYWORDS, breakpointhook_doc},
     {"callstats", (PyCFunction)sys_callstats, METH_NOARGS,
@@ -1527,6 +1528,7 @@ static PyMethodDef sys_methods[] = {
     {"exc_info",        sys_exc_info, METH_NOARGS, exc_info_doc},
     {"excepthook",      sys_excepthook, METH_VARARGS, excepthook_doc},
     {"exit",            sys_exit, METH_VARARGS, exit_doc},
+#endif
     {"getdefaultencoding", (PyCFunction)sys_getdefaultencoding,
      METH_NOARGS, getdefaultencoding_doc},
 #ifdef HAVE_DLOPEN
@@ -1541,10 +1543,12 @@ static PyMethodDef sys_methods[] = {
 #ifdef DYNAMIC_EXECUTION_PROFILE
     {"getdxp",          _Py_GetDXProfile, METH_VARARGS},
 #endif
+#ifndef __WASM
     {"getfilesystemencoding", (PyCFunction)sys_getfilesystemencoding,
      METH_NOARGS, getfilesystemencoding_doc},
     { "getfilesystemencodeerrors", (PyCFunction)sys_getfilesystemencodeerrors,
      METH_NOARGS, getfilesystemencodeerrors_doc },
+#endif
 #ifdef Py_TRACE_REFS
     {"getobjects",      _Py_GetObjects, METH_VARARGS},
 #endif
