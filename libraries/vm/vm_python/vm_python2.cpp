@@ -14,6 +14,7 @@
 #include "vm_api4c.h"
 
 #include <python_vm_config.h>
+#include <stacktrace.h>
 
 
 #define PAGE_SIZE (65536)
@@ -182,6 +183,11 @@ u32 _find_frozen_code(u32 name_offset, u32 name_length, u32 code_offset, u32 cod
 extern "C" void print_function(const char *name, int line, int stack_pos) {
    printf("++++++++++++++%s %d %d\n", name, line, stack_pos);
 }
+
+extern "C" void vm_print_stacktrace(void) {
+   print_stacktrace();
+}
+
 
 int vm_python2_setcode(uint64_t account) {
    return 0;

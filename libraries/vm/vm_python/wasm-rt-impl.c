@@ -40,7 +40,10 @@ jmp_buf g_jmp_buf;
 FuncType* g_func_types;
 uint32_t g_func_type_count;
 
+void vm_print_stacktrace(void);
+
 void wasm_rt_trap(wasm_rt_trap_t code) {
+//   vm_print_stacktrace();
    wasm_rt_call_stack_depth = 0;
    switch (code) {
       case WASM_RT_TRAP_NONE:
