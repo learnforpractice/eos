@@ -227,7 +227,8 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    std::shared_ptr<vm_state_backup> backup = std::make_shared<vm_state_backup>();
 
    int total_count = 0;
-   int i = 0;
+
+   int pos = PYTHON_VM_STACK_SIZE/sizeof(uint64_t);
    uint64_t *ptr1 = (uint64_t *)_vm_memory->data_backup.data();
    uint64_t *ptr2 = (uint64_t *)mem_start;
 
@@ -236,10 +237,11 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    int contract_mem_start = 0;
    int contract_mem_end = 0;
    get_vm_api()->get_copy_memory_range(&contract_mem_start, &contract_mem_end);
+
+   vmelog("++++contract_mem_start %d, contract_mem_end %d, vm_memory_size %d\n", contract_mem_start, contract_mem_end, vm_memory_size);
    get_vm_api()->eosio_assert(contract_mem_start > 0 && contract_mem_start<vm_memory_size, "bad start contract memory");
    get_vm_api()->eosio_assert(contract_mem_end > 0 && contract_mem_end<vm_memory_size, "bad end contract memory");
    get_vm_api()->eosio_assert(contract_mem_start < contract_mem_end, "bad memory range");
-   vmdlog("++++contract_mem_start %d, contract_mem_end %d, vm_memory_size %d\n", contract_mem_start, contract_mem_end, vm_memory_size);
 
    contract_mem_start = contract_mem_start/8*8;
    contract_mem_end = (contract_mem_end+7)/8*8;
@@ -248,27 +250,25 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    vm_memory_size/=sizeof(uint64_t);
 
    //save diff memory
-   while(i<vm_memory_size) {
-      if (ptr1[i] == ptr2[i]) {
-         i += 1;
+   while(pos<vm_memory_size) {
+      if (ptr1[pos] == ptr2[pos]) {
+         pos += 1;
          continue;
       }
-      int start = i;
+      int start = pos;
       total_count += 1;
-      i += 1;
-      while (i<vm_memory_size && ptr1[i] != ptr2[i]) {
-         i += 1;
+      pos += 1;
+      while (pos<vm_memory_size && ptr1[pos] != ptr2[pos]) {
+         pos += 1;
          total_count += 1;
       }
       MemorySegment segment;
       segment.offset = start*sizeof(uint64_t);
-      segment.data.resize((i-start)*sizeof(uint64_t));
-      memcpy(segment.data.data(), &ptr2[start], (i-start)*sizeof(uint64_t));
+      segment.data.resize((pos-start)*sizeof(uint64_t));
+      memcpy(segment.data.data(), &ptr2[start], (pos-start)*sizeof(uint64_t));
       backup->memory_backup.emplace_back(std::move(segment));
 
-//      vmdlog("++++++++++++++++offset %d, size %d\n", start*sizeof(uint64_t), (i-start)*sizeof(uint64_t));
-      i += 1;
-   //               vmdlog("++++%d %d %d\n", i, (uint8_t)_env->GetMemory(0)->data[i], _memory_backup[i]);
+      pos += 1;
    }
 
 {
@@ -322,7 +322,8 @@ int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
       memcpy(mem_start, _vm_memory->data_backup.data(), vm_memory_size);
       //do not allow access apply context in when python contract is initializing
       get_vm_api()->allow_access_apply_context = false;
-      export_vm_call(1, receiver, account, act);
+//      export_vm_call(1, receiver, account, act);
+      export_vm_call(1, receiver, account, 1);
       get_vm_api()->allow_access_apply_context = true;
       take_snapshoot(code_id);
    } else {

@@ -48,6 +48,7 @@ MemorySegment* FindMemorySegment(Memory* memory, uint32_t offset) {
       //if ((offset >= segment.offset) && (offset < segment.offset + segment.data.size()))
 //      memory->memory_segments_cache[cache_index].counter = memory->counter;
 //      memory->memory_segments_cache[cache_index].index = mid;
+//      printf("+++++++++++got memory at index %d, segment.offset %d, segment.data.size() %d\n", mid, segment.offset, segment.data.size());
       memory->memory_segments_cache[cache_index] = {memory->counter, uint32_t(mid)};
       return &segment;
     }
@@ -68,10 +69,19 @@ void LoadDataToWritableMemory(Memory *memory, uint32_t write_index) {
       return;
     }
     if (IsWriteMemoryInUse(memory, write_index)) {
+//      printf("++++++++++++++++++memory in use at offset %d\n", write_index*COPY_UNIT);
       return;
     }
-//    printf("+++LoadDataToWritableMemory %d \n", write_index);
+
     uint32_t copy_offset = write_index*COPY_UNIT;
+
+    if (write_index < PYTHON_VM_STACK_SIZE/COPY_UNIT) {
+      memset(memory->base_address+copy_offset, 0, COPY_UNIT);
+      memory->in_use[write_index] = memory->counter;
+      return;
+    }
+
+//    printf("+++LoadDataToWritableMemory %d \n", write_index);
     if (copy_offset >= uint32_t(memory->memory_end)) {
       //new malloc memory, no need to find it in memory segments
       //memcpy(memory->base_address+copy_offset, memory->data_backup.data()+copy_offset, COPY_UNIT);
@@ -82,6 +92,7 @@ void LoadDataToWritableMemory(Memory *memory, uint32_t write_index) {
         //no need to handle segment overflow, as the offset is 8 bytes aligned, it will never overflow under this situation
         memcpy(memory->base_address+copy_offset, segment->data.data()+(copy_offset-segment->offset), COPY_UNIT);
       } else {
+//        printf("++++++++++++++++++load backup data at offset %d\n", copy_offset);
         memcpy(memory->base_address+copy_offset, memory->data_backup.data()+copy_offset, COPY_UNIT);
       }
     }
