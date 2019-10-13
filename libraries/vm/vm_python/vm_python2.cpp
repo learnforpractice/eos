@@ -187,39 +187,6 @@ int vm_python2_setcode(uint64_t account) {
    return 0;
 }
 
-void vm_on_trap(wasm_rt_trap_t code) {
-//   get_vm_api()->eosio_assert(0, "vm runtime error");
-   switch (code) {
-      case WASM_RT_TRAP_NONE:
-         get_vm_api()->eosio_assert(0, "vm no error");
-         break;
-      case WASM_RT_TRAP_OOB:
-         get_vm_api()->eosio_assert(0, "vm error out of bounds");
-         break;
-      case WASM_RT_TRAP_INT_OVERFLOW:
-         get_vm_api()->eosio_assert(0, "vm error int overflow");
-         break;
-      case WASM_RT_TRAP_DIV_BY_ZERO:
-         get_vm_api()->eosio_assert(0, "vm error divide by zeror");
-         break;
-      case WASM_RT_TRAP_INVALID_CONVERSION:
-         get_vm_api()->eosio_assert(0, "vm error invalid conversion");
-         break;
-      case WASM_RT_TRAP_UNREACHABLE:
-         get_vm_api()->eosio_assert(0, "vm error unreachable");
-         break;
-      case WASM_RT_TRAP_CALL_INDIRECT:
-         get_vm_api()->eosio_assert(0, "vm error call indirect");
-         break;
-      case WASM_RT_TRAP_EXHAUSTION:
-         get_vm_api()->eosio_assert(0, "vm error exhaustion");
-         break;
-      default:
-         get_vm_api()->eosio_assert(0, "vm unknown error");
-         break;
-   }
-}
-
 void take_snapshoot(std::array<uint8_t,32>& code_id) {
    char *mem_start;
    uint32_t vm_memory_size;
@@ -301,12 +268,6 @@ int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
       _vm_memory->counter += 1;
    }
 
-   wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try2();
-   if (code != 0) {
-     printf("A trap occurred with code: %d\n", code);
-     vm_on_trap(code);
-   }
-
 #if 0
       _vm_memory->init_smart_contract = true;
       memcpy(_vm_memory->data.data(), _vm_memory->data_backup.data(), _vm_memory->data_backup.size());
@@ -368,12 +329,6 @@ void vm_python2_init() {
       return;
    }
    initialized = 1;
-
-   wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try2();
-   if (code != 0) {
-     printf("A trap occurred with code: %d\n", code);
-     vm_on_trap(code);
-   }
 
    set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
 
