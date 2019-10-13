@@ -7,6 +7,8 @@ extern "C" {
 #include <stdint.h>
 
 #include "wasm-rt.h"
+
+
 void vm_checktime(); //eosio_injection.cpp
 void *memcpy(void *dest, const void *src, unsigned long n);
 
@@ -20,8 +22,6 @@ void *memcpy(void *dest, const void *src, unsigned long n);
 
 double trunc (double a);
 double fabs(double x);
-
-
 #ifndef WASM_RT_MODULE_PREFIX
 #define WASM_RT_MODULE_PREFIX
 #endif

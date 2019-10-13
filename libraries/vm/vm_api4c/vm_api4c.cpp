@@ -99,7 +99,11 @@ static void _printn(u64 n) {
 
 static void _prints_l(u32 s_offset, u32 size) {
     char *s = (char *)offset_to_ptr(s_offset, size);
-    get_vm_api()->prints_l(s, size);
+    if (get_vm_api()->is_in_apply_context) {
+        get_vm_api()->prints_l(s, size);
+    } else {
+        vmelog("%s", s);
+    }
 }
 
 static void _printui(u64 u) {
