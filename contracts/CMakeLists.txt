@@ -7,8 +7,9 @@ include(ExternalProject)
 
 set(EOSIO_WASM_OLD_BEHAVIOR "Off")
 find_package(eosio.cdt REQUIRED)
-
 #message( STATUS "Building contracts in directory utility" )
+
+#set(BUILD_PYTHON_VM TRUE)
 if (BUILD_PYTHON_VM)
   ExternalProject_Add(
     pythonvm_project

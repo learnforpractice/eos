@@ -93,7 +93,7 @@ contract_path = '/Users/newworld/dev/eos/build/contracts'
 contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
 
 if 1:
-    if True:
+    if False:
         code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
         abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
     else:
@@ -203,13 +203,16 @@ balance = eosapi.get_balance('uuos')
 print('++++balance: ', balance)
 while True:
     n = random.randint(0,10000000)
+    elapsed = 0
     for i in range(n, n+10):
         try:
             r = eosapi.transfer('uuos', 'eosio', 0.0001, str(i))
             print(r['processed']['elapsed'])
+            elapsed += int(r['processed']['elapsed'])
         except Exception as e:
             traceback.print_exc()
             print('exception:', e)
+    print('avg', elapsed/10)
     print(eosapi.get_balance('uuos'))
     time.sleep(2.0)
 
