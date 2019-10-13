@@ -1515,7 +1515,6 @@ sys_getandroidapilevel(PyObject *self, void *Py_UNUSED(ignored))
 
 static PyMethodDef sys_methods[] = {
     /* Might as well keep this in alphabetic order */
-#ifndef __WASM
     {"breakpointhook",  (PyCFunction)sys_breakpointhook,
      METH_FASTCALL | METH_KEYWORDS, breakpointhook_doc},
     {"callstats", (PyCFunction)sys_callstats, METH_NOARGS,
@@ -1527,6 +1526,7 @@ static PyMethodDef sys_methods[] = {
     {"displayhook",     sys_displayhook, METH_O, displayhook_doc},
     {"exc_info",        sys_exc_info, METH_NOARGS, exc_info_doc},
     {"excepthook",      sys_excepthook, METH_VARARGS, excepthook_doc},
+#ifndef __WASM
     {"exit",            sys_exit, METH_VARARGS, exit_doc},
 #endif
     {"getdefaultencoding", (PyCFunction)sys_getdefaultencoding,
