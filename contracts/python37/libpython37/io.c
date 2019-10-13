@@ -80,7 +80,7 @@ off_t _lseek(int fd, off_t offset, int whence) {
 
 ssize_t _write(int fd, const void *buf, size_t count) {
 //    prints("++++_write:");printi(fd);prints(buf);prints("\n");
-    if (fd == 1) {
+    if (fd == 1 || fd == 2) {//stdout/stderr
         prints(buf);
         return count;
     }
