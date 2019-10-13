@@ -121,7 +121,7 @@ void apply_context::exec_one()
                            }
                         }
                         do {
-                           #if 1
+                           #if 0
                            if (1) { //receiver == N(eosio) || receiver == N(eosio.token)) {
                               std::array<uint8_t, 32> hash;
                               memcpy(hash.data(), receiver_account->code_hash.data(), 32);
