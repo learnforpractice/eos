@@ -56,6 +56,7 @@ set(SRCS_INJECTOR
 #    vm_wasm.cpp
 #    wasm_interface.cpp
     vm_api.cpp
+    ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Source/WASM/WASMSerialization.cpp
     ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_injection.cpp
     ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_validation.cpp
     ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_constraints.cpp
@@ -64,11 +65,15 @@ set(SRCS_INJECTOR
     ${CMAKE_SOURCE_DIR}/libraries/chain/whitelisted_intrinsics.cpp
 )
 
+set(WASM_INJECTOR_DEPEND_LIBS Logging IR WASM Runtime softfloat builtins eosiolib_native chain_api frozen)
+
 add_executable( wasm_injector main.cpp ${SRCS_INJECTOR} )
-target_link_libraries( wasm_injector wabt ${WASM_DEPEND_LIBS} fc)
+target_link_libraries( wasm_injector wabt ${WASM_INJECTOR_DEPEND_LIBS} fc)
 
 target_include_directories( wasm_injector
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
+                            PRIVATE ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Include
+                            PRIVATE ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Include/WASM
                             PUBLIC ${HEADERS}
                             )
 

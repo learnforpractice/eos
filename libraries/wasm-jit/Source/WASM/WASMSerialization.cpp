@@ -812,6 +812,9 @@ namespace WASM
 				if(sectionType > lastKnownSectionType) { lastKnownSectionType = sectionType; }
 				else { throw FatalSerializationException("incorrect order for known section"); }
 			}
+			#ifdef WASM_INJECTOR_FOR_PYTHON_VM
+			printf("++++++++++sectionType %d\n", sectionType);
+			#endif
 			switch(sectionType)
 			{
 			case SectionType::type: serializeTypeSection(moduleStream,module); break;
