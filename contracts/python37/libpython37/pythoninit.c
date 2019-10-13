@@ -2,14 +2,30 @@
 #include <eosiolib/system.h>
 #include <eosiolib/ext.h>
 
+void *get_current_memory(void);
+void *get_code_memory(void);
+
+__attribute__((eosio_wasm_import))
+void set_copy_memory_range(int start, int end);
+
+__attribute__((eosio_wasm_import))
+int get_code_size(uint64_t account);
+
+__attribute__((eosio_wasm_import))
+int get_code(uint64_t account, char *code, size_t size);
+
+
+static int initialized = 0;
+static int g_counter = 0;
+static void *current_module;
+
+
 PyObject* PyInit_spam(void);
 PyMODINIT_FUNC PyInit__sha1(void);
 
 PyObject *PyImport_ImportModuleObject(PyObject *name, const char *code, size_t size);
 
 void python_init(void) {
-    static int initialized = 0;
-
     Py_IgnoreEnvironmentFlag = 1;
 	Py_NoSiteFlag = 1;
     if (!initialized) {
@@ -68,25 +84,6 @@ void check_error(void) {
         eosio_assert(0, "python call exit with exceptions!");
     }
 }
-
-
-void *get_current_memory(void);
-void *get_code_memory(void);
-
-__attribute__((eosio_wasm_import))
-void set_copy_memory_range(int start, int end);
-
-__attribute__((eosio_wasm_import))
-int get_code_size(uint64_t account);
-
-__attribute__((eosio_wasm_import))
-int get_code(uint64_t account, char *code, size_t size);
-
-
-static int initialized = 0;
-static int g_counter = 0;
-static void *current_module;
-
 
 void python_vm_apply( uint64_t receiver, uint64_t code, uint64_t action ) {
     if (!current_module) {
