@@ -2985,7 +2985,7 @@ typedef struct {
 static void listiter_dealloc(listiterobject *);
 static int listiter_traverse(listiterobject *, visitproc, void *);
 static PyObject *listiter_next(listiterobject *);
-static PyObject *listiter_len(listiterobject *);
+static PyObject *listiter_len(listiterobject *, void *Py_UNUSED(ignored));
 static PyObject *listiter_reduce_general(void *_it, int forward);
 static PyObject *listiter_reduce(listiterobject *);
 static PyObject *listiter_setstate(listiterobject *, PyObject *state);
@@ -3094,7 +3094,7 @@ listiter_next(listiterobject *it)
 }
 
 static PyObject *
-listiter_len(listiterobject *it)
+listiter_len(listiterobject *it, void *Py_UNUSED(ignored))
 {
     Py_ssize_t len;
     if (it->it_seq) {

@@ -1072,7 +1072,7 @@ static PyStructSequence_Desc windows_version_desc = {
 #pragma warning(disable:4996)
 
 static PyObject *
-sys_getwindowsversion(PyObject *self)
+sys_getwindowsversion(PyObject *self, void *Py_UNUSED(ignored))
 {
     PyObject *version;
     int pos = 0;
@@ -1298,7 +1298,7 @@ sys_getrefcount(PyObject *self, PyObject *arg)
 
 #ifdef Py_REF_DEBUG
 static PyObject *
-sys_gettotalrefcount(PyObject *self)
+sys_gettotalrefcount(PyObject *self, void *Py_UNUSED(ignored))
 {
     return PyLong_FromSsize_t(_Py_GetRefTotal());
 }
@@ -1313,7 +1313,7 @@ reference as an argument to getrefcount()."
 );
 
 static PyObject *
-sys_getallocatedblocks(PyObject *self)
+sys_getallocatedblocks(PyObject *self, void *Py_UNUSED(ignored))
 {
     return PyLong_FromSsize_t(_Py_GetAllocatedBlocks());
 }
@@ -1327,7 +1327,7 @@ size."
 
 #ifdef COUNT_ALLOCS
 static PyObject *
-sys_getcounts(PyObject *self)
+sys_getcounts(PyObject *self, void *Py_UNUSED(ignored))
 {
     extern PyObject *get_counts(void);
 
@@ -1506,7 +1506,7 @@ PyDoc_STRVAR(getandroidapilevel_doc,
 Return the build time API version of Android as an integer.");
 
 static PyObject *
-sys_getandroidapilevel(PyObject *self)
+sys_getandroidapilevel(PyObject *self, void *Py_UNUSED(ignored))
 {
     return PyLong_FromLong(ANDROID_API_LEVEL);
 }
