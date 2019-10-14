@@ -1,7 +1,10 @@
 import sys
 
 pythonvm_h_patch =r'''
-void vm_checktime(); //eosio_injection.cpp
+//vm_python2.cpp
+void vm_load_memory(uint32_t offset_start, uint32_t length);
+//eosio_injection.cpp
+void vm_checktime();
 void *memcpy(void *dest, const void *src, unsigned long n);
 
 #if 100*__GNUC__+__GNUC_MINOR__ >= 303
@@ -18,11 +21,6 @@ double fabs(double x);
 
 patch_head = r'''
 #include "pythonvm.h"
-
-//vm_python2.cpp
-void vm_load_memory(uint32_t offset_start, uint32_t length);
-//eosio_injection.cpp
-void vm_checktime();
 
 #define UNLIKELY(x) __builtin_expect(!!(x), 0)
 #define LIKELY(x) __builtin_expect(!!(x), 1)
@@ -69,12 +67,10 @@ patch_end = r'''
 /* export: 'apply' */
 void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
 void (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(u64, u64, u64, u64);
-void (*WASM_RT_ADD_PREFIX(Z_python_initZ_vv))(void);
 
 static void init_exports(void) {
   /* export: 'apply' */
   WASM_RT_ADD_PREFIX(Z_applyZ_vjjj) = (&apply);
-  WASM_RT_ADD_PREFIX(Z_python_initZ_vv) = (&%s);
   WASM_RT_ADD_PREFIX(Z_callZ_vjjjj) = (&%s);
 }
 
@@ -84,6 +80,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   init_memory();
   init_table();
   init_exports();
+  %s();
 }
 '''
 
@@ -111,7 +108,7 @@ def patch_pythonvm_c_bin():
             func_pythonvm_init = line[:end].strip()
             break
 
-    patch_end = patch_end%(func_pythonvm_init, func_call)
+    patch_end = patch_end%(func_call, func_pythonvm_init)
 
     start = source.find('DEFINE_LOAD(i32_load, u32, u32, u32);')
     end = source.rfind('''/* export: 'apply' */\nvoid (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);''')

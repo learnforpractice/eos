@@ -1,5 +1,5 @@
 CODEABI_1.0 {
-    global: vm_python2_setcode;vm_python2_apply;vm_python2_init;pythonvm_wasm;pythonvm_wasm_size;pythonvm_wasm_hash;
+    global: vm_python2_setcode;vm_python2_init;pythonvm_wasm;pythonvm_wasm_size;pythonvm_wasm_hash;wasm2c_python_vm_apply;wasm2c_python_vm_call;
     local: *;
 };
 

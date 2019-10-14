@@ -25,6 +25,7 @@
 #include <eosio/chain/chain_snapshot.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/platform_timer.hpp>
+#include <eosio/chain/python_interface.hpp>
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -230,6 +231,7 @@ struct controller_impl {
    block_state_ptr                head;
    fork_database                  fork_db;
    wasm_interface                 wasmif;
+   python_interface               pythonif;
    resource_limits_manager        resource_limits;
    authorization_manager          authorization;
    protocol_feature_manager       protocol_features;
@@ -308,6 +310,7 @@ struct controller_impl {
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+    pythonif( db ),
     resource_limits( db ),
     authorization( s, db ),
     protocol_features( std::move(pfs) ),
@@ -334,6 +337,7 @@ struct controller_impl {
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
+         pythonif.current_lib(bsp->block_num);
       });
 
 
@@ -3110,8 +3114,13 @@ const apply_handler* controller::find_apply_handler( account_name receiver, acco
    }
    return nullptr;
 }
+
 wasm_interface& controller::get_wasm_interface() {
    return my->wasmif;
+}
+
+python_interface& controller::get_python_interface() {
+   return my->pythonif;
 }
 
 const account_object& controller::get_account( account_name name )const

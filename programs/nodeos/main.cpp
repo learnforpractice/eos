@@ -84,7 +84,7 @@ extern "C"
    void chain_api_init();
    void vm_api_ro_init();
    void vm_api_init();
-   void vm_python2_init();
+//   void vm_python2_init();
    void native_contracts_init();
 }
 
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
       vm_api_init();
       vm_api_ro_init();
       chain_api_init();
-      vm_python2_init();
+//      vm_python2_init();
       native_contracts_init();
 
       app().set_version(eosio::nodeos::config::version);

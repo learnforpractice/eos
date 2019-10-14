@@ -1,6 +1,7 @@
 _vm_python2_setcode
-_vm_python2_apply
 _vm_python2_init
 _pythonvm_wasm
 _pythonvm_wasm_size
 _pythonvm_wasm_hash
+_wasm2c_python_vm_apply
+_wasm2c_python_vm_call

@@ -20,18 +20,14 @@ else()
     set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-set(SRCS vm_python2.cpp
+set(SRCS
     pythonvm.c
     wasm-rt-impl.c
-    vm_memory.cpp
+    vm_python2.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 )
 
-if (BUILD_SHARED)
 add_library(vm_python2 SHARED ${SRCS})
-else()
-    add_library(vm_python2 SHARED ${SRCS})
-endif()
 
 target_link_libraries(vm_python2 PRIVATE eosiolib_native frozen chain_api vm_api4c)
 set_target_properties(vm_python2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")

@@ -1,5 +1,5 @@
 #include <python_vm_config.h>
-#include "vm_memory.h"
+#include <eosio/chain/python_vm/vm_memory.h>
 
 #define COPY_UNIT (8) //8 bytes alignment
 
@@ -8,11 +8,11 @@ namespace pythonvm {
 vm_memory::vm_memory(uint32_t initial_pages, uint32_t max_pages):
 initial_pages(initial_pages)
 ,max_pages(max_pages)
-,segments(nullptr)
-,init_smart_contract(true)
 ,counter(1)
+,init_smart_contract(true)
+,segments(nullptr)
 {
-    data.resize(initial_pages * PAGE_SIZE, 0x00);
+    data.resize(initial_pages * VM_PAGE_SIZE, 0x00);
     base_address = data.data();
     malloc_memory_start = 0;
 }

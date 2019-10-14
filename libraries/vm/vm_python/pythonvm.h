@@ -8,8 +8,10 @@ extern "C" {
 
 #include "wasm-rt.h"
 
-
-void vm_checktime(); //eosio_injection.cpp
+//vm_python2.cpp
+void vm_load_memory(uint32_t offset_start, uint32_t length);
+//eosio_injection.cpp
+void vm_checktime();
 void *memcpy(void *dest, const void *src, unsigned long n);
 
 #if 100*__GNUC__+__GNUC_MINOR__ >= 303

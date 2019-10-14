@@ -23,9 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <eosiolib_native/vm_api.h>
+#include <python_vm_config.h>
 
 #define PAGE_SIZE 65536U
-#define PYTHON_VM_PAGES 48
 typedef struct FuncType {
   wasm_rt_type_t* params;
   wasm_rt_type_t* results;
@@ -123,7 +123,8 @@ uint32_t wasm_rt_register_func_type(uint32_t param_count,
 }
 
 //vm_python2.cpp
-uint8_t *vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages);
+//uint8_t *python_vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages);
+uint8_t *python_vm_get_memory();
 uint8_t *vm_grow_memory(uint32_t delta);
 
 static wasm_rt_memory_t* g_memory = NULL;
@@ -134,11 +135,11 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
     return;
   }
   vmdlog("initial_pages %d, max_pages %d\n", initial_pages, max_pages);
-//  initial_pages = 48;//3M
+//  initial_pages = 160;//10M
   memory->pages = PYTHON_VM_PAGES;//initial_pages;
   memory->max_pages = PYTHON_VM_PAGES;//max_pages;
   memory->size = PYTHON_VM_PAGES * PAGE_SIZE;
-  memory->data = vm_allocate_memory(PYTHON_VM_PAGES, PYTHON_VM_PAGES);
+  memory->data = python_vm_get_memory();
 //  memory->data = calloc(memory->size, 1);
   g_memory = memory;
 }

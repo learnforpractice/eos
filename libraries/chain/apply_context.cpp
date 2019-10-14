@@ -4,6 +4,7 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/wasm_interface.hpp>
+#include <eosio/chain/python_interface.hpp>
 #include <eosio/chain/generated_transaction_object.hpp>
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/resource_limits.hpp>
@@ -39,6 +40,7 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 :control(con)
 ,db(con.get_db(ro))
 ,trx_context(trx_ctx)
+,read_only(ro)
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
@@ -48,7 +50,6 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 ,idx_double(*this, ro)
 ,idx_long_double(*this, ro)
 {
-   read_only = ro;
    action_trace& trace = trx_ctx.get_action_trace(action_ordinal);
    act = &trace.act;
    receiver = trace.receiver;
@@ -104,42 +105,26 @@ void apply_context::exec_one()
                control.check_action_list( act->account, act->name );
             }
             try {
-               do {
-                  if (receiver_account->vm_type == 0) {
-                     do {
-                        if (get_chain_api()->is_debug_enabled()) {
-                           string contract_name = account_name(receiver).to_string();
-                           fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
-                           if (apply != nullptr) {
-                              dlog("debug contract ${name} ${n1} ${n2}, ${n3}", ("name",contract_name)("n1",receiver)("n2",act->account)("n3",act->name));
-                              get_chain_api()->pause_billing_timer();
-                              auto cleanup = fc::make_scoped_exit([&](){
-                                 get_chain_api()->resume_billing_timer();
-                              });
-                              apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
-                              break;
-                           }
-                        }
-                        do {
-                           #if 0
-                           if (1) { //receiver == N(eosio) || receiver == N(eosio.token)) {
-                              std::array<uint8_t, 32> hash;
-                              memcpy(hash.data(), receiver_account->code_hash.data(), 32);
-//                              ilog("+++++++receiver: ${receiver}, hash ${hash}", ("receiver", receiver)("hash", receiver_account->code_hash.str()));
-                              if (native_contract_apply(hash, receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t())) {
-                                 break;
-                              }
-                           }
-                           #endif
-                           control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
-                        } while (false);
-
-                     } while (false);
+               if (receiver_account->vm_type == 0) {
+                  if (!get_chain_api()->is_debug_enabled()) {
+                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                   } else {
-                     vm_manager::get().apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
+                     string contract_name = account_name(receiver).to_string();
+                     fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
+                     if (apply != nullptr) {
+                        dlog("debug contract ${name} ${n1} ${n2}, ${n3}", ("name",contract_name)("n1",receiver)("n2",act->account)("n3",act->name));
+                        get_chain_api()->pause_billing_timer();
+                        auto cleanup = fc::make_scoped_exit([&](){
+                           get_chain_api()->resume_billing_timer();
+                        });
+                        apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
+                     }
                   }
-                  
-               } while(false);
+               } else if (receiver_account->vm_type == 1) {
+                  bool activated = control.is_builtin_activated( builtin_protocol_feature_t::pythonvm );
+                  EOS_ASSERT( activated, wasm_execution_error, "pythonvm not activated!");
+                  control.get_python_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
+               }
             } catch( const wasm_exit& ) {}
          }
 

@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <vector>
 
-#define PAGE_SIZE (65536)
+#define VM_PAGE_SIZE (65536)
 namespace pythonvm {
 
 struct memory_segment {

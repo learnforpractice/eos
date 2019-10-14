@@ -79,6 +79,10 @@ add_library( eosio_chain
 #             block_trace.cpp
               wast_to_wasm.cpp
               wasm_interface.cpp
+              
+              python_interface.cpp
+              python_vm/vm_memory.cpp
+
               wasm_eosio_validation.cpp
               wasm_eosio_injection.cpp
               apply_context.cpp
@@ -142,6 +146,8 @@ target_include_directories( eosio_chain
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
+                              PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
+                              PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
                         )
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain aleth)

@@ -251,6 +251,12 @@ void (*Z_envZ_wasm_syscallZ_vv)(void);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 
 void init_vm_api4c() {
+    static bool initialized = false;
+    if (initialized) {
+        return;
+    }
+    initialized = true;
+
     Z_envZ_printiZ_vj = _printi;
     Z_envZ_printsZ_vi = _prints;
     Z_envZ_n2sZ_ijii = _n2s;

@@ -90,7 +90,7 @@ extern "C"
    void chain_api_init();
    void vm_api_ro_init();
    void vm_api_init();
-   void vm_python2_init();
+//   void vm_python2_init();
    void native_contracts_init();
    int64_t token_get_balance(uint64_t owner, const char *str_symbol);
 }

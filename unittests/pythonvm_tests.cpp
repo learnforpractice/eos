@@ -52,7 +52,6 @@ INCBIN(DBTests, "db_tests.py");
 
 #include <memory>
 #include "src/interp.h"
-extern "C" uint8_t *vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages);
 using namespace wabt::interp;
 
 namespace wabt {

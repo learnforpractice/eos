@@ -20,7 +20,7 @@ extern "C" {
     size_t get_last_error(char* error, size_t size);
     int evm_apply(uint64_t receiver, uint64_t code, uint64_t action);
 
-    void vm_python2_init();
+//    void vm_python2_init();
     int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act);
 
     void wasm_interface_init_1(int vm_type);
@@ -39,7 +39,7 @@ vm_manager::vm_manager() {
 }
 
 void vm_manager::init() {
-    vm_python2_init();
+//    vm_python2_init();
 //    wasm_interface_init_1(1);
 }
 
@@ -64,7 +64,7 @@ void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
     if (vm_type == VM_TYPE_PY) {
         bool activated = get_chain_api()->is_builtin_activated((uint32_t)enum_builtin_protocol_feature::pythonvm);
         get_vm_api()->eosio_assert(activated, "pythonvm not activated!");
-        vm_python2_apply(receiver, code, action);
+//        vm_python2_apply(receiver, code, action);
     }
 }
 
