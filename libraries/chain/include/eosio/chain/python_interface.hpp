@@ -87,7 +87,7 @@ namespace eosio { namespace chain {
          void exit();
 
          const std::unique_ptr<python_instantiated_module>& get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
-                                                                                    const uint8_t& vm_version, transaction_context& trx_context );
+                                                                                    const uint8_t& vm_version, apply_context& context );
          typedef boost::multi_index_container<
             python_cache_entry,
             indexed_by<

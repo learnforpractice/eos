@@ -27,9 +27,7 @@ void python_instantiated_module::apply(apply_context& context) {
     auto account = context.get_action().account.to_uint64_t();
     auto act = context.get_action().name.to_uint64_t();
 
-    vmelog("+++++llu, llu, llu\n", receiver, account, act);
     wasm2c_python_vm_apply(receiver, account, act);
-    vmelog("+++++llu, llu, llu\n", receiver, account, act);
 }
 
 void python_instantiated_module::call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) {
@@ -79,17 +77,15 @@ void python_instantiated_module::take_snapshoot(vm_memory& _vm_memory) {
         segment.data.resize((pos-start)*sizeof(uint64_t));
         memcpy(segment.data.data(), &ptr2[start], (pos-start)*sizeof(uint64_t));
         backup.memory_backup.emplace_back(std::move(segment));
-
         pos += 1;
     }
 
-    {
     memory_segment segment;
     segment.offset = contract_mem_start;
     segment.data.resize(contract_mem_end-contract_mem_start, 0x00);
     memcpy(segment.data.data(), (char *)ptr2 + contract_mem_start, contract_mem_end-contract_mem_start);
     backup.memory_backup.emplace_back(std::move(segment));
-    }
+
     backup.contract_memory_start = contract_mem_start;
     backup.contract_memory_end = contract_mem_end;
 }
@@ -155,7 +151,8 @@ void python_interface::current_lib(const uint32_t lib) {
 
 //Calls apply or error on a given code
 void python_interface::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
-    get_instantiated_module(code_hash, vm_type, vm_version, context.trx_context)->apply(context);
+    _vm_memory->counter += 1;
+    get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
 }
 
 void python_interface::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context ) {
@@ -168,51 +165,50 @@ void python_interface::exit() {
 }
 
 const std::unique_ptr<python_instantiated_module>& python_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
-                                                                            const uint8_t& vm_version, transaction_context& trx_context )
+                                                                            const uint8_t& vm_version, apply_context& context )
 {
     python_cache_index::iterator it = python_instantiation_cache.find(
                                         boost::make_tuple(code_hash, vm_type, vm_version) );
     const code_object* codeobject = nullptr;
     if(it == python_instantiation_cache.end()) {
-    codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+        codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
 
-    it = python_instantiation_cache.emplace( python_cache_entry{
-                                                .code_hash = code_hash,
-                                                .first_block_num_used = codeobject->first_block_used,
-                                                .last_block_num_used = UINT32_MAX,
-                                                .module = nullptr,
-                                                .vm_type = vm_type,
-                                                .vm_version = vm_version
-                                            } ).first;
+        it = python_instantiation_cache.emplace( python_cache_entry{
+                                                    .code_hash = code_hash,
+                                                    .first_block_num_used = codeobject->first_block_used,
+                                                    .last_block_num_used = UINT32_MAX,
+                                                    .module = nullptr,
+                                                    .vm_type = vm_type,
+                                                    .vm_version = vm_version
+                                                } ).first;
     }
 
     if(!it->module) {
         if(!codeobject)
             codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
-
+#if 0
         auto timer_pause = fc::make_scoped_exit([&](){
-            trx_context.resume_billing_timer();
+            context.trx_context.resume_billing_timer();
         });
-        trx_context.pause_billing_timer();
-
+        context.trx_context.pause_billing_timer();
+#endif
         vector<char> bytes;
-        vmelog("+++++++++++++\n");
         python_instantiation_cache.modify(it, [&](auto& c) {
             c.module = runtime_interface->instantiate_module((const char*)bytes.data(), bytes.size(), {}, code_hash, vm_type, vm_version);
-            //TODO call init function;
+            _vm_memory->init_smart_contract = true;
+
             get_vm_api()->allow_access_apply_context = false;
 
-            vmelog("+++++++++++++\n");
+            memcpy(_vm_memory->data.data(), _vm_memory->data_backup.data(), _vm_memory->data_backup.size());
 
-            wasm2c_python_vm_call(1, 0, 0, 1);
+            wasm2c_python_vm_call(1, context.get_receiver().to_uint64_t(), context.get_action().account.to_uint64_t(), 1);
+
             get_vm_api()->allow_access_apply_context = true;
-        
-            vmelog("+++++++++++++\n");
 
             c.module->take_snapshoot(*_vm_memory);
         });
     }
-    vmelog("+++++++++++++\n");
+    _vm_memory->init_smart_contract = false;
     _vm_memory->segments = &it->module->backup.memory_backup;
     _vm_memory->malloc_memory_start = it->module->backup.contract_memory_end;
     return it->module;
