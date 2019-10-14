@@ -4,7 +4,7 @@
 #include <eosiolib_native/vm_api.h>
 #include <chain_api.hpp>
 
-#include "src/interp.h"
+#include "vm_memory.h"
 
 #include <map>
 #include <vector>
@@ -39,10 +39,10 @@ typedef double f64;
 #define WASM_RT_ADD_PREFIX(x) WASM_RT_PASTE(WASM_RT_MODULE_PREFIX, x)
 
 
-using namespace wabt::interp;
+using namespace pythonvm;
 
 struct vm_state_backup {
-   std::vector<MemorySegment>                                 memory_backup;
+   std::vector<memory_segment>                                 memory_backup;
    int contract_memory_start;
    int contract_memory_end;
 //   std::vector<char>                                 memory_backup;
@@ -51,7 +51,7 @@ struct vm_state_backup {
 //static std::map<uint64_t, std::shared_ptr<struct vm_state_backup>>      _contract_state_backup;
 static std::map<std::array<uint8_t,32>, std::shared_ptr<struct vm_state_backup>>      _contract_state_backup;
 
-Memory *_vm_memory = nullptr;
+vm_memory *_vm_memory = nullptr;
 
 
 //std::map<fc::sha256, std::shared_ptr<struct vm_state_backup>>    _contract_state_backup2;
@@ -118,8 +118,7 @@ uint8_t *vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages) {
       return (uint8_t *)_vm_memory->data.data();
   }
 
-  wabt::Limits limits(initial_pages, max_pages);
-  _vm_memory = new Memory(limits);
+  _vm_memory = new vm_memory(initial_pages, max_pages);
 
   vmdlog("initial_pages %d, max_pages %d\n", initial_pages, max_pages);
 
@@ -130,21 +129,11 @@ uint8_t *vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages) {
 }
 
 uint8_t *vm_grow_memory(uint32_t delta) {
-  uint64_t old_pages = _vm_memory->page_limits.initial;
-  uint64_t new_pages = _vm_memory->page_limits.initial + delta;
-  if (new_pages < old_pages || new_pages > _vm_memory->page_limits.max) {
-      get_vm_api()->eosio_assert(0, "memory exceeded in grow!");
-  }
-  _vm_memory->page_limits.initial = new_pages;
-  _vm_memory->data.resize(new_pages * PAGE_SIZE);
-  _vm_memory->base_address = _vm_memory->data.data();
-  memset(_vm_memory->data.data() + old_pages * PAGE_SIZE, 0, delta * PAGE_SIZE);
-  return (uint8_t *)_vm_memory->data.data();
+    get_vm_api()->eosio_assert(0, "grow memory not supported in python vm!");
 }
 
-
 void vm_load_memory(uint32_t offset_start, uint32_t length) {
-    LoadDataToWritableMemory(_vm_memory, offset_start, length);
+    _vm_memory->load_data_to_writable_memory(offset_start, length);
 }
 
 static void *offset_to_ptr_s(u32 offset, u32 size) {
@@ -235,7 +224,7 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
          pos += 1;
          total_count += 1;
       }
-      MemorySegment segment;
+      memory_segment segment;
       segment.offset = start*sizeof(uint64_t);
       segment.data.resize((pos-start)*sizeof(uint64_t));
       memcpy(segment.data.data(), &ptr2[start], (pos-start)*sizeof(uint64_t));
@@ -245,7 +234,7 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    }
 
 {
-   MemorySegment segment;
+   memory_segment segment;
    segment.offset = contract_mem_start;
    segment.data.resize(contract_mem_end-contract_mem_start);
    memcpy(segment.data.data(), (char *)ptr2 + contract_mem_start, contract_mem_end-contract_mem_start);
@@ -254,7 +243,7 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    backup->contract_memory_start = contract_mem_start;
    backup->contract_memory_end = contract_mem_end;
 
-   _vm_memory->memory_segments = &backup->memory_backup;
+   _vm_memory->segments = &backup->memory_backup;
    _vm_memory->memory_end = contract_mem_end;
 
    _contract_state_backup[code_id] = backup;
@@ -267,8 +256,8 @@ int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
    if (_vm_memory->counter == 0xffffffff) {
       //reset counter make IsWriteMemoryInUse function properly 
       memset(_vm_memory->in_use.data(), 0, _vm_memory->in_use.size()*sizeof(_vm_memory->in_use[0]));
-      memset(_vm_memory->memory_segments_cache.data(), 0, _vm_memory->memory_segments_cache.size()*sizeof(_vm_memory->memory_segments_cache[0]));
-//            memory->memory_segments_cache.assign(memory->memory_segments_cache.size(), {0, 0});
+      memset(_vm_memory->segments_cache.data(), 0, _vm_memory->segments_cache.size()*sizeof(_vm_memory->segments_cache[0]));
+//            memory->segments_cache.assign(memory->segments_cache.size(), {0, 0});
       _vm_memory->counter = 1;
    } else {
       _vm_memory->counter += 1;
@@ -294,7 +283,7 @@ int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
       get_vm_api()->allow_access_apply_context = true;
       take_snapshoot(code_id);
    } else {
-      _vm_memory->memory_segments = &itr->second->memory_backup;
+      _vm_memory->segments = &itr->second->memory_backup;
       _vm_memory->memory_end = itr->second->contract_memory_end;
 
       #if 0
