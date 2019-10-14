@@ -194,13 +194,11 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    uint64_t *ptr1 = (uint64_t *)_vm_memory->data_backup.data();
    uint64_t *ptr2 = (uint64_t *)mem_start;
 
-//   vm_memory_size/=sizeof(uint64_t);
-
    int contract_mem_start = 0;
    int contract_mem_end = 0;
    get_vm_api()->get_copy_memory_range(&contract_mem_start, &contract_mem_end);
 
-   vmelog("++++contract_mem_start %d, contract_mem_end %d, vm_memory_size %d\n", contract_mem_start, contract_mem_end, vm_memory_size);
+//   vmdlog("++++contract_mem_start %d, contract_mem_end %d, vm_memory_size %d\n", contract_mem_start, contract_mem_end, vm_memory_size);
    get_vm_api()->eosio_assert(contract_mem_start > 0 && contract_mem_start<vm_memory_size, "bad start contract memory");
    get_vm_api()->eosio_assert(contract_mem_end > 0 && contract_mem_end<vm_memory_size, "bad end contract memory");
    get_vm_api()->eosio_assert(contract_mem_start < contract_mem_end, "bad memory range");
@@ -236,7 +234,7 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
 {
    memory_segment segment;
    segment.offset = contract_mem_start;
-   segment.data.resize(contract_mem_end-contract_mem_start);
+   segment.data.resize(contract_mem_end-contract_mem_start, 0x00);
    memcpy(segment.data.data(), (char *)ptr2 + contract_mem_start, contract_mem_end-contract_mem_start);
    backup->memory_backup.emplace_back(std::move(segment));
 }
@@ -244,7 +242,7 @@ void take_snapshoot(std::array<uint8_t,32>& code_id) {
    backup->contract_memory_end = contract_mem_end;
 
    _vm_memory->segments = &backup->memory_backup;
-   _vm_memory->memory_end = contract_mem_end;
+   _vm_memory->malloc_memory_start = contract_mem_end;
 
    _contract_state_backup[code_id] = backup;
 }
@@ -263,11 +261,7 @@ int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
       _vm_memory->counter += 1;
    }
 
-#if 0
-      _vm_memory->init_smart_contract = true;
-      memcpy(_vm_memory->data.data(), _vm_memory->data_backup.data(), _vm_memory->data_backup.size());
-      export_vm_call(0, 1, 0, 0);
-#else
+
    auto itr = _contract_state_backup.find(code_id);
    if (itr == _contract_state_backup.end()) {
       _vm_memory->init_smart_contract = true;
@@ -284,21 +278,9 @@ int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act) {
       take_snapshoot(code_id);
    } else {
       _vm_memory->segments = &itr->second->memory_backup;
-      _vm_memory->memory_end = itr->second->contract_memory_end;
-
-      #if 0
-      char *mem_start;
-      uint32_t size;
-      pythonvm_get_memory(&mem_start, &size);
-      get_vm_api()->eosio_assert(size == _vm_memory->data_backup.size(), "memory size not the same!");
-      memcpy(mem_start, _vm_memory->data_backup.data(), size);
-      for (auto& item: itr->second->memory_backup) {
-         memcpy(&mem_start[item.offset], item.data.data(), item.data.size());
-      }
-      #endif
+      _vm_memory->malloc_memory_start = itr->second->contract_memory_end;
    }
    _vm_memory->init_smart_contract = false;
-#endif
 
    export_vm_apply(receiver, account, act);
    return 1;

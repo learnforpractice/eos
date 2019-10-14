@@ -6,13 +6,13 @@
 namespace pythonvm {
 
 struct memory_segment {
-   uint32_t offset;
-   std::vector<char> data;
+    uint32_t offset;
+    std::vector<char> data;
 };
 
 struct memory_segments_cache {
-  uint32_t counter;
-  uint32_t index;
+    uint32_t counter;
+    uint32_t index;
 };
 
 struct vm_memory {
@@ -25,17 +25,14 @@ struct vm_memory {
 
     void load_data_to_writable_memory(uint32_t offset_start, uint32_t length);
     void load_data_to_writable_memory(uint32_t write_index);
-
     memory_segment* find_memory_segment(uint32_t offset);
     
     uint32_t initial_pages;
     uint32_t max_pages;
-
-    int memory_end;
-
-    bool init_smart_contract;
+    int malloc_memory_start;
     std::vector<uint32_t> in_use;
     uint32_t counter;
+    bool init_smart_contract;
 
     char *base_address;
     std::vector<char> data;
