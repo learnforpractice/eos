@@ -1,4 +1,5 @@
 #include <python_vm_config.h>
+#include <string.h>
 #include <eosio/chain/python_vm/vm_memory.h>
 
 #define COPY_UNIT (8) //8 bytes alignment
