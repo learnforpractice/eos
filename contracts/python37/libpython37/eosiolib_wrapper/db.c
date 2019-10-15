@@ -202,7 +202,10 @@ static PyObject *py_db_previous_i64(PyObject *self, PyObject *args)
         return NULL;
     }
     iterator = db_previous_i64(iterator, &primary);
-    return Py_BuildValue("(iK)", iterator, primary);
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
 }
 
 //int32_t db_lowerbound_i64(account_name code, account_name scope, table_name table, uint64_t id);
