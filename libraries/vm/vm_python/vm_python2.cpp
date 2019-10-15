@@ -16,8 +16,6 @@
 
 #include "vm_python.h"
 
-#define PAGE_SIZE (65536)
-
 typedef uint8_t u8;
 typedef int8_t s8;
 typedef uint16_t u16;
@@ -48,8 +46,11 @@ extern "C" {
    extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
    /* export: 'call' */
    extern void (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(u64, u64, u64, u64);
+   extern u32 (*WASM_RT_ADD_PREFIX(Z_get_current_memory))(void);
+
    //pythonvm.c.bin
    extern void WASM_RT_ADD_PREFIX(python_vm_init)(void);
+
 
    void wasm2c_python_vm_apply(uint64_t receiver, uint64_t code, uint64_t action) {
       (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(receiver, code, action);
@@ -58,6 +59,11 @@ extern "C" {
    void wasm2c_python_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action) {
       (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(func_name, receiver, code, action);
    }
+
+   uint32_t wasm2c_get_current_memory(void) {
+       return (*WASM_RT_ADD_PREFIX(Z_get_current_memory))();
+   }
+
 
    void *offset_to_ptr(u32 offset, u32 size);
    void *offset_to_char_ptr(u32 offset);

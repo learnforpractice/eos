@@ -67,14 +67,16 @@ patch_end = r'''
 /* export: 'apply' */
 void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
 void (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(u64, u64, u64, u64);
+u32 (*WASM_RT_ADD_PREFIX(Z_get_current_memory))(void);
 
 static void init_exports(void) {
   /* export: 'apply' */
   WASM_RT_ADD_PREFIX(Z_applyZ_vjjj) = (&apply);
   WASM_RT_ADD_PREFIX(Z_callZ_vjjjj) = (&%s);
+  (WASM_RT_ADD_PREFIX(Z_get_current_memory)) = (&%s);
 }
 
-void WASM_RT_ADD_PREFIX(init)(void) {
+void WASM_RT_ADD_PREFIX(python_vm_init)(void) {
   init_func_types();
   init_globals();
   init_memory();
@@ -106,9 +108,14 @@ def patch_pythonvm_c_bin():
             line = lines[i+1]
             end = line.find('(')
             func_pythonvm_init = line[:end].strip()
+
+            line = lines[i+2]
+            start = line.find('= ')
+            end = line.find('(')
+            get_current_memory = line[start+2:end]
             break
 
-    patch_end = patch_end%(func_call, func_pythonvm_init)
+    patch_end = patch_end%(func_call, get_current_memory, func_pythonvm_init)
 
     start = source.find('DEFINE_LOAD(i32_load, u32, u32, u32);')
     end = source.rfind('''/* export: 'apply' */\nvoid (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);''')

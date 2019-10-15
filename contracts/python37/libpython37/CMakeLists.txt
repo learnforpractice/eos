@@ -1,3 +1,4 @@
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../../libraries/vm/vm_python/python_vm_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/python_vm_config.h)
 
 SET(SRC_FILES        dummy.c
 ./python37/Modules/arraymodule.c
@@ -194,6 +195,12 @@ SET(SRC_FILES        dummy.c
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")
 
+set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_STACK_SIZE=${PYTHON_VM_STACK_SIZE})
+set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_MEMORY_SIZE=${PYTHON_VM_MAX_MEMORY_SIZE})
+set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_CODE_SIZE=${PYTHON_VM_MAX_CODE_SIZE})
+set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_FROZEN_CODE_SIZE=${PYTHON_VM_MAX_FROZEN_CODE_SIZE})
+
+
 set(PYTHON_INC_FOLDERS
 ${CMAKE_SOURCE_DIR}/emscripten/system/include/libcxx
 ${CMAKE_SOURCE_DIR}/emscripten/system/lib/libcxxabi/include
@@ -228,6 +235,7 @@ target_include_directories(python37
    "${PYTHON_INC_FOLDERS}"
    ${CMAKE_CURRENT_SOURCE_DIR}/python37
    ${CMAKE_CURRENT_SOURCE_DIR}/python37/Include
+   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 # add_library( frozen

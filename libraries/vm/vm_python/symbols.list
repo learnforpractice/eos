@@ -5,3 +5,4 @@ _pythonvm_wasm_size
 _pythonvm_wasm_hash
 _wasm2c_python_vm_apply
 _wasm2c_python_vm_call
+_wasm2c_get_current_memory

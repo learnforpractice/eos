@@ -481,6 +481,7 @@ int get_code(uint64_t account, char *code, size_t size);
 extern void python_vm_apply( uint64_t receiver, uint64_t code, uint64_t action );
 extern void python_vm_call( uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action );
 extern void python_init(void);
+extern void *get_current_memory(void);
 
 int fool_compiler = 0;
 void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
@@ -488,6 +489,7 @@ void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
     if (fool_compiler) {
         python_vm_call(0, 0, 0, 0);
         python_init();
+        get_current_memory();
     }
 }
 

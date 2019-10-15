@@ -33,20 +33,20 @@ int _cancel_deferred(const uint128_t *sender_id) {
 static int pos = 0;
 static char *memory_start = nullptr;
 static char *code_buffer = nullptr;
-#define MAX_MEMORY_SIZE (2*1024*1024)
-#define MAX_CODE_SIZE (128*1024)
-#define MAX_FROZEN_CODE_SIZE (64*1024)
+#define MAX_CODE_SIZE (PYTHON_VM_MAX_CODE_SIZE)
+#define MAX_FROZEN_CODE_SIZE (PYTHON_VM_MAX_FROZEN_CODE_SIZE)
+#define MAX_MEMORY_SIZE (PYTHON_VM_MAX_MEMORY_SIZE-PYTHON_VM_MAX_FROZEN_CODE_SIZE-PYTHON_VM_MAX_CODE_SIZE)
 
-void *get_current_memory() {
+void *get_current_memory(void) {
    return memory_start+pos;
 }
 
-void *get_code_memory() {
-   return memory_start+MAX_MEMORY_SIZE;
+void *get_code_memory(void) {
+   return (void *)(MAX_MEMORY_SIZE);
 }
 
-void *get_frozen_code_memory() {
-   return memory_start+MAX_MEMORY_SIZE+MAX_CODE_SIZE;
+void *get_frozen_code_memory(void) {
+   return (void *)(MAX_MEMORY_SIZE+MAX_CODE_SIZE);
 }
 
 void* malloc(size_t size)
@@ -66,6 +66,7 @@ void* malloc(size_t size)
       size = (size+sizeof(uint32_t)-1)/sizeof(uint32_t)*sizeof(uint32_t);
    }
    if (pos + size >= MAX_MEMORY_SIZE) {
+      eosio_assert(false, "no free vm memory left!");
       return nullptr;
    }
    ptr = &memory_start[pos];

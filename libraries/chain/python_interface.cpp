@@ -15,6 +15,7 @@ extern "C" {
 
     void wasm2c_python_vm_apply(uint64_t receiver, uint64_t code, uint64_t action);
     void wasm2c_python_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action);
+    uint32_t wasm2c_get_current_memory(void);
 }
 
 python_instantiated_module::python_instantiated_module()
@@ -114,7 +115,7 @@ python_interface::python_interface(const chainbase::database& d): db(d) {
     g_vm_memory = _vm_memory.get();
 
     vm_python2_init((uint8_t *)_vm_memory->data.data(), _vm_memory->data.size(), vm_load_memory);
-    
+
     _vm_memory->backup_memory();
     _vm_memory->init_cache();
 }
@@ -201,7 +202,7 @@ const std::unique_ptr<python_instantiated_module>& python_interface::get_instant
 
             memcpy(_vm_memory->data.data(), _vm_memory->data_backup.data(), _vm_memory->data_backup.size());
 
-            wasm2c_python_vm_call(1, context.get_receiver().to_uint64_t(), context.get_action().account.to_uint64_t(), 1);
+            wasm2c_python_vm_call(1, context.get_receiver().to_uint64_t(), context.get_action().account.to_uint64_t(), context.get_action().name.to_uint64_t());
 
             get_vm_api()->allow_access_apply_context = true;
 

@@ -93,12 +93,12 @@ void python_vm_apply( uint64_t receiver, uint64_t code, uint64_t action ) {
 }
 
 void python_vm_call( uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action ) {
-    if (action == 0) {
+    if (func_name == 0) {
         g_counter += 1;
         python_init();
         initialized = 1;
     }
-    else if (1 == action) {
+    else if (func_name == 1) {
         int start, end;
         start = get_current_memory();
 //        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
