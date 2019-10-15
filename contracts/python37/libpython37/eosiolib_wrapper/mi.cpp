@@ -49,10 +49,16 @@ public:
     void modify(int itr, uint64_t primary_key, void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer) {
         check(secondary_values.size() == secondary_indexes.size(), "bad secondary value count");
         uint32_t i = 0;
-        for (auto& idx: secondary_indexes) {
-            auto value = secondary_values[i];
-            idx->db_idx_store(scope, (table & 0xFFFFFFFFFFFFFFF0ULL) | ((uint64_t)i & 0x000000000000000FULL), primary_key, value.data(), value.size(), payer);
-            i += 1;
+        char temp_buffer[sizeof(uint128_t)*2];
+        for (int i=0;i<secondary_indexes.size();i++) {
+            auto& idx = *secondary_indexes[i];
+            auto& value = secondary_values[i];
+            uint64_t idx_table = get_secondary_idx_table(i);
+            int secondary_key_size = get_secondary_key_size(i);
+            check(secondary_key_size == value.size(), "bad secondary value size");
+            itr = idx.db_idx_find_primary(code, scope, idx_table, primary_key, temp_buffer, secondary_key_size);
+            idx.db_idx_update(itr, value.data(), value.size(), payer);
+//            idx->db_idx_store(scope, idx_table, primary_key, value.data(), value.size(), payer);
         }
     }
 
