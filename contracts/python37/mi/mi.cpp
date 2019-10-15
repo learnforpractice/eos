@@ -70,23 +70,11 @@ int multi_index::find(uint64_t primary_key) {
     return itr;
 }
 
-bool multi_index::get(int itr, vector<char>& value) {
-    if (itr < 0) {
-        return false;
+int multi_index::get(int itr, void *data, uint32_t data_size) {
+    if (data_size == 0) {
+        return internal_use_do_not_use::db_get_i64( itr, nullptr, 0 );
     }
-    auto size = internal_use_do_not_use::db_get_i64( itr, nullptr, 0 );
-//        check( size >= 0, "error reading iterator" );
-    value.resize(size);
-    internal_use_do_not_use::db_get_i64(itr, value.data(), value.size());
-    return true;
-}
-
-bool multi_index::get_by_primary_key(uint64_t primary_key, vector<char>& value) {
-    auto itr = find(primary_key);
-    if (itr < 0) {
-        return false;
-    }
-    return get(itr, value);
+    return internal_use_do_not_use::db_get_i64(itr, data, data_size);
 }
 
 int32_t multi_index::next(int32_t itr, uint64_t& primary_key) {
@@ -210,23 +198,23 @@ extern "C" {
         return mi;
     }
     
-    void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, vm_buffer *_secondary_values, uint32_t size, uint64_t payer) {
+    void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *_secondary_values, uint32_t size, uint64_t payer) {
         multi_index* mi = (multi_index*)ptr;
         vector<vector<char>> secondary_values;
         for (int i=0;i<size;i++) {
             auto &v = _secondary_values[i];
-            vector<char> value(v.buffer, v.buffer+v.size);
+            vector<char> value(v.data, v.data+v.size);
             secondary_values.emplace_back(value);
         }
         mi->store(primary_key, data, data_size, secondary_values, payer);
     }
 
-    void mi_modify(void *ptr, int32_t itr, uint64_t primary_key, const void *data, uint32_t data_size, vm_buffer* _secondary_values, uint32_t size, uint64_t payer) {
+    void mi_modify(void *ptr, int32_t itr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer* _secondary_values, uint32_t size, uint64_t payer) {
         multi_index* mi = (multi_index*)ptr;
         vector<vector<char>> secondary_values;
         for (int i=0;i<size;i++) {
             auto &v = _secondary_values[i];
-            vector<char> value(v.buffer, v.buffer+v.size);
+            vector<char> value(v.data, v.data+v.size);
             secondary_values.emplace_back(value);
         }
         mi->modify(itr, primary_key, data, data_size, secondary_values, payer);
@@ -242,16 +230,9 @@ extern "C" {
         return mi->find(primary_key);
     }
 
-    bool mi_get(void *ptr, int32_t itr, void *data, uint32_t size) {
+    int mi_get(void *ptr, int32_t itr, void *data, uint32_t size) {
         multi_index* mi = (multi_index*)ptr;
-        vector<char> value((char*)data, (char*)data+size);
-        return mi->get(itr, value);
-    }
-
-    bool mi_get_by_primary_key(void *ptr, uint64_t primary_key, const void *data, uint32_t size) {
-        multi_index* mi = (multi_index*)ptr;
-        vector<char> value((char*)data, (char*)data+size);
-        return mi->get_by_primary_key(primary_key, value);
+        return mi->get(itr, data, size);
     }
 
     int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key) {
@@ -311,6 +292,6 @@ extern "C" {
 
     int32_t mi_idx_upperbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t *primary_key) {
         multi_index* mi = (multi_index*)ptr;
-        mi->idx_upperbound(secondary_index, code, scope, table, secondary, secondary_size, *primary_key);
+        return mi->idx_upperbound(secondary_index, code, scope, table, secondary, secondary_size, *primary_key);
     }
 }

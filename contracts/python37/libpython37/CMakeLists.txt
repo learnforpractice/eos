@@ -192,7 +192,7 @@ SET(SRC_FILES        dummy.c
 # ./malloc/memalign.c
 # ./malloc/posix_memalign.c
 ${CMAKE_SOURCE_DIR}/mi/mi.cpp
-./eosiolib_wrapper/multi_index.c
+./eosiolib_wrapper/mi.c
 )
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")

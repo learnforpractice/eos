@@ -5,25 +5,25 @@
 #ifdef __cplusplus
 extern "C"
 {
+#else
+typedef char bool;
 #endif
 
 struct vm_buffer {
     int size;
-    char *buffer;
+    char *data;
 };
 
 void *mi_new(uint64_t code, uint64_t scope, uint64_t table, int * _indexes, uint32_t size);    
 void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, 
-            vm_buffer *_secondary_values, uint32_t size, uint64_t payer);
+            struct vm_buffer *_secondary_values, uint32_t size, uint64_t payer);
 void mi_modify(void *ptr, int32_t itr, uint64_t primary_key, const void *data, uint32_t data_size, 
-            vm_buffer* _secondary_values, uint32_t size, uint64_t payer);
+            struct vm_buffer* _secondary_values, uint32_t size, uint64_t payer);
 void mi_erase(void *ptr, int32_t itr, uint64_t primary_key);
 
 int32_t mi_find(void *ptr, uint64_t primary_key);
 
-bool mi_get(void *ptr, int32_t itr, void *data, uint32_t size);
-
-bool mi_get_by_primary_key(void *ptr, uint64_t primary_key, const void *data, uint32_t size);
+int mi_get(void *ptr, int32_t itr, void *data, uint32_t size);
 
 int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key);
 

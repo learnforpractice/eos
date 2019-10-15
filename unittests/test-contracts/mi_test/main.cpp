@@ -31,11 +31,6 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action) {
    secondary_values.push_back(secondary_value);
    mi.store(primary_key, (void *)"hello", 5, secondary_values, payer);
 
-   vector<char> value;
-   bool ret = mi.get_by_primary_key(primary_key, value);
-   check(ret, "bad value");
-   check(memcmp(value.data(), "hello", 5) == 0, "bad value");
-
    uint64_t primary_key2;
    int itr = mi.idx_find(0, primary_key2, &secondary_key, sizeof(secondary_key));
    check(primary_key == primary_key2, "bad value");

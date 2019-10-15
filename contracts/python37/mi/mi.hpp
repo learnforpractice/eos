@@ -31,8 +31,7 @@ public:
     void erase(int itr, uint64_t primary_key);
 
     int find(uint64_t primary_key);
-    bool get(int itr, vector<char>& value);
-    bool get_by_primary_key(uint64_t primary_key, vector<char>& value);
+    int get(int itr, void *data, uint32_t data_size);
 
     int32_t next(int32_t itr, uint64_t& primary_key);
     int32_t previous(int32_t itr, uint64_t& primary_key);
