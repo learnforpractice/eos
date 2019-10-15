@@ -1,11 +1,11 @@
 if( EOSIO_COMPILE_TEST_CONTRACTS )
 
-   add_contract( mi_test mi_test main.cpp 
-      ${CMAKE_SOURCE_DIR}/../../contracts/mi/mi.cpp
+   add_contract( mi_test mi_test main.cpp
+      ${CMAKE_SOURCE_DIR}/../../contracts/python37/mi/mi.cpp
    )
    
    target_include_directories(mi_test PRIVATE 
-      PRIVATE ${CMAKE_SOURCE_DIR}/../../contracts/mi
+      PRIVATE ${CMAKE_SOURCE_DIR}/../../contracts/python37/mi
    )
 
 else()

@@ -191,7 +191,8 @@ SET(SRC_FILES        dummy.c
 # ./malloc/aligned_alloc.c
 # ./malloc/memalign.c
 # ./malloc/posix_memalign.c
-${CMAKE_SOURCE_DIR}/..//mi/mi.cpp
+${CMAKE_SOURCE_DIR}/mi/mi.cpp
+./eosiolib_wrapper/multi_index.c
 )
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")
@@ -237,6 +238,7 @@ target_include_directories(python37
    ${CMAKE_CURRENT_SOURCE_DIR}/python37
    ${CMAKE_CURRENT_SOURCE_DIR}/python37/Include
    ${CMAKE_CURRENT_BINARY_DIR}
+   ${CMAKE_SOURCE_DIR}/mi
 )
 
 # add_library( frozen

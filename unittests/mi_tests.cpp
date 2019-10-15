@@ -43,8 +43,8 @@ BOOST_AUTO_TEST_CASE( mi_test1 ) try {
 
     dlog("++++++++++++");
 
-    t.set_code( N(alice), contracts::mi_test_wasm );
-    t.set_abi( N(alice),  contracts::mi_test_wabi().data() );
+    t.set_code( N(alice), contracts::mi_test_wasm() );
+//    t.set_abi( N(alice),  contracts::mi_test_abi().data() );
 
 } FC_LOG_AND_RETHROW()
 
