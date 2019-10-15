@@ -62,25 +62,8 @@ public:
         }
     }
 
-    bool find_primary_key(int itr, bool erase, uint64_t& primary_key) {
-        for (int j=0;j<itr_buffer.size();j++) {
-            auto& it = itr_buffer[j];
-            if (it.itr == itr) {
-                primary_key = it.primary_key;
-                if (erase) {
-                    itr_buffer.erase (itr_buffer.begin()+j);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     int find(uint64_t primary_key) {
         int itr = internal_use_do_not_use::db_find_i64(code, scope, table, primary_key);
-        if (itr >= 0) {
-            itr_buffer.emplace_back(itr, primary_key);
-        }
         return itr;
     }
     
@@ -103,12 +86,7 @@ public:
         return get(itr, value);
     }
 
-    void erase(int itr) {
-        uint64_t primary_key;
-        bool found = find_primary_key(itr, true, primary_key);
-        if (!found) {
-            return;
-        }
+    void erase(int itr, uint64_t primary_key) {
         internal_use_do_not_use::db_remove_i64(itr);
         char temp_buffer[sizeof(uint128_t)*2];
         for (int i=0;i<secondary_indexes.size();i++) {
@@ -216,7 +194,6 @@ public:
   private:
       vector<secondary_index_db_functions*> secondary_indexes;
       vector<vector<char>> secondary_values;
-      vector<primary_itr> itr_buffer;
       int32_t indexes[16];
       uint64_t code;
       uint64_t scope;
