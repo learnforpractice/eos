@@ -2,8 +2,12 @@
 #include <eosiolib/system.h>
 #include <eosiolib/ext.h>
 
+
 void *get_current_memory(void);
 void *get_code_memory(void);
+
+__attribute__((eosio_wasm_import))
+uint64_t current_receiver();
 
 __attribute__((eosio_wasm_import))
 void set_copy_memory_range(int start, int end);
@@ -105,6 +109,7 @@ void python_vm_call( uint64_t func_name, uint64_t receiver, uint64_t code, uint6
         int code_size = get_code_size(receiver);
         char *str_code = (char *)get_code_memory();//malloc(code_size);
 //        prints("++++++++++++code buffer ");printi(str_code);prints("\n");
+        receiver = current_receiver();
         int size = get_code(receiver, str_code, code_size);
         current_module = python_load_module(str_code, code_size);
 //        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
