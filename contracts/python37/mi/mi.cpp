@@ -71,11 +71,11 @@ int multi_index::find(uint64_t primary_key) {
     return itr;
 }
 
-int multi_index::get(int itr, void *data, uint32_t data_size) {
-    if (data_size == 0) {
-        return internal_use_do_not_use::db_get_i64( itr, nullptr, 0 );
-    }
-    return internal_use_do_not_use::db_get_i64(itr, data, data_size);
+int multi_index::get(int itr, struct vm_buffer *vb) {
+    int data_size = internal_use_do_not_use::db_get_i64( itr, nullptr, 0 );
+    vb->size = data_size;
+    vb->data = (char *)malloc(data_size);
+    return internal_use_do_not_use::db_get_i64(itr, vb->data, data_size);
 }
 
 int32_t multi_index::next(int32_t itr, uint64_t& primary_key) {
@@ -232,9 +232,9 @@ extern "C" {
         return mi->find(primary_key);
     }
 
-    int mi_get(void *ptr, int32_t itr, void *data, uint32_t size) {
+    int mi_get(void *ptr, int32_t itr, struct vm_buffer *vb) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->get(itr, data, size);
+        return mi->get(itr, vb);
     }
 
     int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key) {

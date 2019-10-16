@@ -23,7 +23,8 @@ void mi_erase(void *ptr, int32_t itr, uint64_t primary_key);
 
 int32_t mi_find(void *ptr, uint64_t primary_key);
 
-int mi_get(void *ptr, int32_t itr, void *data, uint32_t size);
+//user must take care of the buffer returned!
+int mi_get(void *ptr, int32_t itr, struct vm_buffer *vb);
 
 int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key);
 
@@ -37,6 +38,7 @@ int32_t mi_idx_find(void *ptr, int32_t secondary_index, uint64_t *primary_key, c
 
 void mi_idx_update(void *ptr, int32_t secondary_index, int32_t iterator, const void* secondary_key, uint32_t secondary_key_size, uint64_t payer );
 
+//user must take care of the buffer returned!
 bool mi_get_by_secondary_key(void *ptr, int32_t secondary_index, 
                                 const void *secondary_key, uint32_t secondary_key_size, 
                                 struct vm_buffer *vb);

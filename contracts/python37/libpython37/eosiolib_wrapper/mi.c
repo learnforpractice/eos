@@ -291,11 +291,11 @@ static PyObject *py_mi_get(PyObject *self, PyObject *args)
     o = PyTuple_GetItem(args, 1);
     uint64_t itr = _PyLong_AsInt(o);
 
-    int size = mi_get(ptr, itr, NULL, 0);
-    char *buffer[size];
-    mi_get(ptr, itr, buffer, size);
-
-    return PyBytes_FromStringAndSize((char *)buffer, size);
+    struct vm_buffer vb;
+    mi_get(ptr, itr, &vb);
+    o = PyBytes_FromStringAndSize((char *)vb.data, vb.size);
+    free(vb.data);
+    return o;
 }
 
 static PyObject *py_mi_next(PyObject *self, PyObject *args)

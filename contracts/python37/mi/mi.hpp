@@ -33,7 +33,7 @@ public:
     void erase(int itr, uint64_t primary_key);
 
     int find(uint64_t primary_key);
-    int get(int itr, void *data, uint32_t data_size);
+    int get(int itr, struct vm_buffer *vb);
 
     int32_t next(int32_t itr, uint64_t& primary_key);
     int32_t previous(int32_t itr, uint64_t& primary_key);
