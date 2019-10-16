@@ -50,6 +50,7 @@ void multi_index::modify(int itr, uint64_t primary_key, const void *data, uint32
         int secondary_key_size = get_secondary_key_size(i);
         check(secondary_key_size == value.size, "bad secondary value size");
         itr = idx->db_idx_find_primary(code, scope, idx_table, primary_key, temp_buffer, secondary_key_size);
+        check(itr >= 0, "secondary value not found when call modify");
         if (memcmp(temp_buffer, value.data, value.size) != 0) {
             idx->db_idx_update(itr, value.data, value.size, payer);
         }
