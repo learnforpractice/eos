@@ -5,15 +5,6 @@ using namespace std;
 using namespace eosio;
 using namespace _multi_index_detail;
 
-
-enum index_type {
-    idx64,
-    idx128,
-    idx256,
-    idx_double,
-    idx_long_double,
-};
-
 struct primary_itr {
     int itr;
     uint64_t primary_key;
@@ -25,7 +16,7 @@ struct primary_itr {
 
 class multi_index {
 public:
-    multi_index(uint64_t code, uint64_t scope, uint64_t table, vector<index_type>& indexes);
+    multi_index(uint64_t code, uint64_t scope, uint64_t table, vector<enum index_type>& indexes);
     multi_index(uint64_t code, uint64_t scope, uint64_t table, int* indexes, uint32_t size);
 
     void store(uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer);
@@ -51,9 +42,10 @@ public:
 
     int idx_lowerbound(int secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t& primary_key);
     int idx_upperbound(int secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t& primary_key);
-
+    int get_indexes_count();
+    int get_indexes(int *idxes, uint32_t size);
 private:
-    void add_index(index_type type);
+    void add_index(enum index_type type);
     int get_secondary_key_size(int idx);
     uint64_t get_secondary_idx_table(int idx);
     secondary_index_db_functions* get_secondary_idx(int idx);

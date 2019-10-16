@@ -50,9 +50,9 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action) {
    int itr = mi.find(primary_key);
    mi.modify(itr, primary_key, (void *)"goodbye", 7, secondary_values, payer);
 
-   char buffer[256];
-   int data_size = mi.get(itr, buffer, 256);
-   check(memcmp(buffer, "goodbye", 7) == 0, "bad data");
+   vm_buffer vb;
+   int data_size = mi.get(itr, &vb);
+   check(memcmp(vb.data, "goodbye", 7) == 0, "bad data");
 
    uint64_t primary_key2;
    itr = mi.idx_find(0, primary_key2, &secondary_key, sizeof(secondary_key));

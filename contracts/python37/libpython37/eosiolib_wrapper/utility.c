@@ -95,7 +95,7 @@ int o2n(PyObject *o, uint64_t* n) {
             return 0;
         }
     } else {
-        PyErr_SetString(PyExc_ValueError, "wrong argument");
+        PyErr_SetString(PyExc_ValueError, "wrong name type");
         return 0;
     }
     *n = name;

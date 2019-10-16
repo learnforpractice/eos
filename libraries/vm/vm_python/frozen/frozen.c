@@ -160,6 +160,7 @@
 #include "./M/M_zipfile.c"
 #include "./M/M_base58.c"
 #include "./M/M_db.c"
+#include "./M/M_mi.c"
 
 #include "Python.h"
 
@@ -372,6 +373,7 @@ static struct _frozen _PyImport_FrozenModules_for_pythonvm[] = {
 	{"json.scanner",        M_json__scanner,    (int)sizeof(M_json__scanner)},
 #endif
 	{"db",     M_db, (int)sizeof(M_db)},
+	{"mi",     M_mi, (int)sizeof(M_mi)},
 	{"base58", M_base58, (int)sizeof(M_base58)},
 //	{"base64", M_base64, sizeof(M_base64)},
     /* Test module */
@@ -386,7 +388,6 @@ static struct _frozen _PyImport_FrozenModules_for_pythonvm[] = {
 
 void find_frozen_code(const char *name, const char **code, int *size)
 {
-//	printf("++++find_frozen_code %s\n", name);
     const struct _frozen *p;
     if (name == NULL) {
         *size = 0;
@@ -403,6 +404,7 @@ void find_frozen_code(const char *name, const char **code, int *size)
             break;
         }
     }
+//	printf("++++find_frozen_code %s\n", name);
     *code = (const char *)p->code;
     *size = p->size;
 }

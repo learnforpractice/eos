@@ -9,10 +9,20 @@ extern "C"
 typedef char bool;
 #endif
 
+enum index_type {
+    idx64,
+    idx128,
+    idx256,
+    idx_double,
+    idx_long_double,
+};
+
 struct vm_buffer {
     int size;
     char *data;
 };
+
+#define MAX_INDEXES 12
 
 void *mi_new(uint64_t code, uint64_t scope, uint64_t table, int * _indexes, uint32_t size);    
 void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, 
@@ -52,6 +62,9 @@ int32_t mi_idx_lowerbound(void *ptr, int32_t secondary_index, uint64_t code, uin
 
 int32_t mi_idx_upperbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, 
                         void *secondary, uint32_t secondary_size, uint64_t *primary_key);
+
+int mi_get_indexes_count(void *ptr);
+int mi_get_indexes(void *ptr, int *idxes, uint32_t size);
 
 #ifdef __cplusplus
 }

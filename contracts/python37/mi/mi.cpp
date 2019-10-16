@@ -1,7 +1,7 @@
 #include "mi.hpp"
 #include <mi.h>
 
-multi_index::multi_index(uint64_t code, uint64_t scope, uint64_t table, vector<index_type>& _indexes): 
+multi_index::multi_index(uint64_t code, uint64_t scope, uint64_t table, vector<enum index_type>& _indexes): 
 code(code),
 scope(scope),
 table(table)
@@ -21,7 +21,7 @@ table(table)
 {
     check(size <= 12, "multi_index does not support table names with a length greater than 12");
     for (int i=0;i<size;i++) {
-        auto idx = (index_type)_indexes[i];
+        auto idx = (enum index_type)_indexes[i];
         indexes[i] = idx;
         add_index(idx);
     }
@@ -30,6 +30,7 @@ table(table)
 void multi_index::store(uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer) {
     check(secondary_values.size() == secondary_indexes.size(), "bad secondary value count");
     uint32_t i = 0;
+    internal_use_do_not_use::db_store_i64(scope, table, payer, primary_key, data, data_size);
     for (auto& idx: secondary_indexes) {
         auto value = secondary_values[i];
         idx->db_idx_store(scope, (table & 0xFFFFFFFFFFFFFFF0ULL) | ((uint64_t)i & 0x000000000000000FULL), primary_key, value.data(), value.size(), payer);
@@ -151,7 +152,7 @@ bool multi_index::get_by_secondary_key(int secondary_index, const void *secondar
     return true;
 }
 
-void multi_index::add_index(index_type type) {
+void multi_index::add_index(enum index_type type) {
     if (type == idx64) {
         secondary_indexes.push_back(new secondary_index_db_functions_idx64());
     } else if (type == idx128) {
@@ -192,6 +193,16 @@ uint64_t multi_index::get_secondary_idx_table(int idx) {
 secondary_index_db_functions* multi_index::get_secondary_idx(int idx) {
     check(idx<secondary_indexes.size() && idx>=0, "bad secondary idx");
     return secondary_indexes[idx];
+}
+
+int multi_index::get_indexes_count() {
+    return secondary_indexes.size();
+}
+
+int multi_index::get_indexes(int *idxes, uint32_t size) {
+    check(size >= secondary_indexes.size(), "indexes size not large enough!");
+    memcpy(idxes, indexes, secondary_indexes.size()*sizeof(int));
+    return secondary_indexes.size();
 }
 
 extern "C" {
@@ -294,4 +305,15 @@ extern "C" {
         multi_index* mi = (multi_index*)ptr;
         return mi->idx_upperbound(secondary_index, code, scope, table, secondary, secondary_size, *primary_key);
     }
+
+    int mi_get_indexes_count(void *ptr) {
+        multi_index* mi = (multi_index*)ptr;
+        return mi->get_indexes_count();
+    }
+
+    int mi_get_indexes(void *ptr, int *idxes, uint32_t size) {
+        multi_index* mi = (multi_index*)ptr;
+        return mi->get_indexes(idxes, size);
+    }
+
 }
