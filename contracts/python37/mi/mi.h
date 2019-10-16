@@ -38,8 +38,8 @@ int32_t mi_idx_find(void *ptr, int32_t secondary_index, uint64_t *primary_key, c
 void mi_idx_update(void *ptr, int32_t secondary_index, int32_t iterator, const void* secondary_key, uint32_t secondary_key_size, uint64_t payer );
 
 bool mi_get_by_secondary_key(void *ptr, int32_t secondary_index, 
-                            const void *secondary_key, uint32_t secondary_key_size, 
-                            const void *data, uint32_t data_size);
+                                const void *secondary_key, uint32_t secondary_key_size, 
+                                struct vm_buffer *vb);
 
 int32_t mi_idx_next(void *ptr, int32_t secondary_index, int32_t itr_secondary, uint64_t *primary_key);
 

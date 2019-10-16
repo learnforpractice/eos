@@ -2,6 +2,7 @@
 #include <Python.h>
 
 uint64_t to_name(PyObject *o);
+int o2n(PyObject *o, uint64_t* n);
 
 int get_list_size(PyObject *o) {
     if (PyTuple_Check(o)) {
@@ -23,14 +24,22 @@ PyObject* get_list_obj(PyObject *o, int index) {
     return NULL;
 }
 
-bool parse_arg(PyObject *args, int index, uint64_t *arg) {
+int parse_bytes(PyObject *arg, char **data, int *len) {
+    if (!PyBytes_Check(arg)) {
+        PyErr_SetString(PyExc_ValueError, "bad data type.");
+        return 0;
+    }
+    return PyBytes_AsStringAndSize(arg, data, len) != -1;
+}
+
+int parse_arg(PyObject *args, int index, uint64_t *arg) {
     PyObject *o;
     o = PyTuple_GetItem(args, index);
     if (o == NULL) {
+        PyErr_SetString(PyExc_ValueError, "arg not exist at index");
         return 0;
     }
-    *arg = to_name(o);
-    return 1;
+    return o2n(o, arg);
 }
 
 int parse_args3(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3) {
@@ -286,7 +295,7 @@ static PyObject *py_mi_get(PyObject *self, PyObject *args)
     char *buffer[size];
     mi_get(ptr, itr, buffer, size);
 
-    return PyBytes_FromStringAndSize(buffer, size);
+    return PyBytes_FromStringAndSize((char *)buffer, size);
 }
 
 static PyObject *py_mi_next(PyObject *self, PyObject *args)
@@ -335,30 +344,306 @@ static PyObject *py_mi_previous(PyObject *self, PyObject *args)
     return ret;
 }
 
-#if 0
-int32_t mi_lowerbound(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key);
+static PyObject *py_mi_lowerbound(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t code;
+    uint64_t scope;
+    uint64_t table;
+    uint64_t primary_key;
 
-int32_t mi_upperbound(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key);
+    if (PyTuple_GET_SIZE(args) != 5) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
 
-int32_t mi_idx_find(void *ptr, int32_t secondary_index, uint64_t *primary_key, const void *key, uint32_t key_size);
+    if (!parse_arg(args, 1, &code)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 2, &scope)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 3, &table)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 4, &primary_key)) {
+        return NULL;
+    }
+    int itr = mi_lowerbound(ptr, code, scope, table, primary_key);
+    return PyLong_FromLong(itr);
+}
 
-void mi_idx_update(void *ptr, int32_t secondary_index, int32_t iterator, const void* secondary_key, uint32_t secondary_key_size, uint64_t payer );
+static PyObject *py_mi_upperbound(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t code;
+    uint64_t scope;
+    uint64_t table;
+    uint64_t primary_key;
 
-bool mi_get_by_secondary_key(void *ptr, int32_t secondary_index, 
-                            const void *secondary_key, uint32_t secondary_key_size, 
-                            const void *data, uint32_t data_size);
+    if (PyTuple_GET_SIZE(args) != 5) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
 
-int32_t mi_idx_next(void *ptr, int32_t secondary_index, int32_t itr_secondary, uint64_t *primary_key);
+    if (!parse_arg(args, 1, &code)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 2, &scope)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 3, &table)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 4, &primary_key)) {
+        return NULL;
+    }
+    int itr = mi_upperbound(ptr, code, scope, table, primary_key);
+    return PyLong_FromLong(itr);
+}
 
-int32_t mi_idx_previous(void *ptr, int32_t secondary_index, int32_t itr_secondary, uint64_t *primary_key);
+static PyObject *py_mi_idx_find(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t primary_key = 0;
+    char *secondary_key;
+    Py_ssize_t secondary_key_len;
 
-int32_t mi_idx_lowerbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, 
-                        void *secondary, uint32_t secondary_size, uint64_t *primary_key);
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
 
-int32_t mi_idx_upperbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, 
-                        void *secondary, uint32_t secondary_size, uint64_t *primary_key);
-#endif
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
 
+    o = PyTuple_GetItem(args, 2);
+    if (!parse_bytes(o, &secondary_key, &secondary_key_len)) {
+        return NULL;
+    }
+
+    int32_t itr = mi_idx_find(ptr, secondary_index, &primary_key, secondary_key, secondary_key_len);
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
+    return ret;
+}
+
+static PyObject *py_mi_idx_update(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t payer = 0;
+    char *secondary_key;
+    Py_ssize_t secondary_key_len;
+
+    if (PyTuple_GET_SIZE(args) != 5) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
+
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
+
+    o = PyTuple_GetItem(args, 2);
+    int32_t iterator = _PyLong_AsInt(o);
+
+    o = PyTuple_GetItem(args, 3);
+    if (!parse_bytes(o, &secondary_key, &secondary_key_len)) {
+        return NULL;
+    }
+
+    if (!parse_arg(args, 4, &payer)) {
+        return NULL;
+    }
+    mi_idx_update(ptr, secondary_index, iterator, secondary_key, secondary_key_len, payer);
+
+    Py_RETURN_NONE;
+}
+
+static PyObject *py_mi_get_by_secondary_key(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t payer = 0;
+    char *secondary_key;
+    Py_ssize_t secondary_key_len;
+    char *data;
+    int data_len;
+
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
+
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
+
+    o = PyTuple_GetItem(args, 2);
+    if (!parse_bytes(o, &secondary_key, &secondary_key_len)) {
+        return NULL;
+    }
+
+    struct vm_buffer vb;
+    if (!mi_get_by_secondary_key(ptr, secondary_index, secondary_key, secondary_key_len, &vb)) {
+        Py_RETURN_NONE;
+    }
+    
+    o = PyBytes_FromStringAndSize(vb.data, vb.size);
+    free(vb.data);
+    return o;
+}
+
+static PyObject *py_mi_idx_next(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t primary_key = 0;
+
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
+
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
+
+    o = PyTuple_GetItem(args, 2);
+    int32_t itr_secondary = _PyLong_AsInt(o);
+
+    int itr = mi_idx_next(ptr, secondary_index, itr_secondary, &primary_key);
+
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
+    return ret;
+}
+
+
+static PyObject *py_mi_idx_previous(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t primary_key = 0;
+
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
+
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
+
+    o = PyTuple_GetItem(args, 2);
+    int32_t itr_secondary = _PyLong_AsInt(o);
+
+    int itr = mi_idx_previous(ptr, secondary_index, itr_secondary, &primary_key);
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
+    return ret;
+}
+
+static PyObject *py_mi_idx_lowerbound(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t code;
+    uint64_t scope;
+    uint64_t table;
+    uint64_t primary_key = 0;
+
+    char *secondary_key;
+    int secondary_key_len;
+
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
+
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
+
+    if (!parse_arg(args, 2, &code)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 3, &scope)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 4, &table)) {
+        return NULL;
+    }
+
+    o = PyTuple_GetItem(args, 5);
+    if (!parse_data(o, &secondary_key, &secondary_key_len)) {
+        return NULL;
+    }
+
+    int itr = mi_idx_lowerbound(ptr, secondary_index, code, scope, table, secondary_key, secondary_key_len, &primary_key);
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
+    return ret;
+}
+
+static PyObject *py_mi_idx_upperbound(PyObject *self, PyObject *args)
+{
+    PyObject *o;
+    uint64_t code;
+    uint64_t scope;
+    uint64_t table;
+    uint64_t primary_key = 0;
+
+    char *secondary_key;
+    int secondary_key_len;
+
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return NULL;
+    }    
+    o = PyTuple_GetItem(args, 0);
+    void *ptr = PyLong_AsVoidPtr(o);
+
+    o = PyTuple_GetItem(args, 1);
+    int32_t secondary_index = _PyLong_AsInt(o);
+
+    if (!parse_arg(args, 2, &code)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 3, &scope)) {
+        return NULL;
+    }
+    if (!parse_arg(args, 4, &table)) {
+        return NULL;
+    }
+
+    o = PyTuple_GetItem(args, 5);
+    if (!parse_data(o, &secondary_key, &secondary_key_len)) {
+        return NULL;
+    }
+
+    int itr = mi_idx_upperbound(ptr, secondary_index, code, scope, table, secondary_key, secondary_key_len, &primary_key);
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
+    return ret;
+}
 
 static PyMethodDef mi_methods[] = {
     {"new",                    (PyCFunction)py_mi_new,           METH_VARARGS, NULL},
@@ -369,6 +654,15 @@ static PyMethodDef mi_methods[] = {
     {"get",                    (PyCFunction)py_mi_get,           METH_VARARGS, NULL},
     {"next",                   (PyCFunction)py_mi_next,          METH_VARARGS, NULL},
     {"previous",               (PyCFunction)py_mi_previous,      METH_VARARGS, NULL},
+    {"upperbound",             (PyCFunction)py_mi_upperbound,    METH_VARARGS, NULL},
+    {"lowerbound",             (PyCFunction)py_mi_lowerbound,    METH_VARARGS, NULL},
+    {"idx_find",               (PyCFunction)py_mi_idx_find,      METH_VARARGS, NULL},
+    {"idx_update",             (PyCFunction)py_mi_idx_update,    METH_VARARGS, NULL},
+    {"get_by_secondary_key",   (PyCFunction)py_mi_get_by_secondary_key,      METH_VARARGS, NULL},
+    {"idx_next",               (PyCFunction)py_mi_idx_next,      METH_VARARGS, NULL},
+    {"idx_previous",           (PyCFunction)py_mi_idx_previous,      METH_VARARGS, NULL},
+    {"idx_upperbound",         (PyCFunction)py_mi_idx_upperbound,      METH_VARARGS, NULL},
+    {"idx_lowerbound",         (PyCFunction)py_mi_idx_lowerbound,      METH_VARARGS, NULL},    
     {NULL,                      NULL}           /* sentinel */
 };
 

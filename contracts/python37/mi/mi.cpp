@@ -130,7 +130,7 @@ int multi_index::idx_upperbound(int secondary_index, uint64_t code, uint64_t sco
     return idx->db_idx_upperbound(code, scope, idx_table, secondary, secondary_size, primary_key);
 }
 
-bool multi_index::get_by_secondary_key(int secondary_index, const void *secondary_key, uint32_t secondry_key_size, vector<char>& value) {
+bool multi_index::get_by_secondary_key(int secondary_index, const void *secondary_key, uint32_t secondry_key_size, vm_buffer *vb) {
     check(secondary_index<secondary_indexes.size(), "bad secondary index");
     auto idx = secondary_indexes[secondary_index];
     uint64_t idx_table = get_secondary_idx_table(secondary_index);
@@ -145,8 +145,9 @@ bool multi_index::get_by_secondary_key(int secondary_index, const void *secondar
         return false;
     }
     int size = internal_use_do_not_use::db_get_i64(itr, nullptr, 0);
-    value.resize(size);
-    internal_use_do_not_use::db_get_i64(itr, value.data(), size);
+    vb->size = size;
+    vb->data = (char *)malloc(size);
+    internal_use_do_not_use::db_get_i64(itr, vb->data, size);
     return true;
 }
 
@@ -269,11 +270,9 @@ extern "C" {
 
     bool mi_get_by_secondary_key(void *ptr, int32_t secondary_index, 
                                 const void *secondary_key, uint32_t secondary_key_size, 
-                                const void *data, uint32_t data_size) {
+                                vm_buffer *vb) {
         multi_index* mi = (multi_index*)ptr;
-
-        vector<char> value((char*)data, (char*)data+data_size);        
-        return mi->get_by_secondary_key(secondary_index, secondary_key, secondary_key_size, value);
+        return mi->get_by_secondary_key(secondary_index, secondary_key, secondary_key_size, vb);
     }
 
     int32_t mi_idx_next(void *ptr, int32_t secondary_index, int32_t itr_secondary, uint64_t *primary_key) {

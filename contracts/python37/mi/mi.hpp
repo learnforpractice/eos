@@ -1,4 +1,6 @@
 #include "mi_internal.hpp"
+#include "mi.h"
+
 using namespace std;
 using namespace eosio;
 using namespace _multi_index_detail;
@@ -42,7 +44,7 @@ public:
 
     int idx_find(int secondary_index, uint64_t& primary_key, const void *key, uint32_t key_size);
     void idx_update(int secondary_index, int32_t iterator, const void *secondary, uint32_t size, uint64_t payer );
-    bool get_by_secondary_key(int secondary_index, const void *secondary_key, uint32_t secondary_key_size, vector<char>& value);
+    bool get_by_secondary_key(int secondary_index, const void *secondary_key, uint32_t secondary_key_size, struct vm_buffer *vb);
 
     int idx_next(int secondary_index, int itr_secondary, uint64_t& primary_key);
     int idx_previous(int secondary_index, int itr_secondary, uint64_t& primary_key);
