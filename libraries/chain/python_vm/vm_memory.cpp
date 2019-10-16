@@ -81,7 +81,7 @@ void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
         return;
     }
 
-    if (copy_offset >= uint32_t(malloc_memory_start)) {
+    if (malloc_memory_start > 0 && copy_offset >= malloc_memory_start) {
         memset(base_address+copy_offset, 0, COPY_UNIT);
     } else {
         memory_segment *segment = find_memory_segment(copy_offset);

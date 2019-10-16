@@ -29,7 +29,7 @@ struct vm_memory {
     
     uint32_t initial_pages;
     uint32_t max_pages;
-    int malloc_memory_start;
+    uint32_t malloc_memory_start;
     std::vector<uint32_t> in_use;
     uint32_t counter;
     bool init_smart_contract;
