@@ -253,23 +253,28 @@ class secondary_index_db_functions_##IDX : public secondary_index_db_functions {
         virtual void     db_idx_remove( int32_t iterator  )                  { internal_use_do_not_use::db_##IDX##_remove( iterator ); } \
         virtual int32_t db_idx_end( uint64_t code, uint64_t scope, uint64_t table ) { return internal_use_do_not_use::db_##IDX##_end( code, scope, table ); } \
         virtual int32_t db_idx_store( uint64_t scope, uint64_t table, uint64_t id, const void* secondary, uint32_t size, uint64_t payer ) {\
-        check(sizeof(TYPE) == size, "bad size of "#TYPE); \
-        return internal_use_do_not_use::db_##IDX##_store( scope, table, payer, id, (TYPE*)secondary ); \
+            check(sizeof(TYPE) == size, "bad size of "#TYPE); \
+            return internal_use_do_not_use::db_##IDX##_store( scope, table, payer, id, (TYPE*)secondary ); \
         }\
         virtual void db_idx_update( int32_t iterator, const void* secondary, uint32_t size, uint64_t payer ) {\
-        internal_use_do_not_use::db_##IDX##_update( iterator, payer, (TYPE*)secondary ); \
+            check(sizeof(TYPE) == size, "bad size of "#TYPE); \
+            internal_use_do_not_use::db_##IDX##_update( iterator, payer, (TYPE*)secondary ); \
         }\
         virtual int32_t db_idx_find_primary( uint64_t code, uint64_t scope, uint64_t table, uint64_t primary, void* secondary, uint32_t size ) {\
-        return internal_use_do_not_use::db_##IDX##_find_primary( code, scope, table, (TYPE*)secondary, primary ); \
+            check(sizeof(TYPE) == size, "bad size of "#TYPE); \
+            return internal_use_do_not_use::db_##IDX##_find_primary( code, scope, table, (TYPE*)secondary, primary ); \
         }\
         virtual int32_t db_idx_find_secondary( uint64_t code, uint64_t scope, uint64_t table, const void* secondary, uint32_t size, uint64_t& primary ) {\
-        return internal_use_do_not_use::db_##IDX##_find_secondary( code, scope, table, (TYPE*)secondary, &primary ); \
+            check(sizeof(TYPE) == size, "bad size of "#TYPE); \
+            return internal_use_do_not_use::db_##IDX##_find_secondary( code, scope, table, (TYPE*)secondary, &primary ); \
         }\
         virtual int32_t db_idx_lowerbound( uint64_t code, uint64_t scope, uint64_t table, void* secondary, uint32_t size, uint64_t& primary ) {\
-        return internal_use_do_not_use::db_##IDX##_lowerbound( code, scope, table, (TYPE*)secondary, &primary ); \
+            check(sizeof(TYPE) == size, "bad size of "#TYPE); \
+            return internal_use_do_not_use::db_##IDX##_lowerbound( code, scope, table, (TYPE*)secondary, &primary ); \
         }\
         virtual int32_t db_idx_upperbound( uint64_t code, uint64_t scope, uint64_t table, void* secondary, uint32_t size, uint64_t& primary ) {\
-        return internal_use_do_not_use::db_##IDX##_upperbound( code, scope, table, (TYPE*)secondary, &primary ); \
+            check(sizeof(TYPE) == size, "bad size of "#TYPE); \
+            return internal_use_do_not_use::db_##IDX##_upperbound( code, scope, table, (TYPE*)secondary, &primary ); \
         }\
 };
 
@@ -281,10 +286,12 @@ struct secondary_index_db_functions_##IDX: public secondary_index_db_functions {
         virtual void     db_idx_remove( int32_t iterator )                    { internal_use_do_not_use::db_##IDX##_remove( iterator ); } \
         virtual int32_t db_idx_end( uint64_t code, uint64_t scope, uint64_t table ) { return internal_use_do_not_use::db_##IDX##_end( code, scope, table ); } \
         virtual int32_t db_idx_store( uint64_t scope, uint64_t table, uint64_t id, const void* secondary, uint32_t size, uint64_t payer ) {\
-        return internal_use_do_not_use::db_##IDX##_store( scope, table, payer, id, (uint128_t*)secondary, TYPE::num_words() ); \
+            check(size == TYPE::num_words()*sizeof(uint128_t), "bad secondary size"); \
+            return internal_use_do_not_use::db_##IDX##_store( scope, table, payer, id, (uint128_t*)secondary, TYPE::num_words() ); \
         }\
         virtual void     db_idx_update( int32_t iterator, const void* secondary, uint32_t size, uint64_t payer ) {\
-        internal_use_do_not_use::db_##IDX##_update( iterator, payer, (uint128_t*)secondary, TYPE::num_words() ); \
+            check(size == TYPE::num_words()*sizeof(uint128_t), "bad secondary size"); \
+            internal_use_do_not_use::db_##IDX##_update( iterator, payer, (uint128_t*)secondary, TYPE::num_words() ); \
         }\
         virtual int32_t db_idx_find_primary( uint64_t code, uint64_t scope, uint64_t table, uint64_t primary, void* secondary, uint32_t size ) {\
             check(size == TYPE::num_words()*sizeof(uint128_t), "bad secondary size"); \
@@ -295,7 +302,8 @@ struct secondary_index_db_functions_##IDX: public secondary_index_db_functions {
             return internal_use_do_not_use::db_##IDX##_find_secondary( code, scope, table, (uint128_t*)secondary, TYPE::num_words(), &primary ); \
         }\
         virtual int32_t db_idx_lowerbound( uint64_t code, uint64_t scope, uint64_t table, void* secondary, uint32_t size, uint64_t& primary ) {\
-        return internal_use_do_not_use::db_##IDX##_lowerbound( code, scope, table, (uint128_t*)secondary, TYPE::num_words(), &primary ); \
+            check(size == TYPE::num_words()*sizeof(uint128_t), "bad secondary size"); \
+            return internal_use_do_not_use::db_##IDX##_lowerbound( code, scope, table, (uint128_t*)secondary, TYPE::num_words(), &primary ); \
         }\
         virtual int32_t db_idx_upperbound( uint64_t code, uint64_t scope, uint64_t table, void* secondary, uint32_t size, uint64_t& primary ) {\
             check(size == TYPE::num_words()*sizeof(uint128_t), "bad secondary size"); \
