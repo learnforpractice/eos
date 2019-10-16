@@ -23,6 +23,7 @@ struct vm_buffer {
 };
 
 #define MAX_INDEXES 12
+#define MAX_SECONDARY_KEY_SIZE 32
 
 void *mi_new(uint64_t code, uint64_t scope, uint64_t table, int * _indexes, uint32_t size);    
 void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, 

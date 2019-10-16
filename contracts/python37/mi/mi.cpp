@@ -27,19 +27,19 @@ table(table)
     }
 }
 
-void multi_index::store(uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer) {
-    check(secondary_values.size() == secondary_indexes.size(), "bad secondary value count");
+void multi_index::store(uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *secondary_values, uint32_t secondary_values_size, uint64_t payer) {
+    check(secondary_values_size == secondary_indexes.size(), "bad secondary value count");
     uint32_t i = 0;
     internal_use_do_not_use::db_store_i64(scope, table, payer, primary_key, data, data_size);
-    for (auto& idx: secondary_indexes) {
-        auto value = secondary_values[i];
-        idx->db_idx_store(scope, (table & 0xFFFFFFFFFFFFFFF0ULL) | ((uint64_t)i & 0x000000000000000FULL), primary_key, value.data(), value.size(), payer);
-        i += 1;
+    for (int i=0;i<secondary_indexes.size();i++) {
+        auto& value = secondary_values[i];
+        uint64_t idx_table = get_secondary_idx_table(i);
+        secondary_indexes[i]->db_idx_store(scope, idx_table, primary_key, value.data, value.size, payer);
     }
 }
 
-void multi_index::modify(int itr, uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer) {
-    check(secondary_values.size() == secondary_indexes.size(), "bad secondary value count");
+void multi_index::modify(int itr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *secondary_values, uint32_t secondary_values_size, uint64_t payer) {
+    check(secondary_values_size == secondary_indexes.size(), "bad secondary value count");
     uint32_t i = 0;
     internal_use_do_not_use::db_update_i64(itr, payer, data, data_size);
     char temp_buffer[sizeof(uint128_t)*2];
@@ -48,9 +48,11 @@ void multi_index::modify(int itr, uint64_t primary_key, const void *data, uint32
         auto& value = secondary_values[i];
         uint64_t idx_table = get_secondary_idx_table(i);
         int secondary_key_size = get_secondary_key_size(i);
-        check(secondary_key_size == value.size(), "bad secondary value size");
+        check(secondary_key_size == value.size, "bad secondary value size");
         itr = idx->db_idx_find_primary(code, scope, idx_table, primary_key, temp_buffer, secondary_key_size);
-        idx->db_idx_update(itr, value.data(), value.size(), payer);
+        if (memcmp(temp_buffer, value.data, value.size) != 0) {
+            idx->db_idx_update(itr, value.data, value.size, payer);
+        }
 //            idx->db_idx_store(scope, idx_table, primary_key, value.data(), value.size(), payer);
     }
 }
@@ -211,26 +213,14 @@ extern "C" {
         return mi;
     }
     
-    void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *_secondary_values, uint32_t size, uint64_t payer) {
+    void mi_store(void *ptr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *secondary_values, uint32_t secondary_values_size, uint64_t payer) {
         multi_index* mi = (multi_index*)ptr;
-        vector<vector<char>> secondary_values;
-        for (int i=0;i<size;i++) {
-            auto &v = _secondary_values[i];
-            vector<char> value(v.data, v.data+v.size);
-            secondary_values.emplace_back(value);
-        }
-        mi->store(primary_key, data, data_size, secondary_values, payer);
+        mi->store(primary_key, data, data_size, secondary_values, secondary_values_size, payer);
     }
 
-    void mi_modify(void *ptr, int32_t itr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer* _secondary_values, uint32_t size, uint64_t payer) {
+    void mi_modify(void *ptr, int32_t itr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer* secondary_values, uint32_t secondary_values_size, uint64_t payer) {
         multi_index* mi = (multi_index*)ptr;
-        vector<vector<char>> secondary_values;
-        for (int i=0;i<size;i++) {
-            auto &v = _secondary_values[i];
-            vector<char> value(v.data, v.data+v.size);
-            secondary_values.emplace_back(value);
-        }
-        mi->modify(itr, primary_key, data, data_size, secondary_values, payer);
+        mi->modify(itr, primary_key, data, data_size, secondary_values, secondary_values_size, payer);
     }
 
     void mi_erase(void *ptr, int32_t itr, uint64_t primary_key) {

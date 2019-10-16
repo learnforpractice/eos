@@ -18,9 +18,8 @@ class multi_index {
 public:
     multi_index(uint64_t code, uint64_t scope, uint64_t table, vector<enum index_type>& indexes);
     multi_index(uint64_t code, uint64_t scope, uint64_t table, int* indexes, uint32_t size);
-
-    void store(uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer);
-    void modify(int itr, uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer);
+    void store(uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *secondary_values, uint32_t secondary_values_size, uint64_t payer);
+    void modify(int itr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *secondary_values, uint32_t secondary_values_size, uint64_t payer);
     void erase(int itr, uint64_t primary_key);
 
     int find(uint64_t primary_key);

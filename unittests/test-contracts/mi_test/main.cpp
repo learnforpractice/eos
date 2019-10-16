@@ -17,22 +17,21 @@ class A {
 };
 
 extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action) {
+//test store
+{
    uint64_t payer = receiver;
    vector<index_type> index_types = {idx64};
    uint64_t scope = "scope"_n.value;
    uint64_t table = "table"_n.value;
    multi_index mi(code, scope, table, index_types);
 
-//test store
-{
-   vector<vector<char>> secondary_values;
+   vm_buffer secondary_values[1];
    uint64_t primary_key = "hello"_n.value;
    uint64_t secondary_key = "world"_n.value;
 
-
-   vector<char> secondary_value((char*)&secondary_key, (char*)&secondary_key + 8);
-   secondary_values.push_back(secondary_value);
-   mi.store(primary_key, (void *)"hello", 5, secondary_values, payer);
+   secondary_values[0].size = 8;
+   secondary_values[0].data = (char *)&secondary_key;
+   mi.store(primary_key, (void *)"hello", 5, secondary_values, 1, payer);
 
    uint64_t primary_key2;
    int itr = mi.idx_find(0, primary_key2, &secondary_key, sizeof(secondary_key));
@@ -41,14 +40,21 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action) {
 
 //test modify
 {
-   vector<vector<char>> secondary_values;
+   uint64_t payer = receiver;
+   vector<index_type> index_types = {idx64};
+   uint64_t scope = "scope"_n.value;
+   uint64_t table = "table"_n.value;
+   multi_index mi(code, scope, table, index_types);
+
+   vm_buffer secondary_values[1];
    uint64_t primary_key = "hello"_n.value;
    uint64_t secondary_key = "earth"_n.value;
 
-   vector<char> secondary_value((char*)&secondary_key, (char*)&secondary_key + 8);
-   secondary_values.push_back(secondary_value);
+   secondary_values[0].size = 8;
+   secondary_values[0].data = (char *)&secondary_key;
+
    int itr = mi.find(primary_key);
-   mi.modify(itr, primary_key, (void *)"goodbye", 7, secondary_values, payer);
+   mi.modify(itr, primary_key, (void *)"goodbye", 7, secondary_values, 1, payer);
 
    vm_buffer vb;
    int data_size = mi.get(itr, &vb);
@@ -59,6 +65,47 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action) {
    check(primary_key == primary_key2, "bad secondary");
 }
 
+{
+   uint64_t payer = receiver;
+   vector<index_type> index_types = {idx64, idx128, idx256, idx_double, idx_long_double};
+   uint64_t scope = "scope"_n.value;
+   uint64_t table = "table"_n.value;
+   multi_index mi(code, scope, table, index_types);
+
+   uint64_t primary_key = "goodbye"_n.value;
+   uint64_t secondary_key = "world"_n.value;
+
+   
+   vm_buffer secondary_values[5];
+
+//   value64 = 64;
+   secondary_values[0].size = 8;
+   secondary_values[0].data = (char *)&secondary_key;
+
+
+   uint128_t value128 = 128;
+   secondary_values[1].size = 16;
+   secondary_values[1].data = (char *)&value128;
+
+   uint128_t value256[2];
+   secondary_values[2].size = 32;
+   secondary_values[2].data = (char *)&value256;   
+
+   double valuedouble = 10.0;
+   secondary_values[3].size = 8;
+   secondary_values[3].data = (char *)&valuedouble;
+
+   long double valuelongdouble = 100.0;
+   secondary_values[3].size = 16;
+   secondary_values[3].data = (char *)&valuelongdouble;
+
+
+   mi.store(primary_key, (void *)"world", 5, secondary_values, 5, payer);
+
+   uint64_t primary_key2;
+   int itr = mi.idx_find(0, primary_key2, &secondary_key, sizeof(secondary_key));
+   check(primary_key == primary_key2, "bad secondary");
+}
 
 
 }
