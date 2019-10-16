@@ -51,11 +51,11 @@ int parse_db_data(PyObject *arg, const char **data, int *len) {
 
 int long_as_byte_array(PyObject *args, int index, char *array, int length) {
     PyObject *o = PyTuple_GetItem(args, index);
-    return _PyLong_AsByteArray(o, array, length, 1, 1);
+    return _PyLong_AsByteArray(o, array, length, 1, 0);
 }
 
 PyObject *long_from_byte_array(const char *array, int length) {
-    return _PyLong_FromByteArray(array, length, 1, 1);
+    return _PyLong_FromByteArray(array, length, 1, 0);
 }
 
 //int32_t db_store_i64(account_name scope, table_name table, account_name payer, uint64_t id,  const void* data, uint32_t len);
