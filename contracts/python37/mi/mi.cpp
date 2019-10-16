@@ -40,6 +40,7 @@ void multi_index::store(uint64_t primary_key, const void *data, uint32_t data_si
 void multi_index::modify(int itr, uint64_t primary_key, const void *data, uint32_t data_size, vector<vector<char>>& secondary_values, uint64_t payer) {
     check(secondary_values.size() == secondary_indexes.size(), "bad secondary value count");
     uint32_t i = 0;
+    internal_use_do_not_use::db_update_i64(itr, payer, data, data_size);
     char temp_buffer[sizeof(uint128_t)*2];
     for (int i=0;i<secondary_indexes.size();i++) {
         auto idx = secondary_indexes[i];
