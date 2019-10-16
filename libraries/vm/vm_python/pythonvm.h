@@ -360,6 +360,8 @@ extern u32 (*Z_envZ_db_idx_long_double_lowerboundZ_ijjjii)(u64, u64, u64, u32, u
 extern u32 (*Z_envZ_db_idx_long_double_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'db_idx_long_double_end' */
 extern u32 (*Z_envZ_db_idx_long_double_endZ_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_idx256_store' */
+extern u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
