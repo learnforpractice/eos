@@ -103,18 +103,18 @@ void python_vm_call( uint64_t func_name, uint64_t receiver, uint64_t code, uint6
         initialized = 1;
     }
     else if (func_name == 1) {
-        int start, end;
-        start = get_current_memory();
+        uint32_t start, end;
+        start = (uint32_t)get_current_memory();
 //        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
         int code_size = get_code_size(receiver);
         char *str_code = (char *)get_code_memory();//malloc(code_size);
 //        prints("++++++++++++code buffer ");printi(str_code);prints("\n");
-        receiver = current_receiver();
+//        receiver = current_receiver();
         int size = get_code(receiver, str_code, code_size);
         current_module = python_load_module(str_code, code_size);
 //        printf("+++++++++++++++get_current_memory: %d\n", get_current_memory());
         memset(str_code, 0, code_size);
-        end = get_current_memory();
+        end = (uint32_t)get_current_memory();
         set_copy_memory_range(start, end);
         check_error();
     }
