@@ -27,6 +27,7 @@ public:
 
     int32_t next(int32_t itr, uint64_t& primary_key);
     int32_t previous(int32_t itr, uint64_t& primary_key);
+    int32_t end(uint64_t code, uint64_t scope, uint64_t table);
 
     int lowerbound(uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key);
     int upperbound(uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key);
@@ -38,6 +39,7 @@ public:
 
     int idx_next(int secondary_index, int itr_secondary, uint64_t& primary_key);
     int idx_previous(int secondary_index, int itr_secondary, uint64_t& primary_key);
+    int32_t idx_end(int secondary_index, uint64_t code, uint64_t scope, uint64_t table);
 
     int idx_lowerbound(int secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t& primary_key);
     int idx_upperbound(int secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t& primary_key);

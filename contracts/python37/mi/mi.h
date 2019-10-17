@@ -41,6 +41,8 @@ int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key);
 
 int32_t mi_previous(void *ptr, int32_t itr, uint64_t* primary_key);
 
+int32_t mi_end(void *ptr, uint64_t code, uint64_t scope, uint64_t table);
+
 int32_t mi_lowerbound(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key);
 
 int32_t mi_upperbound(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key);
@@ -57,6 +59,9 @@ bool mi_get_by_secondary_key(void *ptr, int32_t secondary_index,
 int32_t mi_idx_next(void *ptr, int32_t secondary_index, int32_t itr_secondary, uint64_t *primary_key);
 
 int32_t mi_idx_previous(void *ptr, int32_t secondary_index, int32_t itr_secondary, uint64_t *primary_key);
+
+int32_t mi_idx_end(void *ptr, int secondary_index, uint64_t code, uint64_t scope, uint64_t table);
+
 
 int32_t mi_idx_lowerbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, 
                         void *secondary, uint32_t secondary_size, uint64_t *primary_key);

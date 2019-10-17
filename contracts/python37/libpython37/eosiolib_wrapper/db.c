@@ -398,7 +398,7 @@ static PyObject *py_db_idx64_find_primary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint64_t secondary = -1;
+    uint64_t secondary = 0;
     uint64_t primary;
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
@@ -418,7 +418,7 @@ static PyObject *py_db_idx64_find_secondary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint64_t secondary;
+    uint64_t secondary = 0;
     uint64_t primary = 0;
     int32_t iterator;
 
@@ -440,7 +440,7 @@ static PyObject *py_db_idx64_lowerbound(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint64_t secondary;
+    uint64_t secondary = 0;
     uint64_t primary = 0;
     int32_t iterator;
     
@@ -615,7 +615,7 @@ static PyObject *py_db_idx128_find_primary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint128_t secondary;
+    uint128_t secondary = 0;
     uint64_t primary;
 
     if (PyTuple_GET_SIZE(args) != 4) {
@@ -871,6 +871,9 @@ static PyObject *py_db_idx256_find_primary(PyObject *self, PyObject *args)
     uint128_t secondary[2];
     uint64_t primary;
 
+    secondary[0] = 0;
+    secondary[1] = 0;
+
     if (PyTuple_GET_SIZE(args) != 4) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
@@ -1104,7 +1107,7 @@ static PyObject *py_db_idx_double_find_primary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    double secondary;
+    double secondary = 0.0;
     uint64_t primary;
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
@@ -1153,7 +1156,7 @@ static PyObject *py_db_idx_double_lowerbound(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    double secondary;
+    double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
@@ -1175,7 +1178,7 @@ static PyObject *py_db_idx_double_upperbound(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    double secondary;
+    double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
@@ -1311,7 +1314,7 @@ static PyObject *py_db_idx_long_double_find_primary(PyObject *self, PyObject *ar
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary;
+    long double secondary = 0.0;
     uint64_t primary;
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
@@ -1363,7 +1366,7 @@ static PyObject *py_db_idx_long_double_lowerbound(PyObject *self, PyObject *args
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary;
+    long double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
@@ -1385,7 +1388,7 @@ static PyObject *py_db_idx_long_double_upperbound(PyObject *self, PyObject *args
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary;
+    long double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
