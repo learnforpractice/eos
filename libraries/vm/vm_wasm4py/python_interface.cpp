@@ -23,12 +23,13 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <fstream>
-
 #include <chain_api.hpp>
-
+#include "incbin.h"
 
 extern "C" const unsigned char pythonvm_wasm[];
 extern "C" int pythonvm_wasm_size;
+
+INCBIN(PythonVM, "pythonvm.wasm");
 
 namespace eosio { namespace chain {
    using namespace webassembly;
@@ -41,9 +42,9 @@ namespace eosio { namespace chain {
       wasm_constraints::set_maximum_section_elements(10240);
 
       int size = pythonvm_wasm_size;
-      python_code_id = fc::sha256::hash( (char *)pythonvm_wasm, size );
-      validate((char *)pythonvm_wasm, size);
-      my->get_instantiated_module(python_code_id, (char *)pythonvm_wasm, size);
+      python_code_id = fc::sha256::hash( (char *)gPythonVMData, gPythonVMSize );
+      validate((char *)gPythonVMData, gPythonVMSize);
+      my->get_instantiated_module(python_code_id, (char *)gPythonVMData, gPythonVMSize);
    }
 
    wasm_interface::~wasm_interface() {}

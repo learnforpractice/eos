@@ -26,7 +26,7 @@ set(SRCS vm_wasm.cpp
     ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_injection.cpp
     ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_validation.cpp
     ${CMAKE_SOURCE_DIR}/libraries/chain/wasm_eosio_constraints.cpp
-    webassembly/wabt.cpp
+#    webassembly/wabt.cpp
 #    ${CMAKE_SOURCE_DIR}/libraries/chain/whitelisted_intrinsics.cpp
     )
 
@@ -43,11 +43,13 @@ set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins eosiolib_na
 add_library( vm_wasm4py SHARED ${SRCS} )
 
 #set(LIBEVM4EOS ${CMAKE_SOURCE_DIR}/externals/aleth/build/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
-target_link_libraries( vm_wasm4py wabt ${WASM_DEPEND_LIBS} fc)
+target_link_libraries(vm_wasm4py wabt ${WASM_DEPEND_LIBS} fc)
 
 target_include_directories( vm_wasm4py
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
                             PUBLIC ${HEADERS}
+                            PRIVATE ${CMAKE_BINARY_DIR}/contracts/python37/pythonvm
                             )
 target_compile_options(vm_wasm4py     PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB -DWASM_FOR_PYTHON)
 set_target_properties(vm_wasm4py  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+add_dependencies(vm_wasm4py pythonvm_project)
