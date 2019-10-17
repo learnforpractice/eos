@@ -1583,7 +1583,7 @@ class vm_apis : public context_aware_api {
       }
 
       int db_get_count(uint64_t code, uint64_t scope, uint64_t table) {
-         return get_vm_api()->db_get_count(code, scope, table);
+         return get_vm_api()->db_get_table_count(code, scope, table);
       }
 };
 
@@ -1845,7 +1845,7 @@ REGISTER_INTRINSICS(memory_api,
 #define _REGISTER_INTRINSICS(CLS, MEMBERS)\
    BOOST_PP_SEQ_FOR_EACH(__REGISTER_INTRINSIC, CLS, _WRAPPED_SEQ(MEMBERS))
 
-
+#if 0
 class runtime_api_x : public context_aware_api {
    public:
       runtime_api_x()
@@ -1859,6 +1859,7 @@ class runtime_api_x : public context_aware_api {
 _REGISTER_INTRINSICS(runtime_api_x,
    (f64_rem,          double (double, double))
 );
+#endif
 
 REGISTER_INJECTED_INTRINSICS(softfloat_api,
       (_eosio_f32_add,       float(float, float)    )

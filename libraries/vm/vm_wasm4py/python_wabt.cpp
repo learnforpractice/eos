@@ -304,7 +304,7 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
 //         MEMCPY(memory->data.data(), _memory_backup.data(), 1881432);//_memory_backup.size());
          uint64_t receiver = get_vm_api()->current_receiver();
          digest_type code_id;
-         get_chain_api()->get_code_id(receiver, code_id);
+         get_chain_api()->get_code_id(receiver, (uint8_t*)code_id.data(), 32);
 
         auto it = _contract_state_backup2.find(code_id);
         if (it == _contract_state_backup2.end()) {
