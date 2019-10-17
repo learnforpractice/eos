@@ -30,7 +30,8 @@ priv_keys = [
                 '5JEcwbckBCdmji5j8ZoMHLEUS8TqQiqBG1DRx1X9DN124GUok9s',
                 '5JbDP55GXN7MLcNYKCnJtfKi9aD2HvHAdY7g8m67zFTAFkY1uBB',
                 '5K463ynhZoCDDa4RDcr63cUwWLTnKqmdcoTKTHBjqoKfv4u5V7p',
-                '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
+                '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#
+                '5KT26sGXAywAeUSrQjaRiX9uk9uDGNqC1CSojKByLMp7KRp8Ncw',#EOS8Ep2idd8FkvapNfgUwFCjHBG4EVNAjfUsRRqeghvq9E91tkDaj
             ]
 for priv_key in priv_keys:
     wallet.import_key('mywallet', priv_key)
@@ -212,6 +213,17 @@ while True:
         except Exception as e:
             traceback.print_exc()
             print('exception:', e)
+        account_name = 'helloworld11'
+        try:
+            r = eosapi.push_action(account_name, 'sayhello', str(i), {account_name:'active'})
+            print(r['processed']['action_traces'][0]['console'])
+            print(r['processed']['elapsed'])
+        except Exception as e:
+            response = json.loads(e.response)
+            for detail in response['error']['details']:
+        #        print(detail)
+                print(detail['message'])
+
     print('avg', elapsed/10)
     print(eosapi.get_balance('uuos'))
     time.sleep(2.0)
