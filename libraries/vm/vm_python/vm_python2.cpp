@@ -51,12 +51,17 @@ extern "C" {
    //pythonvm.c.bin
    extern void WASM_RT_ADD_PREFIX(python_vm_init)(void);
 
+   void init_globals(void);
 
    void wasm2c_python_vm_apply(uint64_t receiver, uint64_t code, uint64_t action) {
+       wasm_rt_call_stack_depth = 0;
+       init_globals();
       (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(receiver, code, action);
    }
 
    void wasm2c_python_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action) {
+       wasm_rt_call_stack_depth = 0;
+        init_globals();
       (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(func_name, receiver, code, action);
    }
 

@@ -120,6 +120,7 @@ def patch_pythonvm_c_bin():
     start = source.find('DEFINE_LOAD(i32_load, u32, u32, u32);')
     end = source.rfind('''/* export: 'apply' */\nvoid (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);''')
     source = source[start:end]
+    source = source.replace('static void init_globals(void)', 'void init_globals(void)')
 
 
     with open('pythonvm.c.bin', 'w') as f:
