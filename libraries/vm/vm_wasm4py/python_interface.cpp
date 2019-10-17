@@ -24,7 +24,7 @@
 #include <boost/bind.hpp>
 #include <fstream>
 #include <chain_api.hpp>
-#include "incbin.h"
+#include "../../../unittests/incbin.h"
 
 extern "C" const unsigned char pythonvm_wasm[];
 extern "C" int pythonvm_wasm_size;
@@ -35,7 +35,7 @@ namespace eosio { namespace chain {
    using namespace webassembly;
    using namespace webassembly::common;
 
-   wasm_interface::wasm_interface(vm_type vm) : my( new wasm_interface_impl(vm) ) {
+   wasm_interface::wasm_interface(vm_type vm) : my( new wasm_interface_impl(vm_type::wabt) ) {
       wasm_constraints::set_maximum_linear_memory_init(6*1024*1024);
       wasm_constraints::set_maximum_table_elements(10240);
       wasm_constraints::set_maximum_func_local_bytes(128*1024);

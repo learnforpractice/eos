@@ -50,6 +50,6 @@ target_include_directories( vm_wasm4py
                             PUBLIC ${HEADERS}
                             PRIVATE ${CMAKE_BINARY_DIR}/contracts/python37/pythonvm
                             )
-target_compile_options(vm_wasm4py     PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB -DWASM_FOR_PYTHON)
+target_compile_options(vm_wasm4py PRIVATE -D_INDEX=1 -D_EOSIO_SHARED_LIB -DWASM_FOR_PYTHON)
 set_target_properties(vm_wasm4py  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 add_dependencies(vm_wasm4py pythonvm_project)

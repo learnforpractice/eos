@@ -1,9 +1,8 @@
-_wasm_interface_init_*
-_wasm_interface_deinit_*
-_wasm_interface_validate_*
-_wasm_interface_apply_*
-_wasm_interface_is_busy_*
-_wasm_interface_call_*
+_wasm4py_init
+_wasm4py_deinit
+_wasm4py_validate
+_wasm4py_apply
+_wasm4py_call
 _register_vm_api_ro
 
 
