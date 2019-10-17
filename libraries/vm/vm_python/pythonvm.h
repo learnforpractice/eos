@@ -361,6 +361,8 @@ extern u32 (*Z_envZ_db_idx_long_double_lowerboundZ_ijjjii)(u64, u64, u64, u32, u
 extern u32 (*Z_envZ_db_idx_long_double_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'db_idx_long_double_end' */
 extern u32 (*Z_envZ_db_idx_long_double_endZ_ijjj)(u64, u64, u64);
+/* import: 'env' 'printui' */
+extern void (*Z_envZ_printuiZ_vj)(u64);
 /* import: 'env' 'db_idx256_store' */
 extern u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
 
