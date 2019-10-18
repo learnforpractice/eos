@@ -106,15 +106,15 @@ int32_t multi_index::previous(int32_t itr, uint64_t& primary_key) {
     return internal_use_do_not_use::db_previous_i64(itr, &primary_key);
 }
 
-int32_t multi_index::end(uint64_t code, uint64_t scope, uint64_t table) {
+int32_t multi_index::end() {
     return internal_use_do_not_use::db_end_i64(code, scope, table);
 }
 
-int multi_index::lowerbound(uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key) {
+int multi_index::lowerbound(uint64_t primary_key) {
     return internal_use_do_not_use::db_lowerbound_i64(code, scope, table, primary_key);
 }
 
-int multi_index::upperbound(uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key) {
+int multi_index::upperbound(uint64_t primary_key) {
     return internal_use_do_not_use::db_upperbound_i64(code, scope, table, primary_key);
 }
 
@@ -153,19 +153,19 @@ int multi_index::idx_previous(int secondary_index, int itr_secondary, uint64_t& 
     return idx->db_idx_previous(itr_secondary, &primary_key);
 }
 
-int32_t multi_index::idx_end(int secondary_index, uint64_t code, uint64_t scope, uint64_t table) {
-    auto idx = secondary_indexes[secondary_index];
-    return idx->db_idx_end(code, scope, table);
-}
-
-int multi_index::idx_lowerbound(int secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t& primary_key) {
+int32_t multi_index::idx_end(int secondary_index) {
     auto idx = secondary_indexes[secondary_index];
     uint64_t idx_table = get_secondary_idx_table(secondary_index);
+    return idx->db_idx_end(this->code, this->scope, idx_table);
+}
 
+int multi_index::idx_lowerbound(int secondary_index, void *secondary, uint32_t secondary_size, uint64_t& primary_key) {
+    auto idx = secondary_indexes[secondary_index];
+    uint64_t idx_table = get_secondary_idx_table(secondary_index);
     return idx->db_idx_lowerbound(code, scope, idx_table, secondary, secondary_size, primary_key);
 }
 
-int multi_index::idx_upperbound(int secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t& primary_key) {
+int multi_index::idx_upperbound(int secondary_index, void *secondary, uint32_t secondary_size, uint64_t& primary_key) {
     auto idx = secondary_indexes[secondary_index];
     uint64_t idx_table = get_secondary_idx_table(secondary_index);
     return idx->db_idx_upperbound(code, scope, idx_table, secondary, secondary_size, primary_key);
@@ -291,19 +291,19 @@ extern "C" {
         return mi->previous(itr, *primary_key);
     }
 
-    int32_t mi_end(void *ptr, uint64_t code, uint64_t scope, uint64_t table) {
+    int32_t mi_end(void *ptr) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->end(code, scope, table);
+        return mi->end();
     }
 
-    int32_t mi_lowerbound(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key) {
+    int32_t mi_lowerbound(void *ptr, uint64_t primary_key) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->lowerbound(code, scope, table, primary_key);
+        return mi->lowerbound(primary_key);
     }
 
-    int32_t mi_upperbound(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t primary_key) {
+    int32_t mi_upperbound(void *ptr, uint64_t primary_key) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->upperbound(code, scope, table, primary_key);
+        return mi->upperbound(primary_key);
     }
 
     int32_t mi_idx_find(void *ptr, int32_t secondary_index, uint64_t *primary_key, const void *key, uint32_t key_size) {
@@ -339,19 +339,19 @@ extern "C" {
         return mi->idx_previous(secondary_index, itr_secondary, *primary_key);
     }
 
-    int32_t mi_idx_end(void *ptr, int secondary_index, uint64_t code, uint64_t scope, uint64_t table) {
+    int32_t mi_idx_end(void *ptr, int secondary_index) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->idx_end(secondary_index, code, scope, table);
+        return mi->idx_end(secondary_index);
     }
 
-    int32_t mi_idx_lowerbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t *primary_key) {
+    int32_t mi_idx_lowerbound(void *ptr, int32_t secondary_index, void *secondary, uint32_t secondary_size, uint64_t *primary_key) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->idx_lowerbound(secondary_index, code, scope, table, secondary, secondary_size, *primary_key);
+        return mi->idx_lowerbound(secondary_index, secondary, secondary_size, *primary_key);
     }
 
-    int32_t mi_idx_upperbound(void *ptr, int32_t secondary_index, uint64_t code, uint64_t scope, uint64_t table, void *secondary, uint32_t secondary_size, uint64_t *primary_key) {
+    int32_t mi_idx_upperbound(void *ptr, int32_t secondary_index, void *secondary, uint32_t secondary_size, uint64_t *primary_key) {
         multi_index* mi = (multi_index*)ptr;
-        return mi->idx_upperbound(secondary_index, code, scope, table, secondary, secondary_size, *primary_key);
+        return mi->idx_upperbound(secondary_index, secondary, secondary_size, *primary_key);
     }
 
     int mi_get_indexes_count(void *ptr) {

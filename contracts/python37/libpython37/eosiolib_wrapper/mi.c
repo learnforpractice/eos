@@ -227,8 +227,7 @@ int parse_data(PyObject *arg, char **data, int *len) {
     return PyBytes_AsStringAndSize(arg, data, len) != -1;
 }
 
-//void *mi_new(uint64_t code, uint64_t scope, uint64_t table, int * _indexes, uint32_t size);    
-
+//void *mi_new(uint64_t code, uint64_t scope, uint64_t table, int * _indexes, uint32_t size);
 static PyObject *py_mi_new(PyObject *self, PyObject *args)
 {
     PyObject *o;
@@ -555,90 +554,53 @@ static PyObject *py_mi_previous(PyObject *self, PyObject *args)
 static PyObject *py_mi_lowerbound(PyObject *self, PyObject *args)
 {
     PyObject *o;
-    uint64_t code;
-    uint64_t scope;
-    uint64_t table;
     uint64_t primary_key;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
+    if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
     o = PyTuple_GetItem(args, 0);
     void *ptr = PyLong_AsVoidPtr(o);
 
-    if (!parse_arg(args, 1, &code)) {
+    if (!parse_arg(args, 1, &primary_key)) {
         return NULL;
     }
-    if (!parse_arg(args, 2, &scope)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 3, &table)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 4, &primary_key)) {
-        return NULL;
-    }
-    int itr = mi_lowerbound(ptr, code, scope, table, primary_key);
+    int itr = mi_lowerbound(ptr, primary_key);
     return PyLong_FromLong(itr);
 }
 
 static PyObject *py_mi_upperbound(PyObject *self, PyObject *args)
 {
     PyObject *o;
-    uint64_t code;
-    uint64_t scope;
-    uint64_t table;
     uint64_t primary_key;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
+    if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
     o = PyTuple_GetItem(args, 0);
     void *ptr = PyLong_AsVoidPtr(o);
 
-    if (!parse_arg(args, 1, &code)) {
+    if (!parse_arg(args, 1, &primary_key)) {
         return NULL;
     }
-    if (!parse_arg(args, 2, &scope)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 3, &table)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 4, &primary_key)) {
-        return NULL;
-    }
-    int itr = mi_upperbound(ptr, code, scope, table, primary_key);
+    int itr = mi_upperbound(ptr, primary_key);
     return PyLong_FromLong(itr);
 }
 
 static PyObject *py_mi_end(PyObject *self, PyObject *args)
 {
     PyObject *o;
-    uint64_t code;
-    uint64_t scope;
-    uint64_t table;
-    uint64_t primary_key;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
+    if (PyTuple_GET_SIZE(args) != 1) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
     o = PyTuple_GetItem(args, 0);
     void *ptr = PyLong_AsVoidPtr(o);
 
-    if (!parse_arg(args, 1, &code)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 2, &scope)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 3, &table)) {
-        return NULL;
-    }
-    int itr = mi_end(ptr, code, scope, table);
+    int itr = mi_end(ptr);
     return PyLong_FromLong(itr);
 }
 
@@ -827,40 +789,25 @@ static PyObject *py_mi_idx_previous(PyObject *self, PyObject *args)
 static PyObject *py_mi_idx_lowerbound(PyObject *self, PyObject *args)
 {
     PyObject *o;
-    uint64_t code;
-    uint64_t scope;
-    uint64_t table;
     uint64_t primary_key = 0;
 
-    char *secondary_key;
+    char secondary_key[MAX_SECONDARY_KEY_SIZE];
     int secondary_key_len;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
+    if (PyTuple_GET_SIZE(args) != 3) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
-    }    
+    }
     o = PyTuple_GetItem(args, 0);
     void *ptr = PyLong_AsVoidPtr(o);
 
     o = PyTuple_GetItem(args, 1);
     int32_t secondary_index = _PyLong_AsInt(o);
 
-    if (!parse_arg(args, 2, &code)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 3, &scope)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 4, &table)) {
-        return NULL;
-    }
+    o = PyTuple_GetItem(args, 2);
+    secondary_key_len = secondary_key_obj_to_bytes(o, ptr, secondary_index, secondary_key, MAX_SECONDARY_KEY_SIZE);
 
-    o = PyTuple_GetItem(args, 5);
-    if (!parse_data(o, &secondary_key, &secondary_key_len)) {
-        return NULL;
-    }
-
-    int itr = mi_idx_lowerbound(ptr, secondary_index, code, scope, table, secondary_key, secondary_key_len, &primary_key);
+    int itr = mi_idx_lowerbound(ptr, secondary_index, secondary_key, secondary_key_len, &primary_key);
 
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
@@ -876,10 +823,10 @@ static PyObject *py_mi_idx_upperbound(PyObject *self, PyObject *args)
     uint64_t table;
     uint64_t primary_key = 0;
 
-    char *secondary_key;
+    char secondary_key[MAX_SECONDARY_KEY_SIZE];
     int secondary_key_len;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
+    if (PyTuple_GET_SIZE(args) != 3) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }    
@@ -889,23 +836,10 @@ static PyObject *py_mi_idx_upperbound(PyObject *self, PyObject *args)
     o = PyTuple_GetItem(args, 1);
     int32_t secondary_index = _PyLong_AsInt(o);
 
-    if (!parse_arg(args, 2, &code)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 3, &scope)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 4, &table)) {
-        return NULL;
-    }
+    o = PyTuple_GetItem(args, 2);
+    secondary_key_len = secondary_key_obj_to_bytes(o, ptr, secondary_index, secondary_key, MAX_SECONDARY_KEY_SIZE);
 
-    o = PyTuple_GetItem(args, 5);
-    if (!parse_data(o, &secondary_key, &secondary_key_len)) {
-        return NULL;
-    }
-
-    int itr = mi_idx_upperbound(ptr, secondary_index, code, scope, table, secondary_key, secondary_key_len, &primary_key);
-
+    int itr = mi_idx_upperbound(ptr, secondary_index, secondary_key, secondary_key_len, &primary_key);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
     PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
@@ -915,15 +849,8 @@ static PyObject *py_mi_idx_upperbound(PyObject *self, PyObject *args)
 static PyObject *py_mi_idx_end(PyObject *self, PyObject *args)
 {
     PyObject *o;
-    uint64_t code;
-    uint64_t scope;
-    uint64_t table;
-    uint64_t primary_key = 0;
 
-    char *secondary_key;
-    int secondary_key_len;
-
-    if (PyTuple_GET_SIZE(args) != 5) {
+    if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
@@ -933,17 +860,7 @@ static PyObject *py_mi_idx_end(PyObject *self, PyObject *args)
     o = PyTuple_GetItem(args, 1);
     int32_t secondary_index = _PyLong_AsInt(o);
 
-    if (!parse_arg(args, 2, &code)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 3, &scope)) {
-        return NULL;
-    }
-    if (!parse_arg(args, 4, &table)) {
-        return NULL;
-    }
-
-    int itr = mi_idx_end(ptr, secondary_index, code, scope, table);
+    int itr = mi_idx_end(ptr, secondary_index);
     return PyLong_FromLong(itr);
 }
 
