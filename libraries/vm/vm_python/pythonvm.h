@@ -99,6 +99,10 @@ extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 extern void (*Z_envZ_printiZ_vj)(u64);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
+/* import: 'env' 'memcpy' */
+extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
+/* import: 'env' 'memset' */
+extern u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 /* import: 'env' '__unordtf2' */
 extern u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
 /* import: 'env' '__eqtf2' */
@@ -121,6 +125,8 @@ extern u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
 extern void (*Z_envZ___floatsitfZ_vii)(u32, u32);
 /* import: 'env' '__extenddftf2' */
 extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
+/* import: 'env' 'memmove' */
+extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' 'abort' */
 extern void (*Z_envZ_abortZ_vv)(void);
 /* import: 'env' 'read_action_data' */
