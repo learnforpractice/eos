@@ -24,6 +24,7 @@ public:
 
     int find(uint64_t primary_key);
     int get(int itr, struct vm_buffer *vb);
+    int get_secondary_values(uint64_t primary_key, struct vm_buffer *vb, uint32_t vb_size);
 
     int32_t next(int32_t itr, uint64_t& primary_key);
     int32_t previous(int32_t itr, uint64_t& primary_key);
@@ -34,6 +35,8 @@ public:
 
 
     int idx_find(int secondary_index, uint64_t& primary_key, const void *key, uint32_t key_size);
+    int idx_find_primary(int secondary_index, uint64_t primary_key, struct vm_buffer *vb);
+
     void idx_update(int secondary_index, int32_t iterator, const void *secondary, uint32_t size, uint64_t payer );
     bool get_by_secondary_key(int secondary_index, const void *secondary_key, uint32_t secondary_key_size, struct vm_buffer *vb);
 

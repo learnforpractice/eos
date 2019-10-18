@@ -3,7 +3,7 @@
  *  @copyright defined in eos/LICENSE
  */
 #include "mi.hpp"
-
+#include <eosio/print.hpp>
 using namespace eosio;
 
 __attribute__((eosio_wasm_import))

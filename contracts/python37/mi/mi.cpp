@@ -40,7 +40,6 @@ void multi_index::store(uint64_t primary_key, const void *data, uint32_t data_si
 
 void multi_index::modify(int itr, uint64_t primary_key, const void *data, uint32_t data_size, struct vm_buffer *secondary_values, uint32_t secondary_values_size, uint64_t payer) {
     check(secondary_values_size == secondary_indexes.size(), "bad secondary value count");
-    uint32_t i = 0;
     internal_use_do_not_use::db_update_i64(itr, payer, data, data_size);
     char temp_buffer[sizeof(uint128_t)*2];
     for (int i=0;i<secondary_indexes.size();i++) {
@@ -82,6 +81,23 @@ int multi_index::get(int itr, struct vm_buffer *vb) {
     return internal_use_do_not_use::db_get_i64(itr, vb->data, data_size);
 }
 
+int multi_index::get_secondary_values(uint64_t primary_key, struct vm_buffer *vb, uint32_t vb_size) {
+    check(vb_size >= secondary_indexes.size(), "secondary value buffer not large enough");
+    for (int i=0;i<secondary_indexes.size();i++) {
+        auto idx = secondary_indexes[i];
+        int secondary_size = get_secondary_key_size(i);
+        check(vb[i].size >= secondary_size, "vm_buffer not large enough");
+        uint64_t idx_table = get_secondary_idx_table(i);
+        int itr_idx = idx->db_idx_find_primary(code, scope, idx_table, primary_key, vb[i].data, secondary_size);
+        if (itr_idx >= 0) {
+            vb[i].size = secondary_size;
+        } else {
+            vb[i].size = 0;
+        }
+    }
+    return secondary_indexes.size();
+}
+
 int32_t multi_index::next(int32_t itr, uint64_t& primary_key) {
     return internal_use_do_not_use::db_next_i64(itr, &primary_key);
 }
@@ -107,6 +123,18 @@ int multi_index::idx_find(int secondary_index, uint64_t& primary_key, const void
     uint64_t idx_table = get_secondary_idx_table(secondary_index);
 //        int itr = idx.db_idx_lowerbound(code, scope, idx_table, key, key_size, &primary_key);
     return idx->db_idx_find_secondary(code, scope, idx_table, key, key_size, primary_key);
+}
+
+int multi_index::idx_find_primary(int secondary_index, uint64_t primary_key, struct vm_buffer *vb) {
+    auto idx = get_secondary_idx(secondary_index);
+    uint64_t idx_table = get_secondary_idx_table(secondary_index);
+    int size = get_secondary_key_size(secondary_index);
+    check(vb->max_size >= size, "buffer not large enough");
+    int32_t sec_idx = idx->db_idx_find_primary(code, scope, idx_table, primary_key, vb->data, vb->size);
+    if (sec_idx >= 0) {
+        vb->size = size;
+    }
+    return sec_idx;
 }
 
 void multi_index::idx_update(int secondary_index, int32_t iterator, const void *secondary, uint32_t size, uint64_t payer ) {
@@ -248,6 +276,11 @@ extern "C" {
         return mi->get(itr, vb);
     }
 
+    int mi_get_secondary_values(void *ptr, uint64_t primary_key, struct vm_buffer *vb, uint32_t vb_size) {
+        multi_index* mi = (multi_index*)ptr;
+        return mi->get_secondary_values(primary_key, vb, vb_size);
+    }
+
     int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key) {
         multi_index* mi = (multi_index*)ptr;
         return mi->next(itr, *primary_key);
@@ -276,6 +309,11 @@ extern "C" {
     int32_t mi_idx_find(void *ptr, int32_t secondary_index, uint64_t *primary_key, const void *key, uint32_t key_size) {
         multi_index* mi = (multi_index*)ptr;
         return mi->idx_find(secondary_index, *primary_key, key, key_size);
+    }
+
+    int mi_idx_find_primary(void *ptr, int secondary_index, uint64_t primary_key, vm_buffer *vb) {
+        multi_index* mi = (multi_index*)ptr;
+        return mi->idx_find_primary(secondary_index, primary_key, vb);
     }
 
     void mi_idx_update(void *ptr, int32_t secondary_index, int32_t iterator, 

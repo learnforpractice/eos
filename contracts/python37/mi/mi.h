@@ -19,6 +19,7 @@ enum index_type {
 
 struct vm_buffer {
     int size;
+    int max_size;
     char *data;
 };
 
@@ -33,9 +34,11 @@ void mi_modify(void *ptr, int32_t itr, uint64_t primary_key, const void *data, u
 void mi_erase(void *ptr, int32_t itr, uint64_t primary_key);
 
 int32_t mi_find(void *ptr, uint64_t primary_key);
+int32_t mi_idx_find_primary(void *ptr, int secondary_index, uint64_t primary_key, struct vm_buffer *vb);
 
 //user must take care of the buffer returned!
 int mi_get(void *ptr, int32_t itr, struct vm_buffer *vb);
+int mi_get_secondary_values(void *ptr, uint64_t primary_key, struct vm_buffer *vb, uint32_t vb_size);
 
 int32_t mi_next(void *ptr, int32_t itr, uint64_t* primary_key);
 
