@@ -227,7 +227,7 @@ int multi_index::get_secondary_key_size(int idx) {
 }
 
 uint64_t multi_index::get_secondary_idx_table(int idx) {
-    return (table & 0xFFFFFFFFFFFFFFF0ULL) | ((uint64_t)idx & 0x000000000000000FULL);
+    return (table & 0xFFFFFFFFFFFFFFF0ULL) | (uint64_t)idx;
 }
 
 secondary_index_db_functions* multi_index::get_secondary_idx(int idx) {

@@ -944,11 +944,7 @@ static PyObject *py_mi_idx_end(PyObject *self, PyObject *args)
     }
 
     int itr = mi_idx_end(ptr, secondary_index, code, scope, table);
-
-    PyObject *ret = PyTuple_New(2);
-    PyTuple_SetItem(ret, 0, PyLong_FromLong(itr));
-    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary_key));
-    return ret;
+    return PyLong_FromLong(itr);
 }
 
 static PyMethodDef mi_methods[] = {
