@@ -106,8 +106,8 @@ struct _inittab _PyImport_Inittab[] = {
 {"_bisect", PyInit__bisect},
 //{"_datetime", PyInit__datetime},
 //{"_heapq", PyInit__heapq},
-{"_json", PyInit__json},
 #if 0
+{"_json", PyInit__json},
 {"_csv", PyInit__csv},
 {"unicodedata", PyInit_unicodedata},
 #endif
