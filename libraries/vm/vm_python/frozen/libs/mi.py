@@ -12,7 +12,6 @@ class SecondaryIndex:
         self.mi = mi
         self.index = secondary_index
         self.data_type = data_type
-        self.idx_table = (self.mi.table&0xFFFFFFFFFFFFFFF0) + secondary_index
     def get(self, secondary_key):
         itr, primary_key = _mi.idx_find(self.mi.ptr, self.index, secondary_key)
         if itr < 0:
@@ -27,7 +26,7 @@ class SecondaryIndex:
         return itr >= 0
         
     def __iter__(self):
-        self.itr = _mi.idx_end(self.mi.ptr, self.index, self.mi.code, self.mi.scope, self.idx_table)
+        self.itr = _mi.idx_end(self.mi.ptr, self.index)
         return self
 
     def __next__(self):
@@ -88,7 +87,7 @@ class MultiIndex:
         return _mi.find(self.ptr, primary_key) >= 0
 
     def __iter__(self):
-        self.itr = _mi.end(self.ptr, self.code, self.scope, self.table)
+        self.itr = _mi.end(self.ptr)
         return self
 
     def __next__(self):
@@ -101,6 +100,18 @@ class MultiIndex:
 
     def get_secondary_index(self, idx):
         return SecondaryIndex(self, idx, self.data_type)
+        
+    def upperbound(self, primary):
+        return _mi.upperbound(self.ptr, primary)
+
+    def lowerbound(self, primary):
+        return _mi.lowerbound(self.ptr, primary)
+
+    def idx_upperbound(self, index, secondary_key):
+        return _mi.idx_upperbound(self.ptr, index, secondary_key)
+
+    def idx_lowerbound(self, index, secondary_key):
+        return _mi.idx_lowerbound(self.ptr, index, secondary_key)
 
 class MyData(object):
     def __init__(self, a: int, b: int, c: int, d: float):
