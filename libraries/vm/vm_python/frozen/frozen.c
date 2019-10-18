@@ -251,11 +251,13 @@ static struct _frozen _PyImport_FrozenModules[] = {
 	{"gzip", M_gzip, 17188},
 	{"hashlib", M_hashlib, 6594},
 	{"heapq", M_heapq, 14365},
+#if 0
 	{"html", M_html, -3400},
 	{"html.entities", M_html__entities, 50472},
 	{"http", M_http, -5925},
 	{"http.client", M_http__client, 34051},
 	{"http.server", M_http__server, 33370},
+#endif
 	{"importlib", M_importlib, -3735},
 	{"importlib._bootstrap", M_importlib___bootstrap, 29187},
 	{"importlib._bootstrap_external", M_importlib___bootstrap_external, 41821},
@@ -264,10 +266,12 @@ static struct _frozen _PyImport_FrozenModules[] = {
 	{"importlib.util", M_importlib__util, 9359},
 	{"inspect", M_inspect, 80035},
 	{"io", M_io, 3412},
+#if 0
 	{"json", M_json, -12341},
 	{"json.decoder", M_json__decoder, 9827},
 	{"json.encoder", M_json__encoder, 11309},
 	{"json.scanner", M_json__scanner, 1999},
+#endif
 	{"keyword", M_keyword, 1812},
 	{"linecache", M_linecache, 3792},
 	{"locale", M_locale, 34558},
@@ -310,18 +314,21 @@ static struct _frozen _PyImport_FrozenModules[] = {
 	{"stat", M_stat, 3876},
 	{"string", M_string, 7838},
 	{"struct", M_struct, 337},
+#if 0
 	{"subprocess", M_subprocess, 38768},
 	{"tarfile", M_tarfile, 61844},
 	{"tempfile", M_tempfile, 22148},
 	{"textwrap", M_textwrap, 13615},
 	{"threading", M_threading, 37338},
+#endif
 	{"token", M_token, 3602},
 	{"tokenize", M_tokenize, 17834},
 	{"traceback", M_traceback, 19626},
 	{"tracemalloc", M_tracemalloc, 17279},
-	{"tty", M_tty, 1097},
+//	{"tty", M_tty, 1097},
 	{"types", M_types, 8977},
 	{"typing", M_typing, 49961},
+#if 0
 	{"unittest", M_unittest, -3014},
 	{"unittest.case", M_unittest__case, 48086},
 	{"unittest.loader", M_unittest__loader, 14272},
@@ -333,15 +340,17 @@ static struct _frozen _PyImport_FrozenModules[] = {
 	{"unittest.util", M_unittest__util, 4524},
 	{"urllib", M_urllib, -145},
 	{"urllib.parse", M_urllib__parse, 30022},
+#endif
 	{"uu", M_uu, 3616},
 	{"warnings", M_warnings, 13952},
 	{"weakref", M_weakref, 19113},
+#if 0
 	{"webbrowser", M_webbrowser, 16377},
 	{"xml", M_xml, -709},
 	{"xml.parsers", M_xml__parsers, -322},
 	{"xml.parsers.expat", M_xml__parsers__expat, 351},
 	{"zipfile", M_zipfile, 49875},
-
+#endif
     {0, 0, 0} /* sentinel */
 };
 
