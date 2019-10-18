@@ -12,7 +12,7 @@ class SecondaryIndex:
         self.mi = mi
         self.index = secondary_index
         self.data_type = data_type
-
+        self.idx_table = (self.mi.table&0xFFFFFFFFFFFFFFF0) + secondary_index
     def get(self, secondary_key):
         itr, primary_key = _mi.idx_find(self.mi.ptr, self.index, secondary_key)
         if itr < 0:
@@ -23,19 +23,21 @@ class SecondaryIndex:
         return self.get(secondary_key)
 
     def __contains__(self, secondary_key):
-        return _mi.idx_find(self.mi.ptr, secondary_key) >= 0
-
+        itr, primary = _mi.idx_find(self.mi.ptr, self.index, secondary_key)
+        return itr >= 0
+        
     def __iter__(self):
-        self.itr = _mi.idx_end(self.mi.ptr, self.code, self.scope, self.table)
+        self.itr = _mi.idx_end(self.mi.ptr, self.index, self.mi.code, self.mi.scope, self.idx_table)
         return self
 
     def __next__(self):
         if self.itr == -1:
             raise StopIteration
-        self.itr, self.primary_key = _mi.idx_previous(self.itr)
+        self.itr, self.primary_key = _mi.idx_previous(self.mi.ptr, self.index, self.itr)
         if self.itr < 0:
             raise StopIteration
-        return self.mi.get(self.primary_key)
+        itr_primary = self.mi.find(self.primary_key)
+        return self.mi.get(itr_primary)
 
 class MultiIndex:
     def __init__(self, code, scope, table, data_type):
@@ -80,7 +82,6 @@ class MultiIndex:
         itr = _mi.find(self.ptr, primary_key)
         if itr < 0:
             raise IndexError
-        print('++++++del', itr, primary_key)
         _mi.erase(self.ptr, itr, primary_key)
 
     def __contains__(self, primary_key):
@@ -101,3 +102,31 @@ class MultiIndex:
     def get_secondary_index(self, idx):
         return SecondaryIndex(self, idx, self.data_type)
 
+class MyData(object):
+    def __init__(self, a: int, b: int, c: int, d: float):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+
+    def pack(self):
+        b = int.to_bytes(self.b, 16, 'little')
+        c = int.to_bytes(self.c, 32, 'little')
+        return struct.pack('Q16s32sd', self.a, b, c, self.d)
+
+    @classmethod
+    def unpack(cls, data):
+        a, b, c, d = struct.unpack('Q16s32sd', data)
+        b = int.from_bytes(b, 'little')
+        c = int.from_bytes(c, 'little')
+        return MyData(a, b, c, d)
+
+    def get_primary_key(self):
+        return self.a
+
+    def get_secondary_values(self):
+        return (self.a, self.b, self.c, self.d)
+
+    @classmethod
+    def get_secondary_indexes(self):
+        return (idx64, idx128, idx256, idx_double)
