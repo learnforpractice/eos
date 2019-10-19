@@ -51,11 +51,11 @@ int parse_db_data(PyObject *arg, const char **data, int *len) {
 
 int long_as_byte_array(PyObject *args, int index, char *array, int length) {
     PyObject *o = PyTuple_GetItem(args, index);
-    return _PyLong_AsByteArray(o, array, length, 1, 1);
+    return _PyLong_AsByteArray(o, array, length, 1, 0);
 }
 
 PyObject *long_from_byte_array(const char *array, int length) {
-    return _PyLong_FromByteArray(array, length, 1, 1);
+    return _PyLong_FromByteArray(array, length, 1, 0);
 }
 
 //int32_t db_store_i64(account_name scope, table_name table, account_name payer, uint64_t id,  const void* data, uint32_t len);
@@ -202,7 +202,10 @@ static PyObject *py_db_previous_i64(PyObject *self, PyObject *args)
         return NULL;
     }
     iterator = db_previous_i64(iterator, &primary);
-    return Py_BuildValue("(iK)", iterator, primary);
+
+    PyObject *ret = PyTuple_New(2);
+    PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
 }
 
 //int32_t db_lowerbound_i64(account_name code, account_name scope, table_name table, uint64_t id);
@@ -395,7 +398,7 @@ static PyObject *py_db_idx64_find_primary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint64_t secondary = -1;
+    uint64_t secondary = 0;
     uint64_t primary;
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
@@ -415,7 +418,7 @@ static PyObject *py_db_idx64_find_secondary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint64_t secondary;
+    uint64_t secondary = 0;
     uint64_t primary = 0;
     int32_t iterator;
 
@@ -437,7 +440,7 @@ static PyObject *py_db_idx64_lowerbound(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint64_t secondary;
+    uint64_t secondary = 0;
     uint64_t primary = 0;
     int32_t iterator;
     
@@ -612,7 +615,7 @@ static PyObject *py_db_idx128_find_primary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    uint128_t secondary;
+    uint128_t secondary = 0;
     uint64_t primary;
 
     if (PyTuple_GET_SIZE(args) != 4) {
@@ -868,6 +871,9 @@ static PyObject *py_db_idx256_find_primary(PyObject *self, PyObject *args)
     uint128_t secondary[2];
     uint64_t primary;
 
+    secondary[0] = 0;
+    secondary[1] = 0;
+
     if (PyTuple_GET_SIZE(args) != 4) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
@@ -1101,7 +1107,7 @@ static PyObject *py_db_idx_double_find_primary(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    double secondary;
+    double secondary = 0.0;
     uint64_t primary;
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
@@ -1150,7 +1156,7 @@ static PyObject *py_db_idx_double_lowerbound(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    double secondary;
+    double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
@@ -1172,7 +1178,7 @@ static PyObject *py_db_idx_double_upperbound(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    double secondary;
+    double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
@@ -1308,7 +1314,7 @@ static PyObject *py_db_idx_long_double_find_primary(PyObject *self, PyObject *ar
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary;
+    long double secondary = 0.0;
     uint64_t primary;
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
@@ -1360,7 +1366,7 @@ static PyObject *py_db_idx_long_double_lowerbound(PyObject *self, PyObject *args
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary;
+    long double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 
@@ -1382,7 +1388,7 @@ static PyObject *py_db_idx_long_double_upperbound(PyObject *self, PyObject *args
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary;
+    long double secondary = 0.0;
     uint64_t primary;
     int32_t iterator;
 

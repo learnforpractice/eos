@@ -91,6 +91,8 @@ extern PyObject* PyInit__ast(void);
 extern PyObject* _PyWarnings_Init(void);
 extern PyObject* PyInit__string(void);
 extern PyObject* PyInit__db(void);
+extern PyObject* PyInit__mi(void);
+
 extern PyObject* PyInit__eosiolib(void);
 
 struct _inittab _PyImport_Inittab[] = {
@@ -104,8 +106,8 @@ struct _inittab _PyImport_Inittab[] = {
 {"_bisect", PyInit__bisect},
 //{"_datetime", PyInit__datetime},
 //{"_heapq", PyInit__heapq},
-{"_json", PyInit__json},
 #if 0
+{"_json", PyInit__json},
 {"_csv", PyInit__csv},
 {"unicodedata", PyInit_unicodedata},
 #endif
@@ -198,11 +200,11 @@ struct _inittab _PyImport_Inittab[] = {
     /* This lives in Objects/unicodeobject.c */
     {"_string", PyInit__string},
     {"_db", PyInit__db},
+    {"_mi", PyInit__mi},
 //    {"eosiolib", PyInit__eosiolib},
     /* Sentinel */
     {0, 0}
 };
-
 
 #ifdef __cplusplus
 }

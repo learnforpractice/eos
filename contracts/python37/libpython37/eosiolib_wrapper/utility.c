@@ -50,13 +50,13 @@ static PyObject *py_unpack_bytes(PyObject *self, PyObject *args)
 
 uint64_t to_name(PyObject *o) {
     uint64_t name = 0;
-    const char *cname = NULL;
+    char *cname = NULL;
     Py_ssize_t size = 0;
 
     if (PyLong_Check(o)) {
         name = PyLong_AsUnsignedLongLong(o);
     } else if (PyUnicode_Check(o)) {
-        cname = PyUnicode_AsUTF8AndSize(o, &size);
+        cname = (char *)PyUnicode_AsUTF8AndSize(o, &size);
         name = s2n(cname, size);
     } else if (PyBytes_Check(o)) {
         PyBytes_AsStringAndSize(o, &cname, &size);
@@ -70,5 +70,35 @@ uint64_t to_name(PyObject *o) {
         return 0;
     }
     return name;
+}
+
+
+int o2n(PyObject *o, uint64_t* n) {
+    uint64_t name = 0;
+    char *cname = NULL;
+    Py_ssize_t size = 0;
+
+    if (PyLong_Check(o)) {
+        name = PyLong_AsUnsignedLongLong(o);
+    } else if (PyUnicode_Check(o)) {
+        cname = (char *)PyUnicode_AsUTF8AndSize(o, &size);
+        name = s2n(cname, size);
+        if (name == 0) {
+            PyErr_SetString(PyExc_ValueError, "Name not properly normalized");
+            return 0;
+        }
+    } else if (PyBytes_Check(o)) {
+        PyBytes_AsStringAndSize(o, &cname, &size);
+        name = s2n(cname, size);
+        if (name == 0) {
+            PyErr_SetString(PyExc_ValueError, "Name not properly normalized");
+            return 0;
+        }
+    } else {
+        PyErr_SetString(PyExc_ValueError, "wrong name type");
+        return 0;
+    }
+    *n = name;
+    return 1;
 }
 

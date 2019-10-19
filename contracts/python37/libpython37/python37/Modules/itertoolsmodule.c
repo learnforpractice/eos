@@ -4253,7 +4253,7 @@ repeat_repr(repeatobject *ro)
 }
 
 static PyObject *
-repeat_len(repeatobject *ro)
+repeat_len(repeatobject *ro, void *Py_UNUSED(ignored))
 {
     if (ro->cnt == -1) {
         PyErr_SetString(PyExc_TypeError, "len() of unsized object");

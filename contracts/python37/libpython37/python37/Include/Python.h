@@ -163,11 +163,14 @@
 #include "fileutils.h"
 #include "pyfpe.h"
 
-__attribute__((eosio_wasm_import))
-void prints( const char* cstr );
-__attribute__((eosio_wasm_import))
-void printi( int64_t n);
-__attribute__((eosio_wasm_import))
-void eosio_exit(int code);
+#ifdef __WASM
+    #define WASM_IMPORT  __attribute__((eosio_wasm_import))
+#else
+    #define WASM_IMPORT  
+#endif
+WASM_IMPORT void prints( const char* cstr );
+WASM_IMPORT void printui( uint64_t value );
+WASM_IMPORT void printi( int64_t n);
+WASM_IMPORT void eosio_exit(int code);
 
 #endif /* !Py_PYTHON_H */

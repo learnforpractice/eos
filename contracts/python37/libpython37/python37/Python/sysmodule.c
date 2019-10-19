@@ -1072,7 +1072,7 @@ static PyStructSequence_Desc windows_version_desc = {
 #pragma warning(disable:4996)
 
 static PyObject *
-sys_getwindowsversion(PyObject *self)
+sys_getwindowsversion(PyObject *self, void *Py_UNUSED(ignored))
 {
     PyObject *version;
     int pos = 0;
@@ -1298,7 +1298,7 @@ sys_getrefcount(PyObject *self, PyObject *arg)
 
 #ifdef Py_REF_DEBUG
 static PyObject *
-sys_gettotalrefcount(PyObject *self)
+sys_gettotalrefcount(PyObject *self, void *Py_UNUSED(ignored))
 {
     return PyLong_FromSsize_t(_Py_GetRefTotal());
 }
@@ -1313,7 +1313,7 @@ reference as an argument to getrefcount()."
 );
 
 static PyObject *
-sys_getallocatedblocks(PyObject *self)
+sys_getallocatedblocks(PyObject *self, void *Py_UNUSED(ignored))
 {
     return PyLong_FromSsize_t(_Py_GetAllocatedBlocks());
 }
@@ -1327,7 +1327,7 @@ size."
 
 #ifdef COUNT_ALLOCS
 static PyObject *
-sys_getcounts(PyObject *self)
+sys_getcounts(PyObject *self, void *Py_UNUSED(ignored))
 {
     extern PyObject *get_counts(void);
 
@@ -1506,7 +1506,7 @@ PyDoc_STRVAR(getandroidapilevel_doc,
 Return the build time API version of Android as an integer.");
 
 static PyObject *
-sys_getandroidapilevel(PyObject *self)
+sys_getandroidapilevel(PyObject *self, void *Py_UNUSED(ignored))
 {
     return PyLong_FromLong(ANDROID_API_LEVEL);
 }
@@ -1526,7 +1526,9 @@ static PyMethodDef sys_methods[] = {
     {"displayhook",     sys_displayhook, METH_O, displayhook_doc},
     {"exc_info",        sys_exc_info, METH_NOARGS, exc_info_doc},
     {"excepthook",      sys_excepthook, METH_VARARGS, excepthook_doc},
+#ifndef __WASM
     {"exit",            sys_exit, METH_VARARGS, exit_doc},
+#endif
     {"getdefaultencoding", (PyCFunction)sys_getdefaultencoding,
      METH_NOARGS, getdefaultencoding_doc},
 #ifdef HAVE_DLOPEN
@@ -1541,10 +1543,12 @@ static PyMethodDef sys_methods[] = {
 #ifdef DYNAMIC_EXECUTION_PROFILE
     {"getdxp",          _Py_GetDXProfile, METH_VARARGS},
 #endif
+#ifndef __WASM
     {"getfilesystemencoding", (PyCFunction)sys_getfilesystemencoding,
      METH_NOARGS, getfilesystemencoding_doc},
     { "getfilesystemencodeerrors", (PyCFunction)sys_getfilesystemencodeerrors,
      METH_NOARGS, getfilesystemencodeerrors_doc },
+#endif
 #ifdef Py_TRACE_REFS
     {"getobjects",      _Py_GetObjects, METH_VARARGS},
 #endif
