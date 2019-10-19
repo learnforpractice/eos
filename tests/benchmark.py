@@ -30,7 +30,8 @@ priv_keys = [
                 '5JEcwbckBCdmji5j8ZoMHLEUS8TqQiqBG1DRx1X9DN124GUok9s',
                 '5JbDP55GXN7MLcNYKCnJtfKi9aD2HvHAdY7g8m67zFTAFkY1uBB',
                 '5K463ynhZoCDDa4RDcr63cUwWLTnKqmdcoTKTHBjqoKfv4u5V7p',
-                '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
+                '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#
+                '5KT26sGXAywAeUSrQjaRiX9uk9uDGNqC1CSojKByLMp7KRp8Ncw',#EOS8Ep2idd8FkvapNfgUwFCjHBG4EVNAjfUsRRqeghvq9E91tkDaj
             ]
 for priv_key in priv_keys:
     wallet.import_key('mywallet', priv_key)
@@ -93,7 +94,7 @@ contract_path = '/Users/newworld/dev/eos/build/contracts'
 contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
 
 if 1:
-    if True:
+    if False:
         code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
         abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
     else:
@@ -165,20 +166,24 @@ except Exception as e:
 
 #r = eosapi.push_action('eosio.token', 'issue', {"to":"uuos","quantity":f"1000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 #print(r)
-r = eosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
+if eosapi.get_balance('uuos') <=0:
+    r = eosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
-r = eosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"helloworld11","quantity":f"10000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
+if eosapi.get_balance('helloworld11') <=0:
+    r = eosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"helloworld11","quantity":f"10000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
 #eosapi.schedule_protocol_feature_activations(['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43']) #RESTRICT_ACTION_TO_SELF
 #eosapi.schedule_protocol_feature_activations(['4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f']) #NO_DUPLICATE_DEFERRED_ID
 
 feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
             'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99',#REPLACE_DEFERRED
-            '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f'#NO_DUPLICATE_DEFERRED_ID
+            '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#NO_DUPLICATE_DEFERRED_ID
+            'fa0e5becb50725b19e630d92f488e0a1982f5b726923dd877b629e2432296ea2' #PYTHONVM
 ]
+
 for digest in feature_digests: 
     try:
-        args = {'feature_digest': 'ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43'} #RESTRICT_ACTION_TO_SELF
+        args = {'feature_digest': digest} #RESTRICT_ACTION_TO_SELF
         eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
     except Exception as e:
         print(e)
@@ -188,24 +193,38 @@ data_string = "2019-10-24 08:00:00" #timezone: +8
 dt = datetime.fromisoformat(data_string)
 print("+++++++++=main net start time:", time.mktime(dt.timetuple()))
 
-
-key = 'EOS5yprUeBro1asg4r1b4BKuJViy6wwyJmXiP4Zqzu1Z4ixpPwuLX'
-account_name = 'uuos.fund' #'uuosuuos1.m'
-seed_round_found = 100000000.0000
-util.buyrambytes('eosio', account_name, 10*1024)
-util.dbw('eosio', account_name, seed_round_found*0.1, seed_round_found*0.9, transfer=True)
+if 0:
+    key = 'EOS5yprUeBro1asg4r1b4BKuJViy6wwyJmXiP4Zqzu1Z4ixpPwuLX'
+    account_name = 'uuos.fund' #'uuosuuos1.m'
+    seed_round_found = 100000000.0000
+    util.buyrambytes('eosio', account_name, 10*1024)
+    util.dbw('eosio', account_name, seed_round_found*0.1, seed_round_found*0.9, transfer=True)
 
 balance = eosapi.get_balance('uuos')
 print('++++balance: ', balance)
 while True:
     n = random.randint(0,10000000)
+    elapsed = 0
     for i in range(n, n+10):
         try:
             r = eosapi.transfer('uuos', 'eosio', 0.0001, str(i))
             print(r['processed']['elapsed'])
+            elapsed += int(r['processed']['elapsed'])
         except Exception as e:
             traceback.print_exc()
             print('exception:', e)
+        account_name = 'helloworld11'
+        try:
+            r = eosapi.push_action(account_name, 'sayhello', str(i), {account_name:'active'})
+            print(r['processed']['action_traces'][0]['console'])
+            print(r['processed']['elapsed'])
+        except Exception as e:
+            response = json.loads(e.response)
+            for detail in response['error']['details']:
+        #        print(detail)
+                print(detail['message'])
+
+    print('avg', elapsed/10)
     print(eosapi.get_balance('uuos'))
     time.sleep(2.0)
 
