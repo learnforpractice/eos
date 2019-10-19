@@ -12,7 +12,7 @@ typedef __int128             int128_t;
 typedef long long            int64_t;
 typedef int                  int32_t;
 typedef short                int16_t;
-typedef char                 int8_t;
+typedef signed char          int8_t;
 
 typedef int8_t           int_least8_t;
 typedef int16_t         int_least16_t;
