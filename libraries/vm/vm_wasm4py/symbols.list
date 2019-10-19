@@ -1,0 +1,9 @@
+_wasm4py_init
+_wasm4py_deinit
+_wasm4py_validate
+_wasm4py_apply
+_wasm4py_call
+_register_vm_api_ro
+
+
+
