@@ -1,6 +1,7 @@
 #pragma once
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/trace.hpp>
+#include <eosio/chain/platform_timer.hpp>
 #include <signal.h>
 
 namespace eosio { namespace chain {
@@ -27,7 +28,8 @@ namespace eosio { namespace chain {
          transaction_context( controller& c,
                               const signed_transaction& t,
                               const transaction_id_type& trx_id,
-                              fc::time_point start = fc::time_point::now() );
+                              fc::time_point start = fc::time_point::now(),
+                              bool read_only=false );
 
          void init_for_implicit_trx( uint64_t initial_net_usage = 0 );
 
@@ -138,8 +140,7 @@ namespace eosio { namespace chain {
          fc::time_point                pseudo_start;
          fc::microseconds              billed_time;
          fc::microseconds              billing_timer_duration_limit;
-
-         deadline_timer                _deadline_timer;
+         bool                          read_only;
    };
 
 } }

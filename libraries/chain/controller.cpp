@@ -23,6 +23,7 @@
 #include <eosio/chain/resource_limits.hpp>
 #include <eosio/chain/chain_snapshot.hpp>
 #include <eosio/chain/thread_utils.hpp>
+#include <eosio/chain/python_interface.hpp>
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -52,7 +53,8 @@ using controller_index_set = index_set<
    transaction_multi_index,
    generated_transaction_multi_index,
    table_id_multi_index,
-   code_index
+   code_index,
+   database_header_multi_index
 >;
 
 using contract_database_index_set = index_set<
@@ -217,17 +219,19 @@ struct pending_state {
 struct controller_impl {
    controller&                    self;
    chainbase::database            db;
+   chainbase::database            ro_db;
    chainbase::database            reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
    block_log                      blog;
    optional<pending_state>        pending;
    block_state_ptr                head;
    fork_database                  fork_db;
    wasm_interface                 wasmif;
+   python_interface               pythonif;
    resource_limits_manager        resource_limits;
    authorization_manager          authorization;
    protocol_feature_manager       protocol_features;
    controller::config             conf;
-   chain_id_type                  chain_id;
+   const chain_id_type            chain_id; // read by thread_pool threads, value will not be changed
    optional<fc::time_point>       replay_head_time;
    db_read_mode                   read_mode = db_read_mode::SPECULATIVE;
    bool                           in_trx_requiring_checks = false; ///< if true, checks that are normally skipped on replay (e.g. auth checks) cannot be skipped
@@ -291,17 +295,21 @@ struct controller_impl {
       apply_handlers[receiver][make_pair(contract,action)] = v;
    }
 
-   controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs  )
+   controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
    :self(s),
     db( cfg.state_dir,
         cfg.read_only ? database::read_only : database::read_write,
         cfg.state_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
+    ro_db( cfg.state_dir,
+        database::read_only,
+        cfg.state_size, true, cfg.db_map_mode, cfg.db_hugepage_paths ),
     reversible_blocks( cfg.blocks_dir/config::reversible_blocks_dir_name,
         cfg.read_only ? database::read_only : database::read_write,
         cfg.reversible_cache_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
-    wasmif( cfg.wasm_runtime ),
+    wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+    pythonif( db ),
     resource_limits( db ),
     authorization( s, db ),
     protocol_features( std::move(pfs) ),
@@ -329,6 +337,7 @@ struct controller_impl {
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
+         pythonif.current_lib(bsp->block_num);
       });
 
 
@@ -719,8 +728,15 @@ struct controller_impl {
       }
       authorization.add_indices();
       resource_limits.add_indices();
-   }
 
+      controller_index_set::add_indices(ro_db);
+      contract_database_index_set::add_indices(ro_db);
+      if (conf.uuos_mainnet) {
+         ro_db.add_index<key256_value_index>();
+      }
+      authorization.add_indices(ro_db);
+      resource_limits.add_indices(ro_db);
+   }
    void clear_all_undo() {
       // Rewind the database to the last irreversible block
       db.undo_all();
@@ -1393,6 +1409,48 @@ struct controller_impl {
          return trace;
       } FC_CAPTURE_AND_RETHROW((trace))
    } /// push_transaction
+
+   transaction_trace_ptr call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs)
+   {
+      fc::time_point deadline = fc::time_point::maximum();
+      fc::time_point start = fc::time_point::now();
+      uint32_t cpu_time_to_bill_us = 0; // only set on failure
+      uint32_t billed_cpu_time_us = 100000;
+      bool explicit_billed_cpu_time = false;
+      bool enforce_whiteblacklist = true;
+
+      signed_transaction trx;
+      // Deliver onerror action containing the failed deferred transaction directly back to the sender.
+      trx.actions.emplace_back( vector<permission_level>{{name(contract), N(active)}}, name(contract), name(action), binargs );
+      trx.expiration = time_point_sec();
+      trx.ref_block_num = 0;
+      trx.ref_block_prefix = 0;
+
+      transaction_checktime_timer trx_timer(timer);
+      transaction_context trx_context( self, trx, trx.id(), std::move(trx_timer), start, true );
+      trx_context.deadline = deadline;
+      trx_context.explicit_billed_cpu_time = explicit_billed_cpu_time;
+      trx_context.billed_cpu_time_us = billed_cpu_time_us;
+      trx_context.enforce_whiteblacklist = enforce_whiteblacklist;
+      transaction_trace_ptr trace = trx_context.trace;
+      try {
+         trx_context.init_for_implicit_trx();
+         trx_context.execute_action( trx_context.schedule_action( trx.actions.back(), name(contract), false, 0, 0 ), 0 );
+         trx_context.finalize(); // Automatically rounds up network and CPU usage in trace and bills payers if successful
+         return trace;
+      } catch( const disallowed_transaction_extensions_bad_block_exception& ) {
+         throw;
+      } catch( const protocol_feature_bad_block_exception& ) {
+         throw;
+      } catch( const fc::exception& e ) {
+         throw;
+         cpu_time_to_bill_us = trx_context.update_billed_cpu_time( fc::time_point::now() );
+         trace->error_code = controller::convert_exception_to_error_code( e );
+         trace->except = e;
+         trace->except_ptr = std::current_exception();
+      }
+      return trace;
+   }
 
    void start_block( block_timestamp_type when,
                      uint16_t confirm_block_count,

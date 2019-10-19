@@ -1,8 +1,3 @@
-/**
- *  @file
- *  @copyright defined in eos/LICENSE
- */
-
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/permission_object.hpp>
@@ -29,6 +24,10 @@ namespace eosio { namespace chain {
 
    void authorization_manager::add_indices() {
       authorization_index_set::add_indices(_db);
+   }
+
+   void authorization_manager::add_indices(chainbase::database& d) {
+      authorization_index_set::add_indices(d);
    }
 
    void authorization_manager::initialize_database() {

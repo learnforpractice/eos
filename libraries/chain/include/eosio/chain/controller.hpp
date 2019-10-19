@@ -9,6 +9,7 @@
 #include <eosio/chain/account_object.hpp>
 #include <eosio/chain/snapshot.hpp>
 #include <eosio/chain/protocol_feature_manager.hpp>
+#include <eosio/chain/protocol_feature_manager.hpp>
 
 namespace chainbase {
    class database;
@@ -141,7 +142,7 @@ namespace eosio { namespace chain {
           *  @return map of transactions which have been unapplied
           */
          unapplied_transactions_type& get_unapplied_transactions();
-
+      
          /**
           *
           */
@@ -152,7 +153,7 @@ namespace eosio { namespace chain {
           *
           */
          transaction_trace_ptr push_scheduled_transaction( const transaction_id_type& scheduled, fc::time_point deadline, uint32_t billed_cpu_time_us = 0 );
-
+         
          block_state_ptr finalize_block( const std::function<signature_type( const digest_type& )>& signer_callback );
          void sign_block( const std::function<signature_type( const digest_type& )>& signer_callback );
          void commit_block();
@@ -279,6 +280,8 @@ namespace eosio { namespace chain {
          void add_to_ram_correction( account_name account, uint64_t ram_bytes );
          bool all_subjective_mitigations_disabled()const;
 
+         transaction_trace_ptr call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs);
+
          static fc::optional<uint64_t> convert_exception_to_error_code( const fc::exception& e );
 
          signal<void(const signed_block_ptr&)>         pre_accepted_block;
@@ -301,7 +304,7 @@ namespace eosio { namespace chain {
 
          const apply_handler* find_apply_handler( account_name contract, scope_name scope, action_name act )const;
          wasm_interface& get_wasm_interface();
-
+         python_interface& get_python_interface();
 
          optional<abi_serializer> get_abi_serializer( account_name n, const fc::microseconds& max_serialization_time )const {
             if( n.good() ) {
@@ -329,7 +332,7 @@ namespace eosio { namespace chain {
          friend class transaction_context;
 
          chainbase::database& mutable_db()const;
-
+         chainbase::database& get_db(bool read_only)const;
          std::unique_ptr<controller_impl> my;
 
    };

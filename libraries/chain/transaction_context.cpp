@@ -149,7 +149,8 @@ namespace bacc = boost::accumulators;
    transaction_context::transaction_context( controller& c,
                                              const signed_transaction& t,
                                              const transaction_id_type& trx_id,
-                                             fc::time_point s )
+                                             fc::time_point s,
+                                             bool read_only )
    :control(c)
    ,trx(t)
    ,id(trx_id)
@@ -158,6 +159,7 @@ namespace bacc = boost::accumulators;
    ,start(s)
    ,net_usage(trace->net_usage)
    ,pseudo_start(s)
+   ,read_only(read_only)
    {
       if (!c.skip_db_sessions()) {
          undo_session = c.mutable_db().start_undo_session(true);
@@ -664,7 +666,7 @@ namespace bacc = boost::accumulators;
    }
 
    void transaction_context::execute_action( uint32_t action_ordinal, uint32_t recurse_depth ) {
-      apply_context acontext( control, *this, action_ordinal, recurse_depth );
+      apply_context acontext( control, *this, action_ordinal, recurse_depth, read_only );
       acontext.exec();
    }
 

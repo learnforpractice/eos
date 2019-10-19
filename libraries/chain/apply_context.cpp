@@ -4,6 +4,7 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/wasm_interface.hpp>
+#include <eosio/chain/python_interface.hpp>
 #include <eosio/chain/generated_transaction_object.hpp>
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/resource_limits.hpp>
@@ -35,18 +36,19 @@ static inline void print_debug(account_name receiver, const action_trace& ar) {
 //vm_api.cpp
 void set_apply_context(apply_context *ctx);
 
-apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth)
+apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth, bool ro)
 :control(con)
-,db(con.mutable_db())
+,db(con.get_db(ro))
 ,trx_context(trx_ctx)
+,read_only(ro)
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
-,idx64(*this)
-,idx128(*this)
-,idx256(*this)
-,idx_double(*this)
-,idx_long_double(*this)
+,idx64(*this, ro)
+,idx128(*this, false)
+,idx256(*this, ro)
+,idx_double(*this, ro)
+,idx_long_double(*this, ro)
 {
    action_trace& trace = trx_ctx.get_action_trace(action_ordinal);
    act = &trace.act;
@@ -103,42 +105,26 @@ void apply_context::exec_one()
                control.check_action_list( act->account, act->name );
             }
             try {
-               do {
-                  if (receiver_account->vm_type == 0) {
-                     do {
-                        if (get_chain_api()->is_debug_enabled()) {
-                           string contract_name = account_name(receiver).to_string();
-                           fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
-                           if (apply != nullptr) {
-                              dlog("debug contract ${name} ${n1} ${n2}, ${n3}", ("name",contract_name)("n1",receiver)("n2",act->account)("n3",act->name));
-                              get_chain_api()->pause_billing_timer();
-                              auto cleanup = fc::make_scoped_exit([&](){
-                                 get_chain_api()->resume_billing_timer();
-                              });
-                              apply(receiver, act->account, act->name);
-                              break;
-                           }
-                        }
-                        do {
-                           #if 1
-                           if (1) { //receiver == N(eosio) || receiver == N(eosio.token)) {
-                              std::array<uint8_t, 32> hash;
-                              memcpy(hash.data(), receiver_account->code_hash.data(), 32);
-//                              ilog("+++++++receiver: ${receiver}, hash ${hash}", ("receiver", receiver)("hash", receiver_account->code_hash.str()));
-                              if (native_contract_apply(hash, receiver, act->account, act->name)) {
-                                 break;
-                              }
-                           }
-                           #endif
-                           control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
-                        } while (false);
-
-                     } while (false);
+               if (receiver_account->vm_type == 0) {
+                  if (!get_chain_api()->is_debug_enabled()) {
+                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                   } else {
-                     vm_manager::get().apply(receiver, act->account, act->name);
+                     string contract_name = account_name(receiver).to_string();
+                     fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
+                     if (apply != nullptr) {
+                        dlog("debug contract ${name} ${n1} ${n2}, ${n3}", ("name",contract_name)("n1",receiver)("n2",act->account)("n3",act->name));
+                        get_chain_api()->pause_billing_timer();
+                        auto cleanup = fc::make_scoped_exit([&](){
+                           get_chain_api()->resume_billing_timer();
+                        });
+                        apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
+                     }
                   }
-                  
-               } while(false);
+               } else if (receiver_account->vm_type == 1) {
+                  bool activated = control.is_builtin_activated( builtin_protocol_feature_t::pythonvm );
+                  EOS_ASSERT( activated, wasm_execution_error, "pythonvm not activated!");
+                  control.get_python_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
+               }
             } catch( const wasm_exit& ) {}
          }
 
@@ -409,10 +395,14 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
    if( control.is_builtin_activated( builtin_protocol_feature_t::no_duplicate_deferred_id ) ) {
       auto exts = trx.validate_and_extract_extensions();
       if( exts.size() > 0 ) {
-         EOS_ASSERT( exts.size() == 1, invalid_transaction_extension,
-                     "only one extension is currently supported for deferred transactions"
+         auto itr = exts.lower_bound( deferred_transaction_generation_context::extension_id() );
+
+         EOS_ASSERT( exts.size() == 1 && itr != exts.end(), invalid_transaction_extension,
+                     "only the deferred_transaction_generation_context extension is currently supported for deferred transactions"
          );
-         const auto& context = exts.front().get<deferred_transaction_generation_context>();
+
+         const auto& context = itr->second.get<deferred_transaction_generation_context>();
+
          EOS_ASSERT( context.sender == receiver, ill_formed_deferred_transaction_generation_context,
                      "deferred transaction generaction context contains mismatching sender",
                      ("expected", receiver)("actual", context.sender)
@@ -426,8 +416,8 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
                      ("expected", trx_context.id)("actual", context.sender_trx_id)
          );
       } else {
-         FC_ASSERT( trx.transaction_extensions.size() == 0, "invariant failure" );
-         trx.transaction_extensions.emplace_back(
+         emplace_extension(
+            trx.transaction_extensions,
             deferred_transaction_generation_context::extension_id(),
             fc::raw::pack( deferred_transaction_generation_context( trx_context.id, sender_id, receiver ) )
          );
@@ -702,12 +692,14 @@ int apply_context::get_context_free_data( uint32_t index, char* buffer, size_t b
    return copy_size;
 }
 
-int apply_context::db_store_i64( uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
+int apply_context::db_store_i64( name scope, name table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
    return db_store_i64( receiver, scope, table, payer, id, buffer, buffer_size);
 }
 
-int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
+int apply_context::db_store_i64( name code, name scope, name table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const auto& tab = find_or_create_table( code, scope, table, payer );
    auto tableid = tab.id;
 
@@ -735,6 +727,7 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    EOS_ASSERT( table_obj.code == receiver, table_access_violation, "db access violation" );
 
 //   require_write_lock( table_obj.scope );
@@ -762,6 +755,8 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
 }
 
 void apply_context::db_remove_i64( int iterator ) {
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
@@ -842,7 +837,7 @@ int apply_context::db_previous_i64( int iterator, uint64_t& primary ) {
    return keyval_cache.add(*itr);
 }
 
-int apply_context::db_find_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
+int apply_context::db_find_i64( name code, name scope, name table, uint64_t id ) {
    //require_read_lock( code, scope ); // redundant?
 
    const auto* tab = find_table( code, scope, table );
@@ -856,7 +851,7 @@ int apply_context::db_find_i64( uint64_t code, uint64_t scope, uint64_t table, u
    return keyval_cache.add( *obj );
 }
 
-int apply_context::db_lowerbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
+int apply_context::db_lowerbound_i64( name code, name scope, name table, uint64_t id ) {
    //require_read_lock( code, scope ); // redundant?
 
    const auto* tab = find_table( code, scope, table );
@@ -872,7 +867,7 @@ int apply_context::db_lowerbound_i64( uint64_t code, uint64_t scope, uint64_t ta
    return keyval_cache.add( *itr );
 }
 
-int apply_context::db_upperbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
+int apply_context::db_upperbound_i64( name code, name scope, name table, uint64_t id ) {
    //require_read_lock( code, scope ); // redundant?
 
    const auto* tab = find_table( code, scope, table );
@@ -888,7 +883,7 @@ int apply_context::db_upperbound_i64( uint64_t code, uint64_t scope, uint64_t ta
    return keyval_cache.add( *itr );
 }
 
-int apply_context::db_end_i64( uint64_t code, uint64_t scope, uint64_t table ) {
+int apply_context::db_end_i64( name code, name scope, name table ) {
    //require_read_lock( code, scope ); // redundant?
 
    const auto* tab = find_table( code, scope, table );
@@ -898,19 +893,21 @@ int apply_context::db_end_i64( uint64_t code, uint64_t scope, uint64_t table ) {
 }
 
 uint32_t apply_context::db_get_table_count(uint64_t code, uint64_t scope, uint64_t table) {
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return 0;
    return tab->count;
 }
 
 
 int apply_context::db_store_i256( uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
-   return db_store_i256( get_receiver(), scope, table, payer, id, buffer, buffer_size);
+   return db_store_i256( get_receiver().to_uint64_t(), scope, table, payer, id, buffer, buffer_size);
 }
 
 int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
-   const auto& tab = find_or_create_table( code, scope, table, payer );
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
+   const auto& tab = find_or_create_table( name(code), name(scope), name(table), name(payer) );
    auto tableid = tab.id;
 
    EOS_ASSERT( payer != account_name(), invalid_table_payer, "must specify a valid account to pay for new record" );
@@ -935,6 +932,7 @@ int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table,
 }
 
 void apply_context::db_update_i256( int iterator, account_name payer, const char* buffer, size_t buffer_size, bool check_code ) {
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    const key256_value_object& obj = key256val_cache.get( iterator );
 
    const auto& table_obj = key256val_cache.get_table( obj.t_id );
@@ -968,6 +966,7 @@ void apply_context::db_update_i256( int iterator, account_name payer, const char
 }
 
 void apply_context::db_remove_i256( int iterator, bool check_code ) {
+   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    const key256_value_object& obj = key256val_cache.get( iterator );
 
    const auto& table_obj = key256val_cache.get_table( obj.t_id );
@@ -1006,7 +1005,7 @@ int apply_context::db_get_i256( int iterator, char* buffer, size_t buffer_size )
 int apply_context::db_find_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -1067,7 +1066,7 @@ int apply_context::db_next_i256( int iterator, key256_t& primary ) {
 int apply_context::db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -1083,7 +1082,7 @@ int apply_context::db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t t
 int apply_context::db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -1099,7 +1098,7 @@ int apply_context::db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t t
 int apply_context::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    return key256val_cache.cache_table( *tab );
@@ -1107,23 +1106,29 @@ int apply_context::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) 
 
 uint64_t apply_context::next_global_sequence() {
    const auto& p = control.get_dynamic_global_properties();
-   db.modify( p, [&]( auto& dgp ) {
-      ++dgp.global_action_sequence;
-   });
+   if (!read_only) {
+      db.modify( p, [&]( auto& dgp ) {
+         ++dgp.global_action_sequence;
+      });
+   }
    return p.global_action_sequence;
 }
 
 uint64_t apply_context::next_recv_sequence( const account_metadata_object& receiver_account ) {
-   db.modify( receiver_account, [&]( auto& ra ) {
-      ++ra.recv_sequence;
-   });
+   if (!read_only) {
+      db.modify( receiver_account, [&]( auto& ra ) {
+         ++ra.recv_sequence;
+      });
+   }
    return receiver_account.recv_sequence;
 }
 uint64_t apply_context::next_auth_sequence( account_name actor ) {
    const auto& amo = db.get<account_metadata_object,by_name>( actor );
-   db.modify( amo, [&](auto& am ){
-      ++am.auth_sequence;
-   });
+   if (!read_only) {
+      db.modify( amo, [&](auto& am ){
+         ++am.auth_sequence;
+      });
+   }
    return amo.auth_sequence;
 }
 
@@ -1142,7 +1147,7 @@ action_name apply_context::get_sender() const {
       const action_trace& creator_trace = trx_context.get_action_trace( trace.creator_action_ordinal );
       return creator_trace.receiver;
    }
-   return 0;
+   return action_name();
 }
 
 } } /// eosio::chain

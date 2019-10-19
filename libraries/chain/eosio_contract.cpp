@@ -1,7 +1,3 @@
-/**
- *  @file
- *  @copyright defined in eos/LICENSE
- */
 #include <eosio/chain/eosio_contract.hpp>
 #include <eosio/chain/contract_table_objects.hpp>
 
@@ -19,6 +15,8 @@
 #include <eosio/chain/contract_types.hpp>
 
 #include <eosio/chain/wasm_interface.hpp>
+#include <eosio/chain/python_interface.hpp>
+
 #include <eosio/chain/abi_serializer.hpp>
 
 #include <eosio/chain/authorization_manager.hpp>
@@ -143,9 +141,9 @@ void apply_eosio_setcode(apply_context& context) {
    auto  act = context.get_action().data_as<setcode>();
    context.require_authorization(act.account);
 
-//   EOS_ASSERT( act.vmtype == 0, invalid_contract_vm_type, "code should be 0" );
+   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1, invalid_contract_vm_type, "code should be 0" );
    if (act.vmtype == 1) {
-      EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvn not activated!" );
+      EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
    }
 
    EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
@@ -187,7 +185,11 @@ void apply_eosio_setcode(apply_context& context) {
       old_size  = (int64_t)old_code_entry.code.size() * config::setcode_ram_bytes_multiplier;
       if( old_code_entry.code_ref_count == 1 ) {
          db.remove(old_code_entry);
-         context.control.get_wasm_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
+         if (account.vm_type == 0) {
+            context.control.get_wasm_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
+         } else if (account.vm_type == 1) {
+            context.control.get_python_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
+         }
       } else {
          db.modify(old_code_entry, [](code_object& o) {
             --o.code_ref_count;
@@ -341,7 +343,7 @@ void apply_eosio_deleteauth(apply_context& context) {
       auto range = index.equal_range(boost::make_tuple(remove.account, remove.permission));
       EOS_ASSERT(range.first == range.second, action_validate_exception,
                  "Cannot delete a linked authority. Unlink the authority first. This authority is linked to ${code}::${type}.",
-                 ("code", string(range.first->code))("type", string(range.first->message_type)));
+                 ("code", range.first->code)("type", range.first->message_type));
    }
 
    const auto& permission = authorization.get_permission({remove.account, remove.permission});
