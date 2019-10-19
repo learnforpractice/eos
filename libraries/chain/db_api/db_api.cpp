@@ -101,7 +101,7 @@ string db_api::exec_action(uint64_t code, uint64_t action, const vector<char>& a
    static bool init = false;
    if (!init) {
       init = true;
-      wasm_interface_init_1(0);
+//      wasm_interface_init_1(0);
    }
    call_start = fc::time_point::now();
    _pending_console_output.clear();
@@ -113,7 +113,7 @@ string db_api::exec_action(uint64_t code, uint64_t action, const vector<char>& a
    act.data = args;
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
    bool existing_code = (account.code_hash != digest_type());
-   wasm_interface_apply_1(account.code_hash, account.vm_type, account.vm_version);
+//   wasm_interface_apply_1(account.code_hash, account.vm_type, account.vm_version);
    return _pending_console_output;
 }
 
@@ -195,7 +195,7 @@ const table_id_object& db_api::find_or_create_table( name code, name scope, name
 
 int db_api::db_store_i64( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
-   const auto& tab = find_or_create_table( code, scope, table, payer );
+   const auto& tab = find_or_create_table( name(code), name(scope), name(table), name(payer) );
    auto tableid = tab.id;
 
    FC_ASSERT( payer != account_name(), "must specify a valid account to pay for new record" );
@@ -409,7 +409,7 @@ int db_api::db_previous_i64( int iterator, uint64_t& primary ) {
 int db_api::db_find_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
 //   require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = keyval_cache.cache_table( *tab );
@@ -423,7 +423,7 @@ int db_api::db_find_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t
 int db_api::db_lowerbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
 //   require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = keyval_cache.cache_table( *tab );
@@ -439,7 +439,7 @@ int db_api::db_lowerbound_i64( uint64_t code, uint64_t scope, uint64_t table, ui
 int db_api::db_upperbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
 //   require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = keyval_cache.cache_table( *tab );
@@ -455,14 +455,14 @@ int db_api::db_upperbound_i64( uint64_t code, uint64_t scope, uint64_t table, ui
 int db_api::db_end_i64( uint64_t code, uint64_t scope, uint64_t table ) {
 //   require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    return keyval_cache.cache_table( *tab );
 }
 
 uint32_t db_api::db_get_table_count(uint64_t code, uint64_t scope, uint64_t table) {
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return 0;
    return tab->count;
 }
@@ -473,7 +473,7 @@ int db_api::db_store_i256( uint64_t scope, uint64_t table, const account_name& p
 
 int db_api::db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
-   const auto& tab = find_or_create_table( code, scope, table, payer );
+   const auto& tab = find_or_create_table( name(code), name(scope), name(table), name(payer) );
    auto tableid = tab.id;
 
    EOS_ASSERT( payer != account_name(), invalid_table_payer, "must specify a valid account to pay for new record" );
@@ -569,7 +569,7 @@ int db_api::db_get_i256( int iterator, char* buffer, size_t buffer_size ) {
 int db_api::db_find_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -630,7 +630,7 @@ int db_api::db_next_i256( int iterator, key256_t& primary ) {
 int db_api::db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -646,7 +646,7 @@ int db_api::db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, k
 int db_api::db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, key256_t& id ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    auto table_end_itr = key256val_cache.cache_table( *tab );
@@ -662,7 +662,7 @@ int db_api::db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, k
 int db_api::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
    //require_read_lock( code, scope ); // redundant?
 
-   const auto* tab = find_table( code, scope, table );
+   auto tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return -1;
 
    return key256val_cache.cache_table( *tab );
@@ -741,7 +741,7 @@ int db_api_end_i64( uint64_t code, uint64_t scope, uint64_t table ) {
 
 
 void db_api_update_i256( int iterator, uint64_t payer, const char* buffer, size_t buffer_size ) {
-   return db_api::get().db_update_i256(iterator, payer, buffer, buffer_size);
+   return db_api::get().db_update_i256(iterator, name(payer), buffer, buffer_size);
 }
 
 void db_api_remove_i256( int iterator ) {

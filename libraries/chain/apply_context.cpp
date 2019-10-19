@@ -107,7 +107,7 @@ void apply_context::exec_one()
             try {
                if (receiver_account->vm_type == 0) {
                   if (!get_chain_api()->is_debug_enabled()) {
-                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
+                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
                   } else {
                      string contract_name = account_name(receiver).to_string();
                      fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
@@ -395,13 +395,10 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
    if( control.is_builtin_activated( builtin_protocol_feature_t::no_duplicate_deferred_id ) ) {
       auto exts = trx.validate_and_extract_extensions();
       if( exts.size() > 0 ) {
-         auto itr = exts.lower_bound( deferred_transaction_generation_context::extension_id() );
-
-         EOS_ASSERT( exts.size() == 1 && itr != exts.end(), invalid_transaction_extension,
-                     "only the deferred_transaction_generation_context extension is currently supported for deferred transactions"
+         EOS_ASSERT( exts.size() == 1, invalid_transaction_extension,
+                     "only one extension is currently supported for deferred transactions"
          );
-
-         const auto& context = itr->second.get<deferred_transaction_generation_context>();
+         const auto& context = exts.front().get<deferred_transaction_generation_context>();
 
          EOS_ASSERT( context.sender == receiver, ill_formed_deferred_transaction_generation_context,
                      "deferred transaction generaction context contains mismatching sender",
@@ -416,8 +413,8 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
                      ("expected", trx_context.id)("actual", context.sender_trx_id)
          );
       } else {
-         emplace_extension(
-            trx.transaction_extensions,
+         FC_ASSERT( trx.transaction_extensions.size() == 0, "invariant failure" );
+         trx.transaction_extensions.emplace_back(
             deferred_transaction_generation_context::extension_id(),
             fc::raw::pack( deferred_transaction_generation_context( trx_context.id, sender_id, receiver ) )
          );

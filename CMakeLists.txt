@@ -8,17 +8,13 @@ if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
    message(WARNING "CMAKE_INSTALL_PREFIX is set to /usr/local. This is not recommended.")
 endif()
 
-#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libraries/fc/CMakeModules")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/fc/CMakeModules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
 if (UNIX AND APPLE)
-   list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/llvm@4" "/usr/local/opt/gettext")
+   list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/llvm@7" "/usr/local/opt/gettext")
 endif()
 
 include( GNUInstallDirs )
-include( VersionMacros )
-include( SetupTargetMacros )
 include( InstallDirectoryPermissions )
 include( MASSigning )
 
@@ -201,6 +197,20 @@ include(utils)
 if ("${CORE_SYMBOL_NAME}" STREQUAL "")
   set( CORE_SYMBOL_NAME "SYS" )
 endif()
+
+if ("${PYTHON_VM_STACK_SIZE}" STREQUAL "")
+  set( PYTHON_VM_STACK_SIZE 20480) #20K
+endif()
+if ("${PYTHON_VM_MAX_MEMORY_SIZE}" STREQUAL "")
+  set( PYTHON_VM_MAX_MEMORY_SIZE 10485760) #10M
+endif()
+if ("${PYTHON_VM_MAX_CODE_SIZE}" STREQUAL "")
+  set( PYTHON_VM_MAX_CODE_SIZE 524288) #512K
+endif()
+if ("${PYTHON_VM_MAX_FROZEN_CODE_SIZE}" STREQUAL "")
+  set( PYTHON_VM_MAX_FROZEN_CODE_SIZE 524288) #512K
+endif()
+
 string(TOUPPER ${CORE_SYMBOL_NAME} CORE_SYMBOL_NAME)
 
 string(LENGTH ${CORE_SYMBOL_NAME} CORE_SYMBOL_NAME_LENGTH)
@@ -215,6 +225,8 @@ if ("${EOSIO_ROOT_KEY}" STREQUAL "")
 endif()
 
 message( STATUS "Using '${EOSIO_ROOT_KEY}' as public key for 'eosio' account" )
+
+set(EOSIO_COMPILE_TEST_CONTRACTS TRUE)
 
 add_subdirectory( externals )
 add_subdirectory( contracts )

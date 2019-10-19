@@ -9,7 +9,6 @@
 #include <eosio/chain/account_object.hpp>
 #include <eosio/chain/snapshot.hpp>
 #include <eosio/chain/protocol_feature_manager.hpp>
-#include <eosio/chain/protocol_feature_manager.hpp>
 
 namespace chainbase {
    class database;
@@ -21,6 +20,7 @@ namespace boost { namespace asio {
 namespace eosio { namespace chain {
 
    class authorization_manager;
+   class python_interface;
 
    namespace resource_limits {
       class resource_limits_manager;

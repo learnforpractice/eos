@@ -677,7 +677,7 @@ namespace eosio { namespace chain { namespace wasm_injections {
    };
 
    struct pre_op_injectors : wasm_ops::op_types<pass_injector> {
-#ifndef WASM_INJECTOR
+#ifndef WASM_INJECTOR_FOR_PYTHON_VM
       using call_t            = wasm_ops::call                    <call_depth_check_and_insert_checktime>;
       using call_indirect_t   = wasm_ops::call_indirect           <call_depth_check_and_insert_checktime>;
 #endif      

@@ -99,15 +99,16 @@ static void _printn(u64 n) {
 
 static void _prints_l(u32 s_offset, u32 size) {
     char *s = (char *)offset_to_ptr(s_offset, size);
-    get_vm_api()->prints_l(s, size);
+    if (get_vm_api()->is_in_apply_context) {
+        get_vm_api()->prints_l(s, size);
+    } else {
+        vmelog("%s", s);
+    }
 }
 
 static void _printui(u64 u) {
     get_vm_api()->printui(u);
 }
-
-
-void pythonvm_get_memory(char **start, uint32_t *size);
 
 u32 _get_code_size(u64 account);
 u32 _get_code(u64 account, u32 memory_offset, u32 buffer_size);
@@ -250,6 +251,12 @@ void (*Z_envZ_wasm_syscallZ_vv)(void);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 
 void init_vm_api4c() {
+    static bool initialized = false;
+    if (initialized) {
+        return;
+    }
+    initialized = true;
+
     Z_envZ_printiZ_vj = _printi;
     Z_envZ_printsZ_vi = _prints;
     Z_envZ_n2sZ_ijii = _n2s;

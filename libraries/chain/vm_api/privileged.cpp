@@ -32,7 +32,7 @@ bool is_privileged( uint64_t n )  {
 }
 
 void set_privileged( uint64_t n, bool is_priv ) {
-   const auto& a = ctx().db.get<account_metadata_object, by_name>( n );
+   const auto& a = ctx().db.get<account_metadata_object, by_name>( name(n) );
    ctx().db.modify( a, [&]( auto& ma ){
       ma.set_privileged( is_priv );
    });

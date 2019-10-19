@@ -1,7 +1,6 @@
 #pragma once
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/trace.hpp>
-#include <eosio/chain/platform_timer.hpp>
 #include <signal.h>
 
 namespace eosio { namespace chain {
@@ -140,6 +139,7 @@ namespace eosio { namespace chain {
          fc::time_point                pseudo_start;
          fc::microseconds              billed_time;
          fc::microseconds              billing_timer_duration_limit;
+         deadline_timer                _deadline_timer;
          bool                          read_only;
    };
 

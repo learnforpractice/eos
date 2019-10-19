@@ -20,7 +20,7 @@ extern "C" {
     size_t get_last_error(char* error, size_t size);
     int evm_apply(uint64_t receiver, uint64_t code, uint64_t action);
 
-    void vm_python2_init();
+//    void vm_python2_init();
     int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act);
 
     void wasm_interface_init_1(int vm_type);
@@ -39,8 +39,8 @@ vm_manager::vm_manager() {
 }
 
 void vm_manager::init() {
-    vm_python2_init();
-    wasm_interface_init_1(1);
+//    vm_python2_init();
+//    wasm_interface_init_1(1);
 }
 
 vm_manager::~vm_manager() {
@@ -62,28 +62,10 @@ void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
     call_returns.resize(0);
     int vm_type = get_chain_api()->get_code_type(receiver);
     if (vm_type == VM_TYPE_PY) {
-        bool b = get_chain_api()->is_builtin_activated((uint32_t)enum_builtin_protocol_feature::pythonvm);
-        get_vm_api()->eosio_assert(b, "pythonvn not activated!");
-        #if 1
-        vm_python2_apply(receiver, code, action);
-        #else
-        eosio::chain::digest_type code_id((char *)pythonvm_wasm_hash, 32);
-        uint8_t vm_type = 0;
-        uint8_t vm_version = 0;
-        wasm_interface_apply_1(code_id, vm_type, vm_version);
-        #endif
+        bool activated = get_chain_api()->is_builtin_activated((uint32_t)enum_builtin_protocol_feature::pythonvm);
+        get_vm_api()->eosio_assert(activated, "pythonvm not activated!");
+//        vm_python2_apply(receiver, code, action);
     }
-    #if 0
-    else if (vm_type == VM_TYPE_ETH) {
-        int ret = evm_apply(receiver, code, action);
-        if (ret == -1) {
-            size_t size = get_vm_api()->get_last_error(nullptr, 0);
-            std::string error(size, 0);
-            get_vm_api()->get_last_error((char *)error.c_str(), size);
-            get_vm_api()->eosio_assert( ret != -1, error.c_str());
-        }
-    }
-    #endif
 }
 
 void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t extra_args_size) {
@@ -98,7 +80,8 @@ void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint
     memcpy(call_extra_args.data(), extra_args, extra_args_size);
     call_returns.resize(0);
 
-    wasm_interface_call_1(contract, func_name, arg1, arg2, arg3);
+    get_vm_api()->wasm_call(contract, func_name, arg1, arg2, arg3);
+//    wasm_interface_call_1(contract, func_name, arg1, arg2, arg3);
 }
 
 string vm_manager::call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {

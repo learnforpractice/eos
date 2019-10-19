@@ -28,6 +28,8 @@
 
 #include <vm_manager.hpp>
 
+#include <eosio/chain/protocol_state_object.hpp>
+
 using namespace eosio::chain;
 #include <fstream>
 #include <dlfcn.h>
@@ -52,6 +54,8 @@ extern "C" {
    void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer );
    void token_retire( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size );
    void token_close( uint64_t owner, uint64_t _symbol );
+
+   int evm_execute(const char *raw_trx, size_t raw_trx_size);
 }
 
 namespace eosio {
@@ -150,6 +154,10 @@ int is_contracts_console_enabled() {
 }
 #endif
 
+void wasm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
+   ctx().control.get_wasm_interface().call(contract, func_name, arg1, arg2, arg3);
+}
+
 void vm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t in_size) {
    vm_manager::get().call(contract, func_name, arg1, arg2, arg3, extra_args, in_size);
 }
@@ -202,7 +210,7 @@ static bool get_code_version(uint64_t contract, char *hash, size_t size) {
       return false;
    }
    try {
-      const auto& account = ctx().control.db().get<account_metadata_object,by_name>(contract);
+      const auto& account = ctx().control.db().get<account_metadata_object,by_name>(name(contract));
       memcpy(hash, account.code_hash.data(), 32);
       return true;
    } catch (...) {
@@ -382,6 +390,8 @@ extern "C" void vm_api_init() {
 
 
       _vm_api.vm_call = vm_call;
+      _vm_api.wasm_call = wasm_call;
+      _vm_api.evm_execute = evm_execute;
 
       _vm_api.call_contract_get_extra_args = call_contract_get_extra_args;
       _vm_api.call_contract_set_results = call_contract_set_results;

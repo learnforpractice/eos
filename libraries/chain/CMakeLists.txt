@@ -30,6 +30,10 @@ add_library( eosio_chain
 #             block_trace.cpp
               wast_to_wasm.cpp
               wasm_interface.cpp
+              
+              python_interface.cpp
+              python_vm/vm_memory.cpp
+
               wasm_eosio_validation.cpp
               wasm_eosio_injection.cpp
               apply_context.cpp
@@ -37,8 +41,8 @@ add_library( eosio_chain
               asset.cpp
               snapshot.cpp
 
-             webassembly/wavm.cpp
-             webassembly/wabt.cpp
+              webassembly/wavm.cpp
+              webassembly/wabt.cpp
 #             wasm_eosio_constraints.cpp
 
 #             get_config.cpp
@@ -67,7 +71,7 @@ add_library( eosio_chain
 set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
-                       softfloat builtins wabt eosiolib_native chain_api vm_wasm-1 vm_manager
+                       softfloat builtins wabt eosiolib_native chain_api vm_manager
                        eosio.token.native
                        native_contracts
                        ${LIBEVM4EOS}
@@ -87,6 +91,8 @@ target_include_directories( eosio_chain
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
+                              PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
+                              PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
                         )
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain aleth)

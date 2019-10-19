@@ -53,8 +53,7 @@ using controller_index_set = index_set<
    transaction_multi_index,
    generated_transaction_multi_index,
    table_id_multi_index,
-   code_index,
-   database_header_multi_index
+   code_index
 >;
 
 using contract_database_index_set = index_set<
@@ -295,7 +294,7 @@ struct controller_impl {
       apply_handlers[receiver][make_pair(contract,action)] = v;
    }
 
-   controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
+   controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs )
    :self(s),
     db( cfg.state_dir,
         cfg.read_only ? database::read_only : database::read_write,
@@ -308,7 +307,7 @@ struct controller_impl {
         cfg.reversible_cache_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
-    wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+    wasmif( cfg.wasm_runtime ),
     pythonif( db ),
     resource_limits( db ),
     authorization( s, db ),
@@ -1426,8 +1425,8 @@ struct controller_impl {
       trx.ref_block_num = 0;
       trx.ref_block_prefix = 0;
 
-      transaction_checktime_timer trx_timer(timer);
-      transaction_context trx_context( self, trx, trx.id(), std::move(trx_timer), start, true );
+//      transaction_checktime_timer trx_timer(timer);
+      transaction_context trx_context( self, trx, trx.id(), start, true );
       trx_context.deadline = deadline;
       trx_context.explicit_billed_cpu_time = explicit_billed_cpu_time;
       trx_context.billed_cpu_time_us = billed_cpu_time_us;
@@ -2363,6 +2362,14 @@ const chainbase::database& controller::db()const { return my->db; }
 
 chainbase::database& controller::mutable_db()const { return my->db; }
 
+chainbase::database& controller::get_db(bool read_only)const {
+   if (read_only) {
+      return my->ro_db;
+   } else {
+      return my->db; 
+   }
+}
+
 const fork_database& controller::fork_db()const { return my->fork_db; }
 
 void controller::preactivate_feature( const digest_type& feature_digest ) {
@@ -2974,8 +2981,13 @@ const apply_handler* controller::find_apply_handler( account_name receiver, acco
    }
    return nullptr;
 }
+
 wasm_interface& controller::get_wasm_interface() {
    return my->wasmif;
+}
+
+python_interface& controller::get_python_interface() {
+   return my->pythonif;
 }
 
 const account_object& controller::get_account( account_name name )const
@@ -3119,6 +3131,10 @@ void controller::add_to_ram_correction( account_name account, uint64_t ram_bytes
          rco.ram_correction = ram_bytes;
       } );
    }
+}
+
+transaction_trace_ptr controller::call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs) {
+   return my->call_contract(contract, action, binargs);
 }
 
 bool controller::all_subjective_mitigations_disabled()const {

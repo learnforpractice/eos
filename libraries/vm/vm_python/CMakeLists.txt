@@ -1,4 +1,5 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gen.py.in ${CMAKE_CURRENT_BINARY_DIR}/gen.py)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/python_vm_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/python_vm_config.h)
 
 add_subdirectory( frozen )
 
@@ -19,17 +20,14 @@ else()
     set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-set(SRCS vm_python2.cpp
+set(SRCS
     pythonvm.c
     wasm-rt-impl.c
+    vm_python2.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 )
 
-if (BUILD_SHARED)
 add_library(vm_python2 SHARED ${SRCS})
-else()
-    add_library(vm_python2 SHARED ${SRCS})
-endif()
 
 target_link_libraries(vm_python2 PRIVATE eosiolib_native frozen chain_api vm_api4c)
 set_target_properties(vm_python2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
@@ -38,6 +36,7 @@ target_include_directories(vm_python2 PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/vm/vm_api4c
 )

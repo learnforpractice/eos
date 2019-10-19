@@ -1,7 +1,3 @@
-/**
- *  @file
- *  @copyright defined in eos/LICENSE
- */
 #pragma once
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/transaction.hpp>
@@ -175,16 +171,17 @@ class apply_context {
 
             using secondary_key_helper_t = secondary_key_helper<secondary_key_type, secondary_key_proxy_type, secondary_key_proxy_const_type>;
 
-            generic_index( apply_context& c ):context(c){}
+            generic_index( apply_context& c, bool ro=false ):context(c), read_only(ro){}
 
             int store( uint64_t scope, uint64_t table, const account_name& payer,
                        uint64_t id, secondary_key_proxy_const_type value )
             {
+               EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
                EOS_ASSERT( payer != account_name(), invalid_table_payer, "must specify a valid account to pay for new record" );
 
 //               context.require_write_lock( scope );
 
-               const auto& tab = context.find_or_create_table( context.receiver, scope, table, payer );
+               const auto& tab = context.find_or_create_table( context.receiver, name(scope), name(table), payer );
 
                const auto& obj = context.db.create<ObjectType>( [&]( auto& o ){
                   o.t_id          = tab.id;
@@ -204,6 +201,7 @@ class apply_context {
             }
 
             void remove( int iterator ) {
+               EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
                const auto& obj = itr_cache.get( iterator );
                context.update_db_usage( obj.payer, -( config::billable_size_v<ObjectType> ) );
 
@@ -225,6 +223,7 @@ class apply_context {
             }
 
             void update( int iterator, account_name payer, secondary_key_proxy_const_type secondary ) {
+               EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
                const auto& obj = itr_cache.get( iterator );
 
                const auto& table_obj = itr_cache.get_table( obj.t_id );
@@ -248,7 +247,7 @@ class apply_context {
             }
 
             int find_secondary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_const_type secondary, uint64_t& primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -262,7 +261,7 @@ class apply_context {
             }
 
             int lowerbound_secondary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_type secondary, uint64_t& primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -279,7 +278,7 @@ class apply_context {
             }
 
             int upperbound_secondary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_type secondary, uint64_t& primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -296,7 +295,7 @@ class apply_context {
             }
 
             int end_secondary( uint64_t code, uint64_t scope, uint64_t table ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                return itr_cache.cache_table( *tab );
@@ -350,7 +349,7 @@ class apply_context {
             }
 
             int find_primary( uint64_t code, uint64_t scope, uint64_t table, secondary_key_proxy_type secondary, uint64_t primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -363,7 +362,7 @@ class apply_context {
             }
 
             int lowerbound_primary( uint64_t code, uint64_t scope, uint64_t table, uint64_t primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if (!tab) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -377,7 +376,7 @@ class apply_context {
             }
 
             int upperbound_primary( uint64_t code, uint64_t scope, uint64_t table, uint64_t primary ) {
-               auto tab = context.find_table( code, scope, table );
+               auto tab = context.find_table( name(code), name(scope), name(table) );
                if ( !tab ) return -1;
 
                auto table_end_itr = itr_cache.cache_table( *tab );
@@ -447,12 +446,13 @@ class apply_context {
          private:
             apply_context&              context;
             iterator_cache<ObjectType>  itr_cache;
+            bool                        read_only;
       }; /// class generic_index
 
 
    /// Constructor
    public:
-      apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth=0);
+      apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth=0, bool ro=false);
 
    /// Execution methods:
    public:
@@ -514,16 +514,16 @@ class apply_context {
 
       void update_db_usage( const account_name& payer, int64_t delta );
 
-      int  db_store_i64( uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size );
+      int  db_store_i64( name scope, name table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size );
       void db_update_i64( int iterator, account_name payer, const char* buffer, size_t buffer_size );
       void db_remove_i64( int iterator );
       int  db_get_i64( int iterator, char* buffer, size_t buffer_size );
       int  db_next_i64( int iterator, uint64_t& primary );
       int  db_previous_i64( int iterator, uint64_t& primary );
-      int  db_find_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
-      int  db_lowerbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
-      int  db_upperbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
-      int  db_end_i64( uint64_t code, uint64_t scope, uint64_t table );
+      int  db_find_i64( name code, name scope, name table, uint64_t id );
+      int  db_lowerbound_i64( name code, name scope, name table, uint64_t id );
+      int  db_upperbound_i64( name code, name scope, name table, uint64_t id );
+      int  db_end_i64( name code, name scope, name table );
 
       int  db_store_i256( uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size );
       int  db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size );
@@ -547,11 +547,12 @@ class apply_context {
       const table_id_object& find_or_create_table( name code, name scope, name table, const account_name &payer );
       void                   remove_table( const table_id_object& tid );
 
-      int  db_store_i64( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size );
+      int  db_store_i64( name code, name scope, name table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size );
 
 
    /// Misc methods:
    public:
+
 
       int get_action( uint32_t type, uint32_t index, char* buffer, size_t buffer_size )const;
       int get_context_free_data( uint32_t index, char* buffer, size_t buffer_size )const;
@@ -581,7 +582,7 @@ class apply_context {
       controller&                   control;
       chainbase::database&          db;  ///< database where state is stored
       transaction_context&          trx_context; ///< transaction context in which the action is running
-
+      bool                          read_only = false;
    private:
       const action*                 act = nullptr; ///< action being applied
       // act pointer may be invalidated on call to trx_context.schedule_action
@@ -612,6 +613,8 @@ class apply_context {
 };
 
 using apply_handler = std::function<void(apply_context&)>;
+
+apply_context *get_apply_context();
 
 } } // namespace eosio::chain
 

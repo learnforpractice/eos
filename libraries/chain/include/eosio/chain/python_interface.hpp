@@ -27,11 +27,11 @@ namespace eosio { namespace chain {
       int contract_memory_end;
    };
 
-   class python_instantiated_module : public wasm_instantiated_module_interface {
+   class python_instantiated_module {
       public:
          python_instantiated_module();
-         void apply(apply_context& context) override;
-         void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) override;
+         void apply(apply_context& context);
+         void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context);
          void take_snapshoot(vm_memory& _vm_memory);
 
          std::vector<uint8_t>                              _initial_memory;

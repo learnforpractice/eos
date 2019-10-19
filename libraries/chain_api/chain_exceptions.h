@@ -214,7 +214,8 @@ enum exception_type {
     enum_snapshot_directory_not_found_exception,
     enum_snapshot_exists_exception,
     enum_explained_exception,
-    enum_localized_exception
+    enum_localized_exception,
+    enum_sig_variable_size_limit_exception,
 };
 
 extern "C" [[ noreturn ]] void chain_throw_exception(int type, const char* fmt, ...);

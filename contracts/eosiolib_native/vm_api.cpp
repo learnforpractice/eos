@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "vm_api.h"
+#include "stacktrace.h"
 static struct vm_api* s_api = nullptr;
 static struct vm_api* s_api_ro = nullptr;
 
@@ -16,6 +17,7 @@ void vm_register_api(struct vm_api* api) {
 
 struct vm_api* get_vm_api() {
    if (!s_api) {
+//      print_stacktrace();
       throw std::runtime_error("vm api not specified!!!");
    }
    return s_api;

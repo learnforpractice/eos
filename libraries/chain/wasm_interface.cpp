@@ -86,6 +86,14 @@ namespace eosio { namespace chain {
       my->get_instantiated_module(code_hash, vm_type, vm_version)->apply();
    }
 
+   void wasm_interface::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3 ) {
+      digest_type code_hash;
+      uint8_t vm_type = 0;
+      uint8_t vm_version = 0;
+      get_chain_api()->get_account_info(contract, code_hash, vm_type, vm_version);
+      my->get_instantiated_module(code_hash, vm_type, vm_version)->call(func_name, arg1, arg2, arg3);
+   }
+
    void wasm_interface::exit() {
       my->runtime_interface->immediately_exit_currently_running_module();
    }

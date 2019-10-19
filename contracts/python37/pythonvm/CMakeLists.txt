@@ -20,12 +20,15 @@ set(CMAKE_C_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <
 set(CMAKE_CXX_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
 set(WASM_LINK_FLAGS --gc-sections
--zstack-size=8192
+-zstack-size=${PYTHON_VM_STACK_SIZE} #20480
 --merge-data-segments
 --export-table
 -e apply
 --only-export apply:function
--lc++ -lc -mllvm -use-cfl-aa-in-codegen=both
+-lc++ 
+-lc
+#-leosio
+-mllvm -use-cfl-aa-in-codegen=both
 -L../libpython37 -L/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../lib
 -stack-first --lto-O3 -error-limit=0
 --allow-undefined-file=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../eosio.imports)
@@ -38,7 +41,7 @@ target_compile_options(pythonvm PRIVATE ${PYTHON_FLAGS}) # -Wno-visibility)
 
 target_link_options(pythonvm PRIVATE ${WASM_LINK_FLAGS})
 
-target_link_libraries( pythonvm PRIVATE python37 libc_emscripten )
+target_link_libraries( pythonvm PRIVATE python37) # libc_emscripten )
 
 target_include_directories(pythonvm
    PRIVATE
