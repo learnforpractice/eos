@@ -36,9 +36,7 @@ typedef double f64;
 #define WASM_RT_ADD_PREFIX(x) WASM_RT_PASTE(WASM_RT_MODULE_PREFIX, x)
 
 
-static uint8_t *g_vm_memory_start;
-static size_t g_vm_memory_size;
-static fn_vm_load_memory g_load_memory;
+static vm_python_info g_python_info = {};
 
 extern "C" {
    extern wasm_rt_memory_t* get_wasm_rt_memory(void);
@@ -111,11 +109,15 @@ uint8_t *vm_grow_memory(uint32_t delta) {
 }
 
 uint8_t *python_vm_get_memory() {
-   return g_vm_memory_start;
+   return g_python_info.memory_start;
+}
+
+size_t python_vm_get_memory_size() {
+    return g_python_info.memory_size;
 }
 
 void vm_load_memory(uint32_t offset_start, uint32_t length) {
-    g_load_memory(offset_start, length);
+    g_python_info.load_memory(offset_start, length);
 }
 
 static void *offset_to_ptr_s(u32 offset, u32 size) {
@@ -163,7 +165,7 @@ int vm_python2_setcode(uint64_t account) {
 }
 
 
-void vm_python2_init(uint8_t *vm_memory_start, size_t vm_memory_size, fn_vm_load_memory load_memory) {
+void vm_python2_init(struct vm_python_info *python_info) {
    static int initialized = 0;
    printf("+++++++vm_python2_init %d\n", initialized);
    if (initialized) {
@@ -171,10 +173,14 @@ void vm_python2_init(uint8_t *vm_memory_start, size_t vm_memory_size, fn_vm_load
    }
    initialized = 1;
 
-   g_vm_memory_start = vm_memory_start;
-   g_vm_memory_size = vm_memory_size;
-   g_load_memory = load_memory;
+   get_vm_api()->eosio_assert(python_info->memory_size%VM_PAGE_SIZE == 0, "wrong memory size");
 
+   python_info->apply = wasm2c_python_vm_apply;
+   python_info->call = wasm2c_python_vm_call;
+   python_info->vmtype = 1;
+   python_info->vmversion = 0;
+
+   g_python_info = *python_info;
 
    set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
 

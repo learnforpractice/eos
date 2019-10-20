@@ -11,11 +11,8 @@ using namespace eosio::chain;
 
 extern "C" {
     int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act);
-    void vm_python2_init(uint8_t *vm_memory_start, size_t vm_memory_size, fn_vm_load_memory load_memory);
-
-    void wasm2c_python_vm_apply(uint64_t receiver, uint64_t code, uint64_t action);
-    void wasm2c_python_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action);
-    uint32_t wasm2c_get_current_memory(void);
+    void vm_python2_init(struct vm_python_info *python_info);
+   bool system_contract_is_vm_activated( uint8_t vmtype, uint8_t vmversion );
 }
 
 python_instantiated_module::python_instantiated_module()
@@ -28,14 +25,15 @@ void python_instantiated_module::apply(apply_context& context) {
     auto account = context.get_action().account.to_uint64_t();
     auto act = context.get_action().name.to_uint64_t();
 
-    wasm2c_python_vm_apply(receiver, account, act);
+    backup.python_info.apply(receiver, account, act);
 }
 
 void python_instantiated_module::call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) {
     EOS_ASSERT( false, wasm_execution_error, "call not implemented in python vm" );
 }
 
-void python_instantiated_module::take_snapshoot(vm_memory& _vm_memory) {
+void python_instantiated_module::take_snapshoot() {
+    vm_memory& _vm_memory = *backup.memory.get();
     char *mem_start = _vm_memory.data.data();
     uint32_t vm_memory_size = _vm_memory.data.size();
 
@@ -111,13 +109,23 @@ static void vm_load_memory(uint32_t offset_start, uint32_t length) {
 
 python_interface::python_interface(const chainbase::database& d): db(d) {
     runtime_interface = std::make_unique<python_runtime>();
-    _vm_memory = std::make_unique<vm_memory>(PYTHON_VM_PAGES, PYTHON_VM_PAGES);
-    g_vm_memory = _vm_memory.get();
+    struct vm_python_info info;
 
-    vm_python2_init((uint8_t *)_vm_memory->data.data(), _vm_memory->data.size(), vm_load_memory);
+    auto memory = std::make_shared<vm_memory>(PYTHON_VM_PAGES, PYTHON_VM_PAGES);
+    info.memory_start = (uint8_t *)memory->data.data();
+    info.memory_size = memory->data.size();
+    info.load_memory = vm_load_memory;
 
-    _vm_memory->backup_memory();
-    _vm_memory->init_cache();
+    g_vm_memory = memory.get();
+
+    vm_python2_init(&info);
+    uint16_t version = (uint16_t)(info.vmtype<<8) | (uint16_t)info.vmversion;
+
+    vm_python_memory_map[version] = memory;
+    vm_python_map[version] = info;
+
+    memory->backup_memory();
+    memory->init_cache();
 }
 
 python_interface::~python_interface() {}
@@ -150,9 +158,25 @@ void python_interface::current_lib(const uint32_t lib) {
     python_instantiation_cache.get<by_last_block_num>().erase(first_it, last_it);
 }
 
+static uint64_t get_microseconds() {
+   struct timeval  tv;
+   gettimeofday(&tv, NULL);
+   return tv.tv_sec * 1000000LL + tv.tv_usec * 1LL ;
+}
+
 //Calls apply or error on a given code
 void python_interface::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
-    _vm_memory->counter += 1;
+    uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
+    auto itr = vm_python_memory_map.find(version);
+    EOS_ASSERT( vm_python_memory_map.end() != itr, wasm_execution_error, "vm memory not found!" );
+    itr->second->counter += 1;
+    g_vm_memory = itr->second.get();
+
+//    auto start = get_microseconds();
+    bool activated = system_contract_is_vm_activated(vm_type, vm_version);
+//    auto duration = get_microseconds() - start;
+//    vmelog("+++++++++++++++++duration: %d \n", duration);
+    EOS_ASSERT( activated, wasm_execution_error, "python vm with version ${v} not activated", ("v",vm_version) );
     get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
 }
 
@@ -168,6 +192,9 @@ void python_interface::exit() {
 const std::unique_ptr<python_instantiated_module>& python_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
                                                                             const uint8_t& vm_version, apply_context& context )
 {
+    uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
+    auto memory = vm_python_memory_map[version];
+
     python_cache_index::iterator it = python_instantiation_cache.find(
                                         boost::make_tuple(code_hash, vm_type, vm_version) );
     const code_object* codeobject = nullptr;
@@ -196,22 +223,24 @@ const std::unique_ptr<python_instantiated_module>& python_interface::get_instant
         vector<char> bytes;
         python_instantiation_cache.modify(it, [&](auto& c) {
             c.module = runtime_interface->instantiate_module((const char*)bytes.data(), bytes.size(), {}, code_hash, vm_type, vm_version);
-            _vm_memory->init_smart_contract = true;
 
             get_vm_api()->allow_access_apply_context = false;
+            memory->init_smart_contract = true;
 
-            memcpy(_vm_memory->data.data(), _vm_memory->data_backup.data(), _vm_memory->data_backup.size());
+            auto python_info = vm_python_map[version];
+            c.module->backup.memory = memory;
+            c.module->backup.python_info = python_info;
 
-            wasm2c_python_vm_call(1, context.get_receiver().to_uint64_t(), context.get_action().account.to_uint64_t(), context.get_action().name.to_uint64_t());
-
+            memcpy(memory->data.data(), memory->data_backup.data(), memory->data_backup.size());
+            python_info.call(1, context.get_receiver().to_uint64_t(), context.get_action().account.to_uint64_t(), context.get_action().name.to_uint64_t());
             get_vm_api()->allow_access_apply_context = true;
 
-            c.module->take_snapshoot(*_vm_memory);
+            c.module->take_snapshoot();
         });
     }
-    _vm_memory->init_smart_contract = false;
-    _vm_memory->segments = &it->module->backup.memory_backup;
-    _vm_memory->malloc_memory_start = it->module->backup.contract_memory_end;
+    memory->init_smart_contract = false;
+    memory->segments = &it->module->backup.memory_backup;
+    memory->malloc_memory_start = it->module->backup.contract_memory_end;
     return it->module;
 }
 

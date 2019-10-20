@@ -125,6 +125,8 @@ uint32_t wasm_rt_register_func_type(uint32_t param_count,
 //vm_python2.cpp
 //uint8_t *python_vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages);
 uint8_t *python_vm_get_memory();
+size_t python_vm_get_memory_size();
+
 uint8_t *vm_grow_memory(uint32_t delta);
 
 static wasm_rt_memory_t* g_memory = NULL;
@@ -136,9 +138,10 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
   }
   vmdlog("initial_pages %d, max_pages %d\n", initial_pages, max_pages);
 //  initial_pages = 160;//10M
-  memory->pages = PYTHON_VM_PAGES;//initial_pages;
-  memory->max_pages = PYTHON_VM_PAGES;//max_pages;
-  memory->size = PYTHON_VM_PAGES * PAGE_SIZE;
+  size_t memory_size = python_vm_get_memory_size();
+  memory->pages = memory_size/PAGE_SIZE;//initial_pages;
+  memory->max_pages = memory_size/PAGE_SIZE;//max_pages;
+  memory->size = memory_size;//PYTHON_VM_PAGES * PAGE_SIZE;
   memory->data = python_vm_get_memory();
 //  memory->data = calloc(memory->size, 1);
   g_memory = memory;

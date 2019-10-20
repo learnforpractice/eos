@@ -13,6 +13,7 @@
 #include <eosio/chain/exceptions.hpp>
 #include <fc/scoped_exit.hpp>
 #include <eosio/chain/python_vm/vm_memory.h>
+#include <vm_python.h>
 
 using namespace pythonvm;
 
@@ -21,10 +22,12 @@ namespace eosio { namespace chain {
    class apply_context;
    class controller;
 
-   struct vm_state_backup {
+   struct vm_python_state {
       std::vector<memory_segment>                                 memory_backup;
       int contract_memory_start;
       int contract_memory_end;
+      vm_python_info python_info;
+      std::shared_ptr<vm_memory> memory;
    };
 
    class python_instantiated_module {
@@ -32,10 +35,10 @@ namespace eosio { namespace chain {
          python_instantiated_module();
          void apply(apply_context& context);
          void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context);
-         void take_snapshoot(vm_memory& _vm_memory);
+         void take_snapshoot();
 
          std::vector<uint8_t>                              _initial_memory;
-         struct vm_state_backup                            backup;
+         struct vm_python_state                            backup;
    };
 
    class python_runtime {
@@ -106,7 +109,8 @@ namespace eosio { namespace chain {
          std::unique_ptr<python_runtime> runtime_interface;
          python_cache_index python_instantiation_cache;
          const chainbase::database& db;
-         std::unique_ptr<vm_memory> _vm_memory;
+         std::map<uint16_t, struct vm_python_info> vm_python_map;
+         std::map<uint16_t, std::shared_ptr<vm_memory>> vm_python_memory_map;
    };
 
 } } // eosio::chain

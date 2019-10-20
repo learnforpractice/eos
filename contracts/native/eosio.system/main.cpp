@@ -16,6 +16,10 @@ extern "C" {
    int64_t eosio_system_get_rex_fund(uint64_t owner) {
       return eosiosystem::system_contract::get_rex_fund(name(owner));
    }
+
+   bool system_contract_is_vm_activated( uint8_t vmtype, uint8_t vmversion ) {
+      return eosiosystem::system_contract::is_vm_activated(vmtype, vmversion);
+   }
 }
 
 #ifdef _NATIVE

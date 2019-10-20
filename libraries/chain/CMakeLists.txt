@@ -73,6 +73,7 @@ set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4eos${CMAKE_SHARED_LIBRAR
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt eosiolib_native chain_api vm_manager
                        eosio.token.native
+                       eosio.system.native
                        native_contracts
                        ${LIBEVM4EOS}
                        )
