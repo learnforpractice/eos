@@ -183,10 +183,16 @@ feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac0
 
 for digest in feature_digests: 
     try:
-        args = {'feature_digest': digest} #RESTRICT_ACTION_TO_SELF
-        eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
+        args = {'vmtype': 1, 'vmversion':0} #activate vm python
+        eosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
     except Exception as e:
         print(e)
+
+try:
+    args = {'feature_digest': digest} #RESTRICT_ACTION_TO_SELF
+    eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
+except Exception as e:
+    print(e)
 
 from datetime import datetime
 data_string = "2019-10-24 08:00:00" #timezone: +8
