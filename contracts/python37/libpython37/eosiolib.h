@@ -7,6 +7,10 @@
 #ifndef __EOSIOLIB_H_
 #define __EOSIOLIB_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 __attribute__((eosio_wasm_import))
 void prints( const char* cstr );
 
@@ -18,5 +22,9 @@ uint64_t current_time(void);
 
 __attribute__((eosio_wasm_import))
 uint64_t s2n(const char *str, int len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
