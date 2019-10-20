@@ -196,6 +196,7 @@ ${CMAKE_SOURCE_DIR}/mi/mi.cpp
 ./fenv.c
 ./dummy.c
 ./dummy_libc.c
+./dummy_pthread.c
 )
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")
