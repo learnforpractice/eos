@@ -63,7 +63,7 @@ void vm_manager::apply(uint64_t receiver, uint64_t code, uint64_t action) {
     int vm_type = get_chain_api()->get_code_type(receiver);
     if (vm_type == VM_TYPE_PY) {
         bool activated = get_chain_api()->is_builtin_activated((uint32_t)enum_builtin_protocol_feature::pythonvm);
-        get_vm_api()->eosio_assert(activated, "pythonvm not activated!");
+        EOSIO_ASSERT(activated, "pythonvm not activated!");
 //        vm_python2_apply(receiver, code, action);
     }
 }
@@ -73,7 +73,7 @@ void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint
 
     if (vm_type_callee == VM_TYPE_WASM) {
     } else {
-        get_vm_api()->eosio_assert(0, "only call wasm code supported!");
+        EOSIO_ASSERT(0, "only call wasm code supported!");
     }
 
     call_extra_args.resize(extra_args_size);

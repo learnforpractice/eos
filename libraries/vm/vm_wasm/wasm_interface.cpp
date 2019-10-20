@@ -851,7 +851,7 @@ public:
 
    // Kept as intrinsic rather than implementing on WASM side (using eosio_assert_message and strlen) because strlen is faster on native side.
    void eosio_assert( bool condition, null_terminated_ptr msg ) {
-      API()->eosio_assert( condition, msg );
+      EOSIO_ASSERT( condition, msg );
    }
 
    void eosio_assert_message( bool condition, array_ptr<const char> msg, size_t msg_len ) {
@@ -1644,7 +1644,7 @@ class vm_apis : public context_aware_api {
       }
 
       void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, size_t size1) {
-         API()->eosio_assert(false, "call contract depth exceeded!");
+         EOSIO_THROW("call contract depth exceeded!");
 //         API()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
       }
 

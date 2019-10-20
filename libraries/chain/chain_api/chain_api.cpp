@@ -130,7 +130,7 @@ static bool get_code_id( uint64_t receiver, uint8_t* code_id, size_t size) {
    if (!is_account(receiver)) {
       return false;
    }
-   get_vm_api()->eosio_assert(size == 32, "bad code id size!");
+   EOSIO_ASSERT(size == 32, "bad code id size!");
    try {
       const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(receiver));
       memcpy(code_id, account.code_hash.data(), 32);

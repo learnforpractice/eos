@@ -92,7 +92,7 @@ namespace eosio { namespace chain {
       int type1 = get_chain_api()->get_code_type(contract);
       uint64_t receiver = get_vm_api()->current_receiver();
       int type2 = get_chain_api()->get_code_type(receiver);
-      get_vm_api()->eosio_assert(type1 != type2, "vm type of caller and callee should not be the same!");
+      EOSIO_ASSERT(type1 != type2, "vm type of caller and callee should not be the same!");
 
       my->get_instantiated_module(python_code_id, code, size)->call(func_name, arg1, arg2, arg3);
       return true;

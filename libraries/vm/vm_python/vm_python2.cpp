@@ -104,7 +104,7 @@ int __find_frozen_code(const char *name, size_t length, char* code, size_t code_
 }
 
 uint8_t *vm_grow_memory(uint32_t delta) {
-    get_vm_api()->eosio_assert(0, "grow memory not supported in python vm!");
+    EOSIO_THROW("grow memory not supported in python vm!");
     return nullptr;
 }
 
@@ -128,13 +128,16 @@ static void *offset_to_ptr_s(u32 offset, u32 size) {
 
 static void *offset_to_char_ptr_s(u32 offset) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
+    int count = 0;
     for (int i=offset;i<memory->size;i++) {
         vm_load_memory(i, 1);
         if (memory->data[i] == '\0') {
             return memory->data + offset; 
         }
+        count += 1;
+        EOSIO_ASSERT(count < 1024, "c string to large then 1024 bytes long");
     }
-    get_vm_api()->eosio_assert(0, "not a valid c string!");
+    EOSIO_ASSERT(0, "not a valid c string!");
     return NULL;
 }
 
@@ -173,7 +176,7 @@ void vm_python2_init(struct vm_python_info *python_info) {
    }
    initialized = 1;
 
-   get_vm_api()->eosio_assert(python_info->memory_size%VM_PAGE_SIZE == 0, "wrong memory size");
+   EOSIO_ASSERT(python_info->memory_size%VM_PAGE_SIZE == 0, "wrong memory size");
 
    python_info->apply = wasm2c_python_vm_apply;
    python_info->call = wasm2c_python_vm_call;

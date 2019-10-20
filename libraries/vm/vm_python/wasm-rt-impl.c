@@ -47,31 +47,31 @@ void wasm_rt_trap(wasm_rt_trap_t code) {
    wasm_rt_call_stack_depth = 0;
    switch (code) {
       case WASM_RT_TRAP_NONE:
-         get_vm_api()->eosio_assert(0, "vm no error");
+         EOSIO_THROW("vm no error");
          break;
       case WASM_RT_TRAP_OOB:
-         get_vm_api()->eosio_assert(0, "vm error out of bounds");
+         EOSIO_THROW("vm error out of bounds");
          break;
       case WASM_RT_TRAP_INT_OVERFLOW:
-         get_vm_api()->eosio_assert(0, "vm error int overflow");
+         EOSIO_THROW("vm error int overflow");
          break;
       case WASM_RT_TRAP_DIV_BY_ZERO:
-         get_vm_api()->eosio_assert(0, "vm error divide by zeror");
+         EOSIO_THROW("vm error divide by zeror");
          break;
       case WASM_RT_TRAP_INVALID_CONVERSION:
-         get_vm_api()->eosio_assert(0, "vm error invalid conversion");
+         EOSIO_THROW("vm error invalid conversion");
          break;
       case WASM_RT_TRAP_UNREACHABLE:
-         get_vm_api()->eosio_assert(0, "vm error unreachable");
+         EOSIO_THROW("vm error unreachable");
          break;
       case WASM_RT_TRAP_CALL_INDIRECT:
-         get_vm_api()->eosio_assert(0, "vm error call indirect");
+         EOSIO_THROW("vm error call indirect");
          break;
       case WASM_RT_TRAP_EXHAUSTION:
-         get_vm_api()->eosio_assert(0, "vm error exhaustion");
+         EOSIO_THROW("vm error exhaustion");
          break;
       default:
-         get_vm_api()->eosio_assert(0, "vm unknown error");
+         EOSIO_THROW("vm unknown error");
          break;
    }
 }
@@ -152,7 +152,7 @@ extern wasm_rt_memory_t* get_wasm_rt_memory(void) {
 }
 
 uint32_t wasm_rt_grow_memory(wasm_rt_memory_t* memory, uint32_t delta) {
-  get_vm_api()->eosio_assert(0, "grow_memory should never be called!");
+  EOSIO_ASSERT(0, "grow_memory should never be called!");
   vmdlog("delta %d\n", delta);
 //  return (uint32_t)-1;
   uint32_t old_pages = memory->pages;

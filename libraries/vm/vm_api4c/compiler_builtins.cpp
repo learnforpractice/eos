@@ -33,7 +33,7 @@ static void __udivti3(unsigned __int128& ret, uint64_t la, uint64_t ha, uint64_t
     rhs <<= 64;
     rhs |=  lb;
 
-    get_vm_api()->eosio_assert(rhs != 0, "divide by zero");
+    EOSIO_ASSERT(rhs != 0, "divide by zero");
 
     lhs /= rhs;
     ret = lhs;

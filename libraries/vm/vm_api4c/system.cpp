@@ -1,7 +1,7 @@
 
 static void eosio_assert( u32 test, u32 msg_offset ) {
    const char* msg = (char *)offset_to_char_ptr(msg_offset);
-   get_vm_api()->eosio_assert( test, msg );
+   EOSIO_ASSERT( test, msg );
 }
 
 static void  eosio_assert_message( u32 test, u32 msg_offset, u32 msg_len ) {
@@ -42,5 +42,5 @@ static u32 call_contract_get_results(u32 results_offset, u32 size1) {
 }
 
 static void wasm_syscall() {
-   get_vm_api()->eosio_assert(0, "bad syscall");
+   EOSIO_ASSERT(0, "bad syscall");
 }

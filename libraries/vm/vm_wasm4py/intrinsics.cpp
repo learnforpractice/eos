@@ -809,7 +809,7 @@ public:
    // Kept as intrinsic rather than implementing on WASM side (using eosio_assert_message and strlen) because strlen is faster on native side.
    void eosio_assert( bool condition, null_terminated_ptr msg ) {
 //      vmdlog("%s\n", msg);
-      API()->eosio_assert( condition, msg );
+      EOSIO_ASSERT( condition, msg );
    }
 
    void eosio_assert_message( bool condition, array_ptr<const char> msg, size_t msg_len ) {
@@ -1172,7 +1172,7 @@ class memory_api : public context_aware_api {
       }
       
       void wasm_syscall() {
-         API()->eosio_assert(0, "bad syscall");
+         EOSIO_THROW("bad syscall");
       }
 
       int64_t s2n(array_ptr<char> in, size_t in_len) {

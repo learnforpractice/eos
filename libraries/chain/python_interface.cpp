@@ -48,9 +48,9 @@ void python_instantiated_module::take_snapshoot() {
     get_vm_api()->get_copy_memory_range(&contract_mem_start, &contract_mem_end);
 
     //   vmdlog("++++contract_mem_start %d, contract_mem_end %d, vm_memory_size %d\n", contract_mem_start, contract_mem_end, vm_memory_size);
-    get_vm_api()->eosio_assert(contract_mem_start > 0 && contract_mem_start<vm_memory_size, "bad start contract memory");
-    get_vm_api()->eosio_assert(contract_mem_end > 0 && contract_mem_end<vm_memory_size, "bad end contract memory");
-    get_vm_api()->eosio_assert(contract_mem_start < contract_mem_end, "bad memory range");
+    EOSIO_ASSERT(contract_mem_start > 0 && contract_mem_start<vm_memory_size, "bad start contract memory");
+    EOSIO_ASSERT(contract_mem_end > 0 && contract_mem_end<vm_memory_size, "bad end contract memory");
+    EOSIO_ASSERT(contract_mem_start < contract_mem_end, "bad memory range");
 
     contract_mem_start = contract_mem_start/8*8;
     contract_mem_end = (contract_mem_end+7)/8*8;

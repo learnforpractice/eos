@@ -299,6 +299,11 @@ int get_option(const char* option, char *result, int size);
 #define vmelog(fmt...) \
    get_vm_api()->log(4, __LINE__, __FILE__, __FUNCTION__, fmt);
 
+#define EOSIO_ASSERT( expr, msg )                \
+   if( !(expr) ) { get_vm_api()->eosio_assert( 0, msg ); }
+
+#define EOSIO_THROW( msg )                \
+   get_vm_api()->eosio_assert( 0, msg );
 
 #define  VM_TYPE_WASM                      0
 #define  VM_TYPE_PY                        1

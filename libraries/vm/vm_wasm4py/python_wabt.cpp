@@ -236,7 +236,7 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
             int segment_size = ((int*)&compiled_code[index])[0];
             int segment_offset = ((int*)&compiled_code[index])[1];
 //            vmdlog("+++++%d %d\n", segment_offset, segment_size);
-            get_vm_api()->eosio_assert(index + segment_size + sizeof(int)*2 <= code_size, "segment out of range");
+            EOSIO_ASSERT(index + segment_size + sizeof(int)*2 <= code_size, "segment out of range");
 
             MemorySegment segment;
             segment.offset = segment_offset;

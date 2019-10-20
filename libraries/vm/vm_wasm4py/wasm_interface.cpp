@@ -820,7 +820,7 @@ public:
 
    // Kept as intrinsic rather than implementing on WASM side (using eosio_assert_message and strlen) because strlen is faster on native side.
    void eosio_assert( bool condition, null_terminated_ptr msg ) {
-      API()->eosio_assert( condition, msg );
+      EOSIO_ASSERT( condition, msg );
    }
 
    void eosio_assert_message( bool condition, array_ptr<const char> msg, size_t msg_len ) {
