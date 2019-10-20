@@ -91,14 +91,10 @@ extern f32 (*Z_eosio_injectionZ__eosio_f32_divZ_fff)(f32, f32);
 extern u32 (*Z_eosio_injectionZ__eosio_f32_gtZ_iff)(f32, f32);
 /* import: 'eosio_injection' '_eosio_f32_ne' */
 extern u32 (*Z_eosio_injectionZ__eosio_f32_neZ_iff)(f32, f32);
-/* import: 'env' 'prints' */
-extern void (*Z_envZ_printsZ_vi)(u32);
-/* import: 'env' 'eosio_assert' */
-extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
-/* import: 'env' 'printi' */
-extern void (*Z_envZ_printiZ_vj)(u64);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
+/* import: 'env' 'prints' */
+extern void (*Z_envZ_printsZ_vi)(u32);
 /* import: 'env' 'memcpy' */
 extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 /* import: 'env' 'memset' */
@@ -209,6 +205,8 @@ extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
 extern void (*Z_envZ_activate_featureZ_vj)(u64);
 /* import: 'env' 'current_time' */
 extern u64 (*Z_envZ_current_timeZ_jv)(void);
+/* import: 'env' 'eosio_assert' */
+extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'eosio_assert_message' */
 extern void (*Z_envZ_eosio_assert_messageZ_viii)(u32, u32, u32);
 /* import: 'env' 'eosio_assert_code' */
@@ -233,6 +231,8 @@ extern u32 (*Z_envZ_expirationZ_iv)(void);
 extern u32 (*Z_envZ_get_actionZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'get_context_free_data' */
 extern u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
+/* import: 'env' 'printi' */
+extern void (*Z_envZ_printiZ_vj)(u64);
 /* import: 'env' 'find_frozen_code' */
 extern u32 (*Z_envZ_find_frozen_codeZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'get_code_size' */
@@ -247,14 +247,14 @@ extern void (*Z_envZ_send_inlineZ_vii)(u32, u32);
 extern void (*Z_envZ_send_deferredZ_vijiii)(u32, u64, u32, u32, u32);
 /* import: 'env' 'cancel_deferred' */
 extern u32 (*Z_envZ_cancel_deferredZ_ii)(u32);
-/* import: 'env' 'db_get_i64' */
-extern u32 (*Z_envZ_db_get_i64Z_iiii)(u32, u32, u32);
-/* import: 'env' 'db_update_i64' */
-extern void (*Z_envZ_db_update_i64Z_vijii)(u32, u64, u32, u32);
 /* import: 'env' 'db_store_i64' */
 extern u32 (*Z_envZ_db_store_i64Z_ijjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'db_update_i64' */
+extern void (*Z_envZ_db_update_i64Z_vijii)(u32, u64, u32, u32);
 /* import: 'env' 'db_find_i64' */
 extern u32 (*Z_envZ_db_find_i64Z_ijjjj)(u64, u64, u64, u64);
+/* import: 'env' 'db_get_i64' */
+extern u32 (*Z_envZ_db_get_i64Z_iiii)(u32, u32, u32);
 /* import: 'env' 'db_remove_i64' */
 extern void (*Z_envZ_db_remove_i64Z_vi)(u32);
 /* import: 'env' 'db_next_i64' */

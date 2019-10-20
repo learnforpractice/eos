@@ -1,6 +1,6 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../../libraries/vm/vm_python/python_vm_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/python_vm_config.h)
 
-SET(SRC_FILES        dummy.c
+SET(SRC_FILES
 ./python37/Modules/arraymodule.c
 ./python37/Modules/mathmodule.c
 ./python37/Modules/cmathmodule.c
@@ -194,6 +194,8 @@ SET(SRC_FILES        dummy.c
 ${CMAKE_SOURCE_DIR}/mi/mi.cpp
 ./eosiolib_wrapper/mi.c
 ./fenv.c
+./dummy.c
+./dummy_libc.c
 )
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")
