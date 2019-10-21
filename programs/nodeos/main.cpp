@@ -82,10 +82,17 @@ extern "C"
    void vm_api_ro_init();
    void vm_api_init();
    void native_contracts_init();
+   int create_accounts_snapshot(int argc, char** argv);
 }
+
 
 int main(int argc, char** argv)
 {
+   for (int i=0;i<argc;i++) {
+      if (strcmp(argv[i], "--create-accounts-snapshot")==0) {
+         return create_accounts_snapshot(argc, argv);
+      }
+   }
    try {
       evm_init();
       vm_api_init();

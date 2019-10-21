@@ -1,4 +1,7 @@
-add_executable( ${NODE_EXECUTABLE_NAME} main.cpp )
+add_executable( ${NODE_EXECUTABLE_NAME}
+  main.cpp
+  accounts_snapshot.cpp
+)
 
 if( UNIX AND NOT APPLE )
   set(rt_library rt )
