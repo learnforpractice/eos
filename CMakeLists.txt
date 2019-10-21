@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.8 )
 
-project( EOSIO )
+project( UUOSIO )
 include(CTest) # suppresses DartConfiguration.tcl error
 enable_testing()
 
@@ -18,7 +18,7 @@ include( GNUInstallDirs )
 include( InstallDirectoryPermissions )
 include( MASSigning )
 
-set( BLOCKCHAIN_NAME "EOSIO" )
+set( BLOCKCHAIN_NAME "UUOSIO" )
 set( CMAKE_CXX_STANDARD 17 )
 set( CMAKE_CXX_EXTENSIONS ON )
 set( CXX_STANDARD_REQUIRED ON)

@@ -65,7 +65,7 @@ endif()
 
 include(additionalPlugins)
 
-copy_bin( accounts_snapshot )
+#copy_bin( accounts_snapshot )
 install( TARGETS
    accounts_snapshot RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR} COMPONENT base
 )
