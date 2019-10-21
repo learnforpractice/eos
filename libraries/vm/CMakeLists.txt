@@ -1,6 +1,8 @@
 add_subdirectory( vm_api4c )
 add_subdirectory( vm_wasm )
+if (APPLE)
 add_subdirectory( vm_wasm4py )
+endif()
 add_subdirectory( vm_python )
 add_subdirectory( vm_manager )
 add_subdirectory( native_contracts )
