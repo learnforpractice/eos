@@ -20,7 +20,7 @@ set( HEADERS
     )
 
 add_library( vm_manager STATIC vm_manager.cpp)
-target_link_libraries( vm_manager vm_python2)
+target_link_libraries( vm_manager vm_python)
 
 
 target_include_directories( vm_manager

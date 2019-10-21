@@ -23,16 +23,16 @@ endif (APPLE)
 set(SRCS
     pythonvm.c
     wasm-rt-impl.c
-    vm_python2.cpp
+    vm_python.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 )
 
-add_library(vm_python2 SHARED ${SRCS})
+add_library(vm_python SHARED ${SRCS})
 
-target_link_libraries(vm_python2 PRIVATE vm_api frozen chain_api vm_api4c)
-set_target_properties(vm_python2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+target_link_libraries(vm_python PRIVATE vm_api frozen chain_api vm_api4c)
+set_target_properties(vm_python  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
-target_include_directories(vm_python2 PRIVATE ${Boost_INCLUDE_DIR}
+target_include_directories(vm_python PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -41,10 +41,10 @@ target_include_directories(vm_python2 PRIVATE ${Boost_INCLUDE_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/vm/vm_api4c
 )
 
-target_compile_options(vm_python2 PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300)
+target_compile_options(vm_python PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300)
 
 
-# add_dependencies(vm_python2 pythonvm_project)
+# add_dependencies(vm_python pythonvm_project)
 
 # ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 #     COMMAND python3 ${CMAKE_CURRENT_BINARY_DIR}/gen.py
@@ -53,13 +53,13 @@ target_compile_options(vm_python2 PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300)
 #     COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
 # )
 
-install(TARGETS vm_python2
+install(TARGETS vm_python
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-copy_lib(vm_python2)
+copy_lib(vm_python)
 
 

@@ -9,7 +9,7 @@ extern "C" {
 #include "wasm-rt.h"
 
 
-//vm_python2.cpp
+//vm_python.cpp
 void vm_load_memory(uint32_t offset_start, uint32_t length);
 //eosio_injection.cpp
 void vm_checktime();

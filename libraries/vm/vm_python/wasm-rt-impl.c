@@ -122,7 +122,7 @@ uint32_t wasm_rt_register_func_type(uint32_t param_count,
   return idx + 1;
 }
 
-//vm_python2.cpp
+//vm_python.cpp
 //uint8_t *python_vm_allocate_memory(uint32_t initial_pages, uint32_t max_pages);
 uint8_t *python_vm_get_memory();
 size_t python_vm_get_memory_size();
