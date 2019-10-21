@@ -262,6 +262,9 @@ else()
     target_compile_options(eth_account PRIVATE -fPIC)
 endif()
 
+add_dependencies(pythonvm_project contracts_project)
+add_dependencies(test_contracts_project pythonvm_project)
+
 install_directory_permissions(DIRECTORY ${CMAKE_INSTALL_FULL_SYSCONFDIR}/eosio)
 
 install(FILES testnet.template DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/eosio/launcher)
