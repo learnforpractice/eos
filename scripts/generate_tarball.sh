@@ -9,7 +9,7 @@ mkdir -p ${PREFIX}/lib/
 mkdir -p ${EOS_PREFIX}/bin
 mkdir -p ${EOS_PREFIX}/licenses/eosio
 #mkdir -p ${EOS_PREFIX}/include
-#mkdir -p ${EOS_PREFIX}/lib/cmake/${PROJECT}
+mkdir -p ${EOS_PREFIX}/lib/cmake/${PROJECT}
 #mkdir -p ${EOS_PREFIX}/cmake
 #mkdir -p ${EOS_PREFIX}/scripts
 
@@ -38,6 +38,10 @@ cp -R ${BUILD_DIR}/lib/* ${EOS_PREFIX}/lib
 for f in $(ls "${BUILD_DIR}/bin/"); do
    bn=$(basename $f)
    ln -sf ../${SUBPREFIX}/bin/$bn ${PREFIX}/bin/$bn || exit 1
+done
+for f in $(ls "${BUILD_DIR}/lib/"); do
+   bn=$(basename $f)
+   ln -sf ../${SUBPREFIX}/lib/$bn ${PREFIX}/lib/$bn || exit 1
 done
 echo "Generating Tarball $NAME.tar.gz..."
 tar -cvzf $NAME.tar.gz ./${PREFIX}/* || exit 1
