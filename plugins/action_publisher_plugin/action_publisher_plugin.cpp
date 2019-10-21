@@ -380,6 +380,8 @@ namespace eosio {
    }
 
    void action_publisher_plugin::plugin_shutdown() {
+      my->publisher_tcp->close();
+      my->publisher_ipc->close();
       my->applied_transaction_connection.reset();
    }
 
