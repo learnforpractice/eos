@@ -113,6 +113,7 @@ BOOST_AUTO_TEST_CASE( active_account_test ) try {
     trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
                                            vector<permission_level>{{N(alice), config::active_name}},
                                            mutable_variant_object()
+                                             ("activator", "alice")
                                              ("account", "helloworld11")
                                              ("sign", sign)
     ) );
@@ -133,6 +134,7 @@ BOOST_AUTO_TEST_CASE( active_account_test ) try {
     trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
                                            vector<permission_level>{{N(alice), config::active_name}},
                                            mutable_variant_object()
+                                             ("activator", "alice")
                                              ("account", "helloworld11")
                                              ("sign", sign)
     ) );
@@ -154,6 +156,7 @@ BOOST_AUTO_TEST_CASE( active_account_test ) try {
     trx.actions.emplace_back( t.get_action( N(eosio), N(activateacc),
                                            vector<permission_level>{{N(alice), config::active_name}},
                                            mutable_variant_object()
+                                             ("activator", "alice")
                                              ("account", "helloworld12")
                                              ("sign", sign)
     ) );

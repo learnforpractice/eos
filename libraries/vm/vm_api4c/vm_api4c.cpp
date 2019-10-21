@@ -350,7 +350,7 @@ void init_vm_api4c() {
 //softfloat.cpp
     init_softfloat();
     init_eosio_injection();
-    printf("++++%s %d\n", __FUNCTION__, __LINE__);
+//    printf("++++%s %d\n", __FUNCTION__, __LINE__);
 }
 
 static fn_offset_to_ptr g_offset_to_ptr = 0;
