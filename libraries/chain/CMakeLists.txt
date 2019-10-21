@@ -68,7 +68,7 @@ add_library( eosio_chain
              ${HEADERS}
              )
 
-set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4eos${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt eosiolib_native chain_api vm_manager

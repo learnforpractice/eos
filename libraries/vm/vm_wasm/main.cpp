@@ -1,4 +1,3 @@
-#pragma once
 
 #include <eosio/chain/wasm_interface.hpp>
 #include <eosio/chain/webassembly/wavm.hpp>
