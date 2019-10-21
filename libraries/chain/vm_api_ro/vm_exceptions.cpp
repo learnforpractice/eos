@@ -1,5 +1,5 @@
 #include <eosio/chain/exceptions.hpp>
-#include <eosiolib_native/vm_exceptions.h>
+#include <vm_api/vm_exceptions.h>
 
 using namespace eosio::chain;
 using namespace fc;

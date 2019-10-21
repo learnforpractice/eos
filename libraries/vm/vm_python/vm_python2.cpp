@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <chain_api.hpp>
 
 #include <map>

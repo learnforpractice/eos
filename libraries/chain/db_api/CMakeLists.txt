@@ -6,7 +6,7 @@ add_library( db_api
               db_api.cpp
              )
 
-target_link_libraries( db_api PUBLIC fc chainbase softfloat eosiolib_native chain_api)
+target_link_libraries( db_api PUBLIC fc chainbase softfloat vm_api chain_api)
 
 target_include_directories( db_api
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"

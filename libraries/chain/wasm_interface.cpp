@@ -25,7 +25,7 @@
 #include <fstream>
 #include <string.h>
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 extern "C" {
    int evm_execute(const unsigned char *raw_trx, int raw_trx_size);

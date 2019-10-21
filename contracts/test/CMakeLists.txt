@@ -14,9 +14,9 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test2.obj
     COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/test2.obj"
 )
 
-target_link_libraries(test_shared PRIVATE eosiolib_native)
+target_link_libraries(test_shared PRIVATE vm_api)
 
-target_include_directories(eosiolib_native PRIVATE ${Boost_INCLUDE_DIR}
+target_include_directories(vm_api PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts
     PRIVATE ${CMAKE_BINARY_DIR}/contracts

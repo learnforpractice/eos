@@ -5,7 +5,7 @@
 #include <map>
 
 #include "eosio.system.h"
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include "wasm-rt-impl.h"
 #include <vm_api4c.h>
 

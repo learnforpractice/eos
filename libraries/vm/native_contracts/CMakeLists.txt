@@ -21,7 +21,7 @@ add_library(native_contracts STATIC
     contracts/eosio.token-e536996bc480ccc3486b630f0c42ca1ef3b9f477595e885dcf8862848a2185bb-17.c
 )
 
-target_link_libraries(native_contracts PRIVATE eosiolib_native vm_api4c)
+target_link_libraries(native_contracts PRIVATE vm_api vm_api4c)
 target_include_directories(native_contracts PRIVATE ${Boost_INCLUDE_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/vm/vm_api4c
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts

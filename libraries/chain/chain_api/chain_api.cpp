@@ -9,7 +9,7 @@
 #include <chain_api.hpp>
 #include <eosio/chain/db_api.hpp>
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 using namespace fc;
 using namespace eosio::chain;

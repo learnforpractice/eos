@@ -1,5 +1,5 @@
 add_subdirectory( eosiolib )
-add_subdirectory( eosiolib_native )
+add_subdirectory( vm_api )
 add_subdirectory( native )
 add_subdirectory( test )
 
@@ -35,8 +35,8 @@ endif()
 
 # ExternalProject_Add(
 #    native_project
-#    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eosiolib_native/native
-#    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eosiolib_native/native
+#    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vm_api/native
+#    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/vm_api/native
 #    CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_CONTRACTS=TRUE
 #    UPDATE_COMMAND ""
 #    PATCH_COMMAND ""

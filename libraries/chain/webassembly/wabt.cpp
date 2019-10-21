@@ -6,7 +6,7 @@
 #include <src/interp.h>
 #include <src/binary-reader-interp.h>
 #include <src/error-formatter.h>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {
 

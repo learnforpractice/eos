@@ -4,7 +4,7 @@
 #include <string.h>
 #include "wasm-rt.h"
 #include <eosiolib/types.h>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <chain_api.hpp>
 
 #include "src/interp.h"

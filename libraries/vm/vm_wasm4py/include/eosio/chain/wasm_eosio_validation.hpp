@@ -11,7 +11,7 @@
 #include "IR/Operators.h"
 #include "WASM/WASM.h"
 #include <chain_api.hpp>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <chain_exceptions.h>
 
 namespace eosio { namespace chain { namespace wasm_validations {

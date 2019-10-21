@@ -1,4 +1,4 @@
-add_library(eosiolib_native SHARED 
+add_library(vm_api SHARED 
 eosiolib.cpp
 action.cpp
 chain.cpp
@@ -22,10 +22,10 @@ else()
     set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-target_link_libraries( eosiolib_native PUBLIC softfloat)
-set_target_properties(eosiolib_native  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+target_link_libraries( vm_api PUBLIC softfloat)
+set_target_properties(vm_api  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
-target_include_directories(eosiolib_native PRIVATE ${Boost_INCLUDE_DIR}
+target_include_directories(vm_api PRIVATE ${Boost_INCLUDE_DIR}
 #   PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libc++/upstream/include
 #   PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libc++/include/libc++/upstream/include
 #   PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libc++/musl/include/musl/upstream/include
@@ -38,15 +38,15 @@ target_include_directories(eosiolib_native PRIVATE ${Boost_INCLUDE_DIR}
 )
 
 
-# add_library(eosiolib_native SHARED 
+# add_library(vm_api SHARED 
 #     vm_api.cpp
 # )
     
-# #add_dependencies(eosiolib_native native_project)
+# #add_dependencies(vm_api native_project)
 
-# target_link_libraries( eosiolib_native PUBLIC softfloat)
+# target_link_libraries( vm_api PUBLIC softfloat)
 
-# target_include_directories(eosiolib_native PRIVATE ${Boost_INCLUDE_DIR}
+# target_include_directories(vm_api PRIVATE ${Boost_INCLUDE_DIR}
 # #   PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libc++/upstream/include
 # #   PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libc++/include/libc++/upstream/include
 # #   PRIVATE ${CMAKE_SOURCE_DIR}/contracts/libc++/musl/include/musl/upstream/include
@@ -59,11 +59,11 @@ target_include_directories(eosiolib_native PRIVATE ${Boost_INCLUDE_DIR}
 #    PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include
 # )
 
-install(TARGETS eosiolib_native
+install(TARGETS vm_api
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-copy_lib(eosiolib_native)
+copy_lib(vm_api)

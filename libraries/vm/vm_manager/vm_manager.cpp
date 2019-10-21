@@ -5,7 +5,7 @@
 #include <eosio/chain/db_api.hpp>
 #include <chain_api.hpp>
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 extern "C" const unsigned char pythonvm_wasm[];
 extern "C" int pythonvm_wasm_size;

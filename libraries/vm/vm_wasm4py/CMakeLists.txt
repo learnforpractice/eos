@@ -6,7 +6,7 @@ set( HEADERS
     ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Source/Runtime
     ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Include/Runtime
     ${CMAKE_SOURCE_DIR}/contracts
-    ${CMAKE_SOURCE_DIR}/contracts/eosiolib_native
+    ${CMAKE_SOURCE_DIR}/contracts/vm_api
     ${CMAKE_SOURCE_DIR}/libraries/chainbase/include
     ${CMAKE_SOURCE_DIR}/libraries/wabt
     ${CMAKE_BINARY_DIR}/libraries/wabt
@@ -38,7 +38,7 @@ else()
     set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins eosiolib_native chain_api frozen)
+set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins vm_api chain_api frozen)
 
 add_library( vm_wasm4py SHARED ${SRCS} )
 

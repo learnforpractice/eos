@@ -15,7 +15,7 @@
 #include "Platform/Platform.h"
 #include "WAST/WAST.h"
 #include "IR/Validate.h"
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 #include <chrono>
 #include <thread>

@@ -61,7 +61,7 @@ extern "C" {
 namespace eosio {
 namespace chain {
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <stacktrace.h>
 static struct vm_api _vm_api = {
 };

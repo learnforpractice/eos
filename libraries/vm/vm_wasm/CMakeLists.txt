@@ -6,7 +6,7 @@ set( HEADERS
     ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Source/Runtime
     ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Include/Runtime
     ${CMAKE_SOURCE_DIR}/contracts
-    ${CMAKE_SOURCE_DIR}/contracts/eosiolib_native
+    ${CMAKE_SOURCE_DIR}/contracts/vm_api
     ${CMAKE_SOURCE_DIR}/libraries/chainbase/include
     ${CMAKE_SOURCE_DIR}/libraries/chain/include
     ${CMAKE_SOURCE_DIR}/libraries/wabt
@@ -37,7 +37,7 @@ else()
     set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins eosiolib_native chain_api frozen)
+set(WASM_DEPEND_LIBS Logging IR WAST WASM Runtime softfloat builtins vm_api chain_api frozen)
 
 # add_library( vm_wasm-1 SHARED ${SRCS} )
 
@@ -65,7 +65,7 @@ set(SRCS_INJECTOR
     ${CMAKE_SOURCE_DIR}/libraries/chain/whitelisted_intrinsics.cpp
 )
 
-set(WASM_INJECTOR_DEPEND_LIBS Logging IR WASM Runtime softfloat builtins eosiolib_native chain_api frozen)
+set(WASM_INJECTOR_DEPEND_LIBS Logging IR WASM Runtime softfloat builtins vm_api chain_api frozen)
 
 add_executable( wasm_injector main.cpp ${SRCS_INJECTOR} )
 target_link_libraries( wasm_injector wabt ${WASM_INJECTOR_DEPEND_LIBS} fc)

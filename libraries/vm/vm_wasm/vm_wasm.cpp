@@ -3,7 +3,7 @@
 
 #include <eosio/chain/wasm_interface.hpp>
 #include <eosio/chain/webassembly/wabt.hpp>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 #include "vm_interface.hpp"
 

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include "vm_api4c.h"
 
 static void __ashlti3(__int128& ret, uint64_t low, uint64_t high, uint32_t shift) {

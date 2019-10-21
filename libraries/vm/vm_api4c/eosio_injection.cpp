@@ -4,7 +4,7 @@
 #include <string.h>
 #include "vm_api4c.h"
 #include <softfloat.hpp>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 extern "C" {
 static constexpr uint32_t inv_float_eps = 0x4B000000;

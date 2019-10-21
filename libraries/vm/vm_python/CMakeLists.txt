@@ -29,7 +29,7 @@ set(SRCS
 
 add_library(vm_python2 SHARED ${SRCS})
 
-target_link_libraries(vm_python2 PRIVATE eosiolib_native frozen chain_api vm_api4c)
+target_link_libraries(vm_python2 PRIVATE vm_api frozen chain_api vm_api4c)
 set_target_properties(vm_python2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 target_include_directories(vm_python2 PRIVATE ${Boost_INCLUDE_DIR}

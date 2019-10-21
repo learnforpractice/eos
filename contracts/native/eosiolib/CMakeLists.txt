@@ -3,7 +3,7 @@ add_library(eosiolib.native STATIC
    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosiolib/eosiolib.cpp
 )
 
-target_link_libraries( eosiolib.native PUBLIC eosiolib_native )
+target_link_libraries( eosiolib.native PUBLIC vm_api )
 
 target_include_directories( eosiolib.native
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include

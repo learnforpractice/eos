@@ -105,7 +105,8 @@ BOOST_AUTO_TEST_CASE( active_account_test ) try {
     dlog("++++++++++++");
 {
     signed_transaction trx;
-    sha256 hash = sha256::hash("hello", 5);
+    string s = "activate helloworld11";
+    sha256 hash = sha256::hash(s.c_str(), s.size());
     string str_priv_key("5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc");
     private_key_type priv_key(str_priv_key); 
     signature_type sign = priv_key.sign( hash );
@@ -126,7 +127,8 @@ BOOST_AUTO_TEST_CASE( active_account_test ) try {
 
 {
     signed_transaction trx;
-    sha256 hash = sha256::hash("hello", 5);
+    string s = "activate helloworld11";
+    sha256 hash = sha256::hash(s.c_str(), s.size());
     string str_priv_key("5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc");
     private_key_type priv_key(str_priv_key); 
     signature_type sign = priv_key.sign( hash );
@@ -148,7 +150,8 @@ BOOST_AUTO_TEST_CASE( active_account_test ) try {
 
 {
     signed_transaction trx;
-    sha256 hash = sha256::hash("hello", 5);
+    string s = "activate helloworld11";
+    sha256 hash = sha256::hash(s.c_str(), s.size());
     string str_priv_key("5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3");
     private_key_type priv_key(str_priv_key); 
     signature_type sign = priv_key.sign( hash );

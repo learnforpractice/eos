@@ -1,7 +1,7 @@
 #include <string.h>
 #include "native_contracts.hpp"
 #include "wasm-rt-impl.h"
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 extern "C" {
 std::map<std::array<uint8_t, 32>, contract> contracts_map;

@@ -3,7 +3,7 @@
 
 #include <eosio/chain/python_vm/vm_memory.h>
 #include <vm_python.h>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <python_vm_config.h>
 
 using namespace pythonvm;

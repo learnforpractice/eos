@@ -12,8 +12,8 @@
 #include <src/interp.h>
 
 #include <chain_api.hpp>
-#include <eosiolib_native/vm_api.h>
-#include <eosiolib_native/vm_exceptions.h>
+#include <vm_api/vm_api.h>
+#include <vm_api/vm_exceptions.h>
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {
 

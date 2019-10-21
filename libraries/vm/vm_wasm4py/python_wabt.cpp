@@ -7,7 +7,7 @@
 #include <src/error-formatter.h>
 
 #include <eosio/chain/webassembly/wabt.hpp>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <chain_api.hpp>
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {

@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include <python_vm_config.h>
 
 #define PAGE_SIZE 65536U

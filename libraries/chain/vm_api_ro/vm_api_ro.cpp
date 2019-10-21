@@ -38,7 +38,7 @@ controller& chain_api_get_controller();
 extern "C" void register_vm_api_ro(struct vm_api* api);
 
 static db_api *s_ctx = nullptr;
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 struct checksum256 {
    uint8_t hash[32];

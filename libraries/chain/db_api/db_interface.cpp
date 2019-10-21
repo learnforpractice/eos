@@ -26,7 +26,7 @@ extern "C" void execution_end();
 
 namespace eosio { namespace chain {
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 db_interface::db_interface(chainbase::database& _db):
 db(_db),

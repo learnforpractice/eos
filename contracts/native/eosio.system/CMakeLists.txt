@@ -12,7 +12,7 @@ add_library(eosio.system.native SHARED
     main.cpp
 )
 
-target_link_libraries( eosio.system.native PRIVATE eosiolib.native eosiolib_native )
+target_link_libraries( eosio.system.native PRIVATE eosiolib.native vm_api )
 
 target_include_directories( eosio.system.native
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include

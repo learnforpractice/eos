@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 #include "vm_api4c.h"
 
 static int is_feature_active( int64_t feature_name ) {

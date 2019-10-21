@@ -25,7 +25,7 @@ extern "C" void execution_end();
 
 namespace eosio { namespace chain {
 
-#include <eosiolib_native/vm_api.h>
+#include <vm_api/vm_api.h>
 
 fc::path get_path() {
    std::cout<<"+++++++++++++get_path:"<<get_chain_api()->get_state_dir()<<std::endl;
