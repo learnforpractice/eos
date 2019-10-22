@@ -3195,26 +3195,6 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
 }
 
 template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::webauthn_key>() {
-   db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      ps.num_supported_key_types = 3;
-   } );
-}
-
-template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::wtmsig_block_signatures>() {
-   db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "set_proposed_producers_ex" );
-   } );
-}
-
-template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::code_version>() {
-   db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "get_code_version" );
-   } );
-}
-template<>
 void controller_impl::on_activation<builtin_protocol_feature_t::pythonvm>() {
 #if 0
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
@@ -3228,10 +3208,6 @@ void controller_impl::on_activation<builtin_protocol_feature_t::ethereum_vm>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
       add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "evm_execute" );
    } );
-}
-
-template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::native_eosio_system>() {
 }
 
 /// End of protocol feature activation handlers

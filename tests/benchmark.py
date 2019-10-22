@@ -4,6 +4,8 @@ import json
 import random
 import hashlib
 import traceback
+import platform
+
 from pyeoskit import wallet
 from pyeoskit import eosapi
 from pyeoskit import config
@@ -91,7 +93,10 @@ if not eosapi.get_account(account_name):
 
 
 contract_path = '/Users/newworld/dev/eos/build/contracts'
-contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
+if platform.system() == 'Linux':
+    contract_path = '/home/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
+else:
+    contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
 
 if 1:
     if False:
