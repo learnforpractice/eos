@@ -178,19 +178,20 @@ if eosapi.get_balance('helloworld11') <=0:
 feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
             'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99',#REPLACE_DEFERRED
             '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#NO_DUPLICATE_DEFERRED_ID
-            'fa0e5becb50725b19e630d92f488e0a1982f5b726923dd877b629e2432296ea2' #PYTHONVM
+            '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405' #ONLY_BILL_FIRST_AUTHORIZER
+            'fa0e5becb50725b19e630d92f488e0a1982f5b726923dd877b629e2432296ea2', #PYTHONVM
 ]
 
 for digest in feature_digests: 
     try:
-        args = {'vmtype': 1, 'vmversion':0} #activate vm python
-        eosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
+        args = {'feature_digest': digest}
+        eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
     except Exception as e:
         print(e)
 
 try:
-    args = {'feature_digest': digest} #RESTRICT_ACTION_TO_SELF
-    eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
+    args = {'vmtype': 1, 'vmversion':0} #activate vm python
+    eosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
 except Exception as e:
     print(e)
 
