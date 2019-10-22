@@ -142,8 +142,13 @@ void apply_eosio_setcode(apply_context& context) {
    context.require_authorization(act.account);
 
    EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1, invalid_contract_vm_type, "code should be 0" );
+   const auto& account = db.get<account_metadata_object,by_name>(act.account);
+
    if (act.vmtype == 1) {
-      EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
+      //only allow privileged account use python smart contract when python vm is not activated
+      if (!account.is_privileged()) {
+         EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
+      }
    }
 
    EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
@@ -170,7 +175,6 @@ void apply_eosio_setcode(apply_context& context) {
 #endif
    }
 
-   const auto& account = db.get<account_metadata_object,by_name>(act.account);
    bool existing_code = (account.code_hash != digest_type());
 
    EOS_ASSERT( code_size > 0 || existing_code, set_exact_code, "contract is already cleared" );

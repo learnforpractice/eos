@@ -121,8 +121,6 @@ void apply_context::exec_one()
                      }
                   }
                } else if (receiver_account->vm_type == 1) {
-                  bool activated = control.is_builtin_activated( builtin_protocol_feature_t::pythonvm );
-                  EOS_ASSERT( activated, wasm_execution_error, "pythonvm not activated!");
                   control.get_python_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                }
             } catch( const wasm_exit& ) {}
