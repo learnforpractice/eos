@@ -176,7 +176,13 @@ void python_interface::apply(const digest_type& code_hash, const uint8_t& vm_typ
     bool activated = system_contract_is_vm_activated(vm_type, vm_version);
 //    auto duration = get_microseconds() - start;
 //    vmelog("+++++++++++++++++duration: %d \n", duration);
-    EOS_ASSERT( activated, wasm_execution_error, "python vm with version ${v} not activated", ("v",vm_version) );
+
+    if (!activated) {
+        const auto& account = context.db.get<account_metadata_object,by_name>(context.get_action().account);
+        if (!account.is_privileged()) {
+            EOS_ASSERT( false, wasm_execution_error, "python vm with version ${v} not activated", ("v",vm_version) );
+        }
+    }
     get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
 }
 
