@@ -74,7 +74,6 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt vm_api chain_api vm_manager
                        eosio.token.native
                        eosio.system.native
-                       native_contracts
                        ${LIBEVM4EOS}
                        )
 
