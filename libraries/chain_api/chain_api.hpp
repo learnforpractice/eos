@@ -27,9 +27,6 @@ enum class enum_builtin_protocol_feature : uint32_t {
    forward_setcode,
    get_sender,
    ram_restrictions,
-   webauthn_key,
-   wtmsig_block_signatures,
-   code_version,
    pythonvm
 };
 
