@@ -311,13 +311,13 @@ extern "C" int create_accounts_snapshot(int argc, char** argv)
             itr++;
             continue;
          }
-         file.write((char*)&itr->name.value, 8);
          auto public_key = find_public_key_by_name(db, itr->name);
          if (public_key == public_key_type()) {
             ilog("++++${n} ${key}", ("n", itr->name)("key", public_key));
             itr++;
             continue;
          }
+         file.write((char*)&itr->name.value, 8);
          auto raw = fc::raw::pack(public_key);
          file.write(raw.data(), raw.size());
          counter += 1;

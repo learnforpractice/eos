@@ -633,20 +633,17 @@ void db_interface::init_accounts(const uint8_t* raw_data, size_t size) {
 }
 
 void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
-   auto accounts = fc::raw::unpack_ex<vector<genesis_account>>(raw_data);
-   int i = 0;
-   for ( auto& a: accounts) {
+   FC_ASSERT( raw_data.size() % (8+34) == 0, "bad accounts file" );
+   for (int i=0;i<raw_data.size();i+=42) {
       uint64_t account;
-      memcpy(&account, &a.account, 8);
-      auto raw = fc::raw::pack(a.key);
-//      dlog("++++${n}", ("n", a.account));
-      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), a.account, raw.data(), raw.size());
-      i += 1;
-      if (i % 100000 == 0) {
+      memcpy(&account, &raw_data[i], 8);
+//      elog("++++${n}", ("n", name(account)));
+      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), account, (char *)&raw_data[i+8], 34);
+      if ((i/42) % 100000 == 0) {
          vmilog("+++++initialize genesis accounts %d\n", i);
       }
    }
-   vmilog("+++++initialize genesis accounts %d\n", accounts.size());
+   vmilog("+++++initialize genesis accounts %d\n", raw_data.size()/42);
 }
 
 void db_interface::init_accounts(const string& genesis_accounts_file) {
