@@ -210,11 +210,6 @@ namespace eosio {
    };
 
    action_publisher_plugin::action_publisher_plugin() : my(std::make_shared<action_publisher_plugin_impl>()) {
-      my->context_tcp = std::make_unique<zmq::context_t>(1);
-      my->publisher_tcp = std::make_unique<zmq::socket_t>(*my->context_tcp, ZMQ_PUB);
-
-      my->context_ipc = std::make_unique<zmq::context_t>(1);
-      my->publisher_ipc = std::make_unique<zmq::socket_t>(*my->context_ipc, ZMQ_PUB);
    }
 
    action_publisher_plugin::~action_publisher_plugin() {
@@ -241,6 +236,12 @@ namespace eosio {
 
    void action_publisher_plugin::plugin_initialize(const variables_map& options) {
       try {
+         my->context_tcp = std::make_unique<zmq::context_t>(1);
+         my->publisher_tcp = std::make_unique<zmq::socket_t>(*my->context_tcp, ZMQ_PUB);
+
+         my->context_ipc = std::make_unique<zmq::context_t>(1);
+         my->publisher_ipc = std::make_unique<zmq::socket_t>(*my->context_ipc, ZMQ_PUB);
+
          if( options.count( "zmq-ipc-address" )) {
             auto ipc = options.at( "zmq-ipc-address" ).as<string>();
             my->publisher_ipc->bind(ipc);
