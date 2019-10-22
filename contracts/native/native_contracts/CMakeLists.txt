@@ -1,4 +1,4 @@
-add_library(eosio.system.native SHARED 
+add_library(native_contracts SHARED 
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/eosio.system.cpp
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include/eosio.system/eosio.system.hpp
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/eosio.system.cpp
@@ -9,12 +9,16 @@ add_library(eosio.system.native SHARED
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/rex.cpp
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/voting.cpp
     ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/activate_accounts.cpp
-    main.cpp
+
+    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/src/eosio.token.cpp
+    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include/eosio.token/eosio.token.hpp
+    main_eosio_token.cpp
+    main_eosio_contract.cpp
 )
 
-target_link_libraries( eosio.system.native PRIVATE eosiolib.native vm_api )
+target_link_libraries( native_contracts PRIVATE eosiolib.native vm_api )
 
-target_include_directories( eosio.system.native
+target_include_directories( native_contracts
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
                             PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"
@@ -24,13 +28,13 @@ target_include_directories( eosio.system.native
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/eosiolib/capi"
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/eosiolib/contracts"
                         )
-target_compile_options( eosio.system.native PRIVATE -DEOSIO_NATIVE -Wno-unknown-attributes )
+target_compile_options( native_contracts PRIVATE -DEOSIO_NATIVE -Wno-unknown-attributes )
 
-install(TARGETS eosio.system.native
+install(TARGETS native_contracts
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-copy_lib(eosio.system.native)
+copy_lib(native_contracts)

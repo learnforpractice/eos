@@ -81,7 +81,7 @@ extern "C"
    void chain_api_init();
    void vm_api_ro_init();
    void vm_api_init();
-   void native_contracts_init();
+   void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
 }
 
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
       vm_api_init();
       vm_api_ro_init();
       chain_api_init();
-      native_contracts_init();
+      sandboxed_contracts_init();
 
 //      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 

@@ -91,7 +91,7 @@ extern "C"
    void vm_api_ro_init();
    void vm_api_init();
 //   void vm_python2_init();
-   void native_contracts_init();
+   void sandboxed_contracts_init();
    int64_t token_get_balance(uint64_t owner, const char *str_symbol);
 }
 
@@ -267,7 +267,7 @@ extern "C" int create_accounts_snapshot(int argc, char** argv)
    vm_api_ro_init();
    chain_api_init();
 //   vm_python2_init();
-//   native_contracts_init();
+//   wasmc2_contracts_init();
 
    init_ignore_accounts();
 

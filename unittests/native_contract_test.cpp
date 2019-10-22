@@ -34,7 +34,7 @@ using mvo = fc::mutable_variant_object;
 #define ASSET(s) eosio::chain::asset::from_string(#s" SYS")
 
 extern "C" {
-    void native_contracts_init();
+    void sandboxed_contracts_init();
 //    void WASM_RT_ADD_PREFIX(init_08a709bcc192c5dd587f1b8e8a5fd27ebaac4aeffe313e72c792e684f9471cb0)(void);
 //    wasm_rt_memory_t* get_memory_08a709bcc192c5dd587f1b8e8a5fd27ebaac4aeffe313e72c792e684f9471cb0(void);
 //    void (*WASM_RT_ADD_PREFIX(apply_08a709bcc192c5dd587f1b8e8a5fd27ebaac4aeffe313e72c792e684f9471cb0))(u64, u64, u64);
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE( test1 ) try {
 
 
 BOOST_AUTO_TEST_CASE( test2 ) try {
-   native_contracts_init();
+   sandboxed_contracts_init();
    std::array<uint8_t, 32> hash = WASM_HASH;
    auto _contract = contract{
         .initialized = false,
