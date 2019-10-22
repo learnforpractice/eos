@@ -1334,6 +1334,10 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
    const auto& tester1_account = account_name("tester1");
    c.create_accounts( {tester1_account} );
    c.produce_block();
+
+   c.set_code( config::system_account_name, contracts::eosio_system_wasm_latest() );
+   c.set_abi( config::system_account_name, contracts::eosio_system_abi_latest().data() );
+
    /*
    def apply(a, b, c):
       print('helloworld from pythonvm')
@@ -1356,8 +1360,8 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
    ilog("+++++++++++");
 
    BOOST_CHECK_EXCEPTION(  c.set_code( tester1_account, pythonvm_code, 1, nullptr ),
-                           set_exact_code,
-                           fc_exception_message_is( "pythonvn not activated!" ) );
+                           invalid_contract_vm_type,
+                           fc_exception_message_is( "pythonvm not activated!" ) );
    ilog("+++++++++++");
 
    const auto& pfm = c.control->get_protocol_feature_manager();
@@ -1366,6 +1370,17 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
    ilog("+++++++++++");
 
    c.preactivate_protocol_features( {*d} );
+
+   c.produce_block();
+
+   BOOST_CHECK_EXCEPTION(  c.set_code( tester1_account, pythonvm_code, 1, nullptr ),
+                           invalid_contract_vm_version,
+                           fc_exception_message_is( "python vm with version 0 not activated" ) );
+
+   c.push_action( N(eosio), N(activatevm), N(eosio), mutable_variant_object()
+      ("vmtype", 1)
+      ("vmversion", 0)
+   );
    c.produce_block();
 
    c.set_code( tester1_account, pythonvm_code, 1, nullptr );

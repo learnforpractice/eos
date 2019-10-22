@@ -26,6 +26,10 @@
 #include <fstream>
 using namespace std;
 
+extern "C" {
+   bool system_contract_is_vm_activated( uint8_t vmtype, uint8_t vmversion );
+}
+
 namespace eosio { namespace chain {
 
 
@@ -141,17 +145,19 @@ void apply_eosio_setcode(apply_context& context) {
    auto  act = context.get_action().data_as<setcode>();
    context.require_authorization(act.account);
 
-   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1, invalid_contract_vm_type, "code should be 0" );
+   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1, invalid_contract_vm_type, "invalid vm type" );
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
 
    if (act.vmtype == 1) {
       //only allow privileged account use python smart contract when python vm is not activated
       if (!account.is_privileged()) {
          EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
+         bool activated = system_contract_is_vm_activated(act.vmtype, act.vmversion);
+         EOS_ASSERT( activated, invalid_contract_vm_version, "python vm with version ${v} not activated", ("v",act.vmversion) );
       }
+   } else if (act.vmtype == 0) {
+      EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
    }
-
-   EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
 
    fc::sha256 code_hash; /// default is the all zeros hash
 

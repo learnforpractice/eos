@@ -169,13 +169,7 @@ int vm_python2_setcode(uint64_t account) {
 
 
 void vm_python2_init(struct vm_python_info *python_info) {
-   static int initialized = 0;
-   printf("+++++++vm_python2_init %d\n", initialized);
-   if (initialized) {
-      return;
-   }
-   initialized = 1;
-
+   printf("+++++++vm_python2_init\n");
    EOSIO_ASSERT(python_info->memory_size%VM_PAGE_SIZE == 0, "wrong memory size");
 
    python_info->apply = wasm2c_python_vm_apply;
