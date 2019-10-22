@@ -639,7 +639,7 @@ void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
       memcpy(&account, &raw_data[i], 8);
 //      elog("++++${n}", ("n", name(account)));
       db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), account, (char *)&raw_data[i+8], 34);
-      if ((i/42) % 100000 == 0) {
+      if ((i/42+1) % 100000 == 0) {
          vmilog("+++++initialize genesis accounts %d\n", i);
       }
    }

@@ -2553,7 +2553,7 @@ namespace eosio {
 
       dispatcher->recv_block(c, blk_id, blk_num);
       fc::microseconds age( fc::time_point::now() - msg->timestamp);
-      peer_ilog(c, "received signed_block : #${n} block age in secs = ${age}",
+      peer_dlog(c, "received signed_block : #${n} block age in secs = ${age}",
               ("n",blk_num)("age",age.to_seconds()));
 
       go_away_reason reason = fatal_other;
