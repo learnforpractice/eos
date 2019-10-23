@@ -125,7 +125,7 @@ static void *offset_to_ptr_s(u32 offset, u32 size) {
     vm_load_memory(offset, size);
     return memory->data + offset;
 }
-
+#define MAX_C_STRING_SIZE 4096
 static void *offset_to_char_ptr_s(u32 offset) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
     int count = 0;
@@ -135,7 +135,7 @@ static void *offset_to_char_ptr_s(u32 offset) {
             return memory->data + offset; 
         }
         count += 1;
-        EOSIO_ASSERT(count < 1024, "c string to large then 1024 bytes long");
+        EOSIO_ASSERT(count < MAX_C_STRING_SIZE, "c string to large then 1024 bytes long");
     }
     EOSIO_ASSERT(0, "not a valid c string!");
     return NULL;
