@@ -47,4 +47,4 @@ def gen_frozen_module(name):
                 f.write('\n')
         f.write('\n};')
 gen_frozen_module('db')
-gen_frozen_module('mi')
+#gen_frozen_module('mi')

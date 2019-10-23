@@ -43,7 +43,7 @@ void python_init(void) {
         }
 #endif
         //import io, 
-        PyRun_SimpleString("import struct, hashlib, db, sys, base58, mi");
+        PyRun_SimpleString("import struct, hashlib, db, sys, base58");
 //        PyRun_SimpleString("print('++hello,world')");
         if (PyErr_Occurred()) {
             PyErr_Print();
