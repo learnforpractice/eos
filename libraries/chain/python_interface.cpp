@@ -119,7 +119,7 @@ python_interface::python_interface(const chainbase::database& d): db(d) {
 
     vm_python2_init(&info);
     uint16_t version = (uint16_t)(info.vmtype<<8) | (uint16_t)info.vmversion;
-    elog("+++++++++++${n1}, ${n2}", ("n1", info.vmtype)("n2", info.vmversion));
+//    elog("+++++++++++${n1}, ${n2}", ("n1", info.vmtype)("n2", info.vmversion));
     vm_python_memory_map[version] = memory;
     vm_python_map[version] = info;
 
@@ -166,7 +166,7 @@ static uint64_t get_microseconds() {
 //Calls apply or error on a given code
 void python_interface::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
-    elog("+++++++++++${n1}, ${n2}", ("n1", vm_type)("n2", vm_version));
+//    elog("+++++++++++${n1}, ${n2}", ("n1", vm_type)("n2", vm_version));
     auto itr = vm_python_memory_map.find(version);
     EOS_ASSERT( vm_python_memory_map.end() != itr, wasm_execution_error, "vm memory not found!" );
     itr->second->counter += 1;
