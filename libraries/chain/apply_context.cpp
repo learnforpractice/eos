@@ -118,6 +118,8 @@ void apply_context::exec_one()
                            get_chain_api()->resume_billing_timer();
                         });
                         apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
+                     } else {
+                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
                      }
                   }
                } else if (receiver_account->vm_type == 1) {
