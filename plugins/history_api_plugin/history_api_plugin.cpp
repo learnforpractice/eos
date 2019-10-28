@@ -44,6 +44,7 @@ void history_api_plugin::plugin_startup() {
       CHAIN_RO_CALL(get_actions),
       CHAIN_RO_CALL(get_transaction),
       CHAIN_RO_CALL(get_key_accounts),
+      CHAIN_RO_CALL(get_key_accounts_ex),
       CHAIN_RO_CALL(get_controlled_accounts)
    });
 }

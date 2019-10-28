@@ -21,7 +21,8 @@ namespace eosio { namespace chain {
 
    class authorization_manager;
    class python_interface;
-
+   class db_interface;
+   
    namespace resource_limits {
       class resource_limits_manager;
    };
@@ -308,6 +309,7 @@ namespace eosio { namespace chain {
          const apply_handler* find_apply_handler( account_name contract, scope_name scope, action_name act )const;
          wasm_interface& get_wasm_interface();
          python_interface& get_python_interface();
+         db_interface& get_db_interface();
 
          optional<abi_serializer> get_abi_serializer( account_name n, const fc::microseconds& max_serialization_time )const {
             if( n.good() ) {

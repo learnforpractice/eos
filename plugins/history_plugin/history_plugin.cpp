@@ -9,6 +9,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/signals2/connection.hpp>
+#include <db_interface.hpp>
 
 namespace eosio {
    using namespace chain;
@@ -142,6 +143,7 @@ namespace eosio {
          std::set<filter_entry> filter_out;
          chain_plugin*          chain_plug = nullptr;
          fc::optional<scoped_connection> applied_transaction_connection;
+         map<chain::public_key_type, vector<chain::account_name>> key_accounts_map;
 
           bool filter(const action_trace& act) {
             bool pass_on = false;
@@ -358,6 +360,8 @@ namespace eosio {
    }
 
    void history_plugin::plugin_startup() {
+      my->chain_plug->chain().get_db_interface().init_key_accounts();
+      ilog("++++++++++++++++history_plugin started");
    }
 
    void history_plugin::plugin_shutdown() {
@@ -562,6 +566,42 @@ namespace eosio {
          for (auto obj = range.first; obj != range.second; ++obj)
             accounts.insert(obj->name);
          return {vector<account_name>(accounts.begin(), accounts.end())};
+      }
+
+      read_only::get_key_accounts_ex_results read_only::get_key_accounts_ex(const get_key_accounts_params& params) const {
+         std::set<account_name> accounts;
+         std::vector<int> active_flags;
+         const auto& db = history->chain_plug->chain().db();
+         const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
+         auto range = pub_key_idx.equal_range( params.public_key );
+         int count = 0;
+         for (auto obj = range.first; obj != range.second; ++obj) {
+            accounts.insert(obj->name);
+            active_flags.push_back(1);
+            count += 1;
+            if (count > 100) {
+               break;
+            }
+         }
+         auto& dbif = history->chain_plug->chain().get_db_interface();
+         vector<account_name> v = dbif.get_genesis_accounts(params.public_key);
+         count = 0;
+         for (auto& a : v) {
+            if (std::find(accounts.begin(), accounts.end(), a) == accounts.end()) {
+               accounts.insert(a);
+               if (dbif.is_account(a)) {
+                  active_flags.push_back(1);
+               } else {
+                  active_flags.push_back(0);
+               }
+            }
+            count += 1;
+            if (count > 100) {
+               break;
+            }
+         }
+         
+         return {vector<account_name>(accounts.begin(), accounts.end()), vector<int>(active_flags.begin(), active_flags.end())};
       }
 
       read_only::get_controlled_accounts_results read_only::get_controlled_accounts(const get_controlled_accounts_params& params) const {

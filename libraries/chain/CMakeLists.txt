@@ -90,7 +90,7 @@ target_include_directories( eosio_chain
                               PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
-                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
+                              PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
                               PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
                               PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
                         )

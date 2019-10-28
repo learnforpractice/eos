@@ -226,6 +226,7 @@ struct controller_impl {
    fork_database                  fork_db;
    wasm_interface                 wasmif;
    python_interface               pythonif;
+   db_interface                   dbif;
    resource_limits_manager        resource_limits;
    authorization_manager          authorization;
    protocol_feature_manager       protocol_features;
@@ -309,6 +310,7 @@ struct controller_impl {
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime ),
     pythonif( db ),
+    dbif( db ), 
     resource_limits( db ),
     authorization( s, db ),
     protocol_features( std::move(pfs) ),
@@ -971,11 +973,10 @@ struct controller_impl {
                                                                              conf.genesis.initial_timestamp );
       if (conf.uuos_mainnet) {
          string s = conf.genesis_accounts_file.string();
-         db_interface d(db);
          if (!s.empty()) {
-            d.init_accounts(s);
+            dbif.init_accounts(s);
          } else {
-            d.init_accounts();
+            dbif.init_accounts();
          }
       }
    }
@@ -2984,6 +2985,11 @@ wasm_interface& controller::get_wasm_interface() {
 python_interface& controller::get_python_interface() {
    return my->pythonif;
 }
+
+db_interface& controller::get_db_interface() {
+   return my->dbif;
+}
+
 
 const account_object& controller::get_account( account_name name )const
 { try {

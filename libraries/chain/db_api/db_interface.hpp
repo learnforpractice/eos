@@ -613,6 +613,9 @@ class db_interface {
       void init_accounts(const std::vector<uint8_t>& raw_data);
       void init_accounts(const string& genesis_accounts_file);
 
+      vector<account_name> get_genesis_accounts(chain::public_key_type public_key);
+      void init_key_accounts();
+
    private:
 
       void validate_referenced_accounts( const transaction& t )const;
@@ -650,6 +653,8 @@ class db_interface {
       vector<action>                      _inline_actions; ///< queued inline messages
       vector<action>                      _cfa_inline_actions; ///< queued inline messages
       std::string                  _pending_console_output;
+
+      map<chain::public_key_type, vector<chain::account_name>> key_accounts_map;
       //bytes                               _cached_trx;
 };
 

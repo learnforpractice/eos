@@ -24,6 +24,15 @@ using namespace fc;
 extern "C" void execution_start();
 extern "C" void execution_end();
 
+#include "../../../unittests/incbin.h"
+INCBIN(Accounts, "genesis_accounts.bin");
+
+/*
+ * // const unsigned char gAccountsData[];
+ * // const unsigned char *const <prefix>FooEnd;
+ * // const unsigned int gAccountsSize;
+*/
+
 namespace eosio { namespace chain {
 
 #include <vm_api/vm_api.h>
@@ -36,7 +45,45 @@ idx128(*this),
 idx256(*this),
 idx_double(*this),
 idx_long_double(*this) {
+}
 
+void db_interface::init_key_accounts() {
+   if (key_accounts_map.size() > 0) {
+      return;
+   }
+   int itr = db_upperbound_i64(N(eosio), N(eosio), N(gaccounts), 0);
+   if (itr >= 0) {
+      int i = 0;
+      while (itr >= 0) {
+         uint64_t primary = 0;
+         vector<char> key_buffer(34);
+         db_get_i64_ex(itr, primary, key_buffer.data(), 34);
+         auto pub_key = fc::raw::unpack<public_key_type>(key_buffer);
+         auto map_itr = key_accounts_map.find(pub_key);
+         if (map_itr == key_accounts_map.end()) {
+            key_accounts_map[pub_key] = {account_name(primary)};
+         } else {
+            key_accounts_map[pub_key].emplace_back(account_name(primary));
+         }
+         itr = db_next_i64(itr, primary);
+         i += 1;
+      };
+   } else {
+      for (int i=0;i<gAccountsSize;i+=42) {
+         uint64_t account;
+         memcpy(&account, &gAccountsData[i], 8);
+         account_name name(account);
+         vector<char> key((char *)&gAccountsData[i+8], (char *)&gAccountsData[i+42]);
+         auto pub_key = fc::raw::unpack<chain::public_key_type>(key);
+         auto itr = key_accounts_map.find(pub_key);
+         if (itr == key_accounts_map.end()) {
+            key_accounts_map[pub_key] = {name};
+         } else {
+            key_accounts_map[pub_key].emplace_back(name);
+         }
+      }
+   }
+   vmilog("+++++++++++init key accounts done!\n");
 }
 
 extern "C" {
@@ -615,13 +662,16 @@ int db_interface::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
    return key256val_cache.cache_table( *tab );
 }
 
-#include "../../../unittests/incbin.h"
-INCBIN(Accounts, "genesis_accounts.bin");
-/*
- * // const unsigned char gAccountsData[];
- * // const unsigned char *const <prefix>FooEnd;
- * // const unsigned int gAccountsSize;
-*/
+vector<account_name> db_interface::get_genesis_accounts(chain::public_key_type public_key) {
+   auto itr = key_accounts_map.find(public_key);
+   if (itr == key_accounts_map.end()) {
+      return {};
+   }
+   if (itr->second.size() <= 100) {
+      return itr->second;
+   }
+   return vector<account_name>(itr->second.begin(), itr->second.begin()+100);
+}
 
 void db_interface::init_accounts() {
    init_accounts(gAccountsData, gAccountsSize);
@@ -637,6 +687,16 @@ void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
    for (int i=0;i<raw_data.size();i+=42) {
       uint64_t account;
       memcpy(&account, &raw_data[i], 8);
+
+      account_name name(account);
+      vector<char> key((char *)&raw_data[i+8], (char *)&raw_data[i+42]);
+      auto pub_key = fc::raw::unpack<chain::public_key_type>(key);
+      auto itr = key_accounts_map.find(pub_key);
+      if (itr == key_accounts_map.end()) {
+         key_accounts_map[pub_key] = {name};
+      } else {
+         key_accounts_map[pub_key].emplace_back(name);
+      }
 //      elog("++++${n}", ("n", name(account)));
       db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), account, (char *)&raw_data[i+8], 34);
       if ((i/42+1) % 100000 == 0) {
