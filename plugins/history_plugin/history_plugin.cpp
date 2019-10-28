@@ -568,7 +568,7 @@ namespace eosio {
          return {vector<account_name>(accounts.begin(), accounts.end())};
       }
 
-      read_only::get_key_accounts_ex_results read_only::get_key_accounts_ex(const get_key_accounts_params& params) const {
+      read_only::get_key_accounts_ex_results read_only::get_key_accounts_ex(const get_key_accounts_ex_params& params) const {
          std::set<account_name> accounts;
          std::vector<int> active_flags;
          const auto& db = history->chain_plug->chain().db();

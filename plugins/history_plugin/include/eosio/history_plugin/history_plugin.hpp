@@ -93,11 +93,15 @@ class read_only {
       };
       get_key_accounts_results get_key_accounts(const get_key_accounts_params& params) const;
 
+      struct get_key_accounts_ex_params {
+         chain::public_key_type     public_key;
+      };
+
       struct get_key_accounts_ex_results {
          vector<chain::account_name> account_names;
          vector<int> active_flags;
       };
-      get_key_accounts_ex_results get_key_accounts_ex(const get_key_accounts_params& params) const;
+      get_key_accounts_ex_results get_key_accounts_ex(const get_key_accounts_ex_params& params) const;
 
 
       struct get_controlled_accounts_params {
@@ -159,6 +163,7 @@ FC_REFLECT(eosio::history_apis::read_only::get_transactions_results, (transactio
 */
 FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_params, (public_key) )
 FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_results, (account_names) )
+FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_ex_params, (public_key) )
 FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_ex_results, (account_names)(active_flags) )
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_params, (controlling_account) )
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_results, (controlled_accounts) )
