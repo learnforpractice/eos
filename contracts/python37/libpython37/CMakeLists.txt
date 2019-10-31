@@ -197,6 +197,22 @@ ${CMAKE_SOURCE_DIR}/mi/mi.cpp
 ./dummy.c
 ./dummy_libc.c
 ./dummy_pthread.c
+
+../ultrajson/python/ujson.c
+../ultrajson/python/objToJSON.c
+../ultrajson/python/JSONtoObj.c
+../ultrajson/lib/ultrajsonenc.c
+../ultrajson/lib/ultrajsondec.c
+../ultrajson/lib/dconv_wrapper.cc
+
+../ultrajson/deps/double-conversion/double-conversion/bignum.cc
+../ultrajson/deps/double-conversion/double-conversion/bignum-dtoa.cc
+../ultrajson/deps/double-conversion/double-conversion/cached-powers.cc
+../ultrajson/deps/double-conversion/double-conversion/diy-fp.cc
+../ultrajson/deps/double-conversion/double-conversion/double-conversion.cc
+../ultrajson/deps/double-conversion/double-conversion/fast-dtoa.cc
+../ultrajson/deps/double-conversion/double-conversion/fixed-dtoa.cc
+../ultrajson/deps/double-conversion/double-conversion/strtod.cc
 )
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")
@@ -235,6 +251,8 @@ target_include_directories(python37
    ${CMAKE_CURRENT_SOURCE_DIR}/python37/Include
    ${CMAKE_CURRENT_BINARY_DIR}
    ${CMAKE_SOURCE_DIR}/mi
+   ${CMAKE_CURRENT_SOURCE_DIR}/../ultrajson/lib
+   ../ultrajson/deps/double-conversion/double-conversion
 )
 
 # add_library( frozen

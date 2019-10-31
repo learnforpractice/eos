@@ -33,6 +33,7 @@ extern PyObject* PyInit__bisect(void);
 extern PyObject* PyInit__datetime(void);
 extern PyObject* PyInit__heapq(void);
 extern PyObject* PyInit__json(void);
+extern PyObject* PyInit_ujson(void);
 extern PyObject* PyInit__csv(void);
 extern PyObject* PyInit_unicodedata(void);
 extern PyObject* PyInit__pickle(void);
@@ -106,6 +107,7 @@ struct _inittab _PyImport_Inittab[] = {
 {"_bisect", PyInit__bisect},
 //{"_datetime", PyInit__datetime},
 //{"_heapq", PyInit__heapq},
+{"ujson", PyInit_ujson},
 #if 0
 {"_json", PyInit__json},
 {"_csv", PyInit__csv},
