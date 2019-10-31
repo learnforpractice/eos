@@ -569,26 +569,27 @@ namespace eosio {
       }
 
       read_only::get_key_accounts_ex_results read_only::get_key_accounts_ex(const get_key_accounts_ex_params& params) const {
-         std::set<account_name> accounts;
+         std::vector<account_name> accounts;
          std::vector<int> active_flags;
          const auto& db = history->chain_plug->chain().db();
          const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
          auto range = pub_key_idx.equal_range( params.public_key );
          int count = 0;
          for (auto obj = range.first; obj != range.second; ++obj) {
-            accounts.insert(obj->name);
-            active_flags.push_back(1);
-            count += 1;
-            if (count > 100) {
-               break;
+            if (std::find(accounts.begin(), accounts.end(), obj->name) == accounts.end()) {
+               accounts.push_back(obj->name);
+               active_flags.push_back(1);
+               count += 1;
+               if (count > 100) {
+                  break;
+               }
             }
          }
          auto& dbif = history->chain_plug->chain().get_db_interface();
          vector<account_name> v = dbif.get_genesis_accounts(params.public_key);
-         count = 0;
          for (auto& a : v) {
             if (std::find(accounts.begin(), accounts.end(), a) == accounts.end()) {
-               accounts.insert(a);
+               accounts.push_back(a);
                if (dbif.is_account(a)) {
                   active_flags.push_back(1);
                } else {
