@@ -36,3 +36,6 @@
 [submodule "externals/boost"]
 	path = externals/boost
 	url = https://github.com/uuosio/boost
+[submodule "contracts/python37/msgpack"]
+	path = contracts/python37/msgpack
+	url = https://github.com/msgpack/msgpack-python
