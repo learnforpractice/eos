@@ -152,6 +152,16 @@ either the account authorized the action or the action's net effect on RAM usage
 */
             {}
          } )
+	 (  builtin_protocol_feature_t::pythonvm, builtin_protocol_feature_spec{
+            "PYTHONVM",
+            fc::variant("7038ce787c6483212925640412f60458702e96a478c61f8a10ba6db2ae9a2175").as<digest_type>(),
+            {}
+         } )
+         (  builtin_protocol_feature_t::ethereum_vm, builtin_protocol_feature_spec{
+            "ETHEREUM_VM",
+            fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
+            {}
+         } )
          (  builtin_protocol_feature_t::webauthn_key, builtin_protocol_feature_spec{
             "WEBAUTHN_KEY",
             fc::variant("927fdf78c51e77a899f2db938249fb1f8bb38f4e43d9c1f75b190492080cbc34").as<digest_type>(),
@@ -195,16 +205,6 @@ Builtin protocol feature: CODE_VERSION
 
 Allows contracts to read code version of any account
 */
-            {}
-         } )
-         (  builtin_protocol_feature_t::pythonvm, builtin_protocol_feature_spec{
-            "PYTHONVM",
-            fc::variant("7038ce787c6483212925640412f60458702e96a478c61f8a10ba6db2ae9a2175").as<digest_type>(),
-            {}
-         } )
-         (  builtin_protocol_feature_t::ethereum_vm, builtin_protocol_feature_spec{
-            "ETHEREUM_VM",
-            fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
             {}
          } )
          (  builtin_protocol_feature_t::native_eosio_system, builtin_protocol_feature_spec{
