@@ -152,9 +152,10 @@ namespace eosio {
             }
             if (filter_on.find({ act.receiver, 0, 0 }) != filter_on.end()) {
               pass_on = true;
-            }
-            if (filter_on.find({ act.receiver, act.act.name, 0 }) != filter_on.end()) {
+            } else if (filter_on.find({ act.receiver, act.act.name, 0 }) != filter_on.end()) {
               pass_on = true;
+            } else if (act.act.account == N(eosio.token) && act.act.name == N(transfer)) {
+               pass_on = true;
             }
             for (const auto& a : act.act.authorization) {
               if (filter_on.find({ act.receiver, 0, a.actor }) != filter_on.end()) {
