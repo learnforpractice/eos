@@ -158,6 +158,8 @@ namespace eosio {
          bool bypass_filter = false;
          std::set<filter_entry> filter_on;
          std::set<filter_entry> filter_out;
+         bool filter_transfer = false;
+
          chain_plugin*          chain_plug = nullptr;
          fc::optional<scoped_connection> applied_transaction_connection;
          map<chain::public_key_type, vector<chain::account_name>> key_accounts_map;
@@ -173,7 +175,7 @@ namespace eosio {
               pass_on = true;
             }
             
-            if (chain_plug->chain().is_uuos_mainnet()) {
+            if (filter_transfer) {
                if (act.act.account == N(eosio.token) && act.act.name == N(transfer)) {
                   pass_on = true;
                }
@@ -330,6 +332,10 @@ namespace eosio {
             ("filter-out,F", bpo::value<vector<string>>()->composing(),
              "Do not track actions which match receiver:action:actor. Action and Actor both blank excludes all from Reciever. Actor blank excludes all from reciever:action. Receiver may not be blank.")
             ;
+      cfg.add_options()
+         ("filter-transfer", bpo::bool_switch()->default_value(false),
+          "filter eosio.token transfer action \n")
+          ;
    }
 
    void history_plugin::plugin_initialize(const variables_map& options) {
@@ -363,6 +369,9 @@ namespace eosio {
                my->filter_out.insert( fe );
             }
          }
+
+         my->filter_transfer = options.at( "filter-transfer" ).as<bool>();
+
 
          my->chain_plug = app().find_plugin<chain_plugin>();
          EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
