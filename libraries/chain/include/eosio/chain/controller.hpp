@@ -271,6 +271,7 @@ namespace eosio { namespace chain {
          bool skip_trx_checks()const;
 
          bool contracts_console()const;
+         bool is_uuos_mainnet()const;
 
          chain_id_type get_chain_id()const;
 

@@ -2955,6 +2955,11 @@ bool controller::contracts_console()const {
    return my->conf.contracts_console;
 }
 
+bool controller::is_uuos_mainnet()const {
+   return my->conf.uuos_mainnet;
+}
+
+
 chain_id_type controller::get_chain_id()const {
    return my->chain_id;
 }
