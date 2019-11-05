@@ -1151,7 +1151,7 @@ chain_apis::read_write::read_write(controller& db, const fc::microseconds& abi_s
 }
 
 void chain_apis::read_write::validate() const {
-   EOS_ASSERT( db.get_read_mode() != chain::db_read_mode::READ_ONLY, missing_chain_api_plugin_exception, "Not allowed, node in read-only mode" );
+   EOS_ASSERT( !db.in_immutable_mode(), missing_chain_api_plugin_exception, "Not allowed, node in read-only mode" );
 }
 
 void chain_plugin::accept_block(const signed_block_ptr& block ) {
@@ -1451,7 +1451,8 @@ read_only::get_info_results read_only::get_info(const read_only::get_info_params
       //__builtin_popcountll(db.get_dynamic_global_properties().recent_slots_filled) / 64.0,
       app().version_string(),
       db.fork_db_pending_head_block_num(),
-      db.fork_db_pending_head_block_id()
+      db.fork_db_pending_head_block_id(),
+      app().full_version_string()
    };
 }
 
@@ -1636,7 +1637,7 @@ string convert_to_string(const chain::key256_t& source, const string& key_type, 
          return std::string(val);
       }
       EOS_ASSERT( false, chain_type_exception, "Incompatible key_type and encode_type for key256_t next_key" );
-     
+
    } FC_RETHROW_EXCEPTIONS(warn, "Could not convert ${desc} source '${source}' to string.", ("desc", desc)("source",source) )
 }
 
@@ -2349,9 +2350,9 @@ read_only::get_account_results read_only::get_account( const get_account_params&
    result.last_code_update = accnt_metadata_obj.last_code_update;
    result.created          = accnt_obj.creation_date;
 
-   bool grelisted = db.is_resource_greylisted(result.account_name);
-   result.net_limit = rm.get_account_net_limit_ex( result.account_name, !grelisted);
-   result.cpu_limit = rm.get_account_cpu_limit_ex( result.account_name, !grelisted);
+   uint32_t greylist_limit = db.is_resource_greylisted(result.account_name) ? 1 : config::maximum_elastic_resource_multiplier;
+   result.net_limit = rm.get_account_net_limit_ex( result.account_name, greylist_limit).first;
+   result.cpu_limit = rm.get_account_cpu_limit_ex( result.account_name, greylist_limit).first;
    result.ram_usage = rm.get_account_ram_usage( result.account_name );
 
    const auto& permissions = d.get_index<permission_index,by_owner>();

@@ -380,9 +380,7 @@ namespace eosio {
    constexpr auto     def_send_buffer_size_mb = 4;
    constexpr auto     def_send_buffer_size = 1024*1024*def_send_buffer_size_mb;
    constexpr auto     def_max_write_queue_size = def_send_buffer_size*10;
-   constexpr boost::asio::chrono::milliseconds def_read_delay_for_full_write_queue{100};
    constexpr auto     def_max_trx_in_progress_size = 100*1024*1024; // 100 MB
-   constexpr auto     def_max_read_delays = 100; // number of times read_delay_timer started without any reads
    constexpr auto     def_max_consecutive_rejected_blocks = 3; // num of rejected blocks before disconnect
    constexpr auto     def_max_consecutive_immediate_connection_close = 9; // back off if client keeps closing
    constexpr auto     def_max_peer_block_ids_per_connection = 100*1024; // if we reach this many then the connection is spaming us, disconnect
@@ -592,10 +590,6 @@ namespace eosio {
 
       std::mutex                            response_expected_timer_mtx;
       boost::asio::steady_timer             response_expected_timer;
-
-      uint16_t                              read_delay_count = 0; // only accessed from strand
-      std::mutex                            read_delay_timer_mtx;
-      boost::asio::steady_timer             read_delay_timer;
 
       std::atomic<go_away_reason>           no_retry{no_reason};
 
@@ -822,7 +816,6 @@ namespace eosio {
         socket( new tcp::socket( my_impl->thread_pool->get_executor() ) ),
         connection_id( ++my_impl->current_connection_id ),
         response_expected_timer( my_impl->thread_pool->get_executor() ),
-        read_delay_timer( my_impl->thread_pool->get_executor() ),
         last_handshake_recv(),
         last_handshake_sent()
    {
@@ -836,7 +829,6 @@ namespace eosio {
         socket( new tcp::socket( my_impl->thread_pool->get_executor() ) ),
         connection_id( ++my_impl->current_connection_id ),
         response_expected_timer( my_impl->thread_pool->get_executor() ),
-        read_delay_timer( my_impl->thread_pool->get_executor() ),
         last_handshake_recv(),
         last_handshake_sent()
    {
@@ -958,11 +950,6 @@ namespace eosio {
       fc_ilog( logger, "closing '${a}', ${p}", ("a", self->peer_address())("p", self->peer_name()) );
       fc_dlog( logger, "canceling wait on ${p}", ("p", self->peer_name()) ); // peer_name(), do not hold conn_mtx
       self->cancel_wait();
-      {
-         std::lock_guard<std::mutex> g( self->read_delay_timer_mtx );
-         self->read_delay_timer.cancel();
-         self->read_delay_count = 0;
-      }
 
       if( reconnect ) {
          my_impl->start_conn_timer( std::chrono::milliseconds( 100 ), connection_wptr() );
@@ -1171,6 +1158,11 @@ namespace eosio {
             c->strand.post( [c, sb{std::move(sb)}, trigger_send]() {
                c->enqueue_block( sb, trigger_send, true );
             });
+         } else {
+            c->strand.post( [c, num]() {
+               peer_ilog( c, "enqueue sync, unable to fetch block ${num}, sending go away: benign_other", ("num", num) );
+               c->enqueue( go_away_message( benign_other ) );
+            });
          }
       });
 
@@ -1246,7 +1238,7 @@ namespace eosio {
       queue_write(send_buffer,trigger_send, priority,
                   [conn{std::move(self)}, close_after_send](boost::system::error_code ec, std::size_t ) {
                         if (close_after_send != no_reason) {
-                           fc_elog( logger, "sent a go away message: ${r}, closing connection to ${p}",
+                           fc_ilog( logger, "sent a go away message: ${r}, closing connection to ${p}",
                                     ("r", reason_str(close_after_send))("p", conn->peer_name()) );
                            conn->close();
                            return;
@@ -1379,6 +1371,9 @@ namespace eosio {
       uint32_t lib_block_num = 0;
       std::tie( lib_block_num, std::ignore, fork_head_block_num,
                 std::ignore, std::ignore, std::ignore ) = my_impl->get_chain_info();
+
+      fc_dlog( logger, "sync_last_requested_num: ${r}, sync_next_expected_num: ${e}, sync_known_lib_num: ${k}, sync_req_span: ${s}",
+               ("r", sync_last_requested_num)("e", sync_next_expected_num)("k", sync_known_lib_num)("s", sync_req_span) );
 
       if( fork_head_block_num < sync_last_requested_num && sync_source && sync_source->current() ) {
          fc_ilog( logger, "ignoring request, head is ${h} last req = ${r} source is ${p}",
@@ -1712,13 +1707,13 @@ namespace eosio {
       stages state = sync_state;
       fc_dlog( logger, "state ${s}", ("s", stage_str( state )) );
       if( state == lib_catchup ) {
+         fc_dlog( logger, "sync_last_requested_num: ${r}, sync_next_expected_num: ${e}, sync_known_lib_num: ${k}, sync_req_span: ${s}",
+                  ("r", sync_last_requested_num)("e", sync_next_expected_num)("k", sync_known_lib_num)("s", sync_req_span) );
          if (blk_num != sync_next_expected_num) {
-            if( ++c->consecutive_rejected_blocks > def_max_consecutive_rejected_blocks ) {
-               auto sync_next_expected = sync_next_expected_num;
-               g_sync.unlock();
-               fc_wlog( logger, "expected block ${ne} but got ${bn}, from connection: ${p}",
-                        ("ne", sync_next_expected)( "bn", blk_num )( "p", c->peer_name() ) );
-            }
+            auto sync_next_expected = sync_next_expected_num;
+            g_sync.unlock();
+            fc_dlog( logger, "expected block ${ne} but got ${bn}, from connection: ${p}",
+                     ("ne", sync_next_expected)( "bn", blk_num )( "p", c->peer_name() ) );
             return;
          }
          sync_next_expected_num = blk_num + 1;
@@ -1894,7 +1889,6 @@ namespace eosio {
    void dispatch_manager::bcast_block(const block_state_ptr& bs) {
       fc_dlog( logger, "bcast block ${b}", ("b", bs->block_num) );
 
-      if( my_impl->sync_master->syncing_with_peer() ) return;
       bool have_connection = false;
       for_each_block_connection( [&have_connection]( auto& cp ) {
          peer_dlog( cp, "socket_is_open ${s}, connecting ${c}, syncing ${ss}",
@@ -2266,47 +2260,13 @@ namespace eosio {
             }
          };
 
-         if( buffer_queue.write_queue_size() > def_max_write_queue_size ||
-             trx_in_progress_size > def_max_trx_in_progress_size )
-         {
-            // too much queued up, reschedule
-            uint32_t write_queue_size = buffer_queue.write_queue_size();
-            uint32_t trx_in_progress_size = this->trx_in_progress_size.load();
-            if( write_queue_size > def_max_write_queue_size ) {
-               peer_wlog( this, "write_queue full ${s} bytes", ("s", write_queue_size) );
-            } else {
-               peer_wlog( this, "max trx in progress ${s} bytes", ("s", trx_in_progress_size) );
-            }
-            if( write_queue_size > 2*def_max_write_queue_size ||
-                trx_in_progress_size > 2*def_max_trx_in_progress_size ||
-                ++read_delay_count > def_max_read_delays )
-            {
-               fc_elog( logger, "queues over full, giving up on connection, closing connection to: ${p}",
-                        ("p", peer_name()) );
-               fc_elog( logger, "  write_queue ${s} bytes", ("s", write_queue_size) );
-               fc_elog( logger, "  max trx in progress ${s} bytes", ("s", trx_in_progress_size) );
-               close( false );
-               return;
-            }
-            std::lock_guard<std::mutex> g( read_delay_timer_mtx );
-            read_delay_timer.cancel();
-            read_delay_timer.expires_from_now( def_read_delay_for_full_write_queue );
-            connection_wptr weak_conn = shared_from_this();
-            read_delay_timer.async_wait( boost::asio::bind_executor(strand, [weak_conn]( boost::system::error_code ec ) {
-               if( ec == boost::asio::error::operation_aborted ) return;
-               auto conn = weak_conn.lock();
-               if( !conn ) return;
-               if( !ec ) {
-                  conn->start_read_message();
-               } else {
-                  fc_elog( logger, "Read delay timer error: ${e}, closing connection: ${p}",
-                           ("e", ec.message())("p",conn->peer_name()) );
-                  conn->close();
-               }
-            } ) );
+         uint32_t write_queue_size = buffer_queue.write_queue_size();
+         if( write_queue_size > def_max_write_queue_size ) {
+            fc_elog( logger, "write queue full ${s} bytes, giving up on connection, closing connection to: ${p}",
+                     ("s", write_queue_size)("p", peer_name()) );
+            close( false );
             return;
          }
-         read_delay_count = 0;
 
          boost::asio::async_read( *socket,
             pending_message_buffer.get_buffer_sequence_for_boost_async_read(), completion_handler,
@@ -2407,9 +2367,10 @@ namespace eosio {
 
             block_id_type blk_id = bh.id();
             if( my_impl->dispatcher->have_block( blk_id ) ) {
+               uint32_t blk_num = bh.block_num();
                fc_dlog( logger, "canceling wait on ${p}, already received block ${num}",
-                        ("p", peer_name())("num", block_header::num_from_id( blk_id )) );
-               consecutive_rejected_blocks = 0;
+                        ("p", peer_name())("num", blk_num) );
+               my_impl->sync_master->sync_recv_block( shared_from_this(), blk_id, blk_num );
                cancel_wait();
 
                pending_message_buffer.advance_read_ptr( message_length );
@@ -2598,7 +2559,7 @@ namespace eosio {
                   block_id_type peer_lib_id = cc.get_block_id_for_num( peer_lib );
                   on_fork = (msg_lib_id != peer_lib_id);
                } catch( const unknown_block_exception& ) {
-                  peer_wlog( c, "peer last irreversible block ${pl} is unknown", ("pl", peer_lib) );
+                  peer_ilog( c, "peer last irreversible block ${pl} is unknown", ("pl", peer_lib) );
                   unknown_block = true;
                } catch( ... ) {
                   peer_wlog( c, "caught an exception getting block id for ${pl}", ("pl", peer_lib) );
@@ -2607,10 +2568,10 @@ namespace eosio {
                if( on_fork || unknown_block ) {
                   c->strand.post( [on_fork, unknown_block, c]() {
                      if( on_fork ) {
-                        peer_elog( c, "Peer chain is forked" );
+                        peer_elog( c, "Peer chain is forked, sending: forked go away" );
                         c->enqueue( go_away_message( forked ) );
                      } else if( unknown_block ) {
-                        peer_elog( c, "Peer asked for unknown block" );
+                        peer_ilog( c, "Peer asked for unknown block, sending: benign_other go away" );
                         c->enqueue( go_away_message( benign_other ) );
                      }
                   } );
@@ -2797,13 +2758,20 @@ namespace eosio {
    }
 
    void connection::handle_message( packed_transaction_ptr trx ) {
-      if( my_impl->db_read_mode == eosio::db_read_mode::READ_ONLY ) {
+      if( db_mode_is_immutable(my_impl->db_read_mode) ) {
          fc_dlog( logger, "got a txn in read-only mode - dropping" );
          return;
       }
 
       const auto& tid = trx->id();
       peer_dlog( this, "received packed_transaction ${id}", ("id", tid) );
+
+      uint32_t trx_in_progress_sz = this->trx_in_progress_size.load();
+      if( trx_in_progress_sz > def_max_trx_in_progress_size ) {
+         fc_wlog( logger, "Dropping trx ${id}, too many trx in progress ${s} bytes",
+                  ("id", tid)("s", trx_in_progress_sz) );
+         return;
+      }
 
       bool have_trx = my_impl->dispatcher->have_txn( tid );
       node_transaction_state nts = {tid, trx->expiration(), 0, connection_id};
@@ -3323,7 +3291,7 @@ namespace eosio {
 
       chain::controller&cc = my->chain_plug->chain();
       my->db_read_mode = cc.get_read_mode();
-      if( my->db_read_mode == chain::db_read_mode::READ_ONLY && my->p2p_address.size() ) {
+      if( cc.in_immutable_mode() && my->p2p_address.size() ) {
          my->p2p_address.clear();
          fc_wlog( logger, "node in read-only mode disabling incoming p2p connections" );
       }

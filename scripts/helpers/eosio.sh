@@ -251,13 +251,15 @@ function ensure-boost() {
         if [[ $ARCH == "Linux" ]] && $PIN_COMPILER; then
             B2_FLAGS="toolset=clang cxxflags='-stdlib=libc++ -D__STRICT_ANSI__ -nostdinc++ -I${CLANG_ROOT}/include/c++/v1' linkflags='-stdlib=libc++' link=static threading=multi --with-iostreams --with-date_time --with-filesystem --with-system --with-program_options --with-chrono --with-test -q -j${JOBS} install"
             BOOTSTRAP_FLAGS="--with-toolset=clang"
+        elif $PIN_COMPILER; then
+            local SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
         fi
-		execute bash -c "cd $SRC_DIR && \
+        execute bash -c "cd $SRC_DIR && \
         curl -LO https://dl.bintray.com/boostorg/release/$BOOST_VERSION_MAJOR.$BOOST_VERSION_MINOR.$BOOST_VERSION_PATCH/source/boost_$BOOST_VERSION.tar.bz2 \
         && tar -xjf boost_$BOOST_VERSION.tar.bz2 \
         && cd $BOOST_ROOT \
-        && ./bootstrap.sh ${BOOTSTRAP_FLAGS} --prefix=$BOOST_ROOT \
-        && ./b2 ${B2_FLAGS} \
+        && SDKROOT="$SDKROOT" ./bootstrap.sh ${BOOTSTRAP_FLAGS} --prefix=$BOOST_ROOT \
+        && SDKROOT="$SDKROOT" ./b2 ${B2_FLAGS} \
         && cd .. \
         && rm -f boost_$BOOST_VERSION.tar.bz2 \
         && rm -rf $BOOST_LINK_LOCATION"        
@@ -271,6 +273,9 @@ function ensure-boost() {
 
 function ensure-llvm() {
     if $PIN_COMPILER || $BUILD_CLANG; then
+        if [[ -d $LLVM_ROOT ]]; then
+            return
+        fi
         LLVM_TEMP_DIR=$(mktemp -d)
         if $PIN_COMPILER || $BUILD_CLANG; then
             local LLVM_PINNED_CMAKE_ARGS="-DCMAKE_TOOLCHAIN_FILE='${BUILD_DIR}/pinned_toolchain.cmake' -DCMAKE_EXE_LINKER_FLAGS=-pthread -DCMAKE_SHARED_LINKER_FLAGS=-pthread"
@@ -282,8 +287,6 @@ function ensure-llvm() {
         && ${CMAKE} -DCMAKE_INSTALL_PREFIX='${LLVM_ROOT}' -DLLVM_TARGETS_TO_BUILD=host -DLLVM_BUILD_TOOLS=false -DLLVM_ENABLE_RTTI=1 -DCMAKE_BUILD_TYPE=Release $LLVM_PINNED_CMAKE_ARGS .. \
         && make -j${JOBS} install"
         echo " - LLVM successfully installed @ ${LLVM_ROOT}"
-    elif [[ $ARCH == "Darwin" ]]; then
-        execute ln -snf /usr/local/opt/llvm@7 $LLVM_ROOT
     elif [[ $NAME == "Ubuntu" ]]; then
         execute ln -snf /usr/lib/llvm-7 $LLVM_ROOT
     elif [[ $NAME == "Amazon Linux" ]]; then
