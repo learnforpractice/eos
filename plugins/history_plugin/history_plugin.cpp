@@ -396,11 +396,11 @@ namespace eosio {
          }
          counter += 1;
          if (counter % 100000 == 0) {
-            ilog("++++++++init history_plugin:", ("n",counter));
+            ilog("++++++++init history_plugin:${n}", ("n",counter));
          }
          itr++;
       }
-      ilog("++++++++init history_plugin:", ("n",counter));
+      ilog("++++++++init history_plugin:${n}", ("n",counter));
       ilog("++++++++++++++++history_plugin initialized");
    }
 
