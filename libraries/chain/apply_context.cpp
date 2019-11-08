@@ -74,10 +74,6 @@ void apply_context::exec_one()
    set_apply_context(this);
    auto start = fc::time_point::now();
 
-   action_receipt r;
-   r.receiver         = receiver;
-   r.act_digest       = digest_type::hash(*act);
-
    const auto& cfg = control.get_global_properties().configuration;
    const account_metadata_object* receiver_account = nullptr;
    try {
@@ -164,6 +160,12 @@ void apply_context::exec_one()
    //    * a pointer to an object in a chainbase index is not invalidated if the fields of that object are modified;
    //    * and, the *receiver_account object itself cannot be removed because accounts cannot be deleted in EOSIO.
 
+   action_trace& trace = trx_context.get_action_trace( action_ordinal );
+   trace.receipt.emplace();
+   action_receipt& r = *trace.receipt;
+   r.receiver         = receiver;
+   r.act_digest       = digest_type::hash(*act);
+
    r.global_sequence  = next_global_sequence();
    r.recv_sequence    = next_recv_sequence( *receiver_account );
 
@@ -181,10 +183,7 @@ void apply_context::exec_one()
       r.auth_sequence[auth.actor] = next_auth_sequence( auth.actor );
    }
 
-   action_trace& trace = trx_context.get_action_trace( action_ordinal );
-   trace.receipt = r;
-
-   trx_context.executed.emplace_back( std::move(r) );
+   trx_context.executed_action_receipt_digests.emplace_back( r.digest() );
 
    finalize_trace( trace, start );
 
