@@ -914,9 +914,8 @@ int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table,
    const auto& obj = db.create<key256_value_object>( [&]( auto& o ) {
       o.t_id        = tableid;
       o.primary_key = id;
-      o.value.resize( buffer_size );
       o.payer       = payer;
-      memcpy( o.value.data(), buffer, buffer_size );
+      o.value.assign( buffer, buffer_size );
    });
 
    db.modify( tab, [&]( auto& t ) {
@@ -958,8 +957,7 @@ void apply_context::db_update_i256( int iterator, account_name payer, const char
    }
 
    db.modify( obj, [&]( auto& o ) {
-     o.value.resize( buffer_size );
-     memcpy( o.value.data(), buffer, buffer_size );
+     o.value.assign( buffer, buffer_size );
      o.payer = payer;
    });
 }
