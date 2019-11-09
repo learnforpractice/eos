@@ -169,26 +169,34 @@ namespace eosio {
             if (bypass_filter) {
               pass_on = true;
             }
-            if (filter_on.find({ act.receiver, 0, 0 }) != filter_on.end()) {
-              pass_on = true;
-            } else if (filter_on.find({ act.receiver, act.act.name, 0 }) != filter_on.end()) {
-              pass_on = true;
-            }
-            
-            if (filter_transfer) {
-               if (act.act.account == N(eosio.token) && act.act.name == N(transfer)) {
-                  pass_on = true;
-               }
-            }
 
-            for (const auto& a : act.act.authorization) {
-              if (filter_on.find({ act.receiver, 0, a.actor }) != filter_on.end()) {
-                pass_on = true;
-              }
-              if (filter_on.find({ act.receiver, act.act.name, a.actor }) != filter_on.end()) {
-                pass_on = true;
-              }
-            }
+            do {
+               if (filter_transfer) {
+                  if (act.act.account == N(eosio.token) && act.act.name == N(transfer)) {
+                     pass_on = true;
+                     break;
+                  }
+               }
+
+               if (filter_on.find({ act.receiver, 0, 0 }) != filter_on.end()) {
+                  pass_on = true;
+                  break;
+               } else if (filter_on.find({ act.receiver, act.act.name, 0 }) != filter_on.end()) {
+                  pass_on = true;
+                  break;
+               }
+               
+               for (const auto& a : act.act.authorization) {
+                  if (filter_on.find({ act.receiver, 0, a.actor }) != filter_on.end()) {
+                     pass_on = true;
+                     break;
+                  }
+                  if (filter_on.find({ act.receiver, act.act.name, a.actor }) != filter_on.end()) {
+                     pass_on = true;
+                     break;
+                  }
+               }
+            } while (false);
 
             if (!pass_on) {  return false;  }
 
