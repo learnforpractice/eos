@@ -215,11 +215,11 @@ set(PYTHON_INC_FOLDERS
     ${Boost_INCLUDE_DIR}
 )
 
-set(CMAKE_C_COMPILER "/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/clang-7")
-set(CMAKE_C_FLAGS " -O3 --target=wasm32 -ffreestanding -nostdlib -fno-builtin -fno-threadsafe-statics -D__WASM -DBOOST_DISABLE_ASSERTS -DBOOST_EXCEPTION_DISABLE -Xclang -load -Xclang /usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/LLVMEosioApply.dylib -fplugin=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/eosio_plugin.dylib -mllvm -use-cfl-aa-in-codegen=both --sysroot=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../")
+set(CMAKE_C_COMPILER "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/clang-7")
+set(CMAKE_C_FLAGS " -O3 --target=wasm32 -ffreestanding -nostdlib -fno-builtin -fno-threadsafe-statics -D__WASM -DBOOST_DISABLE_ASSERTS -DBOOST_EXCEPTION_DISABLE -Xclang -load -Xclang ${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/LLVMEosioApply.dylib -fplugin=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio_plugin.dylib -mllvm -use-cfl-aa-in-codegen=both --sysroot=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../")
 
 set(CMAKE_AR "/usr/bin/ar")
-set(CMAKE_AR "/usr/local/Cellar/eosio.cdt//1.6.1/opt/eosio.cdt/bin/eosio-ar")
+set(CMAKE_AR "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio-ar")
 add_library(python37
   "${SRC_FILES}" 
 )
