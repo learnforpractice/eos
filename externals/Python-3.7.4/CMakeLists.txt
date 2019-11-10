@@ -332,7 +332,9 @@ target_include_directories( python3-ss
                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Include
                         )
 if (APPLE)
-    target_link_libraries( python3-ss PUBLIC ${OPENSSL_LIBRARIES} intl softfloat)
+#    find_package(Intl REQUIRED)
+#    ${Intl_LIBRARIES} 
+    target_link_libraries( python3-ss PUBLIC ${OPENSSL_LIBRARIES} softfloat)
 else()
     target_link_libraries( python3-ss PUBLIC ${OPENSSL_LIBRARIES} softfloat)
 endif()

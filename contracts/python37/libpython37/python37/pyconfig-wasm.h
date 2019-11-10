@@ -772,7 +772,7 @@
 #define HAVE_READV 1
 
 /* Define to 1 if you have the `realpath' function. */
-#define HAVE_REALPATH 1
+//#define HAVE_REALPATH 1
 
 /* Define to 1 if you have the `renameat' function. */
 #define HAVE_RENAMEAT 1
@@ -1084,7 +1084,7 @@
 #define HAVE_SYS_RESOURCE_H 1
 
 /* Define to 1 if you have the <sys/select.h> header file. */
-#define HAVE_SYS_SELECT_H 1
+//#define HAVE_SYS_SELECT_H 1
 
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
 #define HAVE_SYS_SENDFILE_H 1

@@ -14,7 +14,7 @@ ${CMAKE_SOURCE_DIR}/../../externals/magic_get/include
 ${Boost_INCLUDE_DIR}
 )
 
-set(WASM_LINKER "/usr/local/eosio.cdt/bin/wasm-ld")
+set(WASM_LINKER "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/wasm-ld")
 
 set(CMAKE_C_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 set(CMAKE_CXX_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
@@ -29,9 +29,9 @@ set(WASM_LINK_FLAGS --gc-sections
 -lc
 #-leosio
 -mllvm -use-cfl-aa-in-codegen=both
--L../libpython37 -L/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../lib
+-L../libpython37 -L${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../lib
 -stack-first --lto-O3 -error-limit=0
---allow-undefined-file=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../eosio.imports)
+--allow-undefined-file=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../eosio.imports)
 
 add_executable(pythonvm pythonvm.c main.cpp)
 

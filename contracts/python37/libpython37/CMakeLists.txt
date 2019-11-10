@@ -1,6 +1,6 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../../libraries/vm/vm_python/python_vm_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/python_vm_config.h)
 
-SET(SRC_FILES        dummy.c
+SET(SRC_FILES
 ./python37/Modules/arraymodule.c
 ./python37/Modules/mathmodule.c
 ./python37/Modules/cmathmodule.c
@@ -193,6 +193,10 @@ SET(SRC_FILES        dummy.c
 # ./malloc/posix_memalign.c
 ${CMAKE_SOURCE_DIR}/mi/mi.cpp
 ./eosiolib_wrapper/mi.c
+./fenv.c
+./dummy.c
+./dummy_libc.c
+./dummy_pthread.c
 )
 
 set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXEC_PREFIX="" -DVERSION="3.7" -DVPATH="" -DPYTHONPATH="")
@@ -202,28 +206,20 @@ set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_MEMORY_SIZE=${PYTHON_VM_MAX_MEM
 set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_CODE_SIZE=${PYTHON_VM_MAX_CODE_SIZE})
 set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_FROZEN_CODE_SIZE=${PYTHON_VM_MAX_FROZEN_CODE_SIZE})
 
-
 set(PYTHON_INC_FOLDERS
-${CMAKE_SOURCE_DIR}/emscripten/system/include/libcxx
-${CMAKE_SOURCE_DIR}/emscripten/system/lib/libcxxabi/include
-${CMAKE_SOURCE_DIR}/emscripten/system/include/compat
-${CMAKE_SOURCE_DIR}/emscripten/system/include
-${CMAKE_SOURCE_DIR}/emscripten/system/include/libc
-${CMAKE_SOURCE_DIR}/emscripten/system/lib/libc/musl/arch/emscripten
-${CMAKE_SOURCE_DIR}/emscripten/system/local/include
-${CMAKE_SOURCE_DIR}/emscripten/system/include/SDL
-${CMAKE_SOURCE_DIR}/emscripten/system/lib/libc/musl/src/internal
-
-${CMAKE_SOURCE_DIR}/..
-${CMAKE_SOURCE_DIR}/../../externals/magic_get/include
-${Boost_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/include/libcxx
+    ${CMAKE_SOURCE_DIR}/include/libc
+    ${CMAKE_SOURCE_DIR}/libpython37/libc
+    ${CMAKE_SOURCE_DIR}/..
+    ${CMAKE_SOURCE_DIR}/../../externals/magic_get/include
+    ${Boost_INCLUDE_DIR}
 )
 
-set(CMAKE_C_COMPILER "/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/clang-7")
-set(CMAKE_C_FLAGS " -O3 --target=wasm32 -ffreestanding -nostdlib -fno-builtin -fno-threadsafe-statics -DBOOST_DISABLE_ASSERTS -DBOOST_EXCEPTION_DISABLE -Xclang -load -Xclang /usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/LLVMEosioApply.dylib -fplugin=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/eosio_plugin.dylib -mllvm -use-cfl-aa-in-codegen=both --sysroot=/usr/local/Cellar/eosio.cdt/1.6.1/opt/eosio.cdt/bin/../")
+set(CMAKE_C_COMPILER "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/clang-7")
+set(CMAKE_C_FLAGS " -O3 --target=wasm32 -ffreestanding -nostdlib -fno-builtin -fno-threadsafe-statics -D__WASM -DBOOST_DISABLE_ASSERTS -DBOOST_EXCEPTION_DISABLE -Xclang -load -Xclang ${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/LLVMEosioApply.dylib -fplugin=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio_plugin.dylib -mllvm -use-cfl-aa-in-codegen=both --sysroot=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../")
 
 set(CMAKE_AR "/usr/bin/ar")
-set(CMAKE_AR "/usr/local/Cellar/eosio.cdt//1.6.1/opt/eosio.cdt/bin/eosio-ar")
+set(CMAKE_AR "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio-ar")
 add_library(python37
   "${SRC_FILES}" 
 )
