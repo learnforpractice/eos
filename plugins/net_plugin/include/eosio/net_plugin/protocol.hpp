@@ -55,7 +55,7 @@ namespace eosio {
     authentication ///< peer failed authenicatio
   };
 
-  constexpr auto reason_str( go_away_reason rsn ) {
+  constexpr auto reason_str( uint32_t rsn ) {
     switch (rsn ) {
     case no_reason : return "no reason";
     case self : return "self connect";
@@ -75,7 +75,8 @@ namespace eosio {
 
   struct go_away_message {
     go_away_message (go_away_reason r = no_reason) : reason(r), node_id() {}
-    go_away_reason reason;
+//    go_away_reason reason;
+    uint32_t reason;
     fc::sha256 node_id; ///< for duplicate notification
   };
 
@@ -93,7 +94,7 @@ namespace eosio {
     normal
   };
 
-  constexpr auto modes_str( id_list_modes m ) {
+  constexpr auto modes_str( uint32_t m ) {
     switch( m ) {
     case none : return "none";
     case catch_up : return "catch up";
@@ -106,7 +107,8 @@ namespace eosio {
   template<typename T>
   struct select_ids {
     select_ids () : mode(none),pending(0),ids() {}
-    id_list_modes  mode;
+//    id_list_modes  mode;
+    uint32_t       mode;
     uint32_t       pending;
     vector<T>      ids;
     bool           empty () const { return (mode == none || ids.empty()); }

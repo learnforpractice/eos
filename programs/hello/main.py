@@ -32,75 +32,7 @@ from typing import (
 )
 
 from pyeoskit import eosapi
-
-message_header_size = 4
-
-handshake_message_type = 0
-chain_size_message_type = 1
-go_away_message_type = 2
-time_message_type = 3
-notice_message_type = 4
-request_message_type = 5
-sync_request_message_type = 6
-signed_block_message_type = 7
-packed_transaction_message_type = 8
-
-handshake_msg = {
-    "network_version":1206,
-    "chain_id":"cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f",
-    "node_id":"74988beaf865bfc19e94d6b44340bec658f57e0318fbe62a03a917b0bd78b03a",
-    "key":"EOS1111111111111111111111111111111114T1Anm",
-    "time":"1575022351028286000",
-    "token":"0000000000000000000000000000000000000000000000000000000000000000",
-    "sig":"SIG_K1_111111111111111111111111111111111111111111111111111111111111111116uk5ne",
-    "p2p_address":"127.0.0.1:9877 - 74988be",
-    "last_irreversible_block_num":8987,
-    "last_irreversible_block_id":"0000231b11661fc9673f59812b4bda6a3b8276cbe3ac3d1fad2760ff8e3787cc",
-    "head_num":8988,
-    "head_id":"0000231cf256f921b3d26e369451410107bd1a31ce7827f5fb3c1e1ae70bece8",
-    "os":"osx",
-    "agent":"\"EOS Test Agent\"",
-    "generation":1
-}
-
-class p2p_message(dict):
-    def __init__(self, msg_dict):
-        super(p2p_message, self).__init__(msg_dict)
-        self.__dict__ = self
-
-    def pack(self):
-        msg = ujson.dumps(self.__dict__)
-        msg = pack_cpp_object(self.msg_type, msg)
-        return struct.pack('I', len(msg)+1) + struct.pack('B', self.msg_type) + msg
-
-    @classmethod
-    def unpack(cls, msg):
-        msg = unpack_cpp_object(cls.msg_type, msg)
-        msg = ujson.loads(msg)
-        return handshake_message(msg)
-
-class handshake_message(p2p_message):
-    msg_type = handshake_message_type
-
-class sync_request_message(p2p_message):
-    msg_type = sync_request_message_type
-    def __init__(self, start_block=0, end_block=0):
-        d = dict(start_block=start_block, end_block=end_block)
-        super(p2p_message, self).__init__(d)
-        self.__dict__ = self
-
-class time_message(p2p_message):
-    msg_type = time_message_type
-
-class notice_message(p2p_message):
-    msg_type = notice_message_type
-    def __init__(self):
-        d = dict()
-        super(p2p_message, self).__init__(d)
-        self.__dict__ = self
-
-class signed_block_message(p2p_message):
-    msg_type = signed_block_message_type
+from native_object import *
 
 class App(Quart):
     def server(
@@ -162,7 +94,7 @@ async def p2p_client(host, port):
     reader, writer = await asyncio.open_connection(host, port)
     logger.info(f'connected to {host}:{port} success!')
 
-    msg = handshake_message(handshake_msg)
+    msg = HandshakeMessage(handshake_msg)
     msg.network_version = 1206
     msg.chain_id = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f'
     msg = msg.pack()
@@ -174,7 +106,7 @@ async def p2p_client(host, port):
         msg = await reader.read(msg_len)
         print(msg[0], msg)
         if msg[0] == handshake_message_type:
-            msg = handshake_message.unpack(msg[1:])
+            msg = HandshakeMessage.unpack(msg[1:])
             print(msg)
     except Exception as e:
         logger.exception(e)
@@ -189,13 +121,13 @@ async def p2p_client(host, port):
         msg = await reader.read(msg_len)
         print(msg[0], msg)
         if msg[0] == 3:
-            msg = time_message.unpack(msg[1:])
+            msg = TimeMessage.unpack(msg[1:])
             logger.info(msg)
         elif msg[0] == 4:
-            msg = notice_message.unpack(msg[1:])
+            msg = NoticeMessage.unpack(msg[1:])
             print(msg)
         elif msg[0] == 7:
-            msg = signed_block_message.unpack(msg[1:])
+            msg = SignedBlockMessage.unpack(msg[1:])
             logger.info(msg)
 
 async def uuos_main(args):
