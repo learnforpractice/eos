@@ -98,6 +98,21 @@ class NativeObject(dict):
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)
+        return pack_native_object(self.msg_type, msg)
+
+    @classmethod
+    def unpack(cls, msg):
+        msg = unpack_native_object(cls.msg_type, msg)
+        msg = ujson.loads(msg)
+        return HandshakeMessage(msg)
+
+class NativeMessage(dict):
+    def __init__(self, msg_dict):
+        super(NativeMessage, self).__init__(msg_dict)
+        self.__dict__ = self
+
+    def pack(self):
+        msg = ujson.dumps(self.__dict__)
         msg = pack_native_object(self.msg_type, msg)
         return struct.pack('I', len(msg)+1) + struct.pack('B', self.msg_type) + msg
 
@@ -107,27 +122,27 @@ class NativeObject(dict):
         msg = ujson.loads(msg)
         return HandshakeMessage(msg)
 
-class HandshakeMessage(NativeObject):
+class HandshakeMessage(NativeMessage):
     msg_type = handshake_message_type
 
-class SyncRequestMessage(NativeObject):
+class SyncRequestMessage(NativeMessage):
     msg_type = sync_request_message_type
     def __init__(self, start_block=0, end_block=0):
         d = dict(start_block=start_block, end_block=end_block)
         super(NativeObject, self).__init__(d)
         self.__dict__ = self
 
-class TimeMessage(NativeObject):
+class TimeMessage(NativeMessage):
     msg_type = time_message_type
 
-class NoticeMessage(NativeObject):
+class NoticeMessage(NativeMessage):
     msg_type = notice_message_type
     def __init__(self):
         d = dict()
         super(NativeObject, self).__init__(d)
         self.__dict__ = self
 
-class SignedBlockMessage(NativeObject):
+class SignedBlockMessage(NativeMessage):
     msg_type = signed_block_message_type
 
 class ControllerConfig(NativeObject):
