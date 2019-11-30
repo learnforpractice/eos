@@ -161,7 +161,15 @@
 #include "./M/M_base58.c"
 #include "./M/M_db.c"
 
-#include "Python.h"
+//#include "Python.h"
+
+struct _frozen {
+    const char *name;                 /* ASCII encoded string */
+    const unsigned char *code;
+    int size;
+};
+
+#include <stdlib.h>
 
 static unsigned char M___hello__[] = {
     227,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
