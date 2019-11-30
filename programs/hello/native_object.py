@@ -1,3 +1,8 @@
+import ujson
+import struct
+
+from _hello import *
+
 message_header_size = 4
 
 handshake_message_type = 0
@@ -45,13 +50,13 @@ config = {
     "reversible_guard_size": 2097152,
     "sig_cpu_bill_pct": 5000,
     "thread_pool_size": 2,
-    "read_only": false,
-    "force_all_checks": false,
-    "disable_replay_opts": false,
-    "contracts_console": false,
-    "allow_ram_billing_in_notify": false,
-    "disable_all_subjective_mitigations": false,
-    "uuos_mainnet": true,
+    "read_only": False,
+    "force_all_checks": False,
+    "disable_replay_opts": False,
+    "contracts_console": False,
+    "allow_ram_billing_in_notify": False,
+    "disable_all_subjective_mitigations": False,
+    "uuos_mainnet": True,
     "genesis_accounts_file": "",
     "genesis": {
         "initial_timestamp": "2018-06-01T12:00:00.000",
@@ -93,14 +98,14 @@ class NativeObject(dict):
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)
-        msg = pack_NativeObject(self.msg_type, msg)
+        msg = pack_native_object(self.msg_type, msg)
         return struct.pack('I', len(msg)+1) + struct.pack('B', self.msg_type) + msg
 
     @classmethod
     def unpack(cls, msg):
-        msg = unpack_NativeObject(cls.msg_type, msg)
+        msg = unpack_native_object(cls.msg_type, msg)
         msg = ujson.loads(msg)
-        return handshake_message(msg)
+        return HandshakeMessage(msg)
 
 class HandshakeMessage(NativeObject):
     msg_type = handshake_message_type

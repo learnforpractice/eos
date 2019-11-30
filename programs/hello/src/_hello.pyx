@@ -20,12 +20,12 @@ cpdef long elevation():
     return 21463L
 
 
-def pack_cpp_object(int _type, string& msg):
+def pack_native_object(int _type, string& msg):
     cdef string packed_message
     pack_cpp_object_(_type, msg, packed_message)
     return <bytes>packed_message
 
-def unpack_cpp_object(int _type, string& packed_message):
+def unpack_native_object(int _type, string& packed_message):
     cdef string msg
     unpack_cpp_object_(_type, packed_message, msg)
     return <bytes>msg
