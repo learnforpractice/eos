@@ -5,6 +5,7 @@
 #include <fc/io/json.hpp>
 #include <fc/io/raw.hpp>
 #include <fc/variant.hpp>
+#include <eosio/chain/controller.hpp>
 
 #include "cpp_object.hpp"
 
@@ -45,6 +46,8 @@ void pack_cpp_object_(int type, string& msg, string& packed_message) {
         pack_cpp_object<signed_block>(msg, packed_message);
     } else if (type == packed_transaction_type) {
         pack_cpp_object<packed_transaction>(msg, packed_message);
+    } else if (type == controller_config_type) {
+        pack_cpp_object<eosio::chain::controller::config>(msg, packed_message);
     }
 }
 
@@ -67,7 +70,10 @@ void unpack_cpp_object_(int type, string& packed_message, string& msg) {
         unpack_cpp_object<signed_block>(packed_message, msg);
     } else if (type == packed_transaction_type) {
         unpack_cpp_object<packed_transaction>(packed_message, msg);
-    } else {
+    } else if (type == controller_config_type) {
+        unpack_cpp_object<eosio::chain::controller::config>(packed_message, msg);
+    }
+    else {
         unpack_cpp_object<eosio::select_ids<fc::sha256>>(packed_message, msg);
     }
 }
