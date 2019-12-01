@@ -95,6 +95,12 @@ class NativeObject(dict):
     def __init__(self, msg_dict):
         super(NativeObject, self).__init__(msg_dict)
         self.__dict__ = self
+        NativeObject.__setattr__ = self.custom_setattr
+
+    def custom_setattr(self, attr, value):
+        if not attr in self.__dict__:
+            raise AttributeError
+        self.__dict__[attr] = value
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)
@@ -110,6 +116,12 @@ class NativeMessage(dict):
     def __init__(self, msg_dict):
         super(NativeMessage, self).__init__(msg_dict)
         self.__dict__ = self
+        NativeMessage.__setattr__ = self.custom_setattr
+
+    def custom_setattr(self, attr, value):
+        if not attr in self.__dict__:
+            raise AttributeError
+        self.__dict__[attr] = value
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)

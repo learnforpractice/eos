@@ -2,8 +2,11 @@
 #include <string>
 using namespace std;
 
-void pack_cpp_object_(int type, string& msg, string& packed_message);
-void unpack_cpp_object_(int type, string& packed_message, string& msg);
+void pack_native_object_(int type, string& msg, string& packed_message);
+void unpack_native_object_(int type, string& packed_message, string& msg);
+
+void *chain_new_(string& config, string& protocol_features_dir);
+void chain_free_(void *ptr);
 
 enum {
     handshake_message_type,
