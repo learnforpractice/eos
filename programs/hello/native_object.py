@@ -16,7 +16,7 @@ signed_block_message_type = 7
 packed_transaction_message_type = 8
 controller_config_type = 9
 
-handshake_msg = {
+default_handshake_msg = {
     "network_version":1206,
     "chain_id":"cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f",
     "node_id":"74988beaf865bfc19e94d6b44340bec658f57e0318fbe62a03a917b0bd78b03a",
@@ -34,7 +34,7 @@ handshake_msg = {
     "generation":1
 }
 
-config = {
+default_config = {
     "sender_bypass_whiteblacklist": [],
     "actor_whitelist": [],
     "actor_blacklist": [],
@@ -95,35 +95,35 @@ def normal_setattr(self, attr, value):
     self.__dict__[attr] = value
 
 def custom_setattr(self, attr, value):
-    if attr == '__dict__':
-        type(self).old_setattr(self, '__dict__', value)
-        return
     if not attr in self.__dict__:
-        raise AttributeError
+        if attr == '__dict__':
+            type(self).old_setattr(self, '__dict__', value)
+        else:
+            raise AttributeError
     self.__dict__[attr] = value
 
 class NativeObject(dict):
     def __init__(self, msg_dict):
         super(NativeObject, self).__init__(msg_dict)
-        if hasattr(NativeObject, 'old_setattr'):
-            pass
-        else:
-            NativeObject.old_setattr = NativeObject.__setattr__
-            NativeObject.__setattr__ = custom_setattr
+        # if hasattr(NativeObject, 'old_setattr'):
+        #     pass
+        # else:
+        #     NativeObject.old_setattr = NativeObject.__setattr__
+        #     NativeObject.__setattr__ = custom_setattr
         self.__dict__ = self
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)
-        return pack_native_object(self.msg_type, msg)
+        return pack_native_object(self.obj_type, msg)
 
     @classmethod
     def unpack(cls, msg):
-        msg = unpack_native_object(cls.msg_type, msg)
+        msg = unpack_native_object(cls.obj_type, msg)
         msg = ujson.loads(msg)
-        return HandshakeMessage(msg)
+        return cls(msg)
 
 class NativeMessage(dict):
-    def __init__(self, msg_dict):
+    def __init__(self, msg_dict={}):
         super(NativeMessage, self).__init__(msg_dict)
         self.__dict__ = self
 #        NativeMessage.__setattr__ = self.custom_setattr
@@ -135,37 +135,33 @@ class NativeMessage(dict):
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)
-        msg = pack_native_object(self.msg_type, msg)
-        return struct.pack('I', len(msg)+1) + struct.pack('B', self.msg_type) + msg
+        msg = pack_native_object(self.obj_type, msg)
+        return struct.pack('I', len(msg)+1) + struct.pack('B', self.obj_type) + msg
 
     @classmethod
     def unpack(cls, msg):
-        msg = unpack_native_object(cls.msg_type, msg)
+        msg = unpack_native_object(cls.obj_type, msg)
         msg = ujson.loads(msg)
-        return HandshakeMessage(msg)
+        return cls(msg)
 
 class HandshakeMessage(NativeMessage):
-    msg_type = handshake_message_type
+    obj_type = handshake_message_type
 
 class SyncRequestMessage(NativeMessage):
-    msg_type = sync_request_message_type
+    obj_type = sync_request_message_type
     def __init__(self, start_block=0, end_block=0):
         d = dict(start_block=start_block, end_block=end_block)
-        super(NativeObject, self).__init__(d)
+        super(SyncRequestMessage, self).__init__(d)
         self.__dict__ = self
 
 class TimeMessage(NativeMessage):
-    msg_type = time_message_type
+    obj_type = time_message_type
 
 class NoticeMessage(NativeMessage):
-    msg_type = notice_message_type
-    def __init__(self):
-        d = dict()
-        super(NativeObject, self).__init__(d)
-        self.__dict__ = self
+    obj_type = notice_message_type
 
 class SignedBlockMessage(NativeMessage):
-    msg_type = signed_block_message_type
+    obj_type = signed_block_message_type
 
 class ControllerConfig(NativeObject):
-    msg_type = controller_config_type
+    obj_type = controller_config_type
