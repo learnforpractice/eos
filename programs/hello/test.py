@@ -3,8 +3,19 @@ import ujson
 
 import unittest
 
+class Test(unittest.TestCase):
 
-class TestSum(unittest.TestCase):
+    def test_set_attr1(self):
+        a = NativeObject({'a':1})
+        a.a = 123
+
+        b = NativeObject({'b':1})
+        b.b = 123
+
+    @unittest.expectedFailure
+    def test_set_attr2(self):
+        a = NativeObject({'a':1})
+        a.b = 123
 
     def test_controller_config(self):
         cfg = ControllerConfig(config)

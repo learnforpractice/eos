@@ -91,16 +91,26 @@ config = {
     "greylist_limit": 1000
 }
 
+def normal_setattr(self, attr, value):
+    self.__dict__[attr] = value
+
+def custom_setattr(self, attr, value):
+    if attr == '__dict__':
+        type(self).old_setattr(self, '__dict__', value)
+        return
+    if not attr in self.__dict__:
+        raise AttributeError
+    self.__dict__[attr] = value
+
 class NativeObject(dict):
     def __init__(self, msg_dict):
         super(NativeObject, self).__init__(msg_dict)
+        if hasattr(NativeObject, 'old_setattr'):
+            pass
+        else:
+            NativeObject.old_setattr = NativeObject.__setattr__
+            NativeObject.__setattr__ = custom_setattr
         self.__dict__ = self
-        NativeObject.__setattr__ = self.custom_setattr
-
-    def custom_setattr(self, attr, value):
-        if not attr in self.__dict__:
-            raise AttributeError
-        self.__dict__[attr] = value
 
     def pack(self):
         msg = ujson.dumps(self.__dict__)
@@ -116,7 +126,7 @@ class NativeMessage(dict):
     def __init__(self, msg_dict):
         super(NativeMessage, self).__init__(msg_dict)
         self.__dict__ = self
-        NativeMessage.__setattr__ = self.custom_setattr
+#        NativeMessage.__setattr__ = self.custom_setattr
 
     def custom_setattr(self, attr, value):
         if not attr in self.__dict__:
