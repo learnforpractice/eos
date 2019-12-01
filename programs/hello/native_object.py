@@ -1,4 +1,5 @@
-import ujson
+import json
+#import ujson as json
 import struct
 
 from _hello import *
@@ -113,20 +114,20 @@ class NativeObject(dict):
         self.__dict__ = self
 
     def pack(self):
-        msg = ujson.dumps(self.__dict__)
+        msg = json.dumps(self.__dict__)
         return pack_native_object(self.obj_type, msg)
 
     @classmethod
     def unpack(cls, msg):
         msg = unpack_native_object(cls.obj_type, msg)
-        msg = ujson.loads(msg)
+        msg = json.loads(msg)
         return cls(msg)
 
 class NativeMessage(dict):
     def __init__(self, msg_dict={}):
         super(NativeMessage, self).__init__(msg_dict)
         self.__dict__ = self
-#        NativeMessage.__setattr__ = self.custom_setattr
+        #NativeMessage.__setattr__ = self.custom_setattr
 
     def custom_setattr(self, attr, value):
         if not attr in self.__dict__:
@@ -134,14 +135,16 @@ class NativeMessage(dict):
         self.__dict__[attr] = value
 
     def pack(self):
-        msg = ujson.dumps(self.__dict__)
+        msg = json.dumps(self.__dict__)
         msg = pack_native_object(self.obj_type, msg)
         return struct.pack('I', len(msg)+1) + struct.pack('B', self.obj_type) + msg
 
     @classmethod
     def unpack(cls, msg):
         msg = unpack_native_object(cls.obj_type, msg)
-        msg = ujson.loads(msg)
+        if not msg:
+            return
+        msg = json.loads(msg)
         return cls(msg)
 
 class HandshakeMessage(NativeMessage):
