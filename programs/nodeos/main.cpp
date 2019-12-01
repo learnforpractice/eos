@@ -83,9 +83,14 @@ extern "C"
    void vm_api_init();
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
+   int Py_InitFrozenMain(int argc, char **argv);
+
+   void say_hello() {
+      printf("+++hello,world!\n");
+   }
 }
 
-
+const char *g_argv[] = {"python"};
 int main(int argc, char** argv)
 {
    for (int i=0;i<argc;i++) {
@@ -100,7 +105,7 @@ int main(int argc, char** argv)
       chain_api_init();
       sandboxed_contracts_init();
 
-//      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 
       app().set_version(eosio::nodeos::config::version);
 

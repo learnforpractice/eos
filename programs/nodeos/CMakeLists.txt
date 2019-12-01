@@ -79,6 +79,67 @@ endif()
 include(additionalPlugins)
 
 copy_bin( ${NODE_EXECUTABLE_NAME} )
+
+
+add_library( pyuuos SHARED
+  main.cpp
+  accounts_snapshot.cpp
+  native_object.cpp
+  chain.cpp
+)
+
+if( UNIX AND NOT APPLE )
+  set(rt_library rt )
+endif()
+
+target_include_directories(pyuuos
+      PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+      PUBLIC ${PYTHON_INCLUDE_DIRS}
+)
+
+target_compile_definitions(pyuuos PRIVATE "-DNODE_PY_SHARED")
+
+if(UNIX)
+  if(APPLE)
+    set(whole_archive_flag "-force_load")
+    set(no_whole_archive_flag "")
+    set(build_id_flag "")
+  else()
+    set(whole_archive_flag "--whole-archive")
+    set(no_whole_archive_flag "--no-whole-archive")
+    set(build_id_flag "--build-id")
+  endif()
+else()
+  set(whole_archive_flag "--whole-archive")
+  set(no_whole_archive_flag "--no-whole-archive")
+  set(build_id_flag "")
+endif()
+
+target_link_libraries( pyuuos
+        PRIVATE appbase
+        PRIVATE -Wl,${whole_archive_flag} login_plugin               -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} history_plugin             -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} state_history_plugin       -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} history_api_plugin         -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} chain_api_plugin           -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} net_plugin                 -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} net_api_plugin             -Wl,${no_whole_archive_flag}
+#        PRIVATE -Wl,${whole_archive_flag} faucet_testnet_plugin      -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} txn_test_gen_plugin        -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} db_size_api_plugin         -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} producer_api_plugin        -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} test_control_plugin        -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} test_control_api_plugin    -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} debug_api_plugin           -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} contract_api_plugin        -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${whole_archive_flag} action_publisher_plugin    -Wl,${no_whole_archive_flag}
+        PRIVATE -Wl,${build_id_flag}
+        PRIVATE chain_plugin http_plugin producer_plugin http_client_plugin ${PYTHON_LIBRARIES}
+        PRIVATE eosio_chain fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )
+
+#copy_bin( pyuuos.so )
+
+
 install( TARGETS
    ${NODE_EXECUTABLE_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR} COMPONENT base
 )
