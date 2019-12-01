@@ -26,7 +26,9 @@ template<typename T>
 static void unpack_cpp_object(string& packed_message, string& msg) {
     try {
         vector<char> _packed_message(packed_message.c_str(), packed_message.c_str()+packed_message.size());
-        auto _msg = fc::raw::unpack<T>(_packed_message);
+        T _msg;
+        fc::datastream<const char*> ds( packed_message.c_str(), packed_message.size() );
+        fc::raw::unpack(ds, _msg);
         msg = fc::json::to_string(fc::variant(_msg));
     }FC_LOG_AND_DROP();
 }
