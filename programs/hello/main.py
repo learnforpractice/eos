@@ -7,6 +7,7 @@ import struct
 import logging
 import asyncio
 import argparse
+import signal
 
 from uuos.rpc_server import rpc_server
 from native_object import *
@@ -58,104 +59,106 @@ genesis_uuos = {
   }
 }
 
-async def read(reader, length):
-    buffer = io.BytesIO()
-    while True:
-        data = await reader.read(length)
-        buffer.write(data)
-        length -= len(data)
-        if length <= 0:
-            break
-    return buffer.getvalue()
+class UUOSMain(object):
+    async def read(self, reader, length):
+        buffer = io.BytesIO()
+        while True:
+            data = await reader.read(length)
+            buffer.write(data)
+            length -= len(data)
+            if length <= 0:
+                break
+        return buffer.getvalue()
 
-async def p2p_client(host, port):
-    reader, writer = await asyncio.open_connection(host, port)
-    logger.info(f'connected to {host}:{port} success!')
+    async def p2p_client(self, host, port):
+        reader, writer = await asyncio.open_connection(host, port)
+        logger.info(f'connected to {host}:{port} success!')
 
-    msg = HandshakeMessage(default_handshake_msg)
-    msg.network_version = 1206
-    # msg.chain_id = 'e1b12a9d0720401efa34556d4cb80f0f95c3d0a3a913e5470e8ea9ff44719381'
-    # msg.last_irreversible_block_num = 3
-    # msg.last_irreversible_block_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
-    # msg.head_num = 3
-    # msg.head_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
-    print(msg)
+        msg = HandshakeMessage(default_handshake_msg)
+        msg.network_version = 1206
+        # msg.chain_id = 'e1b12a9d0720401efa34556d4cb80f0f95c3d0a3a913e5470e8ea9ff44719381'
+        # msg.last_irreversible_block_num = 3
+        # msg.last_irreversible_block_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
+        # msg.head_num = 3
+        # msg.head_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
+        print(msg)
 
-    msg = msg.pack()
-    writer.write(msg)
-    try:
-        msg_len = await read(reader, 4)
-        msg_len = int.from_bytes(msg_len, 'little')
-        print('++++read:', msg_len)
-        msg = await read(reader, msg_len)
-#        print(msg[0], msg)
-        if msg[0] == handshake_message_type:
-            pass
-            # msg = HandshakeMessage.unpack(msg[1:])
-            # print(msg)
-    except Exception as e:
-        logger.exception(e)
-        return
-
-    data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
-    writer.write(data)
-    count = 0
-#    block_file = open('block.bin', 'wb')
-    while True:
-        msg_len = await read(reader, 4)
-        msg_len = int.from_bytes(msg_len, 'little')
-        if msg_len >=500*1024:
-            logger.info(f'bad length: {msg_len}')
+        msg = msg.pack()
+        writer.write(msg)
+        try:
+            msg_len = await self.read(reader, 4)
+            msg_len = int.from_bytes(msg_len, 'little')
+            print('++++read:', msg_len)
+            msg = await self.read(reader, msg_len)
+    #        print(msg[0], msg)
+            if msg[0] == handshake_message_type:
+                pass
+                # msg = HandshakeMessage.unpack(msg[1:])
+                # print(msg)
+        except Exception as e:
+            logger.exception(e)
             return
-        msg = await read(reader, msg_len)
-        count += 1
-        if count % 1 == 0:
-            print('+++count:', count)
-        if msg[0] == handshake_message_type:
-            print(count, msg[0], len(msg), msg.hex())
-            logger.info('bad handshake_message')
-            msg = HandshakeMessage.unpack(msg[1:])
-            print(msg)
-        elif msg[0] == 3:
-            msg = TimeMessage.unpack(msg[1:])
-            logger.info(msg)
-        elif msg[0] == 4:
-            msg = NoticeMessage.unpack(msg[1:])
-            print(msg)
-        elif msg[0] == 7:
-            msg = msg[1:]
-            if False:
-                block = SignedBlockMessage.unpack(msg)
-                if not block:
-                    continue
-                    logger.info('bad block')
-                    continue
-                block_num = bytes.fromhex(block.previous[:8])
-                block_num = int.from_bytes(block_num, 'big')
-                if block_num % 1 == 0:
-                    print('++++block_num:', block_num)
-            # print(block)
-            # logger.info(f'++++block num {block_num}')
-            # logger.info(block)
-            chain_on_incoming_block(chain_ptr, msg)
 
-async def uuos_main(args):
-    global chain_ptr
-    chain_ptr = init()
-    logger.info(f"++++++chain_ptr:{chain_ptr}")
-    for address in args.p2p_peer_address:
-        host, port = address.split(':')
-        await p2p_client(host, port)
-    while True:
-        await asyncio.sleep(2.0)
-        print('hello')
+        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
+        writer.write(data)
+        count = 0
+    #    block_file = open('block.bin', 'wb')
+        while True:
+            msg_len = await self.read(reader, 4)
+            msg_len = int.from_bytes(msg_len, 'little')
+            if msg_len >=500*1024:
+                logger.info(f'bad length: {msg_len}')
+                return
+            msg = await self.read(reader, msg_len)
+            count += 1
+            if count % 1 == 0:
+                print('+++count:', count)
+            if msg[0] == handshake_message_type:
+                print(count, msg[0], len(msg), msg.hex())
+                logger.info('bad handshake_message')
+                msg = HandshakeMessage.unpack(msg[1:])
+                print(msg)
+            elif msg[0] == 3:
+                msg = TimeMessage.unpack(msg[1:])
+                logger.info(msg)
+            elif msg[0] == 4:
+                msg = NoticeMessage.unpack(msg[1:])
+                print(msg)
+            elif msg[0] == 7:
+                msg = msg[1:]
+                if False:
+                    block = SignedBlockMessage.unpack(msg)
+                    if not block:
+                        continue
+                        logger.info('bad block')
+                        continue
+                    block_num = bytes.fromhex(block.previous[:8])
+                    block_num = int.from_bytes(block_num, 'big')
+                    if block_num % 1 == 0:
+                        print('++++block_num:', block_num)
+                # print(block)
+                # logger.info(f'++++block num {block_num}')
+                # logger.info(block)
+                chain_on_incoming_block(chain_ptr, msg)
+
+    async def uuos_main(self, args):
+        global chain_ptr
+        chain_ptr = init()
+        logger.info(f"++++++chain_ptr:{chain_ptr}")
+        for address in args.p2p_peer_address:
+            host, port = address.split(':')
+            await self.p2p_client(host, port)
+        while True:
+            await asyncio.sleep(2.0)
+            print('hello')
 
 async def main(args):
+    uuosmain = UUOSMain()
     tasks = []
     task = asyncio.create_task(rpc_server(args))
     tasks.append(task)
     
-    task = asyncio.create_task(uuos_main(args))
+    task = asyncio.create_task(uuosmain.uuos_main(args))
     tasks.append(task)
 
 #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
@@ -163,16 +166,20 @@ async def main(args):
     print(res)
     return res
 
-import signal
+loog = None
 
-def shutting_down(signalNumber, frame):
-    logger.info('shutting down process!')
+async def shutdown_uuos():
+    print('shutdown uuos')
+    logger.info('shutdown uuos')
+
+async def shutdown(signal, loop):
     if chain_ptr:
         chain_free(chain_ptr)
+    print('Done running!')
     import sys;sys.exit(0)
-    return
 
 if __name__ == "__main__":
+    global loop
     print(os.getpid())
 #    time.sleep(10)
     parser = argparse.ArgumentParser(description='')
@@ -185,12 +192,18 @@ if __name__ == "__main__":
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)
 
-    signal.signal(signal.SIGHUP, shutting_down)
-    signal.signal(signal.SIGTERM, shutting_down)
-    signal.signal(signal.SIGINT, shutting_down)
+    # signal.signal(signal.SIGHUP, shutting_down)
+    # signal.signal(signal.SIGTERM, shutting_down)
+    # signal.signal(signal.SIGINT, shutting_down)
 
     try:
         loop = asyncio.get_event_loop()
+
+        signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
+        for s in signals:
+            loop.add_signal_handler(
+                s, lambda s=s: asyncio.create_task(shutdown(s, loop)))
+
         args.loop = loop
         loop.run_until_complete(main(args))
         # asyncio.run(main(args))
