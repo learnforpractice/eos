@@ -152,31 +152,27 @@ class UUOSMain(object):
             await asyncio.sleep(2.0)
             print('hello')
 
-async def main(args):
-    uuosmain = UUOSMain()
-    tasks = []
-    task = asyncio.create_task(rpc_server(args))
-    tasks.append(task)
-    
-    task = asyncio.create_task(uuosmain.uuos_main(args))
-    tasks.append(task)
+    async def shutdown(self, signal, loop):
+        if chain_ptr:
+            chain_free(chain_ptr)
+        print('Done running!')
+        import sys;sys.exit(0)
 
-#    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
-    res = await asyncio.gather(*tasks, return_exceptions=False)
-    print(res)
-    return res
+    async def main(self, args):
+        tasks = []
+        task = asyncio.create_task(rpc_server(args))
+        tasks.append(task)
+        
+        task = asyncio.create_task(self.uuos_main(args))
+        tasks.append(task)
+
+    #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
+        res = await asyncio.gather(*tasks, return_exceptions=False)
+        print(res)
+        return res
 
 loog = None
 
-async def shutdown_uuos():
-    print('shutdown uuos')
-    logger.info('shutdown uuos')
-
-async def shutdown(signal, loop):
-    if chain_ptr:
-        chain_free(chain_ptr)
-    print('Done running!')
-    import sys;sys.exit(0)
 
 if __name__ == "__main__":
     global loop
@@ -197,15 +193,17 @@ if __name__ == "__main__":
     # signal.signal(signal.SIGINT, shutting_down)
 
     try:
+        uuos = UUOSMain()
+
         loop = asyncio.get_event_loop()
 
         signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
         for s in signals:
             loop.add_signal_handler(
-                s, lambda s=s: asyncio.create_task(shutdown(s, loop)))
+                s, lambda s=s: asyncio.create_task(uuos.shutdown(s, loop)))
 
         args.loop = loop
-        loop.run_until_complete(main(args))
+        loop.run_until_complete(uuos.main(args))
         # asyncio.run(main(args))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
