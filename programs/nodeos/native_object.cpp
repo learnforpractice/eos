@@ -25,11 +25,15 @@ static void pack_cpp_object(string& msg, string& packed_message)
 template<typename T>
 static void unpack_cpp_object(string& packed_message, string& msg) {
     try {
-        vector<char> _packed_message(packed_message.c_str(), packed_message.c_str()+packed_message.size());
         T _msg;
         fc::datastream<const char*> ds( packed_message.c_str(), packed_message.size() );
         fc::raw::unpack(ds, _msg);
-        msg = fc::json::to_string(fc::variant(_msg));
+
+//        vector<char> _packed_message(packed_message.c_str(), packed_message.c_str()+packed_message.size());
+//        auto _msg = fc::raw::unpack<T>(_packed_message);
+        auto v = fc::variant(_msg);
+//        return;
+        msg = fc::json::to_string(v);
     }FC_LOG_AND_DROP();
 }
 

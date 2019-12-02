@@ -74,10 +74,14 @@ class Connection(object):
                 break
         return buffer.getvalue()
 
-    def writer(self, data):
+    def write(self, data):
         self.writer.write(data)
 
 class UUOSMain(object):
+
+    def __init__(self):
+        self.connections = []
+        self.tasks = []
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -91,28 +95,14 @@ class UUOSMain(object):
                 break
         return buffer.getvalue()
 
-    async def connect_to_p2p_client(self, host, port):
-        try:
-            cnn = await asyncio.open_connection(host, port, limit=1024*1024)
-            self.reader, self.writer = cnn
-        except OSError as e:
-            logger.info(f'Connect to {host}:{port} failed!')
-            logger.exception(e)
-#            self.p2p_client_task.cancel()
-            return
-        logger.info(f'connected to {host}:{port} success!')
+    def select_connection(self):
+        if not self.connections:
+            return None
+        return self.connections[0]
 
-        msg = HandshakeMessage(default_handshake_msg)
-        msg.network_version = 1206
-        # msg.chain_id = 'e1b12a9d0720401efa34556d4cb80f0f95c3d0a3a913e5470e8ea9ff44719381'
-        # msg.last_irreversible_block_num = 3
-        # msg.last_irreversible_block_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
-        # msg.head_num = 3
-        # msg.head_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
-        print(msg)
-
-        msg = msg.pack()
-        self.writer.write(msg)
+    async def handle_message(self, c):
+        self.writer = c.writer
+        self.reader = c.reader
         try:
             msg_len = await self.read(4)
             msg_len = int.from_bytes(msg_len, 'little')
@@ -170,7 +160,25 @@ class UUOSMain(object):
                 # print(block)
                 # logger.info(f'++++block num {block_num}')
                 # logger.info(block)
-                chain_on_incoming_block(chain_ptr, msg)
+                num, block_id = chain_on_incoming_block(chain_ptr, msg)
+#                logger.info(num, block_id)
+
+    async def connect_to_p2p_client(self, host, port):
+        try:
+            reader, writer = await asyncio.open_connection(host, port, limit=1024*1024)
+            self.reader = reader
+            self.writer = writer
+            c = Connection(reader, writer)
+            c.host = host
+            c.port = port
+            self.connections.append(c)
+            return c
+        except OSError as e:
+            logger.info(f'Connect to {host}:{port} failed!')
+            logger.exception(e)
+#            self.p2p_client_task.cancel()
+            return
+        logger.info(f'connected to {host}:{port} success!')
 
     async def handle_p2p_client(self, reader, writer):
         addr = writer.get_extra_info('peername')
@@ -199,8 +207,20 @@ class UUOSMain(object):
         logger.info(f"++++++chain_ptr:{chain_ptr}")
         for address in self.args.p2p_peer_address:
             host, port = address.split(':')
-            await self.connect_to_p2p_client(host, port)
-#            self.p2p_client_task = asyncio.create_task(self.connect_to_p2p_client(host, port))
+            c = await self.connect_to_p2p_client(host, port)
+            msg = HandshakeMessage(default_handshake_msg)
+            msg.network_version = 1206
+            # msg.chain_id = 'e1b12a9d0720401efa34556d4cb80f0f95c3d0a3a913e5470e8ea9ff44719381'
+            # msg.last_irreversible_block_num = 3
+            # msg.last_irreversible_block_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
+            # msg.head_num = 3
+            # msg.head_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"
+            print(msg)
+            msg = msg.pack()
+            c.write(msg)
+#            await self.handle_message()
+            task = asyncio.create_task(self.handle_message(c))
+            self.tasks.append(task)
 
     async def shutdown(self, signal, loop):
         if chain_ptr:
