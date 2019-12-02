@@ -59,19 +59,46 @@ genesis_uuos = {
   }
 }
 
-class UUOSMain(object):
-    async def read(self, reader, length):
+class Connection(object):
+    def __init__(self, reader, writer):
+        self.reader = reader
+        self.writer = writer
+
+    async def read(self, length):
         buffer = io.BytesIO()
         while True:
-            data = await reader.read(length)
+            data = await self.reader.read(length)
             buffer.write(data)
             length -= len(data)
             if length <= 0:
                 break
         return buffer.getvalue()
 
-    async def p2p_client(self, host, port):
-        reader, writer = await asyncio.open_connection(host, port)
+    def writer(self, data):
+        self.writer.write(data)
+
+class UUOSMain(object):
+
+    async def read(self, length):
+        buffer = io.BytesIO()
+        while True:
+            data = await self.reader.read(length)
+            if not data:
+                return None
+            buffer.write(data)
+            length -= len(data)
+            if length <= 0:
+                break
+        return buffer.getvalue()
+
+    async def connect_to_p2p_client(self, host, port):
+        try:
+            self.reader, self.writer = await asyncio.open_connection(host, port)
+        except OSError as e:
+            logger.info(f'Connect to {host}:{port} failed!')
+            logger.exception(e)
+#            self.p2p_client_task.cancel()
+            return
         logger.info(f'connected to {host}:{port} success!')
 
         msg = HandshakeMessage(default_handshake_msg)
@@ -84,12 +111,12 @@ class UUOSMain(object):
         print(msg)
 
         msg = msg.pack()
-        writer.write(msg)
+        self.writer.write(msg)
         try:
-            msg_len = await self.read(reader, 4)
+            msg_len = await self.read(4)
             msg_len = int.from_bytes(msg_len, 'little')
             print('++++read:', msg_len)
-            msg = await self.read(reader, msg_len)
+            msg = await self.read(msg_len)
     #        print(msg[0], msg)
             if msg[0] == handshake_message_type:
                 pass
@@ -100,18 +127,21 @@ class UUOSMain(object):
             return
 
         data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
-        writer.write(data)
+        self.writer.write(data)
         count = 0
     #    block_file = open('block.bin', 'wb')
         while True:
-            msg_len = await self.read(reader, 4)
+            msg_len = await self.read(4)
+            if not msg_len:
+                logger.info('closed connection, exit')
+                return
             msg_len = int.from_bytes(msg_len, 'little')
             if msg_len >=500*1024:
                 logger.info(f'bad length: {msg_len}')
                 return
-            msg = await self.read(reader, msg_len)
+            msg = await self.read(msg_len)
             count += 1
-            if count % 1 == 0:
+            if count % 100 == 0:
                 print('+++count:', count)
             if msg[0] == handshake_message_type:
                 print(count, msg[0], len(msg), msg.hex())
@@ -141,29 +171,53 @@ class UUOSMain(object):
                 # logger.info(block)
                 chain_on_incoming_block(chain_ptr, msg)
 
-    async def uuos_main(self, args):
+    async def handle_p2p_client(self, reader, writer):
+        addr = writer.get_extra_info('peername')
+        print(f"connection from {addr!r}")
+        c = Connection(reader, writer)
+        while True:
+            data = await c.read(100)
+            logger.info(data)
+            asyncio.sleep(1.0)
+            # writer.write(data)
+            # await writer.drain()
+        writer.close()
+
+    async def p2p_server(self):
+        address, port = self.args.p2p_listen_endpoint.split(':')
+        port = int(port)
+        server = await asyncio.start_server(self.handle_p2p_client, address, port)
+        addr = server.sockets[0].getsockname()
+        print(f'Serving on {addr}')
+        async with server:
+            await server.serve_forever()
+
+    async def uuos_main(self):
         global chain_ptr
         chain_ptr = init()
         logger.info(f"++++++chain_ptr:{chain_ptr}")
-        for address in args.p2p_peer_address:
+        for address in self.args.p2p_peer_address:
             host, port = address.split(':')
-            await self.p2p_client(host, port)
-        while True:
-            await asyncio.sleep(2.0)
-            print('hello')
+            await self.connect_to_p2p_client(host, port)
+#            self.p2p_client_task = asyncio.create_task(self.connect_to_p2p_client(host, port))
 
     async def shutdown(self, signal, loop):
         if chain_ptr:
             chain_free(chain_ptr)
         print('Done running!')
+#        self.reader.close()
+#        self.writer.close()
         import sys;sys.exit(0)
 
-    async def main(self, args):
+    async def main(self):
         tasks = []
-        task = asyncio.create_task(rpc_server(args))
+        task = asyncio.create_task(rpc_server(self.args))
         tasks.append(task)
         
-        task = asyncio.create_task(self.uuos_main(args))
+        task = asyncio.create_task(self.uuos_main())
+        tasks.append(task)
+
+        task = asyncio.create_task(self.p2p_server())
         tasks.append(task)
 
     #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
@@ -172,15 +226,17 @@ class UUOSMain(object):
         return res
 
     def run(self, args):
-        loop = asyncio.get_event_loop()
+        self.args = args
+        logger.info(args)
+        self.loop = asyncio.get_event_loop()
 
         signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
         for s in signals:
-            loop.add_signal_handler(
-                s, lambda s=s: asyncio.create_task(self.shutdown(s, loop)))
+            self.loop.add_signal_handler(
+                s, lambda s=s: asyncio.create_task(self.shutdown(s, self.loop)))
 
-        args.loop = loop
-        loop.run_until_complete(self.main(args))
+        args.loop = self.loop
+        self.loop.run_until_complete(self.main())
 
 if __name__ == "__main__":
     print(os.getpid())

@@ -88,7 +88,9 @@ async def ws():
 
 async def rpc_server(args):
     try:
+        logger.info(args)
         host, port = args.http_server_address.split(':')
+        logger.info(f'{host}, {port}')
         port = int(port)
         await app.server(host=host, port=port, loop=args.loop, use_reloader=False)
     except Exception as e:
