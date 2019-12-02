@@ -163,6 +163,15 @@ async def main(args):
     print(res)
     return res
 
+import signal
+
+def shutting_down(signalNumber, frame):
+    logger.info('shutting down process!')
+    if chain_ptr:
+        chain_free(chain_ptr)
+    import sys;sys.exit(0)
+    return
+
 if __name__ == "__main__":
     print(os.getpid())
 #    time.sleep(10)
@@ -175,6 +184,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)
+
+    signal.signal(signal.SIGHUP, shutting_down)
+    signal.signal(signal.SIGTERM, shutting_down)
+    signal.signal(signal.SIGINT, shutting_down)
 
     try:
         loop = asyncio.get_event_loop()
