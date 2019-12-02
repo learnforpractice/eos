@@ -171,11 +171,18 @@ class UUOSMain(object):
         print(res)
         return res
 
-loog = None
+    def run(self, args):
+        loop = asyncio.get_event_loop()
 
+        signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
+        for s in signals:
+            loop.add_signal_handler(
+                s, lambda s=s: asyncio.create_task(self.shutdown(s, loop)))
+
+        args.loop = loop
+        loop.run_until_complete(self.main(args))
 
 if __name__ == "__main__":
-    global loop
     print(os.getpid())
 #    time.sleep(10)
     parser = argparse.ArgumentParser(description='')
@@ -194,16 +201,7 @@ if __name__ == "__main__":
 
     try:
         uuos = UUOSMain()
-
-        loop = asyncio.get_event_loop()
-
-        signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
-        for s in signals:
-            loop.add_signal_handler(
-                s, lambda s=s: asyncio.create_task(uuos.shutdown(s, loop)))
-
-        args.loop = loop
-        loop.run_until_complete(uuos.main(args))
+        uuos.run(args)
         # asyncio.run(main(args))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
