@@ -14,6 +14,7 @@
 #include <fc/log/logger_config.hpp>
 #include <fc/smart_ref_impl.hpp>
 #include <fc/scoped_exit.hpp>
+#include <fc/exception/exception.hpp>
 
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -72,6 +73,12 @@ fc::logger _log;
 
 const fc::string trx_trace_logger_name("transaction_tracing");
 fc::logger _trx_trace_log;
+
+namespace eosio {
+   class producer_plugin_impl;
+}
+
+void print_producer_plugin_impl(eosio::producer_plugin_impl &imp);
 
 namespace eosio {
 
@@ -1916,3 +1923,85 @@ void producer_plugin_impl::produce_block() {
 }
 
 } // namespace eosio
+
+
+FC_REFLECT(eosio::producer_plugin_impl,
+            (_signature_providers)
+            (_producers)
+            (_keosd_provider_timeout_us)
+            (_produce_time_offset_us)
+            (_last_block_time_offset_us)
+            (_max_scheduled_transaction_time_per_block_ms)
+            (_max_transaction_time_ms)
+            (_max_irreversible_block_age_us)
+            (_incoming_defer_ratio)
+            (_snapshots_dir)
+            (_thread_pool)
+            (_keosd_provider_timeout_us)
+)
+
+using namespace eosio;
+#if 0
+void print_producer_plugin_impl(producer_plugin_impl &imp) {
+   auto msg = fc::json::to_string(fc::variant(imp));
+   elog("++++msg ${msg}", ("msg", msg));
+}
+
+void pack_producer_plugin_impl(string& msg, string& packed_message) {
+    try {
+        auto _msg = fc::json::from_string(msg).as<producer_plugin_impl>();
+        auto _packed_message = fc::raw::pack<producer_plugin_impl>(_msg);
+        packed_message = string(_packed_message.data(), _packed_message.size());
+    } FC_LOG_AND_DROP();
+}
+
+void unpack_producer_plugin_impl(string& packed_message, string& msg) {
+    try {
+        vector<char> _packed_message(packed_message.c_str(), packed_message.c_str()+packed_message.size());
+        auto _msg = fc::raw::unpack<producer_plugin_impl>(_packed_message);
+        msg = fc::json::to_string(fc::variant(_msg));
+    }FC_LOG_AND_DROP();
+}
+#endif
+
+
+void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& block) {
+   auto id = block->id();
+
+   dlog("received incoming block ${id} block num ${n}", ("id", id)("n",block_header::num_from_id(block->id())));
+
+   EOS_ASSERT( block->timestamp < (fc::time_point::now() + fc::seconds( 7 )), block_from_the_future,
+               "received a block from the future, ignoring it: ${id}", ("id", id) );
+
+   /* de-dupe here... no point in aborting block if we already know the block */
+   auto existing = chain.fetch_block_by_id( id );
+   if( existing ) { return; }
+
+   // start processing of block
+   auto bsf = chain.create_block_state_future( block );
+
+   // abort the pending block
+   chain.abort_block();
+   // push the new block
+   bool except = false;
+   try {
+      chain.push_block( bsf );
+   } catch ( const guard_exception& e ) {
+      chain_plugin::handle_guard_exception(e);
+      return;
+   } catch( const fc::exception& e ) {
+      elog((e.to_detail_string()));
+      except = true;
+   } catch ( const std::bad_alloc& ) {
+      chain_plugin::handle_bad_alloc();
+   } catch ( boost::interprocess::bad_alloc& ) {
+      chain_plugin::handle_db_exhaustion();
+   }
+
+   if( fc::time_point::now() - block->timestamp < fc::minutes(5) ) {
+      ilog("Received block ${id}... #${n} @ ${t} signed by ${p} [trxs: ${count}, lib: ${lib}, conf: ${confs}, latency: ${latency} ms]",
+            ("p",block->producer)("id",fc::variant(block->id()).as_string().substr(8,16))
+            ("n",block_header::num_from_id(block->id()))("t",block->timestamp)
+            ("count",block->transactions.size())("lib",chain.last_irreversible_block_num())("confs", block->confirmed)("latency", (fc::time_point::now() - block->timestamp).count()/1000 ) );
+   }
+}
