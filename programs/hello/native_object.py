@@ -1,5 +1,4 @@
-import json
-#import ujson as json
+import ujson as json
 import struct
 
 from _hello import *
@@ -93,28 +92,37 @@ default_config = {
 }
 
 def normal_setattr(self, attr, value):
-    self.__dict__[attr] = value
+    self._dict[attr] = value
 
 def custom_setattr(self, attr, value):
-    if not attr in self.__dict__:
-        if attr == '__dict__':
-            type(self).old_setattr(self, '__dict__', value)
-        else:
-            raise AttributeError
-    self.__dict__[attr] = value
+    if attr == '_dict':
+        type(self).old_setattr(self, attr, value)
+    else:
+        if not attr in self._dict:
+            raise AttributeError(attr)
+        self._dict[attr] = value
 
-class NativeObject(dict):
+def custom_getattr(self, attr):
+    return self._dict[attr]
+
+class NativeObject(object):
     def __init__(self, msg_dict):
-        super(NativeObject, self).__init__(msg_dict)
-        # if hasattr(NativeObject, 'old_setattr'):
-        #     pass
-        # else:
-        #     NativeObject.old_setattr = NativeObject.__setattr__
-        #     NativeObject.__setattr__ = custom_setattr
-        self.__dict__ = self
+#        super(NativeObject, self).__init__(msg_dict)
+        self._dict = msg_dict
+        if hasattr(NativeObject, 'old_setattr'):
+            pass
+        else:
+            NativeObject.old_setattr = NativeObject.__setattr__
+            NativeObject.__setattr__ = custom_setattr
+
+    def __getattr__(self, attr):
+        return self._dict[attr]
+
+    def dumps(self):
+        return json.dumps(self._dict)
 
     def pack(self):
-        msg = json.dumps(self.__dict__)
+        msg = json.dumps(self._dict)
         return pack_native_object(self.obj_type, msg)
 
     @classmethod
@@ -123,29 +131,18 @@ class NativeObject(dict):
         msg = json.loads(msg)
         return cls(msg)
 
-class NativeMessage(dict):
-    def __init__(self, msg_dict={}):
-        super(NativeMessage, self).__init__(msg_dict)
-        self.__dict__ = self
-        #NativeMessage.__setattr__ = self.custom_setattr
+    def __str__(self):
+        return json.dumps(self._dict, sort_keys=False, indent=4)
 
-    def custom_setattr(self, attr, value):
-        if not attr in self.__dict__:
-            raise AttributeError
-        self.__dict__[attr] = value
+    def __repr__(self):
+        return json.dumps(self._dict, sort_keys=False, indent=4)
+
+class NativeMessage(NativeObject):
 
     def pack(self):
-        msg = json.dumps(self.__dict__)
+        msg = json.dumps(self._dict)
         msg = pack_native_object(self.obj_type, msg)
         return struct.pack('I', len(msg)+1) + struct.pack('B', self.obj_type) + msg
-
-    @classmethod
-    def unpack(cls, msg):
-        msg = unpack_native_object(cls.obj_type, msg)
-        if not msg:
-            return
-        msg = json.loads(msg)
-        return cls(msg)
 
 class HandshakeMessage(NativeMessage):
     obj_type = handshake_message_type
@@ -168,3 +165,9 @@ class SignedBlockMessage(NativeMessage):
 
 class ControllerConfig(NativeObject):
     obj_type = controller_config_type
+
+
+if __name__ == '__main__':
+    h = HandshakeMessage({'a':1})
+    h[123] = '456'
+    print(h.pack())
