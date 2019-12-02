@@ -93,7 +93,8 @@ class UUOSMain(object):
 
     async def connect_to_p2p_client(self, host, port):
         try:
-            self.reader, self.writer = await asyncio.open_connection(host, port)
+            cnn = await asyncio.open_connection(host, port, limit=1024*1024)
+            self.reader, self.writer = cnn
         except OSError as e:
             logger.info(f'Connect to {host}:{port} failed!')
             logger.exception(e)
