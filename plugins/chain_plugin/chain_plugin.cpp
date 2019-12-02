@@ -916,6 +916,8 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
       if( options.count("database-hugepage-path") )
          my->chain_config->db_hugepage_paths = options.at("database-hugepage-path").as<std::vector<std::string>>();
 #endif
+//      elog("config ${cfg}", ("cfg", fc::raw::pack<eosio::chain::controller::config>(*my->chain_config)));
+      elog("config ${cfg}", ("cfg", fc::json::to_string(variant(*my->chain_config))));
 
       my->chain.emplace( *my->chain_config, std::move(pfs) );
       my->chain_id.emplace( my->chain->get_chain_id());
