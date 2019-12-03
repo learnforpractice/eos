@@ -9,7 +9,8 @@ import asyncio
 import argparse
 import signal
 
-from uuos import chain
+from uuos import chain, chain_api
+
 from uuos.rpc_server import rpc_server
 
 from native_object import *
@@ -32,6 +33,7 @@ def init():
     ptr = chain_new(cfg, 'cd')
     print(ptr)
     chain.chain_ptr = ptr
+    chain_api.chain_ptr = ptr
     return ptr
     # chain_free(ptr)
 
@@ -212,6 +214,13 @@ class UUOSMain(object):
             c = await self.connect_to_p2p_client(host, port)
             msg = HandshakeMessage(default_handshake_msg)
             msg.network_version = 1206
+            msg.chain_id = chain.id()
+            num = chain.last_irreversible_block_num()
+            msg.last_irreversible_block_num = num
+            msg.last_irreversible_block_id = chain.get_block_id_for_num(num)
+            num = chain.fork_db_pending_head_block_num()
+            msg.head_num = num
+            msg.head_id = chain.get_block_id_for_num(num)
             # msg.chain_id = 'e1b12a9d0720401efa34556d4cb80f0f95c3d0a3a913e5470e8ea9ff44719381'
             # msg.last_irreversible_block_num = 3
             # msg.last_irreversible_block_id = "0000000363dabcdeb154ad6376bfcc6d95985e07592fd4037c992a35a0a1405d"

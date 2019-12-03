@@ -2379,3 +2379,51 @@ chain::symbol read_only::extract_core_symbol()const {
 } // namespace eosio
 
 FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ignore2)(ignore3)(core_symbol)(ignore4) )
+
+#include <fc/variant.hpp>
+#define max_abi_time (10000)
+using namespace eosio::chain_apis;
+
+void chain_api_get_info_(void *ptr, string& info) {
+   read_only::get_info_params params;
+   read_only::get_info_results results;
+   auto& db = *(eosio::chain::controller*)ptr;
+
+   results = read_only(db, fc::microseconds(max_abi_time)).get_info(params);
+   info = fc::json::to_string(fc::variant(results));
+}
+
+void chain_api_get_account_(void *ptr, string& params, string& result) {
+   auto& db = *(eosio::chain::controller*)ptr;
+   auto _params = fc::json::from_string(params).as<read_only::get_account_params>();
+   auto ro = read_only(db, fc::microseconds(max_abi_time));
+   read_only::get_account_results _result = ro.get_account(_params);
+   result = fc::json::to_string(fc::variant(_result));
+}
+
+void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
+   auto& db = *(eosio::chain::controller*)ptr;
+   auto _params = fc::json::from_string(params).as<read_only::get_table_rows_params>();
+   read_only::get_table_rows_result _result = read_only(db, fc::microseconds(max_abi_time)).get_table_rows(_params);
+   result = fc::json::to_string(fc::variant(_result));
+}
+
+uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
+   auto& cc = *(eosio::chain::controller*)ptr;
+   return cc.fork_db_pending_head_block_num();
+}
+
+uint32_t chain_last_irreversible_block_num_(void *ptr) {
+   auto& cc = *(eosio::chain::controller*)ptr;
+   return cc.last_irreversible_block_num();
+}
+
+void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id) {
+   auto& cc = *(eosio::chain::controller*)ptr;
+   block_id = cc.get_block_id_for_num(num).str();
+}
+
+void chain_id_(void *ptr, string& chain_id) {
+   auto& cc = *(eosio::chain::controller*)ptr;
+   chain_id = cc.get_chain_id().str();
+}

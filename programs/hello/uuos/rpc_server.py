@@ -2,8 +2,7 @@ import os
 import io
 import time
 import sys
-#import ujson as json
-import json
+import ujson as json
 import struct
 import logging
 import asyncio
@@ -15,7 +14,7 @@ from hypercorn.asyncio import serve
 from hypercorn.config import Config as HyperConfig
 from pyeoskit import eosapi
 
-from . import chain
+from . import chain_api
 
 from typing import (
     Any,
@@ -34,8 +33,6 @@ from typing import (
     Union,
     ValuesView,
 )
-
-from quart.logging import default_handler
 
 class App(Quart):
     def server(
@@ -76,11 +73,8 @@ class App(Quart):
             asyncio.run(serve(self, config), debug=config.debug)
 
 logger=logging.getLogger(__name__)
-#logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.ERROR)
-
+logger.addHandler(logging.StreamHandler())
 app = App(__name__)
-app.logger.removeHandler(default_handler)
 
 @app.route('/')
 async def hello():
@@ -88,19 +82,17 @@ async def hello():
 
 @app.route('/v1/chain/get_info', methods=["GET", "POST"])
 async def get_info():
-    return chain.get_info()
+    return chain_api.get_info()
 
 @app.route('/v1/chain/get_account', methods=["POST"])
 async def get_account():
     data = await request.data
-    print(data)
-    return chain.get_account(data.decode('utf8'))
+    return chain_api.get_account(data.decode('utf8'))
 
 @app.websocket('/ws')
 async def ws():
     while True:
         await websocket.send('hello')
-
 
 async def rpc_server(chain_ptr, loop, http_server_address):
     try:
