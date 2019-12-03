@@ -9,10 +9,12 @@ import asyncio
 import argparse
 import signal
 
+from uuos import chain
 from uuos.rpc_server import rpc_server
+
 from native_object import *
 
-logging.basicConfig(filename='logfile.log', level=logging.INFO, 
+logging.basicConfig(filename='logfile.log', level=logging.ERROR, 
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -29,6 +31,7 @@ def init():
     cfg = cfg.dumps()
     ptr = chain_new(cfg, 'cd')
     print(ptr)
+    chain.chain_ptr = ptr
     return ptr
     # chain_free(ptr)
 
@@ -101,13 +104,11 @@ class UUOSMain(object):
         return self.connections[0]
 
     async def handle_message(self, c):
-        self.writer = c.writer
-        self.reader = c.reader
         try:
-            msg_len = await self.read(4)
+            msg_len = await c.read(4)
             msg_len = int.from_bytes(msg_len, 'little')
             print('++++read:', msg_len)
-            msg = await self.read(msg_len)
+            msg = await c.read(msg_len)
     #        print(msg[0], msg)
             if msg[0] == handshake_message_type:
                 pass
@@ -118,11 +119,11 @@ class UUOSMain(object):
             return
 
         data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
-        self.writer.write(data)
+        c.write(data)
         count = 0
     #    block_file = open('block.bin', 'wb')
         while True:
-            msg_len = await self.read(4)
+            msg_len = await c.read(4)
             if not msg_len:
                 logger.info('closed connection, exit')
                 return
@@ -130,7 +131,7 @@ class UUOSMain(object):
             if msg_len >=500*1024:
                 logger.info(f'bad length: {msg_len}')
                 return
-            msg = await self.read(msg_len)
+            msg = await c.read(msg_len)
             count += 1
             if count % 100 == 0:
                 print('+++count:', count)
@@ -141,7 +142,10 @@ class UUOSMain(object):
                 print(msg)
             elif msg[0] == 3:
                 msg = TimeMessage.unpack(msg[1:])
+                xmt = msg.xmt
+                xmt = int(xmt)/1e6
                 logger.info(msg)
+                logger.info(time.localtime(xmt))
             elif msg[0] == 4:
                 msg = NoticeMessage.unpack(msg[1:])
                 print(msg)
@@ -161,13 +165,11 @@ class UUOSMain(object):
                 # logger.info(f'++++block num {block_num}')
                 # logger.info(block)
                 num, block_id = chain_on_incoming_block(chain_ptr, msg)
-#                logger.info(num, block_id)
+                logger.info(f"{num}, {block_id}")
 
     async def connect_to_p2p_client(self, host, port):
         try:
             reader, writer = await asyncio.open_connection(host, port, limit=1024*1024)
-            self.reader = reader
-            self.writer = writer
             c = Connection(reader, writer)
             c.host = host
             c.port = port
@@ -232,7 +234,9 @@ class UUOSMain(object):
 
     async def main(self):
         tasks = []
-        task = asyncio.create_task(rpc_server(self.args))
+
+        server = rpc_server(chain_ptr, self.loop, self.args.http_server_address)
+        task = asyncio.create_task(server)
         tasks.append(task)
         
         task = asyncio.create_task(self.uuos_main())
