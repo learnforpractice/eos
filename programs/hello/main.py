@@ -22,7 +22,7 @@ logger.addHandler(logging.StreamHandler())
 
 sync_req_span = 1000
 
-chain_ptr = None
+
 handshake = 'b604cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f122f727370ec82744c546a3c7e17c508fb3f8f6acd76fb78f91b8efaa531c1b60000000000000000000000000000000000000000000000000000000000000000000098709fe00198db150000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000183132372e302e302e313a39383737202d2031323266373237c2160000000016c2769ea3daa77be00b2613af499d01007a1cb01d2b020493526cfb0115c3160000000016c39195db0558624e6b50fa26bc2342c45c063a2d3472a31df6324ae29d036f73781022454f532054657374204167656e74220100'
 handshake = bytes.fromhex(handshake)
 
@@ -50,22 +50,6 @@ genesis_uuos = {
   }
 }
 
-def init():
-    cfg = ControllerConfig(default_config)
-    # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
-    # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
-    cfg.blocks_dir = 'dd/blocks'
-    cfg.state_dir = 'dd/state'
-    cfg.genesis = genesis_uuos
-
-    cfg = cfg.dumps()
-    ptr = chain_new(cfg, 'cd')
-    print(ptr)
-    chain.chain_ptr = ptr
-    chain_api.chain_ptr = ptr
-    return ptr
-    # chain_free(ptr)
-
 class Connection(object):
     def __init__(self, reader, writer):
         self.reader = reader
@@ -92,6 +76,18 @@ class UUOSMain(object):
     def __init__(self):
         self.connections = []
         self.tasks = []
+
+        cfg = ControllerConfig(default_config)
+        # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
+        # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
+        cfg.blocks_dir = 'dd/blocks'
+        cfg.state_dir = 'dd/state'
+        cfg.genesis = genesis_uuos
+
+        cfg = cfg.dumps()
+        self.chain_ptr = chain_new(cfg, 'cd')
+        chain.chain_ptr = self.chain_ptr
+        chain_api.chain_ptr = self.chain_ptr
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -230,7 +226,7 @@ class UUOSMain(object):
                 # print(block)
                 # logger.info(f'++++block num {block_num}')
                 # logger.info(block)
-                num, block_id = chain_on_incoming_block(chain_ptr, msg)
+                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
                 if num % 10000 == 0:
                     logger.info(f"{num}, {block_id}")
                 if c.target - num < 1000:
@@ -297,9 +293,6 @@ class UUOSMain(object):
         c.write(msg)
 
     async def uuos_main(self):
-        global chain_ptr
-        chain_ptr = init()
-        logger.info(f"++++++chain_ptr:{chain_ptr}")
         for address in self.args.p2p_peer_address:
             host, port = address.split(':')
             c = await self.connect_to_p2p_client(host, port)
@@ -311,8 +304,9 @@ class UUOSMain(object):
             self.tasks.append(task)
 
     async def shutdown(self, signal, loop):
-        if chain_ptr:
-            chain_free(chain_ptr)
+        if self.chain_ptr:
+            chain_free(self.chain_ptr)
+            self.chain_ptr = None
         print('Done running!')
 #        self.reader.close()
 #        self.writer.close()
@@ -320,8 +314,7 @@ class UUOSMain(object):
 
     async def main(self):
         tasks = []
-
-        server = rpc_server(chain_ptr, self.loop, self.args.http_server_address)
+        server = rpc_server(self.chain_ptr, self.loop, self.args.http_server_address)
         task = asyncio.create_task(server)
         tasks.append(task)
         
@@ -349,6 +342,11 @@ class UUOSMain(object):
         args.loop = self.loop
         self.loop.run_until_complete(self.main())
 
+    def finish(self):
+        if self.chain_ptr:
+            chain_free(self.chain_ptr)
+            self.chain_ptr = None
+
 if __name__ == "__main__":
     print(os.getpid())
 #    time.sleep(10)
@@ -372,5 +370,4 @@ if __name__ == "__main__":
         # asyncio.run(main(args))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
-    if chain_ptr:
-        chain_free(chain_ptr)
+    uuos.finish()
