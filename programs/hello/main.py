@@ -50,6 +50,30 @@ genesis_uuos = {
   }
 }
 
+genesis_eos = {
+    "initial_timestamp": "2018-06-08T08:08:08.888",
+    "initial_key": "EOS7EarnUhcyYqmdnPon8rm7mBCTnBoot6o7fE2WzjvEX2TdggbL3",
+    "initial_configuration": {
+        "max_block_net_usage": 1048576,
+        "target_block_net_usage_pct": 1000,
+        "max_transaction_net_usage": 524288,
+        "base_per_transaction_net_usage": 12,
+        "net_usage_leeway": 500,
+        "context_free_discount_net_usage_num": 20,
+        "context_free_discount_net_usage_den": 100,
+        "max_block_cpu_usage": 200000,
+        "target_block_cpu_usage_pct": 1000,
+        "max_transaction_cpu_usage": 150000,
+        "min_transaction_cpu_usage": 100,
+        "max_transaction_lifetime": 3600,
+        "deferred_trx_expiration_window": 600,
+        "max_transaction_delay": 3888000,
+        "max_inline_action_size": 4096,
+        "max_inline_action_depth": 4,
+        "max_authority_depth": 6
+    }
+}
+
 class Connection(object):
     def __init__(self, reader, writer):
         self.reader = reader
@@ -68,12 +92,34 @@ class Connection(object):
                 break
         return buffer.getvalue()
 
+    async def read_message(self):
+        msg_len = await self.read(4)
+        if not msg_len:
+            return (None, None)
+        msg_len = int.from_bytes(msg_len, 'little')
+        if msg_len >=500*1024 or msg_len < 2:
+            logger.info(f'bad length: {msg_len}')
+            return (None, None)
+
+        msg_type = await self.read(1)
+        if not msg_type:
+            logger.error('fail to read msg type')
+            return (None, None)
+        msg_type = msg_type[0]
+
+        msg = await self.read(msg_len-1)
+        if not msg:
+            logger.error('fail to read msg')
+            return (None, None)
+        return msg_type, msg
+
     def write(self, data):
         self.writer.write(data)
 
 class UUOSMain(object):
 
-    def __init__(self):
+    def __init__(self, args):
+        self.args = args
         self.connections = []
         self.tasks = []
 
@@ -82,24 +128,19 @@ class UUOSMain(object):
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
         cfg.blocks_dir = 'dd/blocks'
         cfg.state_dir = 'dd/state'
-        cfg.genesis = genesis_uuos
+        if self.args.network == 'uuos':
+            cfg.genesis = genesis_uuos
+        elif self.args.network == 'eos':
+            cfg.genesis = genesis_eos
+        elif self.args.network == 'test':
+            pass
+        else:
+            raise Exception('unknown network')
 
         cfg = cfg.dumps()
         self.chain_ptr = chain_new(cfg, 'cd')
         chain.chain_ptr = self.chain_ptr
         chain_api.chain_ptr = self.chain_ptr
-
-    async def read(self, length):
-        buffer = io.BytesIO()
-        while True:
-            data = await self.reader.read(length)
-            if not data:
-                return None
-            buffer.write(data)
-            length -= len(data)
-            if length <= 0:
-                break
-        return buffer.getvalue()
 
     def select_connection(self):
         if not self.connections:
@@ -118,22 +159,23 @@ class UUOSMain(object):
 
     async def handle_message(self, c):
         try:
-            msg_len = await c.read(4)
-            if not msg_len:
+            msg_type, msg = await c.read_message()
+            if msg_type is None or msg is None:
+                print(msg_type, msg)
                 logger.info('closed connection, exit')
                 return
-            msg_len = int.from_bytes(msg_len, 'little')
-            print('++++read:', msg_len)
-            msg = await c.read(msg_len)
-    #        print(msg[0], msg)
-            msg_type = msg[0]
             if msg_type == 0: #handshake_message_type:
-                c.handshake_message = HandshakeMessage.unpack(msg[1:])
-                c.target = c.handshake_message.head_num
-                logger.info(c.handshake_message)
+                msg = HandshakeMessage.unpack(msg)
+                c.target = msg.head_num
+                logger.info(f'+++receive handshake {msg}')
+                c.handshake_message = msg
             elif msg_type == 2: # go_away_message_type
-                msg = GoAwayMessage.unpack(msg[1:])
+                msg = GoAwayMessage.unpack(msg)
                 print(msg)
+                c.writer.close()
+                return
+            else:
+                logger.info('unexpected message: {msg_type}')
                 c.writer.close()
                 return
         except Exception as e:
@@ -143,15 +185,10 @@ class UUOSMain(object):
         count = 0
     #    block_file = open('block.bin', 'wb')
         while True:
-            msg_len = await c.read(4)
-            if not msg_len:
-                logger.info('closed connection, exit')
+            msg_type, msg = await c.read_message()
+            if msg_type is None or msg is None:
+                logger.error('Fail to read msg')
                 return
-            msg_len = int.from_bytes(msg_len, 'little')
-            if msg_len >=500*1024:
-                logger.info(f'bad length: {msg_len}')
-                return
-            msg = await c.read(msg_len)
             count += 1
             # if count % 100 == 0:
             #     print('+++count:', count)
@@ -166,11 +203,9 @@ class UUOSMain(object):
             # signed_block_message_type = 7
             # packed_transaction_message_type = 8
             # controller_config_type = 9
-            msg_type = msg[0]
             if msg_type == 0: #handshake_message_type
-                print(count, msg[0], len(msg), msg.hex())
                 logger.info('bad handshake_message')
-                c.handshake_message = HandshakeMessage.unpack(msg[1:])
+                c.handshake_message = HandshakeMessage.unpack(msg)
                 print(c.handshake_message)
                 if c.handshake_message.head_num > chain.fork_db_pending_head_block_num():
                     c.target = c.handshake_message.head_num
@@ -178,18 +213,18 @@ class UUOSMain(object):
             elif msg_type == 1: # chain_size_message_type
                 pass
             elif msg_type == 2: # go_away_message_type
-                msg = GoAwayMessage.unpack(msg[1:])
+                msg = GoAwayMessage.unpack(msg)
                 logger.info(msg)
                 c.writer.close()
                 return
             elif msg_type == 3:
-                msg = TimeMessage.unpack(msg[1:])
+                msg = TimeMessage.unpack(msg)
                 xmt = msg.xmt
                 xmt = int(xmt)/1e6
                 logger.info(msg)
                 logger.info(time.localtime(xmt))
-            elif msg[0] == 4:
-                msg = NoticeMessage.unpack(msg[1:])
+            elif msg_type == 4:
+                msg = NoticeMessage.unpack(msg)
                 pending = msg.known_blocks['pending']
                 if pending > chain.last_irreversible_block_num():
                     c.target = pending
@@ -210,9 +245,7 @@ class UUOSMain(object):
                 # })
                 # logger.info(msg)
                 # c.send(msg.pack())
-
-            elif msg[0] == 7:
-                msg = msg[1:]
+            elif msg_type == 7:
                 if False:
                     block = SignedBlockMessage.unpack(msg)
                     if not block:
@@ -223,21 +256,19 @@ class UUOSMain(object):
                     block_num = int.from_bytes(block_num, 'big')
                     if block_num % 1 == 0:
                         print('++++block_num:', block_num)
-                # print(block)
-                # logger.info(f'++++block num {block_num}')
-                # logger.info(block)
                 num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
                 if num % 10000 == 0:
                     logger.info(f"{num}, {block_id}")
                 if c.target - num < 1000:
                     logger.info(f"{num}, {block_id}")                    
                 if self.sync_msg.end_block == num:
-#                    print(num, self.handshake_message.head_num)
                     if c.target == num:
                         self.send_handshake(c)
                     else:
                         self.start_sync(c)
-#                        logger.info(f'send sync message from {start_block} to {end_block}')
+            elif msg_type == 8:
+                msg = PackedTransactionMessage(msg)
+                pass
 
     async def connect_to_p2p_client(self, host, port):
         try:
@@ -288,7 +319,7 @@ class UUOSMain(object):
         msg.head_id = chain.get_block_id_for_num(num)
         msg.generation = c.handshake_count
         msg.time = str(int(time.time()*1000000))
-#        logger.info(msg)
+        logger.info(f'++++send handshake {msg}')
         msg = msg.pack()
         c.write(msg)
 
@@ -329,8 +360,7 @@ class UUOSMain(object):
         print(res)
         return res
 
-    def run(self, args):
-        self.args = args
+    def run(self):
         logger.info(args)
         self.loop = asyncio.get_event_loop()
 
@@ -354,8 +384,9 @@ if __name__ == "__main__":
     parser.add_argument('--data-dir',               type=str, default='',                  help='data directory')
     parser.add_argument('--config-dir',             type=str, default='',                  help='config directory')
     parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',    help='http server address')
-    parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:6666',    help='p2p peer address')
+    parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:6666',    help='p2p listen endpoint')
     parser.add_argument('--p2p-peer-address',       type=str, action='append', default=[], help='p2p peer address')
+    parser.add_argument('--network',                type=str, default='test',              help='network: uuos, eos, test')
     args = parser.parse_args()
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)
@@ -365,8 +396,8 @@ if __name__ == "__main__":
     # signal.signal(signal.SIGINT, shutting_down)
 
     try:
-        uuos = UUOSMain()
-        uuos.run(args)
+        uuos = UUOSMain(args)
+        uuos.run()
         # asyncio.run(main(args))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
