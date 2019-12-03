@@ -18,6 +18,9 @@ cdef extern from "native_object.hpp":
 
     void *chain_new_(string& config, string& protocol_features_dir)
     void chain_free_(void *ptr)
+    void chain_get_info_(void *chain_ptr, string& info)
+    void chain_get_table_rows_(void *chain_ptr, string& params, string& result)
+    void chain_get_account_(void *chain_ptr, string& params, string& result);
 
     void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
 
@@ -51,3 +54,18 @@ def chain_on_incoming_block(unsigned long long ptr, string& packed_signed_block)
     cdef string block_id
     chain_on_incoming_block_(<void *>ptr, packed_signed_block, block_num, block_id)
     return (block_num, block_id)
+
+def chain_get_info(uint64_t chain_ptr):
+    cdef string info
+    chain_get_info_(<void *>chain_ptr, info)
+    return info
+
+def chain_get_table_rows_(uint64_t chain_ptr, string& params):
+    cdef string result
+    chain_get_table_rows_(chain_ptr, params, result)
+    return result
+
+def chain_get_account(uint64_t chain_ptr, string& params):
+    cdef string result
+    chain_get_account_(<void *>chain_ptr, params, result)
+    return result
