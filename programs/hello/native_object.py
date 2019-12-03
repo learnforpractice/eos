@@ -16,6 +16,56 @@ signed_block_message_type = 7
 packed_transaction_message_type = 8
 controller_config_type = 9
 
+class GoAwayReason:
+    reason = {
+        0: 'no_reason',     #  no reason to go away
+        1: '_self',         #  the connection is to itself
+        2: 'duplicate',     #  the connection is redundant
+        3: 'wrong_chain',   #  the peer's chain id doesn't match
+        4: 'wrong_version', #  the peer's network version doesn't match
+        5: 'forked',        #  the peer's irreversible blocks are different
+        6: 'unlinkable',    #  the peer sent a block we couldn't use
+        7: 'bad_transaction',#  the peer sent a transaction that failed verification
+        8: 'validation',    #  the peer sent a block that failed validation
+        9: 'benign_other',  #  reasons such as a timeout. not fatal but warrant resetting
+        10: 'fatal_other',  #  a catch-all for errors we don't have discriminated
+        11: 'authentication'#  peer failed authenication
+    }
+    
+    no_reason = 0
+    _self = 1
+    duplicate = 2
+    wrong_chain = 3
+    wrong_version = 4
+    forked = 5
+    unlinkable = 6
+    bad_transaction = 7
+    validation = 8
+    benign_other = 9
+    fatal_other = 10
+    authentication = 11
+
+    @classmethod
+    def get_reason(cls, i):
+        return cls.reason[i]
+
+class IdListModes:
+    modes = {
+        0: 'none',
+        1: 'catch_up',
+        2: 'last_irr_catch_up',
+        3: 'normal'
+    }
+
+    none = 0
+    catch_up = 1
+    last_irr_catch_up = 2
+    normal = 3
+
+    @classmethod
+    def get_mode(cls, i):
+        return cls.modes[i]
+
 default_handshake_msg = {
     "network_version":1206,
     "chain_id":"cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f",
@@ -147,12 +197,18 @@ class NativeMessage(NativeObject):
 class HandshakeMessage(NativeMessage):
     obj_type = handshake_message_type
 
-class SyncRequestMessage(NativeMessage):
-    obj_type = sync_request_message_type
-    def __init__(self, start_block=0, end_block=0):
-        d = dict(start_block=start_block, end_block=end_block)
-        super(SyncRequestMessage, self).__init__(d)
-        self.__dict__ = self
+class ChainSizeMessage(NativeMessage):
+    obj_type = chain_size_message_type
+
+class GoAwayMessage(NativeMessage):
+    obj_type = go_away_message_type
+
+    @classmethod
+    def unpack(cls, msg):
+        msg = unpack_native_object(cls.obj_type, msg)
+        msg = json.loads(msg)
+        msg['reason'] = GoAwayReason.get_reason(msg['reason'])
+        return cls(msg)
 
 class TimeMessage(NativeMessage):
     obj_type = time_message_type
@@ -160,8 +216,27 @@ class TimeMessage(NativeMessage):
 class NoticeMessage(NativeMessage):
     obj_type = notice_message_type
 
+class RequestMessage(NativeMessage):
+    obj_type = request_message_type
+
+class SyncRequestMessage(NativeMessage):
+    obj_type = sync_request_message_type
+    def __init__(self, start_block=0, end_block=0):
+        d = {'start_block':start_block, 'end_block':end_block}
+        super(SyncRequestMessage, self).__init__(d)
+
+    @classmethod
+    def unpack(cls, msg):
+        msg = unpack_native_object(cls.obj_type, msg)
+        msg = json.loads(msg)
+        return cls(**msg)
+
 class SignedBlockMessage(NativeMessage):
     obj_type = signed_block_message_type
+
+class PackedTransactionMessage(NativeMessage):
+    obj_type = packed_transaction_message_type
+
 
 class ControllerConfig(NativeObject):
     obj_type = controller_config_type
