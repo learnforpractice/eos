@@ -160,8 +160,7 @@ class Connection(object):
         self.writer.write(msg.pack())
 
     async def send_block_task(self):
-        while self.current_block < self.last_sync_request.end_block:
-            logger.info('+++send block {self.current_block}')
+        while self.current_block <= self.last_sync_request.end_block:
             block = chain.fetch_block_by_number(self.current_block)
 #            len(block) + 1
             msg_len = struct.pack('I', len(block) + 1)
@@ -171,14 +170,12 @@ class Connection(object):
             self.writer.write(msg_type)
             self.writer.write(block)
             self.current_block += 1
-            asyncio.sleep(0)
-        logger.info("send block task done!")
+            await asyncio.sleep(0)
 
     def start_send_block(self):
         self.current_block = self.last_sync_request.start_block
         self.task = asyncio.create_task(self.send_block_task())
         logger.info('++++start_send_block')
-        logger.info(self.task)
 
         # self.last_sync_request.start_block
         # self.last_sync_request.end_block
@@ -320,10 +317,13 @@ class UUOSMain(object):
                 # logger.info(msg)
                 # c.send(msg.pack())
             elif msg_type == 5:#request_message_type
-                msg = RequestMessage(msg)
+                msg = RequestMessage.unpack(msg)
                 logger.info(msg)
             elif msg_type == 6: #sync_request_message_type
-                msg = SyncRequestMessage(msg)
+                msg = SyncRequestMessage.unpack(msg)
+                print(msg)
+                if msg.start_block == 0:
+                    continue
                 c.last_sync_request = msg
                 c.start_send_block()
             elif msg_type == 7:
