@@ -253,6 +253,7 @@ class Connection(object):
             msg_type, msg = await self.read_message()
             if msg_type is None or msg is None:
                 logger.error('Fail to read msg')
+                self.writer.close()
                 return
             count += 1
             # if count % 100 == 0:
@@ -354,6 +355,7 @@ class UUOSMain(object):
         self.args = args
         self.connections = []
         self.tasks = []
+        self.client_count = 0
 
         cfg = ControllerConfig(default_config)
         # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
@@ -395,11 +397,23 @@ class UUOSMain(object):
             return
         logger.info(f'connected to {host}:{port} success!')
 
+    async def handle_connection(self, c):
+        try:
+            await c.handle_message()
+        except Exception as e:
+            logger.exception(e)
+        finally:
+            self.client_count -= 1
+
     async def handle_p2p_client(self, reader, writer):
+        if self.args.max_clients and self.client_count > self.args.max_clients:
+            writer.close()
+            return
+        self.client_count += 1
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
         c = Connection(reader, writer)
-        task = asyncio.create_task(c.handle_message())
+        task = asyncio.create_task(self.handle_connection(c))
 
     async def p2p_server(self):
         address, port = self.args.p2p_listen_endpoint.split(':')
@@ -475,6 +489,7 @@ if __name__ == "__main__":
     parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:6666',    help='p2p listen endpoint')
     parser.add_argument('--p2p-peer-address',       type=str, action='append', default=[], help='p2p peer address')
     parser.add_argument('--network',                type=str, default='test',              help='network: uuos, eos, test')
+    parser.add_argument('--max-clients',            type=int, default=25,                   help='Maximum number of clients from which connections are accepted, use 0 for no limit')
     args = parser.parse_args()
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)
