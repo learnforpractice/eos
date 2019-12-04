@@ -12,3 +12,7 @@ def last_irreversible_block_num():
 
 def get_block_id_for_num(num):
     return chain_get_block_id_for_num(chain_ptr, num)
+
+def fetch_block_by_number(block_num):
+    return chain_fetch_block_by_number(chain_ptr, block_num)
+

@@ -2385,45 +2385,71 @@ FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ig
 using namespace eosio::chain_apis;
 
 void chain_api_get_info_(void *ptr, string& info) {
-   read_only::get_info_params params;
-   read_only::get_info_results results;
-   auto& db = *(eosio::chain::controller*)ptr;
+   try {
+      read_only::get_info_params params;
+      read_only::get_info_results results;
+      auto& db = *(eosio::chain::controller*)ptr;
 
-   results = read_only(db, fc::microseconds(max_abi_time)).get_info(params);
-   info = fc::json::to_string(fc::variant(results));
+      results = read_only(db, fc::microseconds(max_abi_time)).get_info(params);
+      info = fc::json::to_string(fc::variant(results));
+    } FC_LOG_AND_DROP();
 }
 
 void chain_api_get_account_(void *ptr, string& params, string& result) {
-   auto& db = *(eosio::chain::controller*)ptr;
-   auto _params = fc::json::from_string(params).as<read_only::get_account_params>();
-   auto ro = read_only(db, fc::microseconds(max_abi_time));
-   read_only::get_account_results _result = ro.get_account(_params);
-   result = fc::json::to_string(fc::variant(_result));
+   try {
+      auto& db = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_account_params>();
+      auto ro = read_only(db, fc::microseconds(max_abi_time));
+      read_only::get_account_results _result = ro.get_account(_params);
+      result = fc::json::to_string(fc::variant(_result));
+   } FC_LOG_AND_DROP();
 }
 
 void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
-   auto& db = *(eosio::chain::controller*)ptr;
-   auto _params = fc::json::from_string(params).as<read_only::get_table_rows_params>();
-   read_only::get_table_rows_result _result = read_only(db, fc::microseconds(max_abi_time)).get_table_rows(_params);
-   result = fc::json::to_string(fc::variant(_result));
+   try {
+      auto& db = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_table_rows_params>();
+      read_only::get_table_rows_result _result = read_only(db, fc::microseconds(max_abi_time)).get_table_rows(_params);
+      result = fc::json::to_string(fc::variant(_result));
+   } FC_LOG_AND_DROP();
 }
 
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
-   auto& cc = *(eosio::chain::controller*)ptr;
-   return cc.fork_db_pending_head_block_num();
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      return cc.fork_db_pending_head_block_num();
+   } FC_LOG_AND_DROP();
 }
 
 uint32_t chain_last_irreversible_block_num_(void *ptr) {
-   auto& cc = *(eosio::chain::controller*)ptr;
-   return cc.last_irreversible_block_num();
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      return cc.last_irreversible_block_num();
+   } FC_LOG_AND_DROP();
 }
 
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id) {
-   auto& cc = *(eosio::chain::controller*)ptr;
-   block_id = cc.get_block_id_for_num(num).str();
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      block_id = cc.get_block_id_for_num(num).str();
+   } FC_LOG_AND_DROP();
 }
 
 void chain_id_(void *ptr, string& chain_id) {
-   auto& cc = *(eosio::chain::controller*)ptr;
-   chain_id = cc.get_chain_id().str();
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      chain_id = cc.get_chain_id().str();
+   } FC_LOG_AND_DROP();
+}
+
+void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto block_ptr = cc.fetch_block_by_number(block_num);
+      if (!block_ptr) {
+         return;
+      }
+      auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
+      raw_block = string(_raw_block.data(), _raw_block.size());
+   } FC_LOG_AND_DROP();
 }

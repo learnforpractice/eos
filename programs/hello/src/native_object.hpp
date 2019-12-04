@@ -18,6 +18,7 @@ void chain_id_(void *ptr, string& chain_id);
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr);
 uint32_t chain_last_irreversible_block_num_(void *ptr);
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id);
+void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
 
 enum {
     handshake_message_type,

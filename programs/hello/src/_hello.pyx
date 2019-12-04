@@ -28,6 +28,7 @@ cdef extern from "native_object.hpp":
     uint32_t chain_last_irreversible_block_num_(void *ptr)
     void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
     void chain_id_(void *ptr, string& chain_id)
+    void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -90,3 +91,9 @@ def chain_id(uint64_t ptr):
     cdef string chain_id
     chain_id_(<void *>ptr, chain_id)
     return chain_id
+
+def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
+    cdef string raw_block
+    chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
+    return <bytes>raw_block
+
