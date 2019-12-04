@@ -10,10 +10,11 @@ import argparse
 import signal
 
 from uuos import chain, chain_api
+
 from uuos.connection import Connection
+from uuos.producer import Producer
 
 from uuos.rpc_server import rpc_server
-
 from native_object import *
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
@@ -177,6 +178,10 @@ class UUOSMain(object):
         tasks.append(task)
 
         task = asyncio.create_task(self.p2p_server())
+        tasks.append(task)
+
+        self.producer = Producer()
+        task = asyncio.create_task(self.producer.run())
         tasks.append(task)
 
     #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
