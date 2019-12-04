@@ -101,6 +101,12 @@ ENDIF(WIN32)
 ### Remove after Boost 1.70 CMake fixes are in place
 set( Boost_NO_BOOST_CMAKE ON CACHE STRING "ON or OFF" )
 
+#find_package(PythonInterp 3.7 REQUIRED)
+find_package(PythonLibs 3.7 REQUIRED)
+message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
+message(STATUS "PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
+message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
+
 find_package(Boost 1.67 REQUIRED COMPONENTS
     date_time
     filesystem
