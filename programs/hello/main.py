@@ -232,6 +232,9 @@ class Connection(object):
                 if msg.head_num < chain.fork_db_pending_head_block_num():
 #                    self.target = msg.head_num
                     self.notify_last_irr_catch_up()
+                else: #self.last_handshake.head_num > chain.fork_db_pending_head_block_num():
+                    self.target = self.last_handshake.head_num
+                    self.start_sync()
             elif msg_type == 2: # go_away_message_type
                 msg = GoAwayMessage.unpack(msg)
                 print(msg)
@@ -396,14 +399,7 @@ class UUOSMain(object):
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
         c = Connection(reader, writer)
-        c.send_handshake()
-        while True:
-            data = await c.read(100)
-            logger.info(data)
-            await asyncio.sleep(1.0)
-            # writer.write(data)
-            # await writer.drain()
-        writer.close()
+        task = asyncio.create_task(c.handle_message())
 
     async def p2p_server(self):
         address, port = self.args.p2p_listen_endpoint.split(':')
