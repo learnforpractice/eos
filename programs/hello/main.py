@@ -180,6 +180,23 @@ class Connection(object):
         # self.last_sync_request.start_block
         # self.last_sync_request.end_block
 
+    def send_handshake(self):
+        self.handshake_count += 1
+        msg = HandshakeMessage(default_handshake_msg)
+        msg.network_version = 1206
+        msg.chain_id = chain.id()
+        num = chain.last_irreversible_block_num()
+        msg.last_irreversible_block_num = num
+        msg.last_irreversible_block_id = chain.get_block_id_for_num(num)
+        num = chain.fork_db_pending_head_block_num()
+        msg.head_num = num
+        msg.head_id = chain.get_block_id_for_num(num)
+        msg.generation = self.handshake_count
+        msg.time = str(int(time.time()*1000000))
+        logger.info(f'++++send handshake {msg}')
+        msg = msg.pack()
+        self.write(msg)
+
 
 class UUOSMain(object):
 
@@ -341,10 +358,10 @@ class UUOSMain(object):
                 if num % 10000 == 0:
                     logger.info(f"{num}, {block_id}")
                 if c.target - num < 1000:
-                    logger.info(f"{num}, {block_id}")                    
+                    logger.info(f"{num}, {block_id}")
                 if c.sync_msg.end_block == num:
                     if c.target == num:
-                        self.send_handshake(c)
+                        c.send_handshake()
                     else:
                         self.start_sync(c)
             elif msg_type == 8:
@@ -370,6 +387,7 @@ class UUOSMain(object):
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
         c = Connection(reader, writer)
+        c.send_handshake()
         while True:
             data = await c.read(100)
             logger.info(data)
@@ -387,30 +405,13 @@ class UUOSMain(object):
         async with server:
             await server.serve_forever()
 
-    def send_handshake(self, c):
-        c.handshake_count += 1
-        msg = HandshakeMessage(default_handshake_msg)
-        msg.network_version = 1206
-        msg.chain_id = chain.id()
-        num = chain.last_irreversible_block_num()
-        msg.last_irreversible_block_num = num
-        msg.last_irreversible_block_id = chain.get_block_id_for_num(num)
-        num = chain.fork_db_pending_head_block_num()
-        msg.head_num = num
-        msg.head_id = chain.get_block_id_for_num(num)
-        msg.generation = c.handshake_count
-        msg.time = str(int(time.time()*1000000))
-        logger.info(f'++++send handshake {msg}')
-        msg = msg.pack()
-        c.write(msg)
-
     async def uuos_main(self):
         for address in self.args.p2p_peer_address:
             host, port = address.split(':')
             c = await self.connect_to_p2p_client(host, port)
             if not c:
                 continue
-            self.send_handshake(c)
+            c.send_handshake()
 #            await self.handle_message()
             task = asyncio.create_task(self.handle_message(c))
             self.tasks.append(task)
