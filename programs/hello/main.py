@@ -197,6 +197,15 @@ class Connection(object):
         msg = msg.pack()
         self.write(msg)
 
+    def start_sync(self):
+        start_block = chain.last_irreversible_block_num() + 1
+        end_block = start_block + sync_req_span
+        if end_block > self.target:
+            end_block = self.target
+        logger.info(f"+++++start sync {start_block} {end_block}")
+        self.sync_msg = SyncRequestMessage(start_block, end_block)
+#        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
+        self.write(self.sync_msg.pack())
 
 class UUOSMain(object):
 
@@ -228,16 +237,6 @@ class UUOSMain(object):
         if not self.connections:
             return None
         return self.connections[0]
-
-    def start_sync(self, c):
-        start_block = chain.last_irreversible_block_num() + 1
-        end_block = start_block + sync_req_span
-        if end_block > c.target:
-            end_block = c.target
-        logger.info(f"+++++start sync {start_block} {end_block}")
-        c.sync_msg = SyncRequestMessage(start_block, end_block)
-#        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
-        c.write(c.sync_msg.pack())
 
     async def handle_message(self, c):
         try:
@@ -297,7 +296,7 @@ class UUOSMain(object):
                     c.notify_last_irr_catch_up()
                 else: #c.last_handshake.head_num > chain.fork_db_pending_head_block_num():
                     c.target = c.last_handshake.head_num
-                    self.start_sync(c)
+                    c.start_sync()
             elif msg_type == 1: # chain_size_message_type
                 pass
             elif msg_type == 2: # go_away_message_type
@@ -316,7 +315,7 @@ class UUOSMain(object):
                 pending = msg.known_blocks['pending']
                 if pending > chain.last_irreversible_block_num():
                     c.target = pending
-                    self.start_sync(c)
+                    c.start_sync()
                     #self.send_handshake(c)
                 logger.info(f'receive notice message: {msg}')
                 # msg = NoticeMessage({
@@ -363,7 +362,7 @@ class UUOSMain(object):
                     if c.target == num:
                         c.send_handshake()
                     else:
-                        self.start_sync(c)
+                        c.start_sync()
             elif msg_type == 8:
                 msg = PackedTransactionMessage(msg)
                 logger.info(msg)
