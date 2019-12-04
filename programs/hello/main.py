@@ -79,6 +79,7 @@ class Connection(object):
         self.reader = reader
         self.writer = writer
         self.handshake_count = 0
+        self.last_handshake = None
         self.target = 0
 
     async def read(self, length):
@@ -116,6 +117,23 @@ class Connection(object):
 
     def write(self, data):
         self.writer.write(data)
+    
+    def close(self):
+        self.writer.close()
+
+    def fork_check(self):
+        lib_num = chain.last_irreversible_block_num()
+        msg = self.last_handshake
+        if lib_num > msg.last_irreversible_block_num:
+            if chain.get_block_id_for_num(lib_num) != msg.last_irreversible_block_id:
+                sha256_empty = '0000000000000000000000000000000000000000000000000000000000000000'
+                msg = dict(reason=GoAwayReason.forked, node_id=sha256_empty)
+                msg = GoAwayMessage(msg)
+                logger.info(f'++++send a goaway message {msg}')
+                self.write(msg.pack())
+                self.close()
+                return True
+        return False
 
 class UUOSMain(object):
 
@@ -169,7 +187,8 @@ class UUOSMain(object):
                 c.target = msg.head_num
                 logger.info(f'+++receive handshake {msg}')
                 c.last_handshake = msg
-
+                if c.fork_check():
+                    return
                 if msg.head_num > chain.fork_db_pending_head_block_num():
                     c.target = msg.head_num
                     self.start_sync(c)
