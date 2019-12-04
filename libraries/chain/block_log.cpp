@@ -272,6 +272,24 @@ namespace eosio { namespace chain {
       } FC_LOG_AND_RETHROW()
    }
 
+   void block_log::read_raw_block_by_num(uint32_t block_num, vector<char>& raw_block)const {
+      try {
+         signed_block_ptr b;
+         uint64_t pos = get_block_pos(block_num);
+         if (pos == npos) {
+            return;
+         }
+         uint64_t end_pos = get_block_pos(block_num+1);
+         if (end_pos == npos) {
+            return;
+         }
+         uint64_t size = end_pos - pos;
+         raw_block.resize(size);
+         my->block_stream.seekg(pos);
+         my->block_stream.read(raw_block.data(), raw_block.size());
+      } FC_LOG_AND_RETHROW()
+   }
+
    uint64_t block_log::get_block_pos(uint32_t block_num) const {
       my->check_open_files();
       if (!(my->head && block_num <= block_header::num_from_id(my->head_id) && block_num >= my->first_block_num))

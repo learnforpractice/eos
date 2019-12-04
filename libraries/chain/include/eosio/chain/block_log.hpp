@@ -48,6 +48,7 @@ namespace eosio { namespace chain {
 
          std::pair<signed_block_ptr, uint64_t> read_block(uint64_t file_pos)const;
          signed_block_ptr read_block_by_num(uint32_t block_num)const;
+         void read_raw_block_by_num(uint32_t block_num, vector<char>& raw_block)const;
          signed_block_ptr read_block_by_id(const block_id_type& id)const {
             return read_block_by_num(block_header::num_from_id(id));
          }
