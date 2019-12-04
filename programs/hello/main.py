@@ -74,6 +74,14 @@ genesis_eos = {
     }
 }
 
+def get_chain_ptr():
+    global g_chain_ptr
+    return g_chain_ptr
+
+def set_chain_ptr(ptr):
+    global g_chain_ptr
+    g_chain_ptr = ptr
+
 class Connection(object):
     def __init__(self, reader, writer):
         self.reader = reader
@@ -82,6 +90,7 @@ class Connection(object):
         self.last_handshake = None
         self.target = 0
         self.syncing = False
+        self.chain_ptr = get_chain_ptr()
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -207,6 +216,135 @@ class Connection(object):
 #        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
         self.write(self.sync_msg.pack())
 
+    async def handle_message(self):
+        try:
+            msg_type, msg = await self.read_message()
+            if msg_type is None or msg is None:
+                logger.info('closed connection, exit')
+                return
+            if msg_type == 0: #handshake_message_type:
+                msg = HandshakeMessage.unpack(msg)
+                self.target = msg.head_num
+                logger.info(f'+++receive handshake {msg}')
+                self.last_handshake = msg
+                if self.fork_check():
+                    return
+                if msg.head_num < chain.fork_db_pending_head_block_num():
+#                    self.target = msg.head_num
+                    self.notify_last_irr_catch_up()
+            elif msg_type == 2: # go_away_message_type
+                msg = GoAwayMessage.unpack(msg)
+                print(msg)
+                self.writer.close()
+                return
+            else:
+                logger.info('unexpected message: {msg_type}')
+                self.writer.close()
+                return
+        except Exception as e:
+            logger.exception(e)
+            return
+        count = 0
+    #    block_file = open('block.bin', 'wb')
+        while True:
+            msg_type, msg = await self.read_message()
+            if msg_type is None or msg is None:
+                logger.error('Fail to read msg')
+                return
+            count += 1
+            # if count % 100 == 0:
+            #     print('+++count:', count)
+
+            # handshake_message_type = 0
+            # chain_size_message_type = 1
+            # go_away_message_type = 2
+            # time_message_type = 3
+            # notice_message_type = 4
+            # request_message_type = 5
+            # sync_request_message_type = 6
+            # signed_block_message_type = 7
+            # packed_transaction_message_type = 8
+            # controller_config_type = 9
+            if msg_type == 0: #handshake_message_type
+#                logger.info('bad handshake_message')
+                self.last_handshake = HandshakeMessage.unpack(msg)
+                print(self.last_handshake)
+                if self.last_handshake.head_num < chain.fork_db_pending_head_block_num():
+#                    self.target = msg.head_num
+                    self.notify_last_irr_catch_up()
+                else: #self.last_handshake.head_num > chain.fork_db_pending_head_block_num():
+                    self.target = self.last_handshake.head_num
+                    self.start_sync()
+            elif msg_type == 1: # chain_size_message_type
+                pass
+            elif msg_type == 2: # go_away_message_type
+                msg = GoAwayMessage.unpack(msg)
+                logger.info(msg)
+                self.writer.close()
+                return
+            elif msg_type == 3:
+                msg = TimeMessage.unpack(msg)
+                xmt = msg.xmt
+                xmt = int(xmt)/1e6
+                logger.info(msg)
+                logger.info(time.localtime(xmt))
+            elif msg_type == 4:
+                msg = NoticeMessage.unpack(msg)
+                pending = msg.known_blocks['pending']
+                if pending > chain.last_irreversible_block_num():
+                    self.target = pending
+                    self.start_sync()
+                    #self.send_handshake(c)
+                logger.info(f'receive notice message: {msg}')
+                # msg = NoticeMessage({
+                #     "known_trx":{
+                #         "mode":0,
+                #         "pending":0,
+                #         "ids":[]
+                #     },
+                #     "known_blocks":{
+                #         "mode":1,
+                #         "pending":chain.fork_db_pending_head_block_num(),
+                #         "ids":[]
+                #     }
+                # })
+                # logger.info(msg)
+                # self.send(msg.pack())
+            elif msg_type == 5:#request_message_type
+                msg = RequestMessage.unpack(msg)
+                logger.info(msg)
+            elif msg_type == 6: #sync_request_message_type
+                msg = SyncRequestMessage.unpack(msg)
+                print(msg)
+                if msg.start_block == 0:
+                    continue
+                self.last_sync_request = msg
+                self.start_send_block()
+            elif msg_type == 7:
+                if False:
+                    block = SignedBlockMessage.unpack(msg)
+                    if not block:
+                        continue
+                        logger.info('bad block')
+                        continue
+                    block_num = bytes.fromhex(block.previous[:8])
+                    block_num = int.from_bytes(block_num, 'big')
+                    if block_num % 1 == 0:
+                        print('++++block_num:', block_num)
+                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
+                if num % 10000 == 0:
+                    logger.info(f"{num}, {block_id}")
+                if self.target - num < 1000:
+                    logger.info(f"{num}, {block_id}")
+                if self.sync_msg.end_block == num:
+                    if self.target == num:
+                        self.send_handshake()
+                    else:
+                        self.start_sync()
+            elif msg_type == 8:
+                msg = PackedTransactionMessage(msg)
+                logger.info(msg)
+
 class UUOSMain(object):
 
     def __init__(self, args):
@@ -232,140 +370,12 @@ class UUOSMain(object):
         self.chain_ptr = chain_new(cfg, 'cd')
         chain.chain_ptr = self.chain_ptr
         chain_api.chain_ptr = self.chain_ptr
+        set_chain_ptr(self.chain_ptr)
 
     def select_connection(self):
         if not self.connections:
             return None
         return self.connections[0]
-
-    async def handle_message(self, c):
-        try:
-            msg_type, msg = await c.read_message()
-            if msg_type is None or msg is None:
-                logger.info('closed connection, exit')
-                return
-            if msg_type == 0: #handshake_message_type:
-                msg = HandshakeMessage.unpack(msg)
-                c.target = msg.head_num
-                logger.info(f'+++receive handshake {msg}')
-                c.last_handshake = msg
-                if c.fork_check():
-                    return
-                if msg.head_num < chain.fork_db_pending_head_block_num():
-#                    c.target = msg.head_num
-                    c.notify_last_irr_catch_up()
-            elif msg_type == 2: # go_away_message_type
-                msg = GoAwayMessage.unpack(msg)
-                print(msg)
-                c.writer.close()
-                return
-            else:
-                logger.info('unexpected message: {msg_type}')
-                c.writer.close()
-                return
-        except Exception as e:
-            logger.exception(e)
-            return
-        count = 0
-    #    block_file = open('block.bin', 'wb')
-        while True:
-            msg_type, msg = await c.read_message()
-            if msg_type is None or msg is None:
-                logger.error('Fail to read msg')
-                return
-            count += 1
-            # if count % 100 == 0:
-            #     print('+++count:', count)
-
-            # handshake_message_type = 0
-            # chain_size_message_type = 1
-            # go_away_message_type = 2
-            # time_message_type = 3
-            # notice_message_type = 4
-            # request_message_type = 5
-            # sync_request_message_type = 6
-            # signed_block_message_type = 7
-            # packed_transaction_message_type = 8
-            # controller_config_type = 9
-            if msg_type == 0: #handshake_message_type
-#                logger.info('bad handshake_message')
-                c.last_handshake = HandshakeMessage.unpack(msg)
-                print(c.last_handshake)
-                if c.last_handshake.head_num < chain.fork_db_pending_head_block_num():
-#                    c.target = msg.head_num
-                    c.notify_last_irr_catch_up()
-                else: #c.last_handshake.head_num > chain.fork_db_pending_head_block_num():
-                    c.target = c.last_handshake.head_num
-                    c.start_sync()
-            elif msg_type == 1: # chain_size_message_type
-                pass
-            elif msg_type == 2: # go_away_message_type
-                msg = GoAwayMessage.unpack(msg)
-                logger.info(msg)
-                c.writer.close()
-                return
-            elif msg_type == 3:
-                msg = TimeMessage.unpack(msg)
-                xmt = msg.xmt
-                xmt = int(xmt)/1e6
-                logger.info(msg)
-                logger.info(time.localtime(xmt))
-            elif msg_type == 4:
-                msg = NoticeMessage.unpack(msg)
-                pending = msg.known_blocks['pending']
-                if pending > chain.last_irreversible_block_num():
-                    c.target = pending
-                    c.start_sync()
-                    #self.send_handshake(c)
-                logger.info(f'receive notice message: {msg}')
-                # msg = NoticeMessage({
-                #     "known_trx":{
-                #         "mode":0,
-                #         "pending":0,
-                #         "ids":[]
-                #     },
-                #     "known_blocks":{
-                #         "mode":1,
-                #         "pending":chain.fork_db_pending_head_block_num(),
-                #         "ids":[]
-                #     }
-                # })
-                # logger.info(msg)
-                # c.send(msg.pack())
-            elif msg_type == 5:#request_message_type
-                msg = RequestMessage.unpack(msg)
-                logger.info(msg)
-            elif msg_type == 6: #sync_request_message_type
-                msg = SyncRequestMessage.unpack(msg)
-                print(msg)
-                if msg.start_block == 0:
-                    continue
-                c.last_sync_request = msg
-                c.start_send_block()
-            elif msg_type == 7:
-                if False:
-                    block = SignedBlockMessage.unpack(msg)
-                    if not block:
-                        continue
-                        logger.info('bad block')
-                        continue
-                    block_num = bytes.fromhex(block.previous[:8])
-                    block_num = int.from_bytes(block_num, 'big')
-                    if block_num % 1 == 0:
-                        print('++++block_num:', block_num)
-                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
-                if num % 10000 == 0:
-                    logger.info(f"{num}, {block_id}")
-                if c.target - num < 1000:
-                    logger.info(f"{num}, {block_id}")
-                if c.sync_msg.end_block == num:
-                    if c.target == num:
-                        c.send_handshake()
-                    else:
-                        c.start_sync()
-            elif msg_type == 8:
-                msg = PackedTransactionMessage(msg)
-                logger.info(msg)
 
     async def connect_to_p2p_client(self, host, port):
         try:
@@ -412,7 +422,7 @@ class UUOSMain(object):
                 continue
             c.send_handshake()
 #            await self.handle_message()
-            task = asyncio.create_task(self.handle_message(c))
+            task = asyncio.create_task(c.handle_message())
             self.tasks.append(task)
         logger.info("uuos main task done!")
 
