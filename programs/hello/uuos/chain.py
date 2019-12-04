@@ -1,6 +1,14 @@
 from _hello import *
 chain_ptr = None
 
+def get_chain_ptr():
+    global chain_ptr
+    return chain_ptr
+
+def set_chain_ptr(ptr):
+    global chain_ptr
+    chain_ptr = ptr
+
 def id():
     return chain_id(chain_ptr)
 
