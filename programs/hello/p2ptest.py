@@ -31,6 +31,7 @@ class Connection(object):
         while True:
             data = await self.reader.read(length)
             if not data:
+                self.writer.close()
                 return None
             buffer.write(data)
             length -= len(data)
@@ -46,21 +47,6 @@ class UUOSMain(object):
     def __init__(self):
         self.connections = []
         self.tasks = []
-
-    async def connect_to_p2p_client(self, host, port):
-        try:
-            reader, writer = await asyncio.open_connection(host, port, limit=1024*1024)
-            c = Connection(reader, writer)
-            c.host = host
-            c.port = port
-            self.connections.append(c)
-            return c
-        except OSError as e:
-            logger.info(f'Connect to {host}:{port} failed!')
-            logger.exception(e)
-#            self.p2p_client_task.cancel()
-            return
-        logger.info(f'connected to {host}:{port} success!')
 
     def show_message(self, which, msg):
         msg_type = msg[0]
@@ -97,9 +83,17 @@ class UUOSMain(object):
     async def handle_server_side(self, server, client):
         while True:
             msg_len = await server.read(4)
+            if not msg_len:
+                server.writer.close()
+                client.writer.close()
+                return
             client.write(msg_len)
             msg_len = int.from_bytes(msg_len, 'little')
             msg = await server.read(msg_len)
+            if not msg:
+                server.writer.close()
+                client.writer.close()
+                return
             client.write(msg)
             self.show_message('server', msg)
 
@@ -115,9 +109,17 @@ class UUOSMain(object):
 
         while True:
             msg_len = await client.read(4)
+            if not msg_len:
+                client.writer.close()
+                server.writer.close()
+                return
             server.write(msg_len)
             msg_len = int.from_bytes(msg_len, 'little')
             msg = await client.read(msg_len)
+            if not msg:
+                client.writer.close()
+                server.writer.close()
+                return
             server.write(msg)
             self.show_message('client', msg)
 
