@@ -79,6 +79,7 @@ class Connection(object):
         self.reader = reader
         self.writer = writer
         self.handshake_count = 0
+        self.target = 0
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -161,14 +162,18 @@ class UUOSMain(object):
         try:
             msg_type, msg = await c.read_message()
             if msg_type is None or msg is None:
-                print(msg_type, msg)
                 logger.info('closed connection, exit')
                 return
             if msg_type == 0: #handshake_message_type:
                 msg = HandshakeMessage.unpack(msg)
                 c.target = msg.head_num
                 logger.info(f'+++receive handshake {msg}')
-                c.handshake_message = msg
+                c.last_handshake = msg
+
+                if msg.head_num > chain.fork_db_pending_head_block_num():
+                    c.target = msg.head_num
+                    self.start_sync(c)
+
             elif msg_type == 2: # go_away_message_type
                 msg = GoAwayMessage.unpack(msg)
                 print(msg)
@@ -181,7 +186,6 @@ class UUOSMain(object):
         except Exception as e:
             logger.exception(e)
             return
-        self.start_sync(c)
         count = 0
     #    block_file = open('block.bin', 'wb')
         while True:
@@ -205,10 +209,10 @@ class UUOSMain(object):
             # controller_config_type = 9
             if msg_type == 0: #handshake_message_type
                 logger.info('bad handshake_message')
-                c.handshake_message = HandshakeMessage.unpack(msg)
-                print(c.handshake_message)
-                if c.handshake_message.head_num > chain.fork_db_pending_head_block_num():
-                    c.target = c.handshake_message.head_num
+                c.last_handshake = HandshakeMessage.unpack(msg)
+                print(c.last_handshake)
+                if c.last_handshake.head_num > chain.fork_db_pending_head_block_num():
+                    c.target = c.last_handshake.head_num
                     self.start_sync(c)
             elif msg_type == 1: # chain_size_message_type
                 pass
@@ -280,7 +284,7 @@ class UUOSMain(object):
             return c
         except OSError as e:
             logger.info(f'Connect to {host}:{port} failed!')
-            logger.exception(e)
+#            logger.exception(e)
 #            self.p2p_client_task.cancel()
             return
         logger.info(f'connected to {host}:{port} success!')
