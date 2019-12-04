@@ -81,6 +81,7 @@ class Connection(object):
         self.handshake_count = 0
         self.last_handshake = None
         self.target = 0
+        self.syncing = False
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -122,6 +123,7 @@ class Connection(object):
         self.writer.close()
 
     def fork_check(self):
+        return False
         lib_num = chain.last_irreversible_block_num()
         msg = self.last_handshake
         if lib_num > msg.last_irreversible_block_num:
@@ -129,11 +131,58 @@ class Connection(object):
                 sha256_empty = '0000000000000000000000000000000000000000000000000000000000000000'
                 msg = dict(reason=GoAwayReason.forked, node_id=sha256_empty)
                 msg = GoAwayMessage(msg)
-                logger.info(f'++++send a goaway message {msg}')
+                logger.info(f'\033[91m++++chain forked, close connection\033[0m')
                 self.write(msg.pack())
                 self.close()
                 return True
         return False
+
+    def notify_last_irr_catch_up(self):
+        head_num = chain.fork_db_pending_head_block_num()
+        lib_num = chain.last_irreversible_block_num()
+        msg = {
+            "known_trx":{
+                "mode":2, #last_irr_catch_up
+                "pending":lib_num,
+                "ids":[
+
+                ]
+            },
+            "known_blocks":{
+                "mode":2, #last_irr_catch_up
+                "pending":head_num,
+                "ids":[
+
+                ]
+            }
+        }
+        msg = NoticeMessage(msg)
+        self.writer.write(msg.pack())
+
+    async def send_block_task(self):
+        while self.current_block < self.last_sync_request.end_block:
+            logger.info('+++send block {self.current_block}')
+            block = chain.fetch_block_by_number(self.current_block)
+#            len(block) + 1
+            msg_len = struct.pack('I', len(block) + 1)
+            self.writer.write(msg_len)
+
+            msg_type = int.to_bytes(7, 1, 'little') #signed_block_message_type
+            self.writer.write(msg_type)
+            self.writer.write(block)
+            self.current_block += 1
+            asyncio.sleep(0)
+        logger.info("send block task done!")
+
+    def start_send_block(self):
+        self.current_block = self.last_sync_request.start_block
+        self.task = asyncio.create_task(self.send_block_task())
+        logger.info('++++start_send_block')
+        logger.info(self.task)
+
+        # self.last_sync_request.start_block
+        # self.last_sync_request.end_block
+
 
 class UUOSMain(object):
 
@@ -172,9 +221,9 @@ class UUOSMain(object):
         if end_block > c.target:
             end_block = c.target
         logger.info(f"+++++start sync {start_block} {end_block}")
-        self.sync_msg = SyncRequestMessage(start_block, end_block)
+        c.sync_msg = SyncRequestMessage(start_block, end_block)
 #        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
-        c.write(self.sync_msg.pack())
+        c.write(c.sync_msg.pack())
 
     async def handle_message(self, c):
         try:
@@ -189,10 +238,9 @@ class UUOSMain(object):
                 c.last_handshake = msg
                 if c.fork_check():
                     return
-                if msg.head_num > chain.fork_db_pending_head_block_num():
-                    c.target = msg.head_num
-                    self.start_sync(c)
-
+                if msg.head_num < chain.fork_db_pending_head_block_num():
+#                    c.target = msg.head_num
+                    c.notify_last_irr_catch_up()
             elif msg_type == 2: # go_away_message_type
                 msg = GoAwayMessage.unpack(msg)
                 print(msg)
@@ -227,10 +275,13 @@ class UUOSMain(object):
             # packed_transaction_message_type = 8
             # controller_config_type = 9
             if msg_type == 0: #handshake_message_type
-                logger.info('bad handshake_message')
+#                logger.info('bad handshake_message')
                 c.last_handshake = HandshakeMessage.unpack(msg)
                 print(c.last_handshake)
-                if c.last_handshake.head_num > chain.fork_db_pending_head_block_num():
+                if c.last_handshake.head_num < chain.fork_db_pending_head_block_num():
+#                    c.target = msg.head_num
+                    c.notify_last_irr_catch_up()
+                else: #c.last_handshake.head_num > chain.fork_db_pending_head_block_num():
                     c.target = c.last_handshake.head_num
                     self.start_sync(c)
             elif msg_type == 1: # chain_size_message_type
@@ -268,6 +319,13 @@ class UUOSMain(object):
                 # })
                 # logger.info(msg)
                 # c.send(msg.pack())
+            elif msg_type == 5:#request_message_type
+                msg = RequestMessage(msg)
+                logger.info(msg)
+            elif msg_type == 6: #sync_request_message_type
+                msg = SyncRequestMessage(msg)
+                c.last_sync_request = msg
+                c.start_send_block()
             elif msg_type == 7:
                 if False:
                     block = SignedBlockMessage.unpack(msg)
@@ -284,14 +342,14 @@ class UUOSMain(object):
                     logger.info(f"{num}, {block_id}")
                 if c.target - num < 1000:
                     logger.info(f"{num}, {block_id}")                    
-                if self.sync_msg.end_block == num:
+                if c.sync_msg.end_block == num:
                     if c.target == num:
                         self.send_handshake(c)
                     else:
                         self.start_sync(c)
             elif msg_type == 8:
                 msg = PackedTransactionMessage(msg)
-                pass
+                logger.info(msg)
 
     async def connect_to_p2p_client(self, host, port):
         try:
@@ -356,6 +414,7 @@ class UUOSMain(object):
 #            await self.handle_message()
             task = asyncio.create_task(self.handle_message(c))
             self.tasks.append(task)
+        logger.info("uuos main task done!")
 
     async def shutdown(self, signal, loop):
         if self.chain_ptr:
