@@ -73,7 +73,12 @@ class UUOSMain(object):
             print(which, msg)
         elif msg_type == 7:#signed_block_message_type:
             msg = SignedBlockMessage.unpack(msg[1:])
-            print(which, msg)
+#            print(which, msg)
+            previous = msg.previous
+            previous = previous[:8]
+            previous = bytes.fromhex(previous)
+            previous = int.from_bytes(previous, 'big')
+            print(which, previous)
         elif msg_type == 8:#packed_transaction_message_type:
             msg = PackedTransactionMessage.unpack(msg[1:])
             print(which, msg)
