@@ -170,6 +170,18 @@ using pending_snapshot_index = multi_index_container<
    >
 >;
 
+struct fake_chain_plugin {
+   fake_chain_plugin(eosio::chain::controller& _ctrl): ctrl(_ctrl) {
+
+   }
+   
+   eosio::chain::controller& chain()const {
+      return ctrl;
+   }
+
+   eosio::chain::controller& ctrl;
+};
+
 enum class pending_block_mode {
    producing,
    speculating
@@ -235,7 +247,7 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
       bool                                                      _protocol_features_signaled = false; // to mark whether it has been signaled in start_block
 
       producer_plugin* _self = nullptr;
-      chain_plugin* chain_plug = nullptr;
+      fc::optional<fake_chain_plugin> chain_plug;
 
       incoming::channels::block::channel_type::handle         _incoming_block_subscription;
       incoming::channels::transaction::channel_type::handle   _incoming_transaction_subscription;
@@ -693,14 +705,11 @@ make_keosd_signature_provider(const std::shared_ptr<producer_plugin_impl>& impl,
    };
 }
 
-void producer_plugin::plugin_initialize(const producer_params& options)
+void producer_plugin::plugin_initialize(chain::controller& chain, const producer_params& options)
 { try {
-   my->chain_plug = app().find_plugin<chain_plugin>();
-   EOS_ASSERT( my->chain_plug, plugin_config_exception, "chain_plugin not found" );
+   my->chain_plug.emplace(chain);
 
    std::copy(options.producers.begin(), options.producers.end(), std::inserter(my->_producers, my->_producers.end()));
-
-   chain::controller& chain = my->chain_plug->chain();
 
    const std::vector<std::string> key_spec_pairs = options.signature_providers;
    for (const auto& key_spec_pair : key_spec_pairs) {
@@ -733,6 +742,7 @@ void producer_plugin::plugin_initialize(const producer_params& options)
    my->_produce_time_offset_us = options.produce_time_offset_us;
    my->_last_block_time_offset_us = options.last_block_time_offset_us;
    my->_max_scheduled_transaction_time_per_block_ms = options.max_scheduled_transaction_time_per_block_ms;
+
    chain.set_subjective_cpu_leeway( fc::microseconds( options.subjective_cpu_leeway_us ) );
 
    my->_max_transaction_time_ms = options.max_transaction_time_ms;
@@ -746,7 +756,7 @@ void producer_plugin::plugin_initialize(const producer_params& options)
    EOS_ASSERT( thread_pool_size > 0, plugin_config_exception,
                "producer-threads ${num} must be greater than 0", ("num", thread_pool_size));
    my->_thread_pool.emplace( "prod", thread_pool_size );
-
+   
    auto sd = bfs::path(options.snapshots_dir);
    if( sd.is_relative()) {
       my->_snapshots_dir = app().data_dir() / sd;
@@ -796,7 +806,7 @@ void producer_plugin::plugin_initialize(const producer_params& options)
 } FC_LOG_AND_RETHROW() }
 
 void producer_plugin::plugin_initialize(const boost::program_options::variables_map& options) { try {
-   my->chain_plug = app().find_plugin<chain_plugin>();
+   my->chain_plug.emplace(app().find_plugin<chain_plugin>()->chain());
    EOS_ASSERT( my->chain_plug, plugin_config_exception, "chain_plugin not found" );
    my->_options = &options;
    LOAD_VALUE_SET(options, "producer-name", my->_producers, types::account_name)
@@ -2068,8 +2078,14 @@ void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& b
    }
 }
 
-void *producer_new_() {
-   return (void *)new producer_plugin();
+void *producer_new_(void *chain_ptr, string& config) {
+   eosio::chain::controller& chain = *(eosio::chain::controller*)chain_ptr;
+   auto producer = new producer_plugin();
+   auto _config = fc::json::from_string(config).as<producer_plugin::producer_params>();
+   elog("${cfg}", ("cfg", fc::variant(_config)));
+
+   producer->plugin_initialize(chain, _config);
+   return (void *)producer;
 }
 
 void producer_free_(void *ptr) {

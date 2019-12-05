@@ -107,7 +107,7 @@ public:
    chain::signature_type  sign_compact(const chain::public_key_type& key, const fc::sha256& digest) const;
 
    virtual void plugin_initialize(const boost::program_options::variables_map& options);
-   void plugin_initialize(const producer_params& options);
+   void plugin_initialize(chain::controller& chain, const producer_params& options);
    virtual void plugin_startup();
    virtual void plugin_shutdown();
    void handle_sighup() override;
