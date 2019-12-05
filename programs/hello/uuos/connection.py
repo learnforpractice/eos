@@ -16,7 +16,7 @@ logger.addHandler(logging.StreamHandler())
 sync_req_span = 200
 
 class Connection(object):
-    def __init__(self, reader, writer):
+    def __init__(self, reader, writer, producer):
         self.reader = reader
         self.writer = writer
         self.handshake_count = 0
@@ -24,6 +24,7 @@ class Connection(object):
         self.target = 0
         self.syncing = False
         self.chain_ptr = chain.get_chain_ptr()
+        self.producer = producer
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -268,11 +269,12 @@ class Connection(object):
                     block_num = int.from_bytes(block_num, 'big')
                     if block_num % 1 == 0:
                         print('++++block_num:', block_num)
-                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
+                num, block_id = self.producer.on_incoming_block(msg)
+#                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
                 if num % 10000 == 0:
                     logger.info(f"{num}, {block_id}")
-                if self.target - num < 1000:
-                    logger.info(f"{num}, {block_id}")
+                # if self.target - num < 1000:
+                #     logger.info(f"{num}, {block_id}")
                 if self.sync_msg.end_block == num:
                     if self.target == num:
                         self.send_handshake()

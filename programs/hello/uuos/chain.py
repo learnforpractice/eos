@@ -24,3 +24,5 @@ def get_block_id_for_num(num):
 def fetch_block_by_number(block_num):
     return chain_fetch_block_by_number(chain_ptr, block_num)
 
+def is_building_block():
+    return chain_is_building_block(chain_ptr)

@@ -29,9 +29,11 @@ cdef extern from "native_object.hpp":
     void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
     void chain_id_(void *ptr, string& chain_id)
     void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
+    int chain_is_building_block_(void *ptr);
 
     void *producer_new_(void *chain_ptr, string& config);
     void producer_free_(void *ptr);
+    void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -100,8 +102,17 @@ def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
     chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
     return <bytes>raw_block
 
+def chain_is_building_block(uint64_t ptr):
+    return chain_is_building_block_(<void *>ptr);
+
 def producer_new(uint64_t chain_ptr, string& config):
     return <uint64_t>producer_new_(<void *>chain_ptr, config)
 
 def producer_free(uint64_t ptr):
     producer_free_(<void *>ptr)
+
+def producer_on_incoming_block(uint64_t ptr, string& packed_signed_block):
+    cdef uint32_t block_num = 0
+    cdef string block_id
+    producer_on_incoming_block_(<void *>ptr, packed_signed_block, block_num, block_id)
+    return (block_num, block_id)

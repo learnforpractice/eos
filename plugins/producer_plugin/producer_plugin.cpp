@@ -2037,6 +2037,62 @@ void print_producer_params(producer_plugin::producer_params &imp) {
    elog("++++msg ${msg}", ("msg", msg));
 }
 
+void *producer_new_(void *chain_ptr, string& config) {
+   eosio::chain::controller& chain = *(eosio::chain::controller*)chain_ptr;
+   auto producer = new producer_plugin();
+   auto _config = fc::json::from_string(config).as<producer_plugin::producer_params>();
+   elog("${cfg}", ("cfg", fc::variant(_config)));
+
+   producer->plugin_initialize(chain, _config);
+   return (void *)producer;
+}
+
+void producer_free_(void *ptr) {
+   delete (producer_plugin*)ptr;
+}
+
+void producer_process_incomming_transaction(void *ptr, string& packed_trx, string& out) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto next = [&out](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
+      if (result.contains<fc::exception_ptr>()) {
+         const auto& e = result.get<fc::exception_ptr>();
+         out = e->to_detail_string();
+      } else {
+         const auto& r = result.get<transaction_trace_ptr>();
+         out = fc::json::to_string(fc::variant(r));
+      }
+   };
+
+   try {
+      auto pretty_input = std::make_shared<packed_transaction>();
+      fc::datastream<const char*> ds( packed_trx.c_str(), packed_trx.size() );
+      fc::raw::unpack(ds, *pretty_input);
+      auto ptrx = std::make_shared<transaction_metadata>( pretty_input );
+
+//   rw->push_transaction(params->at(index), wrapped_next);
+      bool persist_until_expired = false;
+      producer.my->process_incoming_transaction_async(ptrx, false, next);
+   }
+   catch ( boost::interprocess::bad_alloc& ) {
+      chain_plugin::handle_db_exhaustion();
+   } catch ( const std::bad_alloc& ) {
+      chain_plugin::handle_bad_alloc();
+   } CATCH_AND_CALL(next);
+
+}
+
+void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id) {
+   try {
+      auto& producer = *(producer_plugin*)ptr;
+      std::shared_ptr<signed_block> block = std::make_shared<signed_block>();
+      fc::datastream<const char*> ds( packed_signed_block.c_str(), packed_signed_block.size() );
+      fc::raw::unpack( ds, *block );
+      num = block->block_num();
+      id = fc::json::to_string<block_id_type>(block->id());
+      producer.my->on_incoming_block(block);
+   } LOG_AND_DROP();
+}
+
 void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& block) {
    auto id = block->id();
 
@@ -2077,18 +2133,3 @@ void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& b
             ("count",block->transactions.size())("lib",chain.last_irreversible_block_num())("confs", block->confirmed)("latency", (fc::time_point::now() - block->timestamp).count()/1000 ) );
    }
 }
-
-void *producer_new_(void *chain_ptr, string& config) {
-   eosio::chain::controller& chain = *(eosio::chain::controller*)chain_ptr;
-   auto producer = new producer_plugin();
-   auto _config = fc::json::from_string(config).as<producer_plugin::producer_params>();
-   elog("${cfg}", ("cfg", fc::variant(_config)));
-
-   producer->plugin_initialize(chain, _config);
-   return (void *)producer;
-}
-
-void producer_free_(void *ptr) {
-   delete (producer_plugin*)ptr;
-}
-

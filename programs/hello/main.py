@@ -109,7 +109,7 @@ class UUOSMain(object):
     async def connect_to_p2p_client(self, host, port):
         try:
             reader, writer = await asyncio.open_connection(host, port, limit=1024*1024)
-            c = Connection(reader, writer)
+            c = Connection(reader, writer, self.producer)
             c.host = host
             c.port = port
             self.connections.append(c)
@@ -136,7 +136,7 @@ class UUOSMain(object):
         self.client_count += 1
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
-        c = Connection(reader, writer)
+        c = Connection(reader, writer, self.producer)
         task = asyncio.create_task(self.handle_connection(c))
 
     async def p2p_server(self):
@@ -161,7 +161,7 @@ class UUOSMain(object):
         logger.info("uuos main task done!")
 
     async def shutdown(self, signal, loop):
-        logger.info('Shutdown uuos')
+        logger.info(f'Shutdown uuos {self.chain_ptr}')
         if self.chain_ptr:
             chain_free(self.chain_ptr)
             self.chain_ptr = None

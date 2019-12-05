@@ -19,9 +19,11 @@ uint32_t chain_fork_db_pending_head_block_num_(void *ptr);
 uint32_t chain_last_irreversible_block_num_(void *ptr);
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id);
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
+int chain_is_building_block_(void *ptr);
 
 void *producer_new_(void *chain_ptr, string& config);
 void producer_free_(void *ptr);
+void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
 
 enum {
     handshake_message_type,

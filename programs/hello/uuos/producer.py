@@ -1,5 +1,5 @@
 import asyncio
-from _hello import producer_new, producer_free
+from _hello import producer_new, producer_free, producer_on_incoming_block
 from .native_object import ProducerParams
 import ujson as json
 from . import chain
@@ -72,7 +72,7 @@ class Producer(object):
         return False
 
     def on_incoming_block(self, block):
-        pass
+        return producer_on_incoming_block(self.ptr, block)
 
     async def run(self):
         while True:

@@ -27,22 +27,46 @@ extern "C"
    void sandboxed_contracts_init();
 }
 
+
+class chain_manager {
+public:
+    chain_manager(string& config, string& protocol_features_dir) {
+        evm_init();
+        vm_api_init();
+        vm_api_ro_init();
+        chain_api_init();
+        sandboxed_contracts_init();
+
+        auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
+        auto cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
+        cc = new eosio::chain::controller(cfg, std::move(pfs));
+        cc->add_indices();
+
+        auto shutdown = [](){ return false; };
+        cc->startup(shutdown);
+
+        cc->accepted_block.connect(  boost::bind(&chain_manager::on_accepted_block, this, _1));
+    }
+
+    void on_accepted_block(const block_state_ptr& bsp) {
+    //    g_chain
+    }
+
+    eosio::chain::controller& chain() {
+        return *cc;
+    }
+
+    ~chain_manager() {
+        delete cc;
+    }
+
+    eosio::chain::controller *cc = nullptr;
+};
+
+static chain_manager *g_manager = nullptr;
+
 void *chain_new_(string& config, string& protocol_features_dir) {
 //    auto plugin = eosio::chain_plugin();
-    evm_init();
-    vm_api_init();
-    vm_api_ro_init();
-    chain_api_init();
-    sandboxed_contracts_init();
-
-    auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
-    auto cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
-    eosio::chain::controller *ctrl = new eosio::chain::controller(cfg, std::move(pfs));
-    ctrl->add_indices();
-
-    auto shutdown = [](){ return false; };
-    ctrl->startup(shutdown);
-
 /*
     auto shutdown = [](){ return app().is_quiting(); };
     if (my->snapshot_path) {
@@ -54,12 +78,13 @@ void *chain_new_(string& config, string& protocol_features_dir) {
         my->chain->startup(shutdown);
     }
 */
-
-    return (void *)ctrl;
+    g_manager = new chain_manager(config, protocol_features_dir);
+    return (void *)g_manager->cc;
 }
 
 void chain_free_(void *ptr) {
-    delete (eosio::chain::controller*)(ptr);
+//    g_manager
+    delete g_manager;
 }
 
 void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id) {
@@ -74,3 +99,51 @@ void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& 
         chain_on_incoming_block(chain, block);
     } FC_LOG_AND_DROP();
 }
+
+uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
+    try {
+        auto& chain = *(eosio::chain::controller*)(ptr);
+        return chain.fork_db_pending_head_block_num();
+    } FC_LOG_AND_DROP();
+    return 0;
+}
+
+uint32_t chain_last_irreversible_block_num_(void *ptr) {
+    try {
+        auto& chain = *(eosio::chain::controller*)(ptr);
+        return chain.last_irreversible_block_num();
+    } FC_LOG_AND_DROP();
+    return 0;
+}
+
+void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id) {
+    try {
+        auto& chain = *(eosio::chain::controller*)(ptr);
+        block_id = chain.get_block_id_for_num(num).str();
+    } FC_LOG_AND_DROP();
+}
+
+void chain_id_(void *ptr, string& chain_id) {
+    try {
+        auto& chain = *(eosio::chain::controller*)(ptr);
+        chain_id = chain.get_chain_id().str();
+    } FC_LOG_AND_DROP();
+}
+
+void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
+    try {
+        auto& chain = *(eosio::chain::controller*)(ptr);
+        auto block_ptr = chain.fetch_block_by_number(block_num);
+        if (!block_ptr) {
+            return;
+        }
+        auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
+        raw_block = string(_raw_block.data(), _raw_block.size());
+    } FC_LOG_AND_DROP();
+}
+
+int chain_is_building_block_(void *ptr) {
+    auto& chain = *(eosio::chain::controller*)(ptr);
+    return chain.is_building_block();
+}
+
