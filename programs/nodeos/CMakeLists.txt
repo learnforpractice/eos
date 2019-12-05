@@ -85,7 +85,6 @@ add_library( pyuuos SHARED
   main.cpp
   accounts_snapshot.cpp
   native_object.cpp
-  chain.cpp
 )
 
 if( UNIX AND NOT APPLE )

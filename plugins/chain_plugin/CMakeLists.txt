@@ -1,5 +1,6 @@
 file(GLOB HEADERS "include/eosio/chain_plugin/*.hpp")
 add_library( chain_plugin
+             chain_manager.cpp
              chain_plugin.cpp
              ${HEADERS} )
 

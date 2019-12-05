@@ -1,16 +1,4 @@
-#include <boost/filesystem/path.hpp>
-#include <eosio/chain_plugin/chain_plugin.hpp>
-
-#include "native_object.hpp"
-#include "chain.hpp"
-
-#include <fc/io/json.hpp>
-#include <fc/io/raw.hpp>
-#include <fc/variant.hpp>
-        
-namespace bfs = boost::filesystem;
-
-using namespace eosio::chain;
+#include <eosio/chain_plugin/chain_manager.hpp>
 
 namespace eosio {
     protocol_feature_set initialize_protocol_features( const fc::path& p, bool populate_missing_builtins = true );
@@ -27,43 +15,53 @@ extern "C"
    void sandboxed_contracts_init();
 }
 
-
-class chain_manager {
-public:
-    chain_manager(string& config, string& protocol_features_dir) {
-        evm_init();
-        vm_api_init();
-        vm_api_ro_init();
-        chain_api_init();
-        sandboxed_contracts_init();
-
-        auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
-        auto cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
-        cc = new eosio::chain::controller(cfg, std::move(pfs));
-        cc->add_indices();
-
-        auto shutdown = [](){ return false; };
-        cc->startup(shutdown);
-
-        cc->accepted_block.connect(  boost::bind(&chain_manager::on_accepted_block, this, _1));
-    }
-
-    void on_accepted_block(const block_state_ptr& bsp) {
-    //    g_chain
-    }
-
-    eosio::chain::controller& chain() {
-        return *cc;
-    }
-
-    ~chain_manager() {
-        delete cc;
-    }
-
-    eosio::chain::controller *cc = nullptr;
-};
-
+chain_manager *chain_manager::instance = nullptr;
 static chain_manager *g_manager = nullptr;
+
+chain_manager::chain_manager(string& config, string& protocol_features_dir) {
+    evm_init();
+    vm_api_init();
+    vm_api_ro_init();
+    chain_api_init();
+    sandboxed_contracts_init();
+
+    auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
+    cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
+    cc = new eosio::chain::controller(cfg, std::move(pfs));
+    cc->add_indices();
+
+    auto shutdown = [](){ return false; };
+    cc->startup(shutdown);
+
+    cc->accepted_block.connect(  boost::bind(&chain_manager::on_accepted_block, this, _1));
+}
+
+chain_manager *chain_manager::init(string& config, string& protocol_features_dir) {
+    if (!instance) {
+        instance = new chain_manager(config, protocol_features_dir);
+    }
+    return instance;
+}
+
+chain_manager& chain_manager::get() {
+    return *instance;
+}
+
+void chain_manager::on_accepted_block(const block_state_ptr& bsp) {
+//    g_chain
+}
+
+controller& chain_manager::chain() {
+    return *cc;
+}
+
+controller::config& chain_manager::config() {
+    return cfg;
+}
+
+chain_manager::~chain_manager() {
+    delete cc;
+}
 
 void *chain_new_(string& config, string& protocol_features_dir) {
 //    auto plugin = eosio::chain_plugin();
@@ -78,12 +76,15 @@ void *chain_new_(string& config, string& protocol_features_dir) {
         my->chain->startup(shutdown);
     }
 */
-    g_manager = new chain_manager(config, protocol_features_dir);
+    g_manager = chain_manager::init(config, protocol_features_dir);
     return (void *)g_manager->cc;
 }
 
 void chain_free_(void *ptr) {
 //    g_manager
+    if (!ptr) {
+        return;
+    }
     delete g_manager;
 }
 

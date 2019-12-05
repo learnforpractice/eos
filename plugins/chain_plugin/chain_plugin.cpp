@@ -2381,25 +2381,28 @@ chain::symbol read_only::extract_core_symbol()const {
 FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ignore2)(ignore3)(core_symbol)(ignore4) )
 
 #include <fc/variant.hpp>
+#include <eosio/chain_plugin/chain_manager.hpp>
+
 #define max_abi_time (10000)
 using namespace eosio::chain_apis;
+using namespace eosio;
 
 void chain_api_get_info_(void *ptr, string& info) {
    try {
       read_only::get_info_params params;
       read_only::get_info_results results;
-      auto& db = *(eosio::chain::controller*)ptr;
+      auto& cc = *(eosio::chain::controller*)ptr;
 
-      results = read_only(db, fc::microseconds(max_abi_time)).get_info(params);
+      results = read_only(cc, fc::microseconds(max_abi_time)).get_info(params);
       info = fc::json::to_string(fc::variant(results));
     } FC_LOG_AND_DROP();
 }
 
 void chain_api_get_account_(void *ptr, string& params, string& result) {
    try {
-      auto& db = *(eosio::chain::controller*)ptr;
+      auto& cc = *(eosio::chain::controller*)ptr;
       auto _params = fc::json::from_string(params).as<read_only::get_account_params>();
-      auto ro = read_only(db, fc::microseconds(max_abi_time));
+      auto ro = read_only(cc, fc::microseconds(max_abi_time));
       read_only::get_account_results _result = ro.get_account(_params);
       result = fc::json::to_string(fc::variant(_result));
    } FC_LOG_AND_DROP();
@@ -2407,9 +2410,19 @@ void chain_api_get_account_(void *ptr, string& params, string& result) {
 
 void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
    try {
-      auto& db = *(eosio::chain::controller*)ptr;
+      auto& cc = *(eosio::chain::controller*)ptr;
       auto _params = fc::json::from_string(params).as<read_only::get_table_rows_params>();
-      read_only::get_table_rows_result _result = read_only(db, fc::microseconds(max_abi_time)).get_table_rows(_params);
+      read_only::get_table_rows_result _result = read_only(cc, fc::microseconds(max_abi_time)).get_table_rows(_params);
       result = fc::json::to_string(fc::variant(_result));
    } FC_LOG_AND_DROP();
+}
+
+int chain_api_recover_reversible_blocks_(void *ptr, string& old_reversible_blocks_dir, uint32_t cache_size, string& new_reversible_blocks_dir, uint32_t truncate_at_block) {
+   auto& cc = *(eosio::chain::controller*)ptr;
+   uint32_t cache_size = cc.get_config().reversible_cache_size;
+   fc::optional<fc::path> new_db_dir;
+   if (new_reversible_blocks_dir.size()) {
+      new_db_dir.emplace(fc::path(new_reversible_blocks_dir));
+   }
+   eosio::chain_plugin().recover_reversible_blocks( fc::path(old_reversible_blocks_dir), cache_size, new_db_dir, truncate_at_block );
 }

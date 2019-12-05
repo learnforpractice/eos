@@ -75,6 +75,8 @@ enum return_codes {
    NODE_MANAGEMENT_SUCCESS = 5
 };
 
+void chain_free_(void *ptr);
+
 extern "C"
 {
    void evm_init();
@@ -87,6 +89,7 @@ extern "C"
 
    void say_hello() {
       printf("+++hello,world!\n");
+      chain_free_(0);
    }
 }
 
