@@ -1,6 +1,8 @@
 import asyncio
 from _hello import producer_new, producer_free
 from .native_object import ProducerParams
+import ujson as json
+from . import chain
 
 '''
    struct producer_params {
@@ -51,7 +53,8 @@ config = dict(
 
 class Producer(object):
     def __init__(self):
-        self.ptr = producer_new()
+        cfg = json.dumps(config)
+        self.ptr = producer_new(chain.chain_ptr, cfg)
 
     def __delete__(self):
         producer_free(self.ptr)

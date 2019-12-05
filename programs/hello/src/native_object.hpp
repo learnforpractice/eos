@@ -20,7 +20,7 @@ uint32_t chain_last_irreversible_block_num_(void *ptr);
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id);
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
 
-void *producer_new_();
+void *producer_new_(void *chain_ptr, string& config);
 void producer_free_(void *ptr);
 
 enum {

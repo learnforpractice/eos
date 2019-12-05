@@ -161,10 +161,12 @@ class UUOSMain(object):
         logger.info("uuos main task done!")
 
     async def shutdown(self, signal, loop):
+        logger.info('Shutdown uuos')
         if self.chain_ptr:
             chain_free(self.chain_ptr)
             self.chain_ptr = None
-        print('Done running!')
+        del self.producer
+        logger.info('Done!')
 #        self.reader.close()
 #        self.writer.close()
         import sys;sys.exit(0)
