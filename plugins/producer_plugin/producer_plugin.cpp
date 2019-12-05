@@ -708,6 +708,7 @@ make_keosd_signature_provider(const std::shared_ptr<producer_plugin_impl>& impl,
 void producer_plugin::plugin_initialize(chain::controller& chain, const producer_params& options)
 { try {
    my->chain_plug.emplace(chain);
+   my->_production_enabled = options.production_enabled;
 
    std::copy(options.producers.begin(), options.producers.end(), std::inserter(my->_producers, my->_producers.end()));
 

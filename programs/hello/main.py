@@ -99,7 +99,7 @@ class UUOSMain(object):
         self.chain_ptr = chain_new(cfg, 'cd')
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
-        self.producer = Producer()
+        self.producer = Producer(self.args)
 
     def select_connection(self):
         if not self.connections:
@@ -183,7 +183,7 @@ class UUOSMain(object):
         task = asyncio.create_task(self.p2p_server())
         tasks.append(task)
 
-        self.producer = Producer()
+#        self.producer = Producer(self.args)
         task = asyncio.create_task(self.producer.run())
         tasks.append(task)
 
@@ -218,9 +218,12 @@ if __name__ == "__main__":
     parser.add_argument('--config-dir',             type=str, default='',                  help='config directory')
     parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',    help='http server address')
     parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:6666',    help='p2p listen endpoint')
-    parser.add_argument('--p2p-peer-address',       type=str, action='append', default=[], help='p2p peer address')
+    parser.add_argument('--p2p-peer-address',       type=str, default=[], action='append',  help='p2p peer address')
     parser.add_argument('--network',                type=str, default='test',              help='network: uuos, eos, test')
-    parser.add_argument('--max-clients',            type=int, default=25,                   help='Maximum number of clients from which connections are accepted, use 0 for no limit')
+    parser.add_argument('--max-clients',            type=int, default=25,                  help='Maximum number of clients from which connections are accepted, use 0 for no limit')
+    parser.add_argument('-e', '--enable-stale-production',    default=False, action="store_true", help='Enable block production, even if the chain is stale.')
+    parser.add_argument('--hard-replay-blockchain',     default=False, action="store_true", help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
+
     args = parser.parse_args()
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)

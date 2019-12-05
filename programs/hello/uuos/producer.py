@@ -49,10 +49,13 @@ config = dict(
     subjective_cpu_leeway_us = 31000, # default subjective cpu leeway in microseconds
     incoming_defer_ratio = 1.0,
     greylist_limit = 1000,
+    production_enabled = False,
 )
 
 class Producer(object):
-    def __init__(self):
+    def __init__(self, args):
+        print('+++producer:', args.enable_stale_production)
+        config['production_enabled'] = args.enable_stale_production
         cfg = json.dumps(config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
 
