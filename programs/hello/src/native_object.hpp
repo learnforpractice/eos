@@ -36,4 +36,5 @@ enum {
     signed_block_type,         // which = 7
     packed_transaction_type,
     producer_params_type,
+    genesis_state_type,
 };
