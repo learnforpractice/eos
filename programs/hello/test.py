@@ -1,7 +1,10 @@
-from native_object import *
+from uuos.native_object import *
+from uuos import chain_api
+
 import ujson
 
 import unittest
+import os
 
 class Test(unittest.TestCase):
 
@@ -11,6 +14,18 @@ class Test(unittest.TestCase):
 
         b = NativeObject({'b':1})
         b.b = 123
+
+    def test_recovery(self):
+        backup_dir = chain_api.repair_log('dd/blocks', 0)
+        print(backup_dir)
+        old_reversible = os.path.join(backup_dir, 'reversible')
+        new_reversible = os.path.join('dd/blocks', 'reversible')
+        if os.path.exists(old_reversible):
+            ret = chain_api.recover_reversible_blocks(old_reversible, new_reversible)
+            if not ret:
+                import shutil
+                shutil.copytree(old_reversible, new_reversible)
+            print(ret)
 
     @unittest.expectedFailure
     def test_set_attr2(self):

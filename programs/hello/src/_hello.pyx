@@ -30,6 +30,8 @@ cdef extern from "native_object.hpp":
     void chain_id_(void *ptr, string& chain_id)
     void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
     int chain_is_building_block_(void *ptr);
+    int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
+    void chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
 
     void *producer_new_(void *chain_ptr, string& config);
     void producer_free_(void *ptr);
@@ -80,6 +82,14 @@ def chain_api_get_account(uint64_t chain_ptr, string& params):
     cdef string result
     chain_api_get_account_(<void *>chain_ptr, params, result)
     return result
+
+def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):
+    return chain_api_recover_reversible_blocks_(old_reversible_blocks_dir, new_reversible_blocks_dir, reversible_cache_size, truncate_at_block)
+
+def chain_api_repair_log(string& blocks_dir, uint32_t truncate_at_block):
+    cdef string backup_blocks_dir
+    chain_api_repair_log_(blocks_dir, truncate_at_block, backup_blocks_dir)
+    return backup_blocks_dir
 
 def chain_fork_db_pending_head_block_num(uint64_t ptr):
     return chain_fork_db_pending_head_block_num_(<void *>ptr)

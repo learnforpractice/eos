@@ -2417,12 +2417,16 @@ void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
    } FC_LOG_AND_DROP();
 }
 
-int chain_api_recover_reversible_blocks_(void *ptr, string& old_reversible_blocks_dir, uint32_t cache_size, string& new_reversible_blocks_dir, uint32_t truncate_at_block) {
-   auto& cc = *(eosio::chain::controller*)ptr;
-   uint32_t cache_size = cc.get_config().reversible_cache_size;
+int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {
+//   auto& cc = *(eosio::chain::controller*)ptr;
+//   uint32_t cache_size = cc.get_config().reversible_cache_size;
    fc::optional<fc::path> new_db_dir;
    if (new_reversible_blocks_dir.size()) {
       new_db_dir.emplace(fc::path(new_reversible_blocks_dir));
    }
-   eosio::chain_plugin().recover_reversible_blocks( fc::path(old_reversible_blocks_dir), cache_size, new_db_dir, truncate_at_block );
+   return eosio::chain_plugin().recover_reversible_blocks( fc::path(old_reversible_blocks_dir), reversible_cache_size, new_db_dir, truncate_at_block );
+}
+
+void chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir) {
+   backup_blocks_dir = block_log::repair_log( blocks_dir, truncate_at_block).string();
 }
