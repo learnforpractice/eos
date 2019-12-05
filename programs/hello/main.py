@@ -15,7 +15,7 @@ from uuos.connection import Connection
 from uuos.producer import Producer
 
 from uuos.rpc_server import rpc_server
-from native_object import *
+from uuos.native_object import *
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
@@ -99,6 +99,7 @@ class UUOSMain(object):
         self.chain_ptr = chain_new(cfg, 'cd')
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
+        self.producer = Producer()
 
     def select_connection(self):
         if not self.connections:
@@ -205,6 +206,7 @@ class UUOSMain(object):
         if self.chain_ptr:
             chain_free(self.chain_ptr)
             self.chain_ptr = None
+        del self.producer
 
 if __name__ == "__main__":
     print(os.getpid())

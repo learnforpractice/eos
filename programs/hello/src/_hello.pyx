@@ -30,6 +30,9 @@ cdef extern from "native_object.hpp":
     void chain_id_(void *ptr, string& chain_id)
     void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
 
+    void *producer_new_();
+    void producer_free_(void *ptr);
+
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
     print("Hello, {}!)".format(strArg))
@@ -97,3 +100,8 @@ def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
     chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
     return <bytes>raw_block
 
+def producer_new():
+    return <uint64_t>producer_new_()
+
+def producer_free(uint64_t ptr):
+    producer_free_(<void *>ptr)

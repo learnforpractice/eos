@@ -20,6 +20,9 @@ uint32_t chain_last_irreversible_block_num_(void *ptr);
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id);
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
 
+void *producer_new_();
+void producer_free_(void *ptr);
+
 enum {
     handshake_message_type,
     chain_size_message_type,
@@ -29,5 +32,6 @@ enum {
     request_message_type,
     sync_request_message_type,
     signed_block_type,         // which = 7
-    packed_transaction_type
+    packed_transaction_type,
+    producer_params_type,
 };

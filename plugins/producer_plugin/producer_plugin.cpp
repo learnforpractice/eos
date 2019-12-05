@@ -75,12 +75,6 @@ const fc::string trx_trace_logger_name("transaction_tracing");
 fc::logger _trx_trace_log;
 
 namespace eosio {
-   class producer_plugin_impl;
-}
-
-void print_producer_plugin_impl(eosio::producer_plugin_impl &imp);
-
-namespace eosio {
 
 static appbase::abstract_plugin& _producer_plugin = app().register_plugin<producer_plugin>();
 
@@ -699,8 +693,109 @@ make_keosd_signature_provider(const std::shared_ptr<producer_plugin_impl>& impl,
    };
 }
 
-void producer_plugin::plugin_initialize(const boost::program_options::variables_map& options)
+void producer_plugin::plugin_initialize(const producer_params& options)
 { try {
+   my->chain_plug = app().find_plugin<chain_plugin>();
+   EOS_ASSERT( my->chain_plug, plugin_config_exception, "chain_plugin not found" );
+
+   std::copy(options.producers.begin(), options.producers.end(), std::inserter(my->_producers, my->_producers.end()));
+
+   chain::controller& chain = my->chain_plug->chain();
+
+   const std::vector<std::string> key_spec_pairs = options.signature_providers;
+   for (const auto& key_spec_pair : key_spec_pairs) {
+      try {
+         auto delim = key_spec_pair.find("=");
+         EOS_ASSERT(delim != std::string::npos, plugin_config_exception, "Missing \"=\" in the key spec pair");
+         auto pub_key_str = key_spec_pair.substr(0, delim);
+         auto spec_str = key_spec_pair.substr(delim + 1);
+
+         auto spec_delim = spec_str.find(":");
+         EOS_ASSERT(spec_delim != std::string::npos, plugin_config_exception, "Missing \":\" in the key spec pair");
+         auto spec_type_str = spec_str.substr(0, spec_delim);
+         auto spec_data = spec_str.substr(spec_delim + 1);
+
+         auto pubkey = public_key_type(pub_key_str);
+
+         if (spec_type_str == "KEY") {
+            my->_signature_providers[pubkey] = make_key_signature_provider(private_key_type(spec_data));
+         } else if (spec_type_str == "KEOSD") {
+            my->_signature_providers[pubkey] = make_keosd_signature_provider(my, spec_data, pubkey);
+         }
+
+      } catch (...) {
+         elog("Malformed signature provider: \"${val}\", ignoring!", ("val", key_spec_pair));
+      }
+   }
+
+   my->_keosd_provider_timeout_us = fc::milliseconds(options.keosd_provider_timeout_us);
+
+   my->_produce_time_offset_us = options.produce_time_offset_us;
+   my->_last_block_time_offset_us = options.last_block_time_offset_us;
+   my->_max_scheduled_transaction_time_per_block_ms = options.max_scheduled_transaction_time_per_block_ms;
+   chain.set_subjective_cpu_leeway( fc::microseconds( options.subjective_cpu_leeway_us ) );
+
+   my->_max_transaction_time_ms = options.max_transaction_time_ms;
+
+   my->_max_irreversible_block_age_us = fc::seconds(options.max_irreversible_block_age);
+
+   my->_incoming_defer_ratio = options.incoming_defer_ratio;
+
+   auto thread_pool_size = options.producer_threads;
+
+   EOS_ASSERT( thread_pool_size > 0, plugin_config_exception,
+               "producer-threads ${num} must be greater than 0", ("num", thread_pool_size));
+   my->_thread_pool.emplace( "prod", thread_pool_size );
+
+   auto sd = bfs::path(options.snapshots_dir);
+   if( sd.is_relative()) {
+      my->_snapshots_dir = app().data_dir() / sd;
+      if (!fc::exists(my->_snapshots_dir)) {
+         fc::create_directories(my->_snapshots_dir);
+      }
+   } else {
+      my->_snapshots_dir = sd;
+   }
+
+   EOS_ASSERT( fc::is_directory(my->_snapshots_dir), snapshot_directory_not_found_exception,
+               "No such directory '${dir}'", ("dir", my->_snapshots_dir.generic_string()) );
+   
+
+   my->_incoming_block_subscription = app().get_channel<incoming::channels::block>().subscribe([this](const signed_block_ptr& block){
+      try {
+         my->on_incoming_block(block);
+      } LOG_AND_DROP();
+   });
+
+   my->_incoming_transaction_subscription = app().get_channel<incoming::channels::transaction>().subscribe([this](const transaction_metadata_ptr& trx){
+      try {
+         my->on_incoming_transaction_async(trx, false, [](const auto&){});
+      } LOG_AND_DROP();
+   });
+
+   my->_incoming_block_sync_provider = app().get_method<incoming::methods::block_sync>().register_provider([this](const signed_block_ptr& block){
+      my->on_incoming_block(block);
+   });
+
+   my->_incoming_transaction_async_provider = app().get_method<incoming::methods::transaction_async>().register_provider([this](const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next) -> void {
+      return my->on_incoming_transaction_async(trx, persist_until_expired, next );
+   });
+
+   std::vector<std::string> greylist = options.greylist_account;
+   greylist_params param;
+   for (auto &a : greylist) {
+      param.accounts.push_back(account_name(a));
+   }
+   add_greylist_accounts(param);
+
+   {
+      uint32_t greylist_limit = options.greylist_limit;
+      chain.set_greylist_limit( greylist_limit );
+   }
+
+} FC_LOG_AND_RETHROW() }
+
+void producer_plugin::plugin_initialize(const boost::program_options::variables_map& options) { try {
    my->chain_plug = app().find_plugin<chain_plugin>();
    EOS_ASSERT( my->chain_plug, plugin_config_exception, "chain_plugin not found" );
    my->_options = &options;
@@ -1924,46 +2019,13 @@ void producer_plugin_impl::produce_block() {
 
 } // namespace eosio
 
-
-FC_REFLECT(eosio::producer_plugin_impl,
-            (_signature_providers)
-            (_producers)
-            (_keosd_provider_timeout_us)
-            (_produce_time_offset_us)
-            (_last_block_time_offset_us)
-            (_max_scheduled_transaction_time_per_block_ms)
-            (_max_transaction_time_ms)
-            (_max_irreversible_block_age_us)
-            (_incoming_defer_ratio)
-            (_snapshots_dir)
-            (_thread_pool)
-            (_keosd_provider_timeout_us)
-)
-
+using namespace std;
 using namespace eosio;
-#if 0
-void print_producer_plugin_impl(producer_plugin_impl &imp) {
+
+void print_producer_params(producer_plugin::producer_params &imp) {
    auto msg = fc::json::to_string(fc::variant(imp));
    elog("++++msg ${msg}", ("msg", msg));
 }
-
-void pack_producer_plugin_impl(string& msg, string& packed_message) {
-    try {
-        auto _msg = fc::json::from_string(msg).as<producer_plugin_impl>();
-        auto _packed_message = fc::raw::pack<producer_plugin_impl>(_msg);
-        packed_message = string(_packed_message.data(), _packed_message.size());
-    } FC_LOG_AND_DROP();
-}
-
-void unpack_producer_plugin_impl(string& packed_message, string& msg) {
-    try {
-        vector<char> _packed_message(packed_message.c_str(), packed_message.c_str()+packed_message.size());
-        auto _msg = fc::raw::unpack<producer_plugin_impl>(_packed_message);
-        msg = fc::json::to_string(fc::variant(_msg));
-    }FC_LOG_AND_DROP();
-}
-#endif
-
 
 void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& block) {
    auto id = block->id();
@@ -1997,7 +2059,7 @@ void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& b
    } catch ( boost::interprocess::bad_alloc& ) {
       chain_plugin::handle_db_exhaustion();
    }
-
+   return;
    if( fc::time_point::now() - block->timestamp < fc::minutes(5) ) {
       ilog("Received block ${id}... #${n} @ ${t} signed by ${p} [trxs: ${count}, lib: ${lib}, conf: ${confs}, latency: ${latency} ms]",
             ("p",block->producer)("id",fc::variant(block->id()).as_string().substr(8,16))
@@ -2005,3 +2067,12 @@ void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& b
             ("count",block->transactions.size())("lib",chain.last_irreversible_block_num())("confs", block->confirmed)("latency", (fc::time_point::now() - block->timestamp).count()/1000 ) );
    }
 }
+
+void *producer_new_() {
+   return (void *)new producer_plugin();
+}
+
+void producer_free_(void *ptr) {
+   delete (producer_plugin*)ptr;
+}
+

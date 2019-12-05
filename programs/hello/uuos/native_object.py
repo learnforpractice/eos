@@ -15,6 +15,7 @@ sync_request_message_type = 6
 signed_block_message_type = 7
 packed_transaction_message_type = 8
 controller_config_type = 9
+producer_params_type = 10
 
 class GoAwayReason:
     reason = {
@@ -241,6 +242,8 @@ class PackedTransactionMessage(NativeMessage):
 class ControllerConfig(NativeObject):
     obj_type = controller_config_type
 
+class ProducerParams(NativeObject):
+    obj_type = producer_params_type
 
 if __name__ == '__main__':
     h = HandshakeMessage({'a':1})

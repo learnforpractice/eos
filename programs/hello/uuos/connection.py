@@ -7,8 +7,8 @@ import struct
 import logging
 import asyncio
 
-from uuos import chain, chain_api
-from native_object import *
+from . import chain, chain_api
+from .native_object import *
 
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())

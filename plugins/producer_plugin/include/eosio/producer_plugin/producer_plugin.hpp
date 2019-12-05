@@ -29,6 +29,25 @@ public:
       fc::optional<uint32_t>  greylist_limit;
    };
 
+   struct producer_params {
+      vector<string> producers;
+      vector<string> signature_providers;
+      vector<string> greylist_account;
+      int producer_threads;
+      int keosd_provider_timeout_us;
+      string snapshots_dir;
+
+      int32_t   max_transaction_time_ms;
+      int32_t   max_irreversible_block_age;
+      int32_t   produce_time_offset_us;
+      int32_t   last_block_time_offset_us;
+      int32_t   max_scheduled_transaction_time_per_block_ms;
+      int32_t   subjective_cpu_leeway_us;
+      double    incoming_defer_ratio;
+      uint32_t  greylist_limit;
+   };
+
+
    struct whitelist_blacklist {
       fc::optional< flat_set<account_name> > actor_whitelist;
       fc::optional< flat_set<account_name> > actor_blacklist;
@@ -88,6 +107,7 @@ public:
    chain::signature_type  sign_compact(const chain::public_key_type& key, const fc::sha256& digest) const;
 
    virtual void plugin_initialize(const boost::program_options::variables_map& options);
+   void plugin_initialize(const producer_params& options);
    virtual void plugin_startup();
    virtual void plugin_shutdown();
    void handle_sighup() override;
@@ -130,3 +150,19 @@ FC_REFLECT(eosio::producer_plugin::scheduled_protocol_feature_activations, (prot
 FC_REFLECT(eosio::producer_plugin::get_supported_protocol_features_params, (exclude_disabled)(exclude_unactivatable))
 FC_REFLECT(eosio::producer_plugin::get_account_ram_corrections_params, (lower_bound)(upper_bound)(limit)(reverse))
 FC_REFLECT(eosio::producer_plugin::get_account_ram_corrections_result, (rows)(more))
+FC_REFLECT(eosio::producer_plugin::producer_params,
+   (producers)
+   (signature_providers)
+   (greylist_account)
+   (producer_threads)
+   (keosd_provider_timeout_us)
+   (snapshots_dir)
+   (max_transaction_time_ms)
+   (max_irreversible_block_age)
+   (produce_time_offset_us)
+   (last_block_time_offset_us)
+   (max_scheduled_transaction_time_per_block_ms)
+   (subjective_cpu_leeway_us)
+   (incoming_defer_ratio)
+   (greylist_limit)
+)
