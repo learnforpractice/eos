@@ -25,13 +25,14 @@ class Connection(object):
         self.reader = reader
         self.writer = writer
         self.handshake_count = 0
+        self.closed = False
 
     async def read(self, length):
         buffer = io.BytesIO()
         while True:
             data = await self.reader.read(length)
             if not data:
-                self.writer.close()
+                logger.error("+++++++++wait reader return None")
                 return None
             buffer.write(data)
             length -= len(data)
@@ -41,6 +42,11 @@ class Connection(object):
 
     def write(self, data):
         self.writer.write(data)
+
+    def close(self):
+        if not self.closed:
+            self.writer.close()
+            self.closed = True
 
 class UUOSMain(object):
 
@@ -88,15 +94,15 @@ class UUOSMain(object):
         while True:
             msg_len = await server.read(4)
             if not msg_len:
-                server.writer.close()
-                client.writer.close()
+                server.close()
+                client.close()
                 return
             client.write(msg_len)
             msg_len = int.from_bytes(msg_len, 'little')
             msg = await server.read(msg_len)
             if not msg:
-                server.writer.close()
-                client.writer.close()
+                server.close()
+                client.close()
                 return
             client.write(msg)
             self.show_message('server', msg)
@@ -106,23 +112,32 @@ class UUOSMain(object):
         print(f"connection from {addr!r}")
         client = Connection(reader, writer)
 
-        reader, writer = await asyncio.open_connection('127.0.0.1', 9876)
-        server = Connection(reader, writer)
+        try:
+            reader, writer = await asyncio.open_connection('127.0.0.1', 9876)
+            server = Connection(reader, writer)
+        except ConnectionRefusedError as e:
+            print(e)
+            client.close()
+            return
+        except Exception as e:
+            print(type(e), e)
+            client.close()
+            return
 
         task = asyncio.create_task(self.handle_server_side(server, client))
 
         while True:
             msg_len = await client.read(4)
             if not msg_len:
-                client.writer.close()
-                server.writer.close()
+                client.close()
+                server.close()
                 return
             server.write(msg_len)
             msg_len = int.from_bytes(msg_len, 'little')
             msg = await client.read(msg_len)
             if not msg:
-                client.writer.close()
-                server.writer.close()
+                client.close()
+                server.close()
                 return
             server.write(msg)
             self.show_message('client', msg)
@@ -140,6 +155,12 @@ class UUOSMain(object):
         async with server:
             await server.serve_forever()
 
+    def handle_exception(self, loop, context):
+        # context["message"] will always be there; but context["exception"] may not
+        msg = context.get("exception", context["message"])
+        logger.exception(msg)
+        logger.error(f"Caught exception: {msg}")
+
     def run(self, args):
         self.args = args
         logger.info(args)
@@ -151,6 +172,7 @@ class UUOSMain(object):
                 s, lambda s=s: asyncio.create_task(self.shutdown(s, self.loop)))
 
         args.loop = self.loop
+        self.loop.set_exception_handler(self.handle_exception)
         self.loop.run_until_complete(self.main())
 
 if __name__ == "__main__":
