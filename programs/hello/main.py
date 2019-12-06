@@ -17,6 +17,8 @@ from uuos.producer import Producer
 from uuos.rpc_server import rpc_server
 from uuos.native_object import *
 
+from _hello import set_accepted_block_callback
+
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
 logger=logging.getLogger(__name__)
@@ -171,6 +173,9 @@ class UUOSMain(object):
 #        self.writer.close()
         import sys;sys.exit(0)
 
+    def on_accepted_block(self, block):
+        print(block)
+
     async def main(self):
         tasks = []
         server = rpc_server(self.chain_ptr, self.loop, self.args.http_server_address)
@@ -186,6 +191,8 @@ class UUOSMain(object):
 #        self.producer = Producer(self.args)
         task = asyncio.create_task(self.producer.run())
         tasks.append(task)
+
+        set_accepted_block_callback(self.on_accepted_block)
 
     #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)

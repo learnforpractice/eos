@@ -365,10 +365,10 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
          }
       };
 
-      void on_incoming_block(const signed_block_ptr& block) {
+      void on_incoming_block(const signed_block_ptr& block, bool schedule=true) {
          auto id = block->id();
 
-         fc_dlog(_log, "received incoming block ${id}", ("id", id));
+         dlog("received incoming block ${id}", ("id", id));
 
          EOS_ASSERT( block->timestamp < (fc::time_point::now() + fc::seconds( 7 )), block_from_the_future,
                      "received a block from the future, ignoring it: ${id}", ("id", id) );
@@ -386,8 +386,10 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
          chain.abort_block();
 
          // exceptions throw out, make sure we restart our loop
-         auto ensure = fc::make_scoped_exit([this](){
-            schedule_production_loop();
+         auto ensure = fc::make_scoped_exit([this, schedule](){
+            if (schedule) {
+               schedule_production_loop();
+            }
          });
 
          // push the new block
@@ -1416,7 +1418,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
    if( chain.get_read_mode() == chain::db_read_mode::READ_ONLY )
       return start_block_result::waiting;
 
-   fc_dlog(_log, "Starting block at ${time}", ("time", fc::time_point::now()));
+   dlog("Starting block at ${time} ${e} ${p}", ("time", fc::time_point::now())("e", _production_enabled)("p", _producers));
 
    const auto& hbs = chain.head_block_state();
 
@@ -1437,6 +1439,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
    if( !_production_enabled ) {
       _pending_block_mode = pending_block_mode::speculating;
    } else if( _producers.find(scheduled_producer.producer_name) == _producers.end()) {
+      elog("speculating...");
       _pending_block_mode = pending_block_mode::speculating;
    } else if (signature_provider_itr == _signature_providers.end()) {
       elog("Not producing block because I don't have the private key for ${scheduled_key}", ("scheduled_key", scheduled_producer.block_signing_key));
@@ -1863,7 +1866,7 @@ void producer_plugin_impl::schedule_production_loop() {
    std::weak_ptr<producer_plugin_impl> weak_this = shared_from_this();
 
    auto result = start_block();
-
+   elog("++++++start_block: ${r} ${mode}", ("r", (int)result)("mode", (int)_pending_block_mode));
    if (result == start_block_result::failed) {
       elog("Failed to start a pending block, will try again later");
       _timer.expires_from_now( boost::posix_time::microseconds( config::block_interval_us  / 10 ));
@@ -1895,7 +1898,7 @@ void producer_plugin_impl::schedule_production_loop() {
          // ship this block off no later than its deadline
          EOS_ASSERT( chain.is_building_block(), missing_pending_block_state, "producing without pending_block_state, start_block succeeded" );
          _timer.expires_at( epoch + boost::posix_time::microseconds( deadline.time_since_epoch().count() ));
-         fc_dlog(_log, "Scheduling Block Production on Normal Block #${num} for ${time}",
+         elog("Scheduling Block Production on Normal Block #${num} for ${time}",
                        ("num", chain.head_block_num()+1)("time",deadline));
       } else {
          EOS_ASSERT( chain.is_building_block(), missing_pending_block_state, "producing without pending_block_state" );
@@ -1924,11 +1927,11 @@ void producer_plugin_impl::schedule_production_loop() {
                }
             } ) );
    } else if (_pending_block_mode == pending_block_mode::speculating && !_producers.empty() && !production_disabled_by_policy()){
-      fc_dlog(_log, "Speculative Block Created; Scheduling Speculative/Production Change");
+      dlog("Speculative Block Created; Scheduling Speculative/Production Change");
       EOS_ASSERT( chain.is_building_block(), missing_pending_block_state, "speculating without pending_block_state" );
       schedule_delayed_production_loop(weak_this, chain.pending_block_time());
    } else {
-      fc_dlog(_log, "Speculative Block Created");
+      dlog("Speculative Block Created");
    }
 }
 
@@ -1949,7 +1952,7 @@ void producer_plugin_impl::schedule_delayed_production_loop(const std::weak_ptr<
    }
 
    if (wake_up_time) {
-      fc_dlog(_log, "Scheduling Speculative/Production Change at ${time}", ("time", wake_up_time));
+      dlog("Scheduling Speculative/Production Change at ${time}", ("time", wake_up_time));
       static const boost::posix_time::ptime epoch(boost::gregorian::date(1970, 1, 1));
       _timer.expires_at(epoch + boost::posix_time::microseconds(wake_up_time->time_since_epoch().count()));
       _timer.async_wait( app().get_priority_queue().wrap( priority::high,
@@ -1960,7 +1963,7 @@ void producer_plugin_impl::schedule_delayed_production_loop(const std::weak_ptr<
             }
          } ) );
    } else {
-      fc_dlog(_log, "Not Scheduling Speculative/Production, no local producers had valid wake up times");
+      dlog("Not Scheduling Speculative/Production, no local producers had valid wake up times");
    }
 }
 
@@ -2090,8 +2093,51 @@ void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_
       fc::raw::unpack( ds, *block );
       num = block->block_num();
       id = fc::json::to_string<block_id_type>(block->id());
-      producer.my->on_incoming_block(block);
+      producer.my->on_incoming_block(block, false);
    } LOG_AND_DROP();
+}
+
+int producer_start_block_(void *ptr) {
+   try {
+      auto& producer = *(producer_plugin*)ptr;
+      return (int)producer.my->start_block();
+   } LOG_AND_DROP();
+   return -1;
+}
+
+uint64_t producer_calc_pending_block_time_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto t = producer.my->calculate_pending_block_time();
+   return t.time_since_epoch().count();
+}
+
+uint64_t producer_calc_pending_block_deadline_time_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto& chain = producer.my->chain_plug->chain();
+   auto deadline = producer.my->calculate_block_deadline(chain.pending_block_time());
+   return deadline.time_since_epoch().count();
+}
+
+bool producer_maybe_produce_block_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   try {
+      producer.my->produce_block();
+      return true;
+   } LOG_AND_DROP();
+
+   fc_dlog(_log, "Aborting block due to produce_block error");
+   auto& chain = producer.my->chain_plug->chain();
+   chain.abort_block();
+   return false;
+}
+
+int producer_get_pending_block_mode_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   return (int)producer.my->_pending_block_mode;
+}
+
+uint64_t producer_now_time_() {
+   return fc::time_point::now().time_since_epoch().count();
 }
 
 void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& block) {

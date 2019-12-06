@@ -28,6 +28,13 @@ void *producer_new_(void *chain_ptr, string& config);
 void producer_free_(void *ptr);
 void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
 
+int         producer_start_block_(void *ptr);
+uint64_t    producer_calc_pending_block_time_(void *ptr);
+uint64_t    producer_calc_pending_block_deadline_time_(void *ptr);
+bool        producer_maybe_produce_block_(void *ptr);
+uint64_t    producer_now_time_();
+int         producer_get_pending_block_mode_(void *ptr);
+
 enum {
     handshake_message_type,
     chain_size_message_type,

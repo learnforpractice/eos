@@ -1,5 +1,16 @@
 import asyncio
-from _hello import producer_new, producer_free, producer_on_incoming_block
+from _hello import (
+    producer_new,
+    producer_free,
+    producer_on_incoming_block,
+    producer_start_block,
+    producer_calc_pending_block_time,
+    producer_calc_pending_block_deadline_time,
+    producer_maybe_produce_block,
+    producer_now_time,
+    producer_get_pending_block_mode
+)
+
 from .native_object import ProducerParams
 import ujson as json
 from . import chain
@@ -52,6 +63,19 @@ config = dict(
     production_enabled = False,
 )
 
+class StartBlockResult:
+    succeeded = 0
+    failed = 1
+    waiting = 2
+    exhausted = 3
+
+class PendingBlockMode:
+   producing = 0
+   speculating = 1
+
+block_interval_ms = 500
+block_interval_us = block_interval_ms*1000
+
 class Producer(object):
     def __init__(self, args):
         print('+++producer:', args.enable_stale_production)
@@ -65,6 +89,13 @@ class Producer(object):
     def get_sleep_time(self):
         return 1.0
 
+    async def produce_block(self, delay):
+        while True:
+            await asyncio.sleep(delay/1e6)
+            self.maybe_produce_block()
+            deadline = self.calc_pending_block_deadline_time()
+            delay = deadline - self.now_time()
+
     def start_produce_block(self):
         pass
 
@@ -74,16 +105,60 @@ class Producer(object):
     def can_produce_block(self):
         return False
 
+    def start_block(self):
+        return producer_start_block(self.ptr)
+
+    def calc_pending_block_time(self):
+        return producer_calc_pending_block_time(self.ptr)
+
+    def calc_pending_block_deadline_time(self):
+        return producer_calc_pending_block_deadline_time(self.ptr)
+
+    def maybe_produce_block(self):
+        return producer_maybe_produce_block(self.ptr)
+
+    def now_time(self):
+        return producer_now_time()
+
+    def get_pending_block_mode(self):
+        return producer_get_pending_block_mode(self.ptr)
+
+    def start_production_loop(self):
+        pass
+
+
     def on_incoming_block(self, block):
-        return producer_on_incoming_block(self.ptr, block)
+        producer_on_incoming_block(self.ptr, block)
+        self.start_production_loop()
 
     async def run(self):
         while True:
-            if not self.can_produce_block():
-                await asyncio.sleep(0.2)
+            result = self.start_block()
+            if result == 0 or result == 3: #succeeded
+                mode = self.get_pending_block_mode()
+                if mode == 0: #producing
+                    deadline = self.calc_pending_block_deadline_time()
+                    delay = deadline - self.now_time()
+                    print('++++++delay:',delay/1e6)
+                    await asyncio.sleep(delay/1e6)
+                    self.maybe_produce_block()
+#                    deadline = self.calc_pending_block_deadline_time()
+#                    delay = deadline - self.now_time()
 
-            self.start_produce_block()
-            sleep_time = self.get_sleep_time()
-            await asyncio.sleep(sleep_time)
-            self.end_produce_block()
+#                    task = asyncio.create_task(self.produce_block(delay))
+            elif result == 1: #failed
+                pass
+            elif result == 2: #waiting
+                pass
+            elif result == 3: #exhausted
+                pass
+
+        # while True:
+        #     if not self.can_produce_block():
+        #         await asyncio.sleep(0.2)
+
+        #     self.start_produce_block()
+        #     sleep_time = self.get_sleep_time()
+        #     await asyncio.sleep(sleep_time)
+        #     self.end_produce_block()
 

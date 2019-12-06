@@ -11,31 +11,40 @@ cdef extern from * :
     ctypedef unsigned long long uint64_t
     ctypedef unsigned int uint32_t
 
+cdef extern from "hello.hpp":
+    void register_on_accepted_block_cb_()
+
 cdef extern from "native_object.hpp":
     
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
 
-    void *chain_new_(string& config, string& protocol_features_dir)
-    void chain_free_(void *ptr)
-    void chain_api_get_info_(void *chain_ptr, string& info)
-    void chain_api_get_table_rows_(void *chain_ptr, string& params, string& result)
-    void chain_api_get_account_(void *chain_ptr, string& params, string& result);
+    void*   chain_new_(string& config, string& protocol_features_dir)
+    void    chain_free_(void *ptr)
+    void    chain_api_get_info_(void *chain_ptr, string& info)
+    void    chain_api_get_table_rows_(void *chain_ptr, string& params, string& result)
+    void    chain_api_get_account_(void *chain_ptr, string& params, string& result);
 
     void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
 
-    uint32_t chain_fork_db_pending_head_block_num_(void *ptr)
-    uint32_t chain_last_irreversible_block_num_(void *ptr)
-    void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
-    void chain_id_(void *ptr, string& chain_id)
-    void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
-    int chain_is_building_block_(void *ptr);
-    int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
-    void chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
+    uint32_t    chain_fork_db_pending_head_block_num_(void *ptr)
+    uint32_t    chain_last_irreversible_block_num_(void *ptr)
+    void        chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
+    void        chain_id_(void *ptr, string& chain_id)
+    void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
+    int         chain_is_building_block_(void *ptr);
+    int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
+    void        chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
 
-    void *producer_new_(void *chain_ptr, string& config);
-    void producer_free_(void *ptr);
-    void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
+    void*       producer_new_(void *chain_ptr, string& config);
+    void        producer_free_(void *ptr);
+    void        producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
+    int         producer_start_block_(void *ptr)
+    uint64_t    producer_calc_pending_block_time_(void *ptr)
+    uint64_t    producer_calc_pending_block_deadline_time_(void *ptr)
+    bool        producer_maybe_produce_block_(void *ptr)
+    uint64_t    producer_now_time_()
+    int         producer_get_pending_block_mode_(void *ptr)
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -73,9 +82,9 @@ def chain_api_get_info(uint64_t chain_ptr):
     chain_api_get_info_(<void *>chain_ptr, info)
     return info
 
-def chain_api_get_table_rows_(uint64_t chain_ptr, string& params):
+def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_table_rows_(chain_ptr, params, result)
+    chain_api_get_table_rows_(<void *>chain_ptr, params, result)
     return result
 
 def chain_api_get_account(uint64_t chain_ptr, string& params):
@@ -126,3 +135,35 @@ def producer_on_incoming_block(uint64_t ptr, string& packed_signed_block):
     cdef string block_id
     producer_on_incoming_block_(<void *>ptr, packed_signed_block, block_num, block_id)
     return (block_num, block_id)
+
+def producer_start_block(uint64_t ptr):
+    return producer_start_block_(<void *>ptr)
+
+def producer_calc_pending_block_time(uint64_t ptr):
+    return producer_calc_pending_block_time_(<void *>ptr)
+
+def producer_calc_pending_block_deadline_time(uint64_t ptr):
+    return producer_calc_pending_block_deadline_time_(<void *>ptr)
+
+def producer_maybe_produce_block(uint64_t ptr):
+    return producer_maybe_produce_block_(<void *>ptr);
+
+def producer_now_time():
+    return producer_now_time_();
+
+def producer_get_pending_block_mode(uint64_t ptr):
+    return producer_get_pending_block_mode_(<void *>ptr)
+
+
+g_accepted_block_cb = None
+cdef extern int on_accepted_block(string& packed_block):
+    global g_accepted_block_cb
+    if g_accepted_block_cb:
+        g_accepted_block_cb(<bytes>(&packed_block[0]))
+    return 1
+
+def set_accepted_block_callback(cb):
+    global g_accepted_block_cb
+    g_accepted_block_cb = cb
+
+register_on_accepted_block_cb_()

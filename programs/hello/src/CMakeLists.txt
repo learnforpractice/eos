@@ -1,7 +1,8 @@
 
 
 add_cython_target(_hello CXX)
-add_library(_hello MODULE ${_hello})
+add_library(_hello MODULE ${_hello} hello.cpp)
+
 python_extension_module(_hello)
 
 target_link_libraries(_hello /Users/newworld/dev/uuos2/build/programs/nodeos/libpyuuos.dylib)

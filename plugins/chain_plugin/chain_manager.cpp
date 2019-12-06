@@ -18,12 +18,25 @@ extern "C"
 chain_manager *chain_manager::instance = nullptr;
 static chain_manager *g_manager = nullptr;
 
+#include <fc/log/logger_config.hpp>
+
+typedef int (*fn_on_accepted_block)(string& act);
+fn_on_accepted_block g_on_accepted_block = nullptr;
+
+void register_on_accepted_block(fn_on_accepted_block cb) {
+    g_on_accepted_block = cb;
+}
+
 chain_manager::chain_manager(string& config, string& protocol_features_dir) {
     evm_init();
     vm_api_init();
     vm_api_ro_init();
     chain_api_init();
     sandboxed_contracts_init();
+
+    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+    fc::logger::get("producer_plugin").set_log_level(fc::log_level::debug);
+    fc::logger::get("transaction_tracing").set_log_level(fc::log_level::debug);
 
     auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
     cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
@@ -48,7 +61,12 @@ chain_manager& chain_manager::get() {
 }
 
 void chain_manager::on_accepted_block(const block_state_ptr& bsp) {
-//    g_chain
+    vector<char> packed_block = fc::raw::pack<eosio::chain::signed_block>(*bsp->block);
+    string _packed_block(packed_block.data(), packed_block.size());
+    if (g_on_accepted_block) {
+        elog("++++dispatch block to python runtime");
+        g_on_accepted_block(_packed_block);
+    }
 }
 
 controller& chain_manager::chain() {
