@@ -20,7 +20,7 @@ static chain_manager *g_manager = nullptr;
 
 #include <fc/log/logger_config.hpp>
 
-typedef int (*fn_on_accepted_block)(string& act);
+typedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id);
 fn_on_accepted_block g_on_accepted_block = nullptr;
 
 void register_on_accepted_block(fn_on_accepted_block cb) {
@@ -61,11 +61,14 @@ chain_manager& chain_manager::get() {
 }
 
 void chain_manager::on_accepted_block(const block_state_ptr& bsp) {
-    vector<char> packed_block = fc::raw::pack<eosio::chain::signed_block>(*bsp->block);
-    string _packed_block(packed_block.data(), packed_block.size());
+    auto size = fc::raw::pack_size( *bsp->block );
+    string packed_block(size, 0);
+    fc::datastream<char*> ds( (char *)packed_block.c_str(), packed_block.size() );
+    fc::raw::pack(ds, *bsp->block);
     if (g_on_accepted_block) {
-        elog("++++dispatch block to python runtime");
-        g_on_accepted_block(_packed_block);
+//        elog("++++dispatch block to python runtime ${size}", ("size", packed_block.size()));
+        string block_id = bsp->block->id().str();
+        g_on_accepted_block(packed_block, bsp->block->block_num(), block_id);
     }
 }
 

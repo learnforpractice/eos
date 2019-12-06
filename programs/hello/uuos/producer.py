@@ -147,9 +147,9 @@ class Producer(object):
 
 #                    task = asyncio.create_task(self.produce_block(delay))
             elif result == 1: #failed
-                pass
+                await asyncio.sleep(0.5)
             elif result == 2: #waiting
-                pass
+                await asyncio.sleep(0.5)
             elif result == 3: #exhausted
                 pass
 

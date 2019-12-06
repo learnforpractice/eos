@@ -13,7 +13,7 @@ from uuos import chain, chain_api
 
 from uuos.rpc_server import rpc_server
 
-from native_object import *
+from uuos.native_object import *
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
@@ -73,12 +73,11 @@ class UUOSMain(object):
             print(which, msg)
         elif msg_type == 7:#signed_block_message_type:
             msg = SignedBlockMessage.unpack(msg[1:])
-#            print(which, msg)
             previous = msg.previous
             previous = previous[:8]
             previous = bytes.fromhex(previous)
             previous = int.from_bytes(previous, 'big')
-            print(which, previous)
+            print(which, previous+1, msg)
         elif msg_type == 8:#packed_transaction_message_type:
             msg = PackedTransactionMessage.unpack(msg[1:])
             print(which, msg)

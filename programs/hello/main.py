@@ -139,6 +139,7 @@ class UUOSMain(object):
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
         c = Connection(reader, writer, self.producer)
+        self.connections.append(c)
         task = asyncio.create_task(self.handle_connection(c))
 
     async def p2p_server(self):
@@ -173,8 +174,13 @@ class UUOSMain(object):
 #        self.writer.close()
         import sys;sys.exit(0)
 
-    def on_accepted_block(self, block):
-        print(block)
+    def on_accepted_block(self, block, num, block_id):
+        for c in self.connections:
+            if not c.last_handshake:
+                continue
+            if c.catch_up:
+                print('+++block:',block)
+                c.send_block(block)
 
     async def main(self):
         tasks = []
