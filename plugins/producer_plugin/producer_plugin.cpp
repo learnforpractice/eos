@@ -1418,7 +1418,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
    if( chain.get_read_mode() == chain::db_read_mode::READ_ONLY )
       return start_block_result::waiting;
 
-   dlog("Starting block at ${time} ${e} ${p}", ("time", fc::time_point::now())("e", _production_enabled)("p", _producers));
+   fc_dlog( _log, "Starting block at ${time} ${e} ${p}", ("time", fc::time_point::now())("e", _production_enabled)("p", _producers));
 
    const auto& hbs = chain.head_block_state();
 

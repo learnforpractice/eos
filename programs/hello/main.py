@@ -121,6 +121,8 @@ class UUOSMain(object):
 #            logger.exception(e)
 #            self.p2p_client_task.cancel()
             return
+        except Exception as e:
+            print(e)
         logger.info(f'connected to {host}:{port} success!')
 
     async def handle_connection(self, c):
@@ -153,14 +155,20 @@ class UUOSMain(object):
 
     async def uuos_main(self):
         for address in self.args.p2p_peer_address:
-            host, port = address.split(':')
-            c = await self.connect_to_p2p_client(host, port)
-            if not c:
-                continue
-            c.send_handshake()
-#            await self.handle_message()
-            task = asyncio.create_task(c.handle_message())
-            self.tasks.append(task)
+            try:
+                host, port = address.split(':')
+                c = await self.connect_to_p2p_client(host, port)
+                if not c:
+                    continue
+                c.send_handshake()
+    #            await self.handle_message()
+                task = asyncio.create_task(c.handle_message())
+                self.tasks.append(task)
+            except ConnectionResetError as e:
+                print(e)
+            except Exception as e:
+                print(e)
+#                logger.exception(e)
         logger.info("uuos main task done!")
 
     async def shutdown(self, signal, loop):
@@ -179,7 +187,7 @@ class UUOSMain(object):
             if not c.last_handshake:
                 continue
             if c.catch_up:
-                print('+++block:',block)
+#                print('+++block:',block)
                 c.send_block(block)
 
     async def main(self):
