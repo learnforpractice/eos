@@ -191,6 +191,7 @@ class Connection(object):
             logger.info(f'+++send catch up block {num}')
             self.send_block_by_num(num)
             asyncio.sleep(0)
+        self.catch_up = True
 
     async def handle_message(self):
         try:
