@@ -254,6 +254,8 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
           "In \"light\" mode all incoming blocks headers will be fully validated; transactions in those validated blocks will be trusted \n")
          ("uuos-mainnet", boost::program_options::value<bool>()->default_value(true),
           "uuos main network \n")
+//         ("network", bpo::value<string>()->default_value("uuos"), "network")
+         ("network", bpo::value<string>(), "network")
          ("create-accounts-snapshot", bpo::bool_switch()->default_value(false),
           "create accounts snapshot \n")
          ("disable-ram-billing-notify-checks", bpo::bool_switch()->default_value(false),
@@ -559,6 +561,10 @@ protocol_feature_set initialize_protocol_features( const fc::path& p, bool popul
    return pfs;
 }
 
+#include "../../unittests/incbin.h"
+INCBIN(GenesisEos, "genesis_eos.json");
+INCBIN(GenesisUUOS, "genesis_uuos.json");
+
 void chain_plugin::plugin_initialize(const variables_map& options) {
    ilog("initializing chain plugin");
 
@@ -846,6 +852,10 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
             existing_genesis = my->chain_config->genesis;
          }
 
+         if ( options.count("uuos-mainnet") ) {
+            my->chain_config->uuos_mainnet = options.at("uuos-mainnet").as<bool>();
+         }
+
          if( options.count( "genesis-json" )) {
             genesis_file = options.at( "genesis-json" ).as<bfs::path>();
             if( genesis_file.is_relative()) {
@@ -858,6 +868,17 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                        ("genesis", genesis_file.generic_string()));
 
             my->chain_config->genesis = fc::json::from_file( genesis_file ).as<genesis_state>();
+         } else if ( options.count( "network" ) ) {
+            string network = options.at( "network" ).as<string>();
+            if (network == "eos") {
+               string genesis = string((char *)gGenesisEosData, gGenesisEosSize);
+               my->chain_config->genesis = fc::json::from_string(genesis).as<genesis_state>();
+               my->chain_config->uuos_mainnet = false;
+            } else if (network == "uuos") {
+               string genesis = string((char *)gGenesisUUOSData, gGenesisUUOSSize);
+               my->chain_config->genesis = fc::json::from_string(genesis).as<genesis_state>();
+               my->chain_config->uuos_mainnet = true;
+            }
          }
 
          if( options.count( "genesis-timestamp" ) ) {
@@ -893,10 +914,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
 
       if ( options.count("validation-mode") ) {
          my->chain_config->block_validation_mode = options.at("validation-mode").as<validation_mode>();
-      }
-
-      if ( options.count("uuos-mainnet") ) {
-         my->chain_config->uuos_mainnet = options.at("uuos-mainnet").as<bool>();
       }
 
       if( options.count( "genesis-accounts" )) {
