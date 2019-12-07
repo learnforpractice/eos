@@ -1051,7 +1051,7 @@ namespace eosio {
    void connection::enqueue( const net_message& m, bool trigger_send ) {
       go_away_reason close_after_send = no_reason;
       if (m.contains<go_away_message>()) {
-         close_after_send = m.get<go_away_message>().reason;
+         close_after_send = (go_away_reason)m.get<go_away_message>().reason;
       }
 
       const uint32_t payload_size = fc::raw::pack_size( m );
@@ -2326,7 +2326,7 @@ namespace eosio {
 
    void net_plugin_impl::handle_message(const connection_ptr& c, const go_away_message& msg) {
       peer_wlog(c, "received go_away_message, reason = ${r}", ("r",reason_str( msg.reason )) );
-      c->no_retry = msg.reason;
+      c->no_retry = (go_away_reason)msg.reason;
       if(msg.reason == duplicate ) {
          c->node_id = msg.node_id;
       }
