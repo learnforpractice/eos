@@ -142,7 +142,8 @@ BOOST_FIXTURE_TEST_CASE(basic_test, pythonvm_tester) try {
       Py_FinalizeEx();
    });
 
-   Py_InitFrozenMain(2, (char **)argv);
+   Py_InitializeEx(0);
+//   Py_InitFrozenMain(2, (char **)argv);
 
 
    produce_blocks(2);
