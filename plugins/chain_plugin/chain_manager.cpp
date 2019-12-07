@@ -40,6 +40,8 @@ chain_manager::chain_manager(string& config, string& protocol_features_dir) {
 
     auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
     cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
+    ilog("${cfg}", ("cfg", cfg));
+
     cc = new eosio::chain::controller(cfg, std::move(pfs));
     cc->add_indices();
 
