@@ -128,8 +128,9 @@ class Producer(object):
 
 
     def on_incoming_block(self, block):
-        producer_on_incoming_block(self.ptr, block)
+        num, block_id = producer_on_incoming_block(self.ptr, block)
         self.start_production_loop()
+        return num, block_id
 
     async def run(self):
         while True:

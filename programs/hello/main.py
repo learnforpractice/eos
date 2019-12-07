@@ -86,9 +86,12 @@ class UUOSMain(object):
         cfg = ControllerConfig(default_config)
         # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
-        cfg.blocks_dir = 'dd/blocks'
-        cfg.state_dir = 'dd/state'
+        cfg.blocks_dir = os.path.join(args.data_dir, 'blocks')
+        cfg.state_dir = os.path.join(args.data_dir, 'state')
+        print('args.uuos_mainnet', args.uuos_mainnet)
+        cfg.uuos_mainnet = False
         if self.args.network == 'uuos':
+            cfg.uuos_mainnet = True
             cfg.genesis = genesis_uuos
         elif self.args.network == 'eos':
             cfg.genesis = genesis_eos
@@ -98,6 +101,7 @@ class UUOSMain(object):
             raise Exception('unknown network')
 
         cfg = cfg.dumps()
+        print(cfg)
         self.chain_ptr = chain_new(cfg, 'cd')
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
@@ -127,7 +131,7 @@ class UUOSMain(object):
 
     async def handle_connection(self, c):
         try:
-            await c.handle_message()
+            await c.handle_message_loop()
         except Exception as e:
             logger.exception(e)
         finally:
@@ -156,13 +160,16 @@ class UUOSMain(object):
     async def uuos_main(self):
         for address in self.args.p2p_peer_address:
             try:
+                print(address)
                 host, port = address.split(':')
                 c = await self.connect_to_p2p_client(host, port)
                 if not c:
                     continue
+                print('send hashshake message to ', address)
                 c.send_handshake()
-    #            await self.handle_message()
-                task = asyncio.create_task(c.handle_message())
+                await c.handle_message()
+                print('handle message return')
+                task = asyncio.create_task(c.handle_message_loop())
                 self.tasks.append(task)
             except ConnectionResetError as e:
                 print(e)
@@ -231,10 +238,14 @@ class UUOSMain(object):
             self.chain_ptr = None
         del self.producer
 
+def str2bool(v):
+  return v.lower() in ("yes", "true", "t", "1")
+
 if __name__ == "__main__":
     print(os.getpid())
 #    time.sleep(10)
     parser = argparse.ArgumentParser(description='')
+    parser.register('type','bool',str2bool) # add type keyword to registries
     parser.add_argument('--data-dir',               type=str, default='dd',                  help='data directory')
     parser.add_argument('--config-dir',             type=str, default='cd',                  help='config directory')
     parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',      help='http server address')
@@ -246,10 +257,14 @@ if __name__ == "__main__":
     parser.add_argument('--hard-replay-blockchain', default=False, action="store_true",      help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
     parser.add_argument('--replay-blockchain',      default=False, action="store_true",      help='clear chain state database and replay all blocks')
     parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
+    parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,                 help='uuos main network')
+
 
     args = parser.parse_args()
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)
+    print(args.data_dir)
+    print(args.uuos_mainnet)
     if args.replay_blockchain:
         state_dir = os.path.join(args.data_dir, 'state')
         import shutil
