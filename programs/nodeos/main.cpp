@@ -108,7 +108,7 @@ int main(int argc, char** argv)
       chain_api_init();
       sandboxed_contracts_init();
 
-      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+//      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 
       app().set_version(eosio::nodeos::config::version);
 
