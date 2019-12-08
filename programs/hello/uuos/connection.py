@@ -16,9 +16,9 @@ logger.addHandler(logging.StreamHandler())
 sync_req_span = 200
 
 class Connection(object):
-    def __init__(self, reader, writer, producer):
-        self.reader = reader
-        self.writer = writer
+    def __init__(self, host, port, producer):
+        self.reader = None
+        self.writer = None
         self.handshake_count = 0
         self.last_handshake = None
         self.target = 0
@@ -27,6 +27,26 @@ class Connection(object):
         self.producer = producer
         self.closed = False
         self.catch_up = False
+        self.host = host
+        self.port = port
+
+    async def connect(self):
+        try:
+            self.reader, self.writer = await asyncio.open_connection(self.host, self.port, limit=1024*1024)
+            return True
+        except OSError as e:
+            logger.info(f'Connect to {self.host}:{self.port} failed!')
+#            logger.exception(e)
+#            self.p2p_client_task.cancel()
+        except Exception as e:
+            print(e)
+        return False
+
+    async def start(self):
+        self.send_handshake()
+        await self.handle_message()
+        print('handle message return')
+        task = asyncio.create_task(self.handle_message_loop())
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -89,15 +109,15 @@ class Connection(object):
         lib_num = chain.last_irreversible_block_num()
         msg = {
             "known_trx":{
-                "mode":2, #last_irr_catch_up
-                "pending":lib_num,
+                "mode":0, #last_irr_catch_up
+                "pending":0,
                 "ids":[
 
                 ]
             },
             "known_blocks":{
                 "mode":2, #last_irr_catch_up
-                "pending":head_num,
+                "pending":lib_num,
                 "ids":[
 
                 ]
@@ -132,6 +152,11 @@ class Connection(object):
         logger.info(f'send notice message {msg}')
         msg = NoticeMessage(msg)
         self.writer.write(msg.pack())
+
+    def send_request_message(self, msg):
+        msg = RequestMessage(msg)
+        self.writer(msg.pack())
+    #request_message_type
 
     def send_block_by_num(self, num):
         block = chain.fetch_block_by_number(num)
@@ -181,8 +206,8 @@ class Connection(object):
         print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
         start_block = chain.last_irreversible_block_num() + 1
         end_block = start_block + sync_req_span
-        if end_block > self.target:
-            end_block = self.target
+        if end_block > self.last_handshake.head_num:
+            end_block = self.last_handshake.head_num
         logger.info(f"+++++start sync {start_block} {end_block}")
         self.sync_msg = SyncRequestMessage(start_block, end_block)
 #        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
@@ -281,9 +306,26 @@ class Connection(object):
         elif msg_type == 4:
             msg = NoticeMessage.unpack(msg)
             pending = msg.known_blocks['pending']
-            if pending > chain.last_irreversible_block_num():
+            if pending > chain.fork_db_pending_head_block_num():
                 self.target = pending
                 self.start_sync()
+                # request_msg = {
+                #     "req_trx":{
+                #         "mode":0,
+                #         "pending":0,
+                #         "ids":[
+
+                #         ]
+                #     },
+                #     "req_blocks":{
+                #         "mode":1,
+                #         "pending":0,
+                #         "ids":[
+
+                #         ]
+                #     }
+                # }
+                # self.send_request_message(request_msg)
                 #self.send_handshake(c)
             logger.info(f'receive notice message: {msg}')
             # msg = NoticeMessage({
@@ -349,7 +391,7 @@ class Connection(object):
             logger.info(f"{num}, {block_id}")
             logger.info(f"{self.sync_msg.end_block} {num}")
             if self.sync_msg.end_block == num:
-                if self.target == num:
+                if self.last_handshake.head_num == num:
                     self.send_handshake()
                 else:
                     self.start_sync()

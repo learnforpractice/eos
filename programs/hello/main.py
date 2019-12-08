@@ -112,23 +112,6 @@ class UUOSMain(object):
             return None
         return self.connections[0]
 
-    async def connect_to_p2p_client(self, host, port):
-        try:
-            reader, writer = await asyncio.open_connection(host, port, limit=1024*1024)
-            c = Connection(reader, writer, self.producer)
-            c.host = host
-            c.port = port
-            self.connections.append(c)
-            return c
-        except OSError as e:
-            logger.info(f'Connect to {host}:{port} failed!')
-#            logger.exception(e)
-#            self.p2p_client_task.cancel()
-            return
-        except Exception as e:
-            print(e)
-        logger.info(f'connected to {host}:{port} success!')
-
     async def handle_connection(self, c):
         try:
             await c.handle_message_loop()
@@ -144,7 +127,11 @@ class UUOSMain(object):
         self.client_count += 1
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
-        c = Connection(reader, writer, self.producer)
+        host = writer.get_extra_info('peername')
+        logger.info(host)
+        c = Connection(host, 0, self.producer)
+        c.reader = reader
+        c.writer = writer
         self.connections.append(c)
         task = asyncio.create_task(self.handle_connection(c))
 
@@ -162,15 +149,13 @@ class UUOSMain(object):
             try:
                 print(address)
                 host, port = address.split(':')
-                c = await self.connect_to_p2p_client(host, port)
-                if not c:
+                c = Connection(host, port, self.producer)
+                ret = await c.connect()
+                if not ret:
                     continue
+                self.connections.append(c)
                 print('send hashshake message to ', address)
-                c.send_handshake()
-                await c.handle_message()
-                print('handle message return')
-                task = asyncio.create_task(c.handle_message_loop())
-                self.tasks.append(task)
+                await c.start()
             except ConnectionResetError as e:
                 print(e)
             except Exception as e:
