@@ -25,7 +25,8 @@ cdef extern from "native_object.hpp":
     void*   chain_new_(string& config, string& protocol_features_dir)
     void    chain_free_(void *ptr)
     void    chain_api_get_info_(void *chain_ptr, string& info)
-    void    chain_api_get_table_rows_(void *chain_ptr, string& params, string& result)
+    void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
+
     void    chain_api_get_account_(void *chain_ptr, string& params, string& result);
 
     void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
@@ -38,8 +39,9 @@ cdef extern from "native_object.hpp":
     int         chain_is_building_block_(void *ptr);
     int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
     void        chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
-    void        chain_api_get_code_(void *ptr, string& params, string& results );
-    void        chain_api_get_code_hash_(void *ptr, string& account, string& code_hash )
+    void        chain_api_get_code_(void *ptr, string& params, string& results)
+    void        chain_api_get_code_hash_(void *ptr, string& account, string& code_hash)
+    void        chain_api_get_table_rows_(void *ptr, string& params, string& results)
 
     void*       producer_new_(void *chain_ptr, string& config);
     void        producer_free_(void *ptr);
@@ -87,9 +89,9 @@ def chain_api_get_info(uint64_t chain_ptr):
     chain_api_get_info_(<void *>chain_ptr, info)
     return info
 
-def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
+def chain_api_get_activated_protocol_features(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_table_rows_(<void *>chain_ptr, params, result)
+    chain_api_get_activated_protocol_features_(<void *>chain_ptr, params, result)
     return result
 
 def chain_api_get_account(uint64_t chain_ptr, string& params):
@@ -110,10 +112,15 @@ def chain_api_get_code(uint64_t chain_ptr, string& params):
     chain_api_get_code_(<void *>chain_ptr, params, results)
     return results
 
-def chain_api_get_code_hash(uint64_t chain_ptr, string& account):
+def chain_api_get_code_hash(uint64_t chain_ptr, string& params):
     cdef string code_hash
-    chain_api_get_code_hash_(<void *>chain_ptr, account, code_hash)
+    chain_api_get_code_hash_(<void *>chain_ptr, params, code_hash)
     return code_hash
+
+def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_table_rows_(<void *>chain_ptr, params, results)
+    return results
 
 def chain_fork_db_pending_head_block_num(uint64_t ptr):
     return chain_fork_db_pending_head_block_num_(<void *>ptr)

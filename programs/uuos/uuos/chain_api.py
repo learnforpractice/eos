@@ -4,6 +4,9 @@ chain_ptr = None
 def get_info():
     return chain_api_get_info(chain_ptr)
 
+def get_activated_protocol_features(params):
+    return chain_api_get_activated_protocol_features(chain_ptr, params)
+
 def get_account(name):
     return chain_api_get_account(chain_ptr, name)
 
@@ -18,3 +21,6 @@ def get_code(params):
 
 def get_code_hash(params):
     return chain_api_get_code_hash(chain_ptr, params)
+
+def get_table_rows(params):
+    return chain_api_get_table_rows(chain_ptr, params)

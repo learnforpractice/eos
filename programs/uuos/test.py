@@ -70,6 +70,10 @@ class Test(unittest.TestCase):
         h = eosapi.get_code_hash('eosio')
         print(h)
 
+    def test_get_activated_protocol_features(self):
+        h = eosapi.get_activated_protocol_features()
+        print(h)
+
 if __name__ == '__main__':
     unittest.main()
 

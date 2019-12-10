@@ -84,6 +84,11 @@ async def hello():
 async def get_info():
     return chain_api.get_info()
 
+@app.route('/v1/chain/get_activated_protocol_features', methods=["POST"])
+async def get_activated_protocol_features():
+    data = await request.data
+    return chain_api.get_activated_protocol_features(data.decode('utf8'))
+
 @app.route('/v1/chain/get_account', methods=["POST"])
 async def get_account():
     data = await request.data
@@ -99,6 +104,12 @@ async def get_code():
 async def get_code_hash():
     data = await request.data
     result = chain_api.get_code_hash(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/get_table_rows', methods=["POST"])
+async def get_table_rows():
+    data = await request.data
+    result = chain_api.get_table_rows(data.decode('utf8'))
     return result
 
 @app.websocket('/ws')

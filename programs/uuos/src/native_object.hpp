@@ -8,6 +8,7 @@ void unpack_native_object_(int type, string& packed_message, string& msg);
 void*   chain_new_(string& config, string& protocol_features_dir);
 void    chain_free_(void *ptr);
 void    chain_api_get_info_(void *chain_ptr, string& info);
+void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result);
 void    chain_api_get_table_rows_(void *chain_ptr, string& params, string& result);
 void    chain_api_get_account_(void *chain_ptr, string& params, string& result);
 void    chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
@@ -24,6 +25,7 @@ int     chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, 
 void    chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir);
 void    chain_api_get_code_(void *ptr, string& params, string& results );
 void    chain_api_get_code_hash_(void *ptr, string& account, string& code_hash );
+void    chain_api_get_table_rows_(void *ptr, string& params, string& results );
 
 void*   producer_new_(void *chain_ptr, string& config);
 void    producer_free_(void *ptr);
