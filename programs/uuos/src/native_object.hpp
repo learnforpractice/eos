@@ -9,6 +9,8 @@ void*   chain_new_(string& config, string& protocol_features_dir);
 void    chain_free_(void *ptr);
 void    chain_api_get_info_(void *chain_ptr, string& info);
 void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result);
+void    chain_api_get_block_(void *ptr, string& params, string& result);
+
 void    chain_api_get_table_rows_(void *chain_ptr, string& params, string& result);
 void    chain_api_get_account_(void *chain_ptr, string& params, string& result);
 void    chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);

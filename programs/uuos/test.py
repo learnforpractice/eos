@@ -74,6 +74,10 @@ class Test(unittest.TestCase):
         h = eosapi.get_activated_protocol_features()
         print(h)
 
+    def test_get_block(self):
+        h = eosapi.get_block(1)
+        print(h)
+
 if __name__ == '__main__':
     unittest.main()
 

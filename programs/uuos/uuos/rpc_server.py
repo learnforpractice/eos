@@ -89,6 +89,11 @@ async def get_activated_protocol_features():
     data = await request.data
     return chain_api.get_activated_protocol_features(data.decode('utf8'))
 
+@app.route('/v1/chain/get_block', methods=["POST"])
+async def get_block():
+    data = await request.data
+    return chain_api.get_block(data.decode('utf8'))
+
 @app.route('/v1/chain/get_account', methods=["POST"])
 async def get_account():
     data = await request.data

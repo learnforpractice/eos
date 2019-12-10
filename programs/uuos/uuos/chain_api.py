@@ -7,6 +7,9 @@ def get_info():
 def get_activated_protocol_features(params):
     return chain_api_get_activated_protocol_features(chain_ptr, params)
 
+def get_block(params):
+    return chain_api_get_block(chain_ptr, params)
+
 def get_account(name):
     return chain_api_get_account(chain_ptr, name)
 

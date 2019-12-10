@@ -2435,6 +2435,16 @@ void chain_api_get_activated_protocol_features_(void *ptr, string& params, strin
    } FC_LOG_AND_DROP();
 }
 
+void chain_api_get_block_(void *ptr, string& params, string& result) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_block_params>();
+      auto ro = read_only(cc, fc::microseconds(max_abi_time));
+      auto _result = ro.get_block(_params);
+      result = fc::json::to_string(fc::variant(_result));
+   } FC_LOG_AND_DROP();
+}
+
 void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
    try {
       auto& cc = *(eosio::chain::controller*)ptr;

@@ -26,6 +26,7 @@ cdef extern from "native_object.hpp":
     void    chain_free_(void *ptr)
     void    chain_api_get_info_(void *chain_ptr, string& info)
     void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
+    void    chain_api_get_block_(void *ptr, string& params, string& result)
 
     void    chain_api_get_account_(void *chain_ptr, string& params, string& result);
 
@@ -92,6 +93,11 @@ def chain_api_get_info(uint64_t chain_ptr):
 def chain_api_get_activated_protocol_features(uint64_t chain_ptr, string& params):
     cdef string result
     chain_api_get_activated_protocol_features_(<void *>chain_ptr, params, result)
+    return result
+
+def chain_api_get_block(uint64_t chain_ptr, string& params):
+    cdef string result
+    chain_api_get_block_(<void *>chain_ptr, params, result)
     return result
 
 def chain_api_get_account(uint64_t chain_ptr, string& params):
