@@ -93,12 +93,12 @@ var/lib/node_*
 
 
 
-programs/hello/_hello.cpython-37m-darwin.so
-programs/hello/_skbuild
-programs/hello/cd
-programs/hello/dd-uuosmain
-programs/hello/dd
-programs/hello/dd2
-programs/hello/dist
-programs/hello/hello.egg-info
-programs/hello/logfile.log
+programs/uuos/_hello.cpython-37m-darwin.so
+programs/uuos/_skbuild
+programs/uuos/cd
+programs/uuos/dd-uuosmain
+programs/uuos/dd
+programs/uuos/dd2
+programs/uuos/dist
+programs/uuos/hello.egg-info
+programs/uuso/logfile.log

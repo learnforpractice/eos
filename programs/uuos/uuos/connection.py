@@ -227,7 +227,7 @@ class Connection(object):
                 pass
         except Exception as e:
             print(e)
-            return
+        self.close()
 
     async def handle_message(self):
         msg_type, msg = await self.read_message()
@@ -383,6 +383,9 @@ class Connection(object):
                 print('++++block_num:', block_num)
 
             num, block_id = self.producer.on_incoming_block(msg)
+            if num == 0:
+                logger.info("something went wrong, close connection!")
+                return False
 #                logger.info(f"{num}, {block_id}")
 #                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
             if num % 10000 == 0:

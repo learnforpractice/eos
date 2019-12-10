@@ -14,7 +14,7 @@ cdef extern from * :
 cdef extern from "Python.h":
     object PyBytes_FromStringAndSize(const char* str, int size)
 
-cdef extern from "hello.hpp":
+cdef extern from "uuos.hpp":
     void register_on_accepted_block_cb_()
 
 cdef extern from "native_object.hpp":

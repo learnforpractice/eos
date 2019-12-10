@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-project(hello)
+project(uuos)
 
 find_package(PythonExtensions REQUIRED)
 find_package(Cython REQUIRED)
