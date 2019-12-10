@@ -5,6 +5,7 @@ import ujson
 
 import unittest
 import os
+import base64
 
 from pyeoskit import eosapi
 eosapi.set_nodes(['http://127.0.0.1:8889'])
@@ -88,7 +89,10 @@ class Test(unittest.TestCase):
 
     def test_get_raw_code_and_abi(self):
         h = eosapi.get_raw_code_and_abi('eosio')
-        print(h)
+        print(h['abi'])
+        print(h['wasm'])
+        print(base64.b64decode(h['abi']))
+
 
 if __name__ == '__main__':
     unittest.main()
