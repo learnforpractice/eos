@@ -152,6 +152,12 @@ async def get_currency_balance():
     result = chain_api.get_currency_balance(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_currency_stats', methods=["POST"])
+async def get_currency_stats():
+    data = await request.data
+    result = chain_api.get_currency_stats(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

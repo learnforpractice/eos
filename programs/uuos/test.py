@@ -115,6 +115,10 @@ class Test(unittest.TestCase):
         r = eosapi.get_currency_balance('eosio.token', 'eosio', "EOS")
         print(r)
 
+    def test_get_currency_stats(self):
+        r = eosapi.get_currency_stats('eosio.token', "EOS")
+        print(r)
+
 if __name__ == '__main__':
     unittest.main()
 

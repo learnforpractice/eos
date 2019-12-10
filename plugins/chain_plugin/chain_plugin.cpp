@@ -2527,6 +2527,15 @@ void chain_api_get_currency_balance_(void *ptr, string& params, string& result) 
    } FC_LOG_AND_DROP();
 }
 
+void chain_api_get_currency_stats_(void *ptr, string& params, string& result) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_currency_stats_params>();
+      auto _result = read_only(cc, fc::microseconds(max_abi_time)).get_currency_stats(_params);
+      result = fc::json::to_string(fc::variant(_result));
+   } FC_LOG_AND_DROP();
+}
+
 int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {
 //   auto& cc = *(eosio::chain::controller*)ptr;
 //   uint32_t cache_size = cc.get_config().reversible_cache_size;
