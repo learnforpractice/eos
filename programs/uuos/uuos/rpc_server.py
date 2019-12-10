@@ -158,6 +158,12 @@ async def get_currency_stats():
     result = chain_api.get_currency_stats(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_producers', methods=["POST"])
+async def get_producers():
+    data = await request.data
+    result = chain_api.get_producers(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

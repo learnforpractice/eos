@@ -35,6 +35,7 @@ cdef extern from "native_object.hpp":
     void    chain_api_get_table_by_scope_(void *ptr, string& params, string& result)
     void    chain_api_get_currency_balance_(void *ptr, string& params, string& result)
     void    chain_api_get_currency_stats_(void *ptr, string& params, string& result)
+    void    chain_api_get_producers_(void *ptr, string& params, string& result)
 
     void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
 
@@ -159,6 +160,11 @@ def chain_api_get_currency_balance(uint64_t chain_ptr, string& params):
 def chain_api_get_currency_stats(uint64_t chain_ptr, string& params):
     cdef string results
     chain_api_get_currency_stats_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_get_producers(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_producers_(<void *>chain_ptr, params, results)
     return results
 
 def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):

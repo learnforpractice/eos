@@ -119,6 +119,15 @@ class Test(unittest.TestCase):
         r = eosapi.get_currency_stats('eosio.token', "EOS")
         print(r)
 
+    def test_get_producers(self):
+        '''
+            bool        json = false;
+            string      lower_bound;
+            uint32_t    limit = 50;
+        '''
+        r = eosapi.get_producers(False, "", 50)
+        print(r)
+
 if __name__ == '__main__':
     unittest.main()
 
