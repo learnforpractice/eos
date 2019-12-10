@@ -78,6 +78,10 @@ class Test(unittest.TestCase):
         h = eosapi.get_block(1)
         print(h)
 
+    def test_get_block_header_state(self):
+        h = eosapi.get_block_header_state(1)
+        print(h)
+
 if __name__ == '__main__':
     unittest.main()
 
