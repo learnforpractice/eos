@@ -105,6 +105,10 @@ class Test(unittest.TestCase):
         r = eosapi.get_table_rows(True, 'eosio.token', 'EOS', 'stat', 'EOS', '', '', 10)
         print(r)
 
+    def test_get_table_by_scope(self):
+        r = eosapi.get_table_by_scope('eosio', 'rammarket', "", "")
+        print(r)
+
 if __name__ == '__main__':
     unittest.main()
 

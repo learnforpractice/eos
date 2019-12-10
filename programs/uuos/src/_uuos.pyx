@@ -138,6 +138,16 @@ def chain_api_get_raw_abi(uint64_t chain_ptr, string& params):
     chain_api_get_raw_abi_(<void *>chain_ptr, params, result)
     return result
 
+def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_table_rows_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_get_table_by_scope(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_table_by_scope_(<void *>chain_ptr, params, results)
+    return results
+
 def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):
     return chain_api_recover_reversible_blocks_(old_reversible_blocks_dir, new_reversible_blocks_dir, reversible_cache_size, truncate_at_block)
 
@@ -145,11 +155,6 @@ def chain_api_repair_log(string& blocks_dir, uint32_t truncate_at_block):
     cdef string backup_blocks_dir
     chain_api_repair_log_(blocks_dir, truncate_at_block, backup_blocks_dir)
     return backup_blocks_dir
-
-def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
-    cdef string results
-    chain_api_get_table_rows_(<void *>chain_ptr, params, results)
-    return results
 
 
 

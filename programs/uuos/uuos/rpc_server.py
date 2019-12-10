@@ -140,6 +140,12 @@ async def get_table_rows():
     result = chain_api.get_table_rows(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_table_by_scope', methods=["POST"])
+async def get_table_by_scope():
+    data = await request.data
+    result = chain_api.get_table_by_scope(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:
