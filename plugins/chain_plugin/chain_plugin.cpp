@@ -2482,6 +2482,15 @@ void chain_api_get_abi_(void *ptr, string& params, string& results ) {
    } FC_LOG_AND_DROP();
 }
 
+void chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& results ) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_raw_code_and_abi_params>();
+      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_raw_code_and_abi(_params);
+      results = fc::json::to_string(fc::variant(_results));
+   } FC_LOG_AND_DROP();
+}
+
 void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
    try {
       auto& cc = *(eosio::chain::controller*)ptr;

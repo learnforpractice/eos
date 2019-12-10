@@ -30,6 +30,7 @@ cdef extern from "native_object.hpp":
     void    chain_api_get_block_header_state_(void *ptr, string& params, string& result)
     void    chain_api_get_account_(void *chain_ptr, string& params, string& result)
     void    chain_api_get_abi_(void *ptr, string& params, string& results)
+    void    chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& results )
 
     void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
 
@@ -124,6 +125,11 @@ def chain_api_get_code_hash(uint64_t chain_ptr, string& params):
 def chain_api_get_abi(uint64_t chain_ptr, string& params):
     cdef string result
     chain_api_get_abi_(<void *>chain_ptr, params, result)
+    return result
+
+def chain_api_get_raw_code_and_abi(uint64_t chain_ptr, string& params):
+    cdef string result
+    chain_api_get_raw_code_and_abi_(<void *>chain_ptr, params, result)
     return result
 
 def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):

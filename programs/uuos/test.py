@@ -86,6 +86,10 @@ class Test(unittest.TestCase):
         h = eosapi.get_abi('eosio')
         print(h)
 
+    def test_get_raw_code_and_abi(self):
+        h = eosapi.get_raw_code_and_abi('eosio')
+        print(h)
+
 if __name__ == '__main__':
     unittest.main()
 
