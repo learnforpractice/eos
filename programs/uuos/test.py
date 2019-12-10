@@ -6,6 +6,9 @@ import ujson
 import unittest
 import os
 
+from pyeoskit import eosapi
+eosapi.set_nodes(['http://127.0.0.1:8889'])
+
 class Test(unittest.TestCase):
 
     def test_set_attr1(self):
@@ -54,6 +57,18 @@ class Test(unittest.TestCase):
         ptr = chain_new(cfg, 'cd')
         print(ptr)
         chain_free(ptr)
+
+    def test_get_account(self):
+        a = eosapi.get_account('eosio')
+        print(a)
+
+    def test_get_code(self):
+        h = eosapi.get_code('eosio')
+        print(h)
+
+    def test_get_code_hash(self):
+        h = eosapi.get_code_hash('eosio')
+        print(h)
 
 if __name__ == '__main__':
     unittest.main()

@@ -89,6 +89,18 @@ async def get_account():
     data = await request.data
     return chain_api.get_account(data.decode('utf8'))
 
+@app.route('/v1/chain/get_code', methods=["POST"])
+async def get_code():
+    data = await request.data
+    result = chain_api.get_code(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/get_code_hash', methods=["POST"])
+async def get_code_hash():
+    data = await request.data
+    result = chain_api.get_code_hash(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

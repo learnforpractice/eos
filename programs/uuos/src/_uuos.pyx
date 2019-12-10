@@ -38,6 +38,8 @@ cdef extern from "native_object.hpp":
     int         chain_is_building_block_(void *ptr);
     int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
     void        chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
+    void        chain_api_get_code_(void *ptr, string& params, string& results );
+    void        chain_api_get_code_hash_(void *ptr, string& account, string& code_hash )
 
     void*       producer_new_(void *chain_ptr, string& config);
     void        producer_free_(void *ptr);
@@ -102,6 +104,16 @@ def chain_api_repair_log(string& blocks_dir, uint32_t truncate_at_block):
     cdef string backup_blocks_dir
     chain_api_repair_log_(blocks_dir, truncate_at_block, backup_blocks_dir)
     return backup_blocks_dir
+
+def chain_api_get_code(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_code_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_get_code_hash(uint64_t chain_ptr, string& account):
+    cdef string code_hash
+    chain_api_get_code_hash_(<void *>chain_ptr, account, code_hash)
+    return code_hash
 
 def chain_fork_db_pending_head_block_num(uint64_t ptr):
     return chain_fork_db_pending_head_block_num_(<void *>ptr)

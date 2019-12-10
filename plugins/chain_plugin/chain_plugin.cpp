@@ -2447,3 +2447,21 @@ int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, stri
 void chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir) {
    backup_blocks_dir = block_log::repair_log( blocks_dir, truncate_at_block).string();
 }
+
+void chain_api_get_code_(void *ptr, string& params, string& results ) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_code_params>();
+      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_code(_params);
+      results = fc::json::to_string(fc::variant(_results));
+   } FC_LOG_AND_DROP();
+}
+
+void chain_api_get_code_hash_(void *ptr, string& params, string& results ) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_only::get_code_hash_params>();
+      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_code_hash(_params);
+      results = fc::json::to_string(fc::variant(_results));
+   } FC_LOG_AND_DROP();
+}
