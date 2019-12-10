@@ -88,11 +88,22 @@ class Test(unittest.TestCase):
         print(h)
 
     def test_get_raw_code_and_abi(self):
-        h = eosapi.get_raw_code_and_abi('eosio')
-        print(h['abi'])
-        print(h['wasm'])
-        print(base64.b64decode(h['abi']))
+        r = eosapi.get_raw_code_and_abi('eosio')
+        print(r['abi'])
+        print(r['wasm'])
+        print(base64.b64decode(r['abi']))
 
+    def test_get_raw_abi(self):
+        r = eosapi.get_raw_abi('eosio')
+        print(base64.b64decode(r['abi']))
+
+    def test_get_table_rows(self):
+        r = eosapi.get_table_rows(True, 'eosio', 'eosio', 'rammarket', 'RAMCORE', '', '', 10)
+        print(r)
+        r = eosapi.get_table_rows(True, 'eosio', 'eosio', 'global', 'global', '', '', 1)
+        print(r)
+        r = eosapi.get_table_rows(True, 'eosio.token', 'EOS', 'stat', 'EOS', '', '', 10)
+        print(r)
 
 if __name__ == '__main__':
     unittest.main()
