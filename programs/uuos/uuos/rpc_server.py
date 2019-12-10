@@ -116,6 +116,12 @@ async def get_code_hash():
     result = chain_api.get_code_hash(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_abi', methods=["POST"])
+async def get_abi():
+    data = await request.data
+    result = chain_api.get_abi(data.decode('utf8'))
+    return result
+
 @app.route('/v1/chain/get_table_rows', methods=["POST"])
 async def get_table_rows():
     data = await request.data
