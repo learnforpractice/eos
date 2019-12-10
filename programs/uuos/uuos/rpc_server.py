@@ -146,6 +146,12 @@ async def get_table_by_scope():
     result = chain_api.get_table_by_scope(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_currency_balance', methods=["POST"])
+async def get_currency_balance():
+    data = await request.data
+    result = chain_api.get_currency_balance(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

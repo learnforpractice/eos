@@ -106,7 +106,13 @@ class Test(unittest.TestCase):
         print(r)
 
     def test_get_table_by_scope(self):
-        r = eosapi.get_table_by_scope('eosio', 'rammarket', "", "")
+        r = eosapi.get_table_by_scope('eosio', 'rammarket', "", "zzzzzzzzzzzzj")
+        print(r)
+        r = eosapi.get_table_by_scope('eosio.token', 'stat', "", "zzzzzzzzzzzzj")
+        print(r)
+
+    def test_get_currency_balance(self):
+        r = eosapi.get_currency_balance('eosio.token', 'eosio', "EOS")
         print(r)
 
 if __name__ == '__main__':

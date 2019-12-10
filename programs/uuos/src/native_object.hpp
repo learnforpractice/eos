@@ -19,6 +19,7 @@ void    chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& resul
 void    chain_api_get_raw_abi_(void *ptr, string& params, string& results );
 void    chain_api_get_table_rows_(void *chain_ptr, string& params, string& result);
 void    chain_api_get_table_by_scope_(void *ptr, string& params, string& result);
+void    chain_api_get_currency_balance_(void *ptr, string& params, string& result);
 
 void    chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
 
