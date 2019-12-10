@@ -164,6 +164,12 @@ async def get_producers():
     result = chain_api.get_producers(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_producer_schedule', methods=["POST"])
+async def get_producer_schedule():
+    data = await request.data
+    result = chain_api.get_producer_schedule(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

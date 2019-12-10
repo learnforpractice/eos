@@ -46,6 +46,9 @@ def get_currency_stats(params):
 def get_producers(params):
     return chain_api_get_producers(chain_ptr, params)
 
+def get_producer_schedule(params):
+    return chain_api_get_producer_schedule(chain_ptr, params)
+
 def recover_reversible_blocks(old_reversible_blocks_dir, new_reversible_blocks_dir, reversible_cache_size = 340*1024*1024, truncate_at_block=0):
     return chain_api_recover_reversible_blocks(old_reversible_blocks_dir, new_reversible_blocks_dir, reversible_cache_size, truncate_at_block)
 

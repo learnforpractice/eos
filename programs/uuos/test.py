@@ -128,6 +128,10 @@ class Test(unittest.TestCase):
         r = eosapi.get_producers(False, "", 50)
         print(r)
 
+    def test_get_producer_schedule(self):
+        r = eosapi.get_producer_schedule()
+        print(r)
+
 if __name__ == '__main__':
     unittest.main()
 

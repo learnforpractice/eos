@@ -22,6 +22,7 @@ void    chain_api_get_table_by_scope_(void *ptr, string& params, string& result)
 void    chain_api_get_currency_balance_(void *ptr, string& params, string& result);
 void    chain_api_get_currency_stats_(void *ptr, string& params, string& result);
 void    chain_api_get_producers_(void *ptr, string& params, string& result);
+void    chain_api_get_producer_schedule_(void *ptr, string& params, string& result);
 
 void    chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
 
