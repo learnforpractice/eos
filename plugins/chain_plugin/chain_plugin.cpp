@@ -2415,144 +2415,38 @@ void chain_api_get_info_(void *ptr, string& info) {
     } FC_LOG_AND_DROP();
 }
 
-void chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_activated_protocol_features_params>();
-      auto ro = read_only(cc, fc::microseconds(max_abi_time));
-      auto _result = ro.get_activated_protocol_features(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
+#define CHAIN_API_RO(api_name) \
+void chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
+   try { \
+      auto& cc = *(eosio::chain::controller*)ptr; \
+      auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
+      auto _result = read_only(cc, fc::microseconds(max_abi_time)).api_name(_params); \
+      result = fc::json::to_string(fc::variant(_result)); \
+   } FC_LOG_AND_DROP(); \
 }
 
-void chain_api_get_block_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_block_params>();
-      auto ro = read_only(cc, fc::microseconds(max_abi_time));
-      auto _result = ro.get_block(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
 
-void chain_api_get_block_header_state_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_block_header_state_params>();
-      auto ro = read_only(cc, fc::microseconds(max_abi_time));
-      auto _result = ro.get_block_header_state(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
+CHAIN_API_RO(get_activated_protocol_features)
+CHAIN_API_RO(get_block)
+CHAIN_API_RO(get_block_header_state)
+CHAIN_API_RO(get_account)
+CHAIN_API_RO(get_code)
+CHAIN_API_RO(get_code_hash)
+CHAIN_API_RO(get_abi)
+CHAIN_API_RO(get_raw_code_and_abi)
+CHAIN_API_RO(get_raw_abi)
+CHAIN_API_RO(get_table_rows)
+CHAIN_API_RO(get_table_by_scope)
+CHAIN_API_RO(get_currency_balance)
+CHAIN_API_RO(get_currency_stats)
+CHAIN_API_RO(get_producers)
+CHAIN_API_RO(get_producer_schedule)
 
-void chain_api_get_account_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_account_params>();
-      auto ro = read_only(cc, fc::microseconds(max_abi_time));
-      read_only::get_account_results _result = ro.get_account(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_code_(void *ptr, string& params, string& results ) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_code_params>();
-      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_code(_params);
-      results = fc::json::to_string(fc::variant(_results));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_code_hash_(void *ptr, string& params, string& results ) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_code_hash_params>();
-      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_code_hash(_params);
-      results = fc::json::to_string(fc::variant(_results));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_abi_(void *ptr, string& params, string& results ) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_abi_params>();
-      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_abi(_params);
-      results = fc::json::to_string(fc::variant(_results));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& results ) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_raw_code_and_abi_params>();
-      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_raw_code_and_abi(_params);
-      results = fc::json::to_string(fc::variant(_results));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_raw_abi_(void *ptr, string& params, string& results ) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_raw_abi_params>();
-      auto _results = read_only(cc, fc::microseconds(max_abi_time)).get_raw_abi(_params);
-      results = fc::json::to_string(fc::variant(_results));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_table_rows_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_table_rows_params>();
-      read_only::get_table_rows_result _result = read_only(cc, fc::microseconds(max_abi_time)).get_table_rows(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_table_by_scope_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_table_by_scope_params>();
-      auto _result = read_only(cc, fc::microseconds(max_abi_time)).get_table_by_scope(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_currency_balance_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_currency_balance_params>();
-      auto _result = read_only(cc, fc::microseconds(max_abi_time)).get_currency_balance(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_currency_stats_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_currency_stats_params>();
-      auto _result = read_only(cc, fc::microseconds(max_abi_time)).get_currency_stats(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_producers_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_producers_params>();
-      auto _result = read_only(cc, fc::microseconds(max_abi_time)).get_producers(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
-
-void chain_api_get_producer_schedule_(void *ptr, string& params, string& result) {
-   try {
-      auto& cc = *(eosio::chain::controller*)ptr;
-      auto _params = fc::json::from_string(params).as<read_only::get_producer_schedule_params>();
-      auto _result = read_only(cc, fc::microseconds(max_abi_time)).get_producer_schedule(_params);
-      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
-}
+CHAIN_API_RO(get_scheduled_transactions)
+CHAIN_API_RO(abi_json_to_bin)
+CHAIN_API_RO(abi_bin_to_json)
+CHAIN_API_RO(get_required_keys)
+CHAIN_API_RO(get_transaction_id)
 
 int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {
 //   auto& cc = *(eosio::chain::controller*)ptr;

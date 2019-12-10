@@ -170,6 +170,36 @@ async def get_producer_schedule():
     result = chain_api.get_producer_schedule(data.decode('utf8'))
     return result
 
+@app.route('/v1/chain/get_scheduled_transactions', methods=["POST"])
+async def get_producer_schedule():
+    data = await request.data
+    result = chain_api.get_scheduled_transactions(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/abi_json_to_bin', methods=["POST"])
+async def get_producer_schedule():
+    data = await request.data
+    result = chain_api.abi_json_to_bin(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/abi_bin_to_json', methods=["POST"])
+async def get_producer_schedule():
+    data = await request.data
+    result = chain_api.abi_bin_to_json(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/get_required_keys', methods=["POST"])
+async def get_producer_schedule():
+    data = await request.data
+    result = chain_api.get_required_keys(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/get_transaction_id', methods=["POST"])
+async def get_producer_schedule():
+    data = await request.data
+    result = chain_api.get_transaction_id(data.decode('utf8'))
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

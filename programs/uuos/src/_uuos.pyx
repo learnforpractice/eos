@@ -38,6 +38,12 @@ cdef extern from "native_object.hpp":
     void    chain_api_get_producers_(void *ptr, string& params, string& result)
     void    chain_api_get_producer_schedule_(void *ptr, string& params, string& result)
 
+    void    chain_api_get_scheduled_transactions_(void *ptr, string& params, string& result)
+    void    chain_api_abi_json_to_bin_(void *ptr, string& params, string& result)
+    void    chain_api_abi_bin_to_json_(void *ptr, string& params, string& result)
+    void    chain_api_get_required_keys_(void *ptr, string& params, string& result)
+    void    chain_api_get_transaction_id_(void *ptr, string& params, string& result)
+
     void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
 
     uint32_t    chain_fork_db_pending_head_block_num_(void *ptr)
@@ -171,6 +177,31 @@ def chain_api_get_producers(uint64_t chain_ptr, string& params):
 def chain_api_get_producer_schedule(uint64_t chain_ptr, string& params):
     cdef string results
     chain_api_get_producer_schedule_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_get_scheduled_transactions(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_scheduled_transactions_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_abi_json_to_bin(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_abi_json_to_bin_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_abi_bin_to_json(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_abi_bin_to_json_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_get_required_keys(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_required_keys_(<void *>chain_ptr, params, results)
+    return results
+
+def chain_api_get_transaction_id(uint64_t chain_ptr, string& params):
+    cdef string results
+    chain_api_get_transaction_id_(<void *>chain_ptr, params, results)
     return results
 
 def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):

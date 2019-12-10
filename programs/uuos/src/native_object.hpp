@@ -8,21 +8,32 @@ void unpack_native_object_(int type, string& packed_message, string& msg);
 void*   chain_new_(string& config, string& protocol_features_dir);
 void    chain_free_(void *ptr);
 void    chain_api_get_info_(void *chain_ptr, string& info);
-void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result);
-void    chain_api_get_block_(void *ptr, string& params, string& result);
-void    chain_api_get_block_header_state_(void *ptr, string& params, string& result);
-void    chain_api_get_account_(void *chain_ptr, string& params, string& result);
-void    chain_api_get_code_(void *ptr, string& params, string& results );
-void    chain_api_get_code_hash_(void *ptr, string& account, string& code_hash );
-void    chain_api_get_abi_(void *ptr, string& params, string& results );
-void    chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& results );
-void    chain_api_get_raw_abi_(void *ptr, string& params, string& results );
-void    chain_api_get_table_rows_(void *chain_ptr, string& params, string& result);
-void    chain_api_get_table_by_scope_(void *ptr, string& params, string& result);
-void    chain_api_get_currency_balance_(void *ptr, string& params, string& result);
-void    chain_api_get_currency_stats_(void *ptr, string& params, string& result);
-void    chain_api_get_producers_(void *ptr, string& params, string& result);
-void    chain_api_get_producer_schedule_(void *ptr, string& params, string& result);
+
+#define DEF_CHAIN_API_RO(api_name) \
+    void    chain_api_ ## api_name ## _(void *ptr, string& params, string& result);
+
+DEF_CHAIN_API_RO(get_activated_protocol_features)
+DEF_CHAIN_API_RO(get_block)
+DEF_CHAIN_API_RO(get_block_header_state)
+DEF_CHAIN_API_RO(get_account)
+DEF_CHAIN_API_RO(get_code)
+DEF_CHAIN_API_RO(get_code_hash)
+DEF_CHAIN_API_RO(get_abi)
+DEF_CHAIN_API_RO(get_raw_code_and_abi)
+DEF_CHAIN_API_RO(get_raw_abi)
+DEF_CHAIN_API_RO(get_table_rows)
+DEF_CHAIN_API_RO(get_table_by_scope)
+DEF_CHAIN_API_RO(get_currency_balance)
+DEF_CHAIN_API_RO(get_currency_stats)
+DEF_CHAIN_API_RO(get_producers)
+DEF_CHAIN_API_RO(get_producer_schedule)
+
+DEF_CHAIN_API_RO(get_scheduled_transactions)
+DEF_CHAIN_API_RO(abi_json_to_bin)
+DEF_CHAIN_API_RO(abi_bin_to_json)
+DEF_CHAIN_API_RO(get_required_keys)
+DEF_CHAIN_API_RO(get_transaction_id)
+
 
 void    chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
 
