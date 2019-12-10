@@ -28,6 +28,7 @@ moc_*
 externals/Python-3.7.4/dist
 externals/Python-3.7.4/build
 _uuos.cpython-37m-darwin.so
+logfile.log
 
 genesis.json
 hardfork.hpp
