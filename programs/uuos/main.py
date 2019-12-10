@@ -17,7 +17,7 @@ from uuos.producer import Producer
 from uuos.rpc_server import rpc_server
 from uuos.native_object import *
 
-from _hello import set_accepted_block_callback
+from _uuos import set_accepted_block_callback
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')

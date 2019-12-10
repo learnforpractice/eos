@@ -1,4 +1,4 @@
-from _hello import *
+from _uuos import *
 
 chain_ptr = None
 def get_info():

@@ -1,5 +1,5 @@
 import asyncio
-from _hello import (
+from _uuos import (
     producer_new,
     producer_free,
     producer_on_incoming_block,

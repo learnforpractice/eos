@@ -1,7 +1,7 @@
 import ujson as json
 import struct
 
-from _hello import *
+from _uuos import *
 
 message_header_size = 4
 
