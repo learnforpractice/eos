@@ -184,7 +184,7 @@ class UUOSMain(object):
 
     async def main(self):
         tasks = []
-        server = rpc_server(self.chain_ptr, self.loop, self.args.http_server_address)
+        server = rpc_server(self.producer, self.loop, self.args.http_server_address)
         task = asyncio.create_task(server)
         tasks.append(task)
         

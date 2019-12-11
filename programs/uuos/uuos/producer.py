@@ -8,7 +8,8 @@ from _uuos import (
     producer_calc_pending_block_deadline_time,
     producer_maybe_produce_block,
     producer_now_time,
-    producer_get_pending_block_mode
+    producer_get_pending_block_mode,
+    producer_process_incomming_transaction,
 )
 
 from .native_object import ProducerParams
@@ -122,6 +123,9 @@ class Producer(object):
 
     def get_pending_block_mode(self):
         return producer_get_pending_block_mode(self.ptr)
+
+    def process_incomming_transaction(self, trx):
+        return producer_process_incomming_transaction(self.ptr, trx)
 
     def start_production_loop(self):
         pass

@@ -171,33 +171,39 @@ async def get_producer_schedule():
     return result
 
 @app.route('/v1/chain/get_scheduled_transactions', methods=["POST"])
-async def get_producer_schedule():
+async def get_scheduled_transactions():
     data = await request.data
     result = chain_api.get_scheduled_transactions(data.decode('utf8'))
     return result
 
 @app.route('/v1/chain/abi_json_to_bin', methods=["POST"])
-async def get_producer_schedule():
+async def abi_json_to_bin():
     data = await request.data
     result = chain_api.abi_json_to_bin(data.decode('utf8'))
     return result
 
 @app.route('/v1/chain/abi_bin_to_json', methods=["POST"])
-async def get_producer_schedule():
+async def abi_bin_to_json():
     data = await request.data
     result = chain_api.abi_bin_to_json(data.decode('utf8'))
     return result
 
 @app.route('/v1/chain/get_required_keys', methods=["POST"])
-async def get_producer_schedule():
+async def get_required_keys():
     data = await request.data
     result = chain_api.get_required_keys(data.decode('utf8'))
     return result
 
 @app.route('/v1/chain/get_transaction_id', methods=["POST"])
-async def get_producer_schedule():
+async def get_transaction_id():
     data = await request.data
     result = chain_api.get_transaction_id(data.decode('utf8'))
+    return result
+
+@app.route('/v1/chain/push_transaction', methods=["POST"])
+async def push_transaction():
+    data = await request.data
+    result = app.producer.process_incomming_transaction(data.decode('utf8'))
     return result
 
 @app.websocket('/ws')
@@ -205,7 +211,8 @@ async def ws():
     while True:
         await websocket.send('hello')
 
-async def rpc_server(chain_ptr, loop, http_server_address):
+async def rpc_server(producer, loop, http_server_address):
+    app.producer = producer
     try:
         host, port = http_server_address.split(':')
         await app.server(host=host, port=port, loop=loop, use_reloader=False)

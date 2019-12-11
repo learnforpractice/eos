@@ -67,6 +67,7 @@ cdef extern from "native_object.hpp":
     bool        producer_maybe_produce_block_(void *ptr)
     uint64_t    producer_now_time_()
     int         producer_get_pending_block_mode_(void *ptr)
+    void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& out);
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -270,6 +271,10 @@ def producer_now_time():
 def producer_get_pending_block_mode(uint64_t ptr):
     return producer_get_pending_block_mode_(<void *>ptr)
 
+def producer_process_incomming_transaction(uint64_t ptr, string& packed_trx):
+    cdef string out
+    producer_process_incomming_transaction_(<void *>ptr, packed_trx, out)
+    return out
 
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
