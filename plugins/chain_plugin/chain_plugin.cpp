@@ -878,6 +878,10 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                string genesis = string((char *)gGenesisUUOSData, gGenesisUUOSSize);
                my->chain_config->genesis = fc::json::from_string(genesis).as<genesis_state>();
                my->chain_config->uuos_mainnet = true;
+            } else if (network == "uuostest") {
+               my->chain_config->uuos_mainnet = true;
+            } else {
+               my->chain_config->uuos_mainnet = false;
             }
          }
 
