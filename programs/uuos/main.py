@@ -242,7 +242,8 @@ if __name__ == "__main__":
     parser.add_argument('--hard-replay-blockchain', default=False, action="store_true",      help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
     parser.add_argument('--replay-blockchain',      default=False, action="store_true",      help='clear chain state database and replay all blocks')
     parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
-    parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,                 help='uuos main network')
+    parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,             help='uuos main network')
+    parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
 
 
     args = parser.parse_args()
@@ -254,6 +255,8 @@ if __name__ == "__main__":
         state_dir = os.path.join(args.data_dir, 'state')
         import shutil
         shutil.rmtree(state_dir)
+        reversible_dir = os.path.join(args.data_dir, 'blocks/reversible')
+        shutil.rmtree(reversible_dir)
     # signal.signal(signal.SIGHUP, shutting_down)
     # signal.signal(signal.SIGTERM, shutting_down)
     # signal.signal(signal.SIGINT, shutting_down)

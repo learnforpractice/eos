@@ -47,7 +47,7 @@ from . import chain
 '''
 
 config = dict(
-    producers = ["eosio"],
+    producers = [],
     signature_providers = ['EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV=KEY:5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'],
     greylist_account = [],
     producer_threads = 1,
@@ -81,8 +81,10 @@ class Producer(object):
     def __init__(self, args):
         print('+++producer:', args.enable_stale_production)
         config['production_enabled'] = args.enable_stale_production
+        config['producers'] = args.producer_name
         cfg = json.dumps(config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
+        self.args = args
 
     def __delete__(self):
         producer_free(self.ptr)
@@ -137,6 +139,8 @@ class Producer(object):
         return num, block_id
 
     async def run(self):
+        if not self.args.producer_name:
+            return
         while True:
             result = self.start_block()
             if result == 0 or result == 3: #succeeded
