@@ -169,6 +169,9 @@ class UUOSMain(object):
             chain_free(self.chain_ptr)
             self.chain_ptr = None
         del self.producer
+        for c in self.connections:
+            logger.info(f'close {c.host}')
+            c.close()
         logger.info('Done!')
 #        self.reader.close()
 #        self.writer.close()
