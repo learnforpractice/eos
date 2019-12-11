@@ -444,6 +444,7 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
 
       void process_incoming_transaction_async(const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next) {
          chain::controller& chain = chain_plug->chain();
+         elog("++++chain.is_building_block() ${b}", ("b", chain.is_building_block()));
          if (!chain.is_building_block()) {
             _pending_incoming_transactions.emplace_back(trx, persist_until_expired, next);
             return;
@@ -2055,7 +2056,7 @@ void producer_free_(void *ptr) {
    delete (producer_plugin*)ptr;
 }
 
-void producer_process_incomming_transaction(void *ptr, string& packed_trx, string& out) {
+void producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& out) {
    auto& producer = *(producer_plugin*)ptr;
    auto next = [&out](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
       if (result.contains<fc::exception_ptr>()) {
@@ -2091,9 +2092,9 @@ void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_
       std::shared_ptr<signed_block> block = std::make_shared<signed_block>();
       fc::datastream<const char*> ds( packed_signed_block.c_str(), packed_signed_block.size() );
       fc::raw::unpack( ds, *block );
+      producer.my->on_incoming_block(block, false);
       num = block->block_num();
       id = fc::json::to_string<block_id_type>(block->id());
-      producer.my->on_incoming_block(block, false);
    } LOG_AND_DROP();
 }
 
