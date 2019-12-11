@@ -2069,11 +2069,10 @@ void producer_process_incomming_transaction_(void *ptr, string& packed_trx, stri
    };
 
    try {
-      auto pretty_input = std::make_shared<packed_transaction>();
-      fc::datastream<const char*> ds( packed_trx.c_str(), packed_trx.size() );
-      fc::raw::unpack(ds, *pretty_input);
-      auto ptrx = std::make_shared<transaction_metadata>( pretty_input );
-
+      const auto _packed_trx = fc::json::from_string(packed_trx).as<packed_transaction>();
+      const auto _signed_trx = _packed_trx.get_signed_transaction();
+//      elog("++++++++++_signed_trx: ${n}", ("n", _signed_trx));
+      auto ptrx = std::make_shared<transaction_metadata>(_signed_trx);
 //   rw->push_transaction(params->at(index), wrapped_next);
       bool persist_until_expired = false;
       producer.my->process_incoming_transaction_async(ptrx, false, next);

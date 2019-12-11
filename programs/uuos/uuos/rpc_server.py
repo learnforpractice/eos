@@ -203,6 +203,7 @@ async def get_transaction_id():
 @app.route('/v1/chain/push_transaction', methods=["POST"])
 async def push_transaction():
     data = await request.data
+    app.producer.start_block()
     result = app.producer.process_incomming_transaction(data.decode('utf8'))
     return result
 
