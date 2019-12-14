@@ -7,7 +7,7 @@ import unittest
 import os
 import base64
 
-from pyeoskit import eosapi
+from pyeoskit import eosapi, wallet
 eosapi.set_nodes(['http://127.0.0.1:8889'])
 
 class Test(unittest.TestCase):
@@ -130,6 +130,27 @@ class Test(unittest.TestCase):
 
     def test_get_producer_schedule(self):
         r = eosapi.get_producer_schedule()
+        print(r)
+
+    def test_push_transaction(self):
+        if os.path.exists('test.wallet'):
+            os.remove('test.wallet')
+        psw = wallet.create('test')
+        print(psw)
+        print(eosapi.get_info())
+        priv_keys = [
+            '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',#EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
+            '5JEcwbckBCdmji5j8ZoMHLEUS8TqQiqBG1DRx1X9DN124GUok9s',#EOS61MgZLN7Frbc2J7giU7JdYjy2TqnfWFjZuLXvpHJoKzWAj7Nst
+            '5JbDP55GXN7MLcNYKCnJtfKi9aD2HvHAdY7g8m67zFTAFkY1uBB',#EOS5JuNfuZPATy8oPz9KMZV2asKf9m8fb2bSzftvhW55FKQFakzFL
+            '5K463ynhZoCDDa4RDcr63cUwWLTnKqmdcoTKTHBjqoKfv4u5V7p',#EOS8Znrtgwt8TfpmbVpTKvA2oB8Nqey625CLN8bCN3TEbgx86Dsvr
+            '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
+            '5KT26sGXAywAeUSrQjaRiX9uk9uDGNqC1CSojKByLMp7KRp8Ncw',#EOS8Ep2idd8FkvapNfgUwFCjHBG4EVNAjfUsRRqeghvq9E91tkDaj
+        ]
+        for priv_key in priv_keys:
+            wallet.import_key('test', priv_key)
+
+        account_name = 'helloworld11'
+        r = eosapi.push_action(account_name, 'sayhello', 'hello,world', {account_name:'active'})
         print(r)
 
 if __name__ == '__main__':
