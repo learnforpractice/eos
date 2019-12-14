@@ -151,17 +151,20 @@ class Producer(object):
                     print('++++++delay:',delay/1e6)
                     await asyncio.sleep(delay/1e6)
                     self.maybe_produce_block()
+                    continue
 #                    deadline = self.calc_pending_block_deadline_time()
 #                    delay = deadline - self.now_time()
 
 #                    task = asyncio.create_task(self.produce_block(delay))
             elif result == 1: #failed
-                await asyncio.sleep(0.5)
+                pass
+                # await asyncio.sleep(0.5)
             elif result == 2: #waiting
-                await asyncio.sleep(0.5)
+                pass
+                # await asyncio.sleep(0.5)
             elif result == 3: #exhausted
                 pass
-
+            await asyncio.sleep(0.5)
         # while True:
         #     if not self.can_produce_block():
         #         await asyncio.sleep(0.2)
