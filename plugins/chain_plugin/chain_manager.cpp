@@ -34,7 +34,7 @@ chain_manager::chain_manager(string& config, string& protocol_features_dir) {
     chain_api_init();
     sandboxed_contracts_init();
 
-    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+//    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
     fc::logger::get("producer_plugin").set_log_level(fc::log_level::debug);
     fc::logger::get("transaction_tracing").set_log_level(fc::log_level::debug);
 

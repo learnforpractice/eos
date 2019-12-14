@@ -1953,6 +1953,7 @@ void read_write::push_transaction(const read_write::push_transaction_params& par
       } EOS_RETHROW_EXCEPTIONS(chain::packed_transaction_type_exception, "Invalid packed transaction")
 
       app().get_method<incoming::methods::transaction_async>()(ptrx, true, [this, next](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) -> void{
+         elog("+++++++++++++++transaction_async callback been called");
          if (result.contains<fc::exception_ptr>()) {
             next(result.get<fc::exception_ptr>());
          } else {
@@ -2023,6 +2024,7 @@ void read_write::push_transaction(const read_write::push_transaction_params& par
    } catch ( const std::bad_alloc& ) {
       chain_plugin::handle_bad_alloc();
    } CATCH_AND_CALL(next);
+   elog("+++++++++++++++push_transaction returned!");
 }
 
 static void push_recurse(read_write* rw, int index, const std::shared_ptr<read_write::push_transactions_params>& params, const std::shared_ptr<read_write::push_transactions_results>& results, const next_function<read_write::push_transactions_results>& next) {
@@ -2451,6 +2453,28 @@ CHAIN_API_RO(abi_json_to_bin)
 CHAIN_API_RO(abi_bin_to_json)
 CHAIN_API_RO(get_required_keys)
 CHAIN_API_RO(get_transaction_id)
+
+void chain_api_push_transaction_(void *ptr, string& params, string& result) {
+   try {
+      auto& cc = *(eosio::chain::controller*)ptr;
+      auto _params = fc::json::from_string(params).as<read_write::push_transaction_params>();
+      read_write(cc, fc::microseconds(max_abi_time)).push_transaction(_params,
+         [&result](const fc::static_variant<fc::exception_ptr, chain_apis::read_write::push_transaction_results>& results){
+            if (results.contains<fc::exception_ptr>()) {
+               try {
+                  result = fc::json::to_string(fc::variant(results.get<fc::exception_ptr>()));
+               } catch (...) {
+//                  http_plugin::handle_exception(#api_name, #call_name, body, cb);
+               }
+            } else {
+               result = fc::json::to_string(fc::variant(results.get<read_write::push_transaction_results>())); 
+//               cb(http_response_code, result.visit(async_result_visitor()));
+            }
+         }
+      );
+//      result = fc::json::to_string(fc::variant(_result));
+   } FC_LOG_AND_DROP();
+}
 
 int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {
 //   auto& cc = *(eosio::chain::controller*)ptr;

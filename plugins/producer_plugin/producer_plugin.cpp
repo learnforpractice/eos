@@ -1867,7 +1867,7 @@ void producer_plugin_impl::schedule_production_loop() {
    std::weak_ptr<producer_plugin_impl> weak_this = shared_from_this();
 
    auto result = start_block();
-   elog("++++++start_block: ${r} ${mode}", ("r", (int)result)("mode", (int)_pending_block_mode));
+//   elog("++++++start_block: ${r} ${mode}", ("r", (int)result)("mode", (int)_pending_block_mode));
    if (result == start_block_result::failed) {
       elog("Failed to start a pending block, will try again later");
       _timer.expires_from_now( boost::posix_time::microseconds( config::block_interval_us  / 10 ));
