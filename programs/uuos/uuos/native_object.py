@@ -85,6 +85,24 @@ default_handshake_msg = {
     "generation":1
 }
 
+default_handshake_msg = {
+    "network_version":1206,
+    "chain_id":"e1b12a9d0720401efa34556d4cb80f0f95c3d0a3a913e5470e8ea9ff44719381",
+    "node_id":"e62f00d1d06e03d972d1110308e836a7b171b212d819bc8cd069d9d5807574c7",
+    "key":"EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH",
+    "time":"1576317504842818000",
+    "token":"e9274a7d36793dabca7ea5f710f5a7544da66a39c28488e599bb441f13408077",
+    "sig":"SIG_K1_KXBbTMwB5sc7xQxTzVAhZRto28ZjGLNxJTLDjzWqEoZ57aM4R9rkP2fALWiKnQd46BHijyEBU4yt6BpKwwcCAsbfH7gTHB",
+    "p2p_address":"127.0.0.1:9876 - e62f00d",
+    "last_irreversible_block_num":5465618,
+    "last_irreversible_block_id":"00536612d620c27dabb7f2653d7620f732118c7a2f6a68c6a5ec5813aa4c71da",
+    "head_num":5465655,
+    "head_id":"005366375db0ebbf499414d28fb689bf98a8b0a316a1c621ef37bd1f2a257d68",
+    "os":"osx",
+    "agent":"\"EOS Test Agent\"",
+    "generation":1
+}
+
 default_config = {
     "sender_bypass_whiteblacklist": [],
     "actor_whitelist": [],
