@@ -132,6 +132,7 @@ class UUOSMain(object):
         c = Connection(host, 0, self.producer)
         c.reader = reader
         c.writer = writer
+        c.send_handshake()
         self.connections.append(c)
         task = asyncio.create_task(self.handle_connection(c))
 
@@ -237,7 +238,7 @@ if __name__ == "__main__":
     parser.add_argument('--data-dir',               type=str, default='dd',                  help='data directory')
     parser.add_argument('--config-dir',             type=str, default='cd',                  help='config directory')
     parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',      help='http server address')
-    parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:6666',      help='p2p listen endpoint')
+    parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:9877',      help='p2p listen endpoint')
     parser.add_argument('--p2p-peer-address',       type=str, default=[], action='append',   help='p2p peer address')
     parser.add_argument('--network',                type=str, default='test',                help='network: uuos, eos, test')
     parser.add_argument('--max-clients',            type=int, default=25,                    help='Maximum number of clients from which connections are accepted, use 0 for no limit')
