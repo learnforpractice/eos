@@ -55,37 +55,42 @@ class UUOSMain(object):
         self.tasks = []
 
     def show_message(self, which, msg):
-        msg_type = msg[0]
+        msg_type, msg = msg[0], msg[1:]
+        print(msg_type, msg)
         if msg_type == 0:#handshake_message_type:
-            msg = HandshakeMessage.unpack(msg[1:])
+            msg = HandshakeMessage.unpack(msg)
             print(which, msg)
         elif msg_type == 1:#chain_size_message_type:
-            msg = ChainSizeMessage.unpack(msg[1:])
+            msg = ChainSizeMessage.unpack(msg)
             print(which, msg)
         elif msg_type == 2:#go_away_message_type:
-            msg = GoAwayMessage.unpack(msg[1:])
+            msg = GoAwayMessage.unpack(msg)
             print(which, msg)
         elif msg_type == 3:#time_message_type:
-            msg = TimeMessage.unpack(msg[1:])
+            msg = TimeMessage.unpack(msg)
             print(which, msg)
         elif msg_type == 4:#notice_message_type:
-            msg = NoticeMessage.unpack(msg[1:])
+            msg = NoticeMessage.unpack(msg)
             print(which, msg)
         elif msg_type == 5:#request_message_type:
-            msg = RequestMessage.unpack(msg[1:])
+            msg = RequestMessage.unpack(msg)
             print(which, msg)
         elif msg_type == 6:#sync_request_message_type:
-            msg = SyncRequestMessage.unpack(msg[1:])
-            print(which, msg)
+            msg = SyncRequestMessage.unpack(msg)
+            print(which, 'sync_request_message_type', msg)
         elif msg_type == 7:#signed_block_message_type:
-            msg = SignedBlockMessage.unpack(msg[1:])
+            msg = SignedBlockMessage.unpack(msg)
+            print(msg)
+            if not msg:
+                print(which, 'decode signed block message error!', msg)
+                return
             previous = msg.previous
             previous = previous[:8]
             previous = bytes.fromhex(previous)
             previous = int.from_bytes(previous, 'big')
             print(which, previous+1, msg)
         elif msg_type == 8:#packed_transaction_message_type:
-            msg = PackedTransactionMessage.unpack(msg[1:])
+            msg = PackedTransactionMessage.unpack(msg)
             print(which, msg)
         else:
             print('unknown message', msg_type)
@@ -113,7 +118,9 @@ class UUOSMain(object):
         client = Connection(reader, writer)
 
         try:
-            reader, writer = await asyncio.open_connection('127.0.0.1', 9876)
+            reader, writer = await asyncio.open_connection('18.139.253.115', 9010)
+#            reader, writer = await asyncio.open_connection('127.0.0.1', 9876)
+#            reader, writer = await asyncio.open_connection('18.139.253.115', 9011)
             server = Connection(reader, writer)
         except ConnectionRefusedError as e:
             print(e)
