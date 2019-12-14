@@ -6,9 +6,11 @@ import ujson as json
 import struct
 import logging
 import asyncio
+import hashlib
 
 from . import chain, chain_api
 from .native_object import *
+from pyeoskit import wallet
 
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -29,6 +31,7 @@ class Connection(object):
         self.catch_up = False
         self.host = host
         self.port = port
+        self.sync_msg = None
 
     async def connect(self):
         try:
@@ -109,8 +112,8 @@ class Connection(object):
         lib_num = chain.last_irreversible_block_num()
         msg = {
             "known_trx":{
-                "mode":0, #last_irr_catch_up
-                "pending":0,
+                "mode":2, #last_irr_catch_up
+                "pending":lib_num,
                 "ids":[
 
                 ]
@@ -171,7 +174,7 @@ class Connection(object):
 
     async def send_block_task(self):
         while self.current_block <= self.last_sync_request.end_block:
-            print("current_block:", self.current_block)
+#            print("current_block:", self.current_block)
             self.send_block_by_num(self.current_block)
             self.current_block += 1
             await asyncio.sleep(0)
@@ -186,6 +189,7 @@ class Connection(object):
         # self.last_sync_request.end_block
 
     def send_handshake(self):
+
         self.handshake_count += 1
         msg = HandshakeMessage(default_handshake_msg)
         msg.network_version = 1206
@@ -197,18 +201,36 @@ class Connection(object):
         msg.head_num = num
         msg.head_id = chain.get_block_id_for_num(num)
         msg.generation = self.handshake_count
-        msg.time = str(int(time.time()*1000000))
+#        msg.time = int(time.time()*1000000000)
+
+
+        msg.key = "EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH"
+        if os.path.exists('a.wallet'):
+            os.remove('a.wallet')
+        wallet.create('a')
+        wallet.import_key('a', '5J8Jz3iicC4J9gCiUqZqJtNx3Q6Pa3BBaDmiu4GNeBUPDHmmrsm')
+        handshake_time = int(time.time()*1000000000)
+        msg.time = str(handshake_time)
+        h = hashlib.sha256()
+        data = int.to_bytes(handshake_time, 8, 'little')
+        h.update(data)
+        msg.token = h.hexdigest()
+        msg.sig = wallet.sign_digest(h.digest(), 'EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH')
+
         logger.info(f'++++send handshake {msg}')
         msg = msg.pack()
         self.write(msg)
 
     def start_sync(self):
-        print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
+        # print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
         start_block = chain.last_irreversible_block_num() + 1
         end_block = start_block + sync_req_span
-        if end_block > self.last_handshake.head_num:
-            end_block = self.last_handshake.head_num
-        logger.info(f"+++++start sync {start_block} {end_block}")
+        pending = self.last_notice.known_blocks['pending']
+        # if end_block > self.last_handshake.head_num:
+        #     end_block = self.last_handshake.head_num
+        if end_block > pending:
+            end_block = pending
+        logger.info(f"+++++sync from {start_block} to {end_block}")
         self.sync_msg = SyncRequestMessage(start_block, end_block)
 #        data = struct.pack('IB', 8+1, sync_request_message_type) + struct.pack('II', 1, 1000000)
         self.write(self.sync_msg.pack())
@@ -264,9 +286,11 @@ class Connection(object):
                         ]
                     }
                 }
-                for num in range(msg.head_num+1, head_num+1):
-                    block_id = chain.get_block_id_for_num(num)
-                    notice_msg['known_blocks']['ids'].append(block_id)
+                block_id = chain.get_block_id_for_num(head_num)
+                notice_msg['known_blocks']['ids'].append(block_id)
+                # for num in range(msg.head_num+1, head_num+1):
+                #     block_id = chain.get_block_id_for_num(num)
+                #     notice_msg['known_blocks']['ids'].append(block_id)
                 self.send_notice_message(notice_msg)
             elif msg.head_num == head_num:
                 notice_msg = {
@@ -306,6 +330,7 @@ class Connection(object):
         elif msg_type == 4:
             msg = NoticeMessage.unpack(msg)
             pending = msg.known_blocks['pending']
+            self.last_notice = msg
             if pending > chain.fork_db_pending_head_block_num():
                 self.target = pending
                 self.start_sync()
@@ -365,11 +390,14 @@ class Connection(object):
             # }
         elif msg_type == 6: #sync_request_message_type
             msg = SyncRequestMessage.unpack(msg)
-            print(msg)
+#            print('+++++sync request:', msg)
             if msg.start_block == 0:
                 return True
             self.last_sync_request = msg
-            self.start_send_block()
+            if msg.start_block <= chain.fork_db_pending_head_block_num():
+                self.start_send_block()
+            else:
+                logger.info(f"bad sync request message: {msg}")
         elif msg_type == 7:
             if False:
                 block = SignedBlockMessage.unpack(msg)
@@ -391,10 +419,13 @@ class Connection(object):
             if num % 10000 == 0:
                 logger.info(f"{num}, {block_id}")
             # if self.target - num < 1000:
-            logger.info(f"{num}, {block_id}")
-            logger.info(f"{self.sync_msg.end_block} {num}")
-            if self.sync_msg.end_block == num:
-                if self.last_handshake.head_num == num:
+            # logger.info(f"{num}, {block_id}")
+            # if self.sync_msg:
+            #     logger.info(f"{self.sync_msg.end_block} {num}")
+            if self.sync_msg and self.sync_msg.end_block == num:
+                # if self.last_handshake.head_num == num:
+                #     self.send_handshake()
+                if self.last_notice.known_blocks['pending'] == num:
                     self.send_handshake()
                 else:
                     self.start_sync()
