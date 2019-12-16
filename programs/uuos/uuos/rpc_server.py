@@ -204,7 +204,9 @@ async def get_transaction_id():
 async def push_transaction():
     data = await request.data
     app.producer.start_block()
-    result = app.producer.process_incomming_transaction(data.decode('utf8'))
+    result, raw_packed_trx = app.producer.process_incomming_transaction(data.decode('utf8'))
+    for c in app.producer.main.connections:
+        c.send_transaction(raw_packed_trx)
     return result
 
 @app.websocket('/ws')

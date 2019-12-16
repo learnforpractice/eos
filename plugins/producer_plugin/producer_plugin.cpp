@@ -2056,7 +2056,7 @@ void producer_free_(void *ptr) {
    delete (producer_plugin*)ptr;
 }
 
-void producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& out) {
+void producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out) {
    auto& producer = *(producer_plugin*)ptr;
    auto next = [&out](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
       if (result.contains<fc::exception_ptr>()) {
@@ -2071,11 +2071,17 @@ void producer_process_incomming_transaction_(void *ptr, string& packed_trx, stri
    try {
       const auto _packed_trx = fc::json::from_string(packed_trx).as<packed_transaction>();
       const auto _signed_trx = _packed_trx.get_signed_transaction();
+
 //      elog("++++++++++_signed_trx: ${n}", ("n", _signed_trx));
       auto ptrx = std::make_shared<transaction_metadata>(_signed_trx);
 //   rw->push_transaction(params->at(index), wrapped_next);
       bool persist_until_expired = false;
       producer.my->process_incoming_transaction_async(ptrx, false, next);
+
+      auto buffer_size = fc::raw::pack_size( _packed_trx );
+      raw_packed_trx = string(buffer_size, 0);
+      fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), buffer_size );
+      fc::raw::pack( ds, _packed_trx );
    }
    catch ( boost::interprocess::bad_alloc& ) {
       chain_plugin::handle_db_exhaustion();

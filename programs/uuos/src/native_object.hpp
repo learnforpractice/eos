@@ -59,7 +59,7 @@ uint64_t    producer_calc_pending_block_deadline_time_(void *ptr);
 bool        producer_maybe_produce_block_(void *ptr);
 uint64_t    producer_now_time_();
 int         producer_get_pending_block_mode_(void *ptr);
-void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& out);
+void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out);
 
 enum {
     handshake_message_type,

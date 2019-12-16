@@ -75,6 +75,29 @@ genesis_eos = {
     }
 }
 
+class Hub():
+
+    def __init__(self):
+        self.subscriptions = set()
+
+    def publish(self, message):
+        for queue in self.subscriptions:
+            queue.put_nowait(message)
+
+
+class Subscription():
+
+    def __init__(self, hub):
+        self.hub = hub
+        self.queue = asyncio.Queue()
+
+    def __enter__(self):
+        hub.subscriptions.add(self.queue)
+        return self.queue
+
+    def __exit__(self, type, value, traceback):
+        hub.subscriptions.remove(self.queue)
+
 class UUOSMain(object):
 
     def __init__(self, args):
@@ -106,6 +129,14 @@ class UUOSMain(object):
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
         self.producer = Producer(self.args)
+        self.hub = Hub()
+
+    def handle_transaction(self):
+        with Subscription(hub) as queue:
+            while True:
+                msg = await queue.get()
+                for c in self.connections:
+                    c.send_transaction(msg)
 
     def select_connection(self):
         if not self.connections:
@@ -188,6 +219,7 @@ class UUOSMain(object):
 
     async def main(self):
         tasks = []
+        self.producer.main = self
         server = rpc_server(self.producer, self.loop, self.args.http_server_address)
         task = asyncio.create_task(server)
         tasks.append(task)
@@ -248,9 +280,11 @@ if __name__ == "__main__":
     parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
     parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,             help='uuos main network')
     parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
-
+    parser.add_argument('--peer-private-key',       type=str, default='',                    help='peer private key')
+    parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
 
     args = parser.parse_args()
+    print('++++peer key:', args.peer_key)
 #    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
     print(args.p2p_peer_address)
     print(args.data_dir)
@@ -272,3 +306,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
     uuos.finish()
+    

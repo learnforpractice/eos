@@ -67,7 +67,7 @@ cdef extern from "native_object.hpp":
     bool        producer_maybe_produce_block_(void *ptr)
     uint64_t    producer_now_time_()
     int         producer_get_pending_block_mode_(void *ptr)
-    void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& out);
+    void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out);
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -126,9 +126,11 @@ def chain_api_get_account(uint64_t chain_ptr, string& params):
     return result
 
 def chain_api_get_code(uint64_t chain_ptr, string& params):
-    cdef string results
-    chain_api_get_code_(<void *>chain_ptr, params, results)
-    return results
+    cdef string result
+    chain_api_get_code_(<void *>chain_ptr, params, result)
+    r = PyBytes_FromStringAndSize(result.c_str(), result.size())
+#    print(r)
+    return r.decode('utf8')
 
 def chain_api_get_code_hash(uint64_t chain_ptr, string& params):
     cdef string code_hash
@@ -138,7 +140,8 @@ def chain_api_get_code_hash(uint64_t chain_ptr, string& params):
 def chain_api_get_abi(uint64_t chain_ptr, string& params):
     cdef string result
     chain_api_get_abi_(<void *>chain_ptr, params, result)
-    return result
+    r = PyBytes_FromStringAndSize(result.c_str(), result.size())
+    return r.decode('utf8')
 
 def chain_api_get_raw_code_and_abi(uint64_t chain_ptr, string& params):
     cdef string result
@@ -148,7 +151,8 @@ def chain_api_get_raw_code_and_abi(uint64_t chain_ptr, string& params):
 def chain_api_get_raw_abi(uint64_t chain_ptr, string& params):
     cdef string result
     chain_api_get_raw_abi_(<void *>chain_ptr, params, result)
-    return result
+    r = PyBytes_FromStringAndSize(result.c_str(), result.size())
+    return r.decode('utf8')
 
 def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
     cdef string results
@@ -273,8 +277,9 @@ def producer_get_pending_block_mode(uint64_t ptr):
 
 def producer_process_incomming_transaction(uint64_t ptr, string& packed_trx):
     cdef string out
-    producer_process_incomming_transaction_(<void *>ptr, packed_trx, out)
-    return out
+    cdef string raw_packed_trx
+    producer_process_incomming_transaction_(<void *>ptr, packed_trx, raw_packed_trx, out)
+    return out, PyBytes_FromStringAndSize(raw_packed_trx.c_str(), raw_packed_trx.size())
 
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):

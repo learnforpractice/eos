@@ -172,6 +172,13 @@ class Connection(object):
         self.writer.write(msg_type)
         self.writer.write(block)
 
+    def send_transaction(self, raw_packed_trx):
+        msg_len = struct.pack('I', len(raw_packed_trx) + 1)
+        self.writer.write(msg_len)
+        msg_type = b'\x08'#int.to_bytes(7, 1, 'little') #signed_block_message_type
+        self.writer.write(msg_type)
+        self.writer.write(raw_packed_trx)
+
     async def send_block_task(self):
         while self.current_block <= self.last_sync_request.end_block:
 #            print("current_block:", self.current_block)
@@ -223,7 +230,8 @@ class Connection(object):
 
     def start_sync(self):
         # print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
-        start_block = chain.last_irreversible_block_num() + 1
+        # start_block = chain.last_irreversible_block_num() + 1
+        start_block = chain.fork_db_pending_head_block_num() + 1
         end_block = start_block + sync_req_span
         pending = self.last_notice.known_blocks['pending']
         # if end_block > self.last_handshake.head_num:
@@ -263,9 +271,10 @@ class Connection(object):
             if not self.last_handshake:
                 self.close()
                 return
-            print(self.last_handshake.head_num, chain.fork_db_pending_head_block_num(), chain.last_irreversible_block_num())
-            print(self.last_handshake)
+
             head_num = chain.fork_db_pending_head_block_num()
+            print(self.last_handshake.head_num, head_num, chain.last_irreversible_block_num())
+            print(self.last_handshake)
             if msg.head_num < chain.last_irreversible_block_num():
 #                    self.target = msg.head_num
 #                    self.notify_none()
