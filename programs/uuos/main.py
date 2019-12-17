@@ -131,7 +131,7 @@ class UUOSMain(object):
         self.producer = Producer(self.args)
         self.hub = Hub()
 
-    def handle_transaction(self):
+    async def handle_transaction(self):
         with Subscription(hub) as queue:
             while True:
                 msg = await queue.get()
