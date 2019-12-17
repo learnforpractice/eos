@@ -2125,7 +2125,7 @@ read_only::get_code_results read_only::get_code( const get_code_params& params )
 
    if( accnt_metadata_obj.code_hash != digest_type() ) {
       const auto& code_obj = d.get<code_object, by_code_hash>(accnt_metadata_obj.code_hash);
-      result.wasm = string(code_obj.code.begin(), code_obj.code.end());
+      result.wasm = bytes(code_obj.code.data(), code_obj.code.data()+code_obj.code.size());
       result.code_hash = code_obj.code_hash;
    }
 
