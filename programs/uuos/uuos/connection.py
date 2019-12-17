@@ -16,6 +16,7 @@ logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
 sync_req_span = 200
+DEBUG = False
 
 class Connection(object):
     def __init__(self, host, port, producer):
@@ -439,6 +440,7 @@ class Connection(object):
                 else:
                     self.start_sync()
         elif msg_type == 8:
-            msg = PackedTransactionMessage(msg)
-            logger.info(msg)
+            if DEBUG:
+                msg = PackedTransactionMessage(msg)
+                logger.info(msg)
         return True

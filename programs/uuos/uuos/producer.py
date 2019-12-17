@@ -1,4 +1,6 @@
 import asyncio
+from .application import Application
+
 from _uuos import (
     producer_new,
     producer_free,
@@ -10,6 +12,7 @@ from _uuos import (
     producer_now_time,
     producer_get_pending_block_mode,
     producer_process_incomming_transaction,
+    producer_process_raw_transaction
 )
 
 from .native_object import ProducerParams
@@ -128,10 +131,12 @@ class Producer(object):
 
     def process_incomming_transaction(self, trx):
         return producer_process_incomming_transaction(self.ptr, trx)
+    
+    def process_raw_transaction(self, raw_packed_trx):
+        producer_process_raw_transaction(self.ptr, raw_packed_trx)
 
     def start_production_loop(self):
         pass
-
 
     def on_incoming_block(self, block):
         num, block_id = producer_on_incoming_block(self.ptr, block)
