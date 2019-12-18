@@ -15,6 +15,7 @@ from hypercorn.config import Config as HyperConfig
 from pyeoskit import eosapi
 
 from . import chain_api
+from . import application
 
 from typing import (
     Any,
@@ -203,10 +204,8 @@ async def get_transaction_id():
 @app.route('/v1/chain/push_transaction', methods=["POST"])
 async def push_transaction():
     data = await request.data
-    app.producer.start_block()
-    result, raw_packed_trx = app.producer.process_incomming_transaction(data.decode('utf8'))
-    for c in app.producer.main.connections:
-        c.send_transaction(raw_packed_trx)
+    msg = application.TransactionMessage(data)
+    result = await msg.wait()
     return result
 
 @app.websocket('/ws')

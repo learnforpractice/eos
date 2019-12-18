@@ -131,16 +131,16 @@ class UUOSMain(application.Application):
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
         self.producer = Producer(self.args)
-        self.hub = Hub()
+        # self.hub = Hub()
 
         application.set_app(self)
 
-    async def handle_transaction(self):
-        with Subscription(hub) as queue:
-            while True:
-                msg = await queue.get()
-                for c in self.connections:
-                    c.send_transaction(msg)
+    # async def handle_transaction(self):
+    #     with Subscription(hub) as queue:
+    #         while True:
+    #             msg = await queue.get()
+    #             for c in self.connections:
+    #                 c.send_transaction(msg)
 
     def select_connection(self):
         if not self.connections:
@@ -221,6 +221,13 @@ class UUOSMain(application.Application):
 #                print('+++block:',block)
                 c.send_block(block)
 
+    def handle_exception(self, loop, context):
+        # context["message"] will always be there; but context["exception"] may not
+        msg = context.get("exception", context["message"])
+        logging.error(f"Caught exception: {msg}")
+        logging.info("Shutting down...")
+        asyncio.create_task(shutdown(loop))
+
     @classmethod
     async def main(cls, args, loop):
         uuos = UUOSMain(args)
@@ -248,6 +255,8 @@ class UUOSMain(application.Application):
         tasks.append(task)
 
         set_accepted_block_callback(uuos.on_accepted_block)
+
+        loop.set_exception_handler(uuos.handle_exception)
 
     #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
