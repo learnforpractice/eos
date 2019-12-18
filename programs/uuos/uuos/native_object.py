@@ -263,6 +263,9 @@ class ControllerConfig(NativeObject):
 class ProducerParams(NativeObject):
     obj_type = producer_params_type
 
+def pack_transaction(trx):
+    return pack_native_object(packed_transaction_message_type, msg)
+
 if __name__ == '__main__':
     h = HandshakeMessage({'a':1})
     h[123] = '456'
