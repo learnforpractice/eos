@@ -16,6 +16,7 @@ from uuos.producer import Producer
 
 from uuos.rpc_server import rpc_server
 from uuos.native_object import *
+from uuos import application
 
 from _uuos import set_accepted_block_callback
 
@@ -98,9 +99,10 @@ class Subscription():
     def __exit__(self, type, value, traceback):
         hub.subscriptions.remove(self.queue)
 
-class UUOSMain(object):
+class UUOSMain(application.Application):
 
     def __init__(self, args):
+        super().__init__()
         self.args = args
         self.connections = []
         self.tasks = []
@@ -130,6 +132,8 @@ class UUOSMain(object):
         chain.set_chain_ptr(self.chain_ptr)
         self.producer = Producer(self.args)
         self.hub = Hub()
+
+        application.set_app(self)
 
     async def handle_transaction(self):
         with Subscription(hub) as queue:
@@ -217,41 +221,44 @@ class UUOSMain(object):
 #                print('+++block:',block)
                 c.send_block(block)
 
-    async def main(self):
+    @classmethod
+    async def main(cls, args, loop):
+        uuos = UUOSMain(args)
+        uuos.loop = loop
+
+        signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
+        for s in signals:
+            loop.add_signal_handler(
+                s, lambda s=s: asyncio.create_task(uuos.shutdown(s, loop)))
+
         tasks = []
-        self.producer.main = self
-        server = rpc_server(self.producer, self.loop, self.args.http_server_address)
+        uuos.producer.main = uuos
+        server = rpc_server(uuos.producer, loop, args.http_server_address)
         task = asyncio.create_task(server)
         tasks.append(task)
         
-        task = asyncio.create_task(self.uuos_main())
+        task = asyncio.create_task(uuos.uuos_main())
         tasks.append(task)
 
-        task = asyncio.create_task(self.p2p_server())
+        task = asyncio.create_task(uuos.p2p_server())
         tasks.append(task)
 
 #        self.producer = Producer(self.args)
-        task = asyncio.create_task(self.producer.run())
+        task = asyncio.create_task(uuos.producer.run())
         tasks.append(task)
 
-        set_accepted_block_callback(self.on_accepted_block)
+        set_accepted_block_callback(uuos.on_accepted_block)
 
     #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
         print(res)
         return res
 
-    def run(self):
+    @classmethod
+    def run(cls, args):
         logger.info(args)
-        self.loop = asyncio.get_event_loop()
-
-        signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
-        for s in signals:
-            self.loop.add_signal_handler(
-                s, lambda s=s: asyncio.create_task(self.shutdown(s, self.loop)))
-
-        args.loop = self.loop
-        self.loop.run_until_complete(self.main())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(UUOSMain.main(args, loop))
 
     def finish(self):
         if self.chain_ptr:
@@ -300,8 +307,9 @@ if __name__ == "__main__":
     # signal.signal(signal.SIGINT, shutting_down)
 
     try:
-        uuos = UUOSMain(args)
-        uuos.run()
+        UUOSMain.run(args)
+        # uuos = UUOSMain(args)
+        # uuos.run(loop)
         # asyncio.run(main(args))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
