@@ -2056,16 +2056,86 @@ void producer_free_(void *ptr) {
    delete (producer_plugin*)ptr;
 }
 
+fc::variant handle_transaction_trace(eosio::chain::controller& db, const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
+   fc::variant output;
+   auto next = [&output, &db](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
+      output = fc::json::to_string(result);
+   };
+   
+   if (result.contains<fc::exception_ptr>()) {
+      return fc::variant(result.get<fc::exception_ptr>());
+   } else {
+      auto trx_trace_ptr = result.get<transaction_trace_ptr>();
+
+      try {
+         try {
+            output = db.to_variant_with_abi( *trx_trace_ptr, fc::microseconds(15*1000) );
+
+            // Create map of (closest_unnotified_ancestor_action_ordinal, global_sequence) with action trace
+            std::map< std::pair<uint32_t, uint64_t>, fc::mutable_variant_object > act_traces_map;
+            for( const auto& act_trace : output["action_traces"].get_array() ) {
+               if (act_trace["receipt"].is_null() && act_trace["except"].is_null()) continue;
+               auto closest_unnotified_ancestor_action_ordinal =
+                     act_trace["closest_unnotified_ancestor_action_ordinal"].as<fc::unsigned_int>().value;
+               auto global_sequence = act_trace["receipt"].is_null() ?
+                                          std::numeric_limits<uint64_t>::max() :
+                                          act_trace["receipt"]["global_sequence"].as<uint64_t>();
+               act_traces_map.emplace( std::make_pair( closest_unnotified_ancestor_action_ordinal,
+                                                         global_sequence ),
+                                       act_trace.get_object() );
+            }
+
+            std::function<vector<fc::variant>(uint32_t)> convert_act_trace_to_tree_struct =
+            [&](uint32_t closest_unnotified_ancestor_action_ordinal) {
+               vector<fc::variant> restructured_act_traces;
+               auto it = act_traces_map.lower_bound(
+                           std::make_pair( closest_unnotified_ancestor_action_ordinal, 0)
+               );
+               for( ;
+                  it != act_traces_map.end() && it->first.first == closest_unnotified_ancestor_action_ordinal; ++it )
+               {
+                  auto& act_trace_mvo = it->second;
+
+                  auto action_ordinal = act_trace_mvo["action_ordinal"].as<fc::unsigned_int>().value;
+                  act_trace_mvo["inline_traces"] = convert_act_trace_to_tree_struct(action_ordinal);
+                  if (act_trace_mvo["receipt"].is_null()) {
+                     act_trace_mvo["receipt"] = fc::mutable_variant_object()
+                        ("abi_sequence", 0)
+                        ("act_digest", digest_type::hash(trx_trace_ptr->action_traces[action_ordinal-1].act))
+                        ("auth_sequence", flat_map<account_name,uint64_t>())
+                        ("code_sequence", 0)
+                        ("global_sequence", 0)
+                        ("receiver", act_trace_mvo["receiver"])
+                        ("recv_sequence", 0);
+                  }
+                  restructured_act_traces.push_back( std::move(act_trace_mvo) );
+               }
+               return restructured_act_traces;
+            };
+
+            fc::mutable_variant_object output_mvo(output);
+            output_mvo["action_traces"] = convert_act_trace_to_tree_struct(0);
+
+            output = output_mvo;
+         } catch( chain::abi_exception& ) {
+            output = *trx_trace_ptr;
+         }
+
+         const chain::transaction_id_type& id = trx_trace_ptr->id;
+         mutable_variant_object o;
+         o("transaction_id", id)("processed", output);
+         return fc::variant(o);
+      } CATCH_AND_CALL(next);
+      return output;
+   }
+}
+
 void producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out) {
    auto& producer = *(producer_plugin*)ptr;
-   auto next = [&out](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
-      if (result.contains<fc::exception_ptr>()) {
-         const auto& e = result.get<fc::exception_ptr>();
-         out = e->to_detail_string();
-      } else {
-         const auto& r = result.get<transaction_trace_ptr>();
-         out = fc::json::to_string(fc::variant(r));
-      }
+   auto& db = producer.my->chain_plug->chain();
+   auto next = [&out, &db](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
+      auto output = handle_transaction_trace(db, result);
+      out = fc::json::to_string(output);
    };
 
    try {
