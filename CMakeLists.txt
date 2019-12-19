@@ -269,6 +269,7 @@ else()
 endif()
 
 add_dependencies(test_contracts_project contracts_project)
+add_dependencies(chainbase boost_1_67_0)
 
 install_directory_permissions(DIRECTORY ${CMAKE_INSTALL_FULL_SYSCONFDIR}/eosio)
 
