@@ -7,16 +7,26 @@ import struct
 import logging
 import asyncio
 import hashlib
+import random
 
 from . import chain, chain_api
 from .native_object import *
 from pyeoskit import wallet
+from .application import get_app
 
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
 sync_req_span = 200
 DEBUG = False
+
+def gen_node_id():
+    aa = bytearray(32)
+    for i in range(32):
+        aa[i] = random.randint(0,255)
+    return aa.hex()
+
+g_node_id = gen_node_id()
 
 class Connection(object):
     def __init__(self, host, port, producer):
@@ -210,20 +220,24 @@ class Connection(object):
         msg.head_id = chain.get_block_id_for_num(num)
         msg.generation = self.handshake_count
 #        msg.time = int(time.time()*1000000000)
+        
+        msg.node_id = g_node_id
+        msg.p2p_address = get_app().args.p2p_listen_endpoint + " - " + msg.node_id[:8]
+        peer_public_key = "EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH"
+        peer_private_key = "5J8Jz3iicC4J9gCiUqZqJtNx3Q6Pa3BBaDmiu4GNeBUPDHmmrsm"
 
-
-        msg.key = "EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH"
+        msg.key = peer_public_key
         if os.path.exists('a.wallet'):
             os.remove('a.wallet')
         wallet.create('a')
-        wallet.import_key('a', '5J8Jz3iicC4J9gCiUqZqJtNx3Q6Pa3BBaDmiu4GNeBUPDHmmrsm')
+        wallet.import_key('a', peer_private_key)
         handshake_time = int(time.time()*1000000000)
         msg.time = str(handshake_time)
         h = hashlib.sha256()
         data = int.to_bytes(handshake_time, 8, 'little')
         h.update(data)
         msg.token = h.hexdigest()
-        msg.sig = wallet.sign_digest(h.digest(), 'EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH')
+        msg.sig = wallet.sign_digest(h.digest(), peer_public_key)
 
         logger.info(f'++++send handshake {msg}')
         msg = msg.pack()
