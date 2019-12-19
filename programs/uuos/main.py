@@ -286,18 +286,26 @@ if __name__ == "__main__":
     parser.add_argument('--data-dir',               type=str, default='dd',                  help='data directory')
     parser.add_argument('--config-dir',             type=str, default='cd',                  help='config directory')
     parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',      help='http server address')
+
+    #p2p
     parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:9877',      help='p2p listen endpoint')
     parser.add_argument('--p2p-peer-address',       type=str, default=[], action='append',   help='p2p peer address')
     parser.add_argument('--network',                type=str, default='test',                help='network: uuos, eos, test')
     parser.add_argument('--max-clients',            type=int, default=25,                    help='Maximum number of clients from which connections are accepted, use 0 for no limit')
-    parser.add_argument('-e', '--enable-stale-production',    default=False, action="store_true", help='Enable block production, even if the chain is stale.')
+    parser.add_argument('--peer-private-key',       type=str, default='',                    help='peer private key')
+    parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
+    parser.add_argument('--p2p-max-nodes-per-host',   type=int, default=1,                     help ='Maximum number of client nodes from any single IP address')
+
+
     parser.add_argument('--hard-replay-blockchain', default=False, action="store_true",      help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
     parser.add_argument('--replay-blockchain',      default=False, action="store_true",      help='clear chain state database and replay all blocks')
     parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
     parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,             help='uuos main network')
+
+    #producer
     parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
-    parser.add_argument('--peer-private-key',       type=str, default='',                    help='peer private key')
-    parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
+    parser.add_argument('-e', '--enable-stale-production',    default=False, action="store_true", help='Enable block production, even if the chain is stale.')
+
 
     args = parser.parse_args()
     print('++++peer key:', args.peer_key)
