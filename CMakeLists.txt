@@ -9,6 +9,7 @@ if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/aleth/cmake")
 
 if (UNIX AND APPLE)
    list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/llvm@7" "/usr/local/opt/gettext")
@@ -106,6 +107,7 @@ find_package(PythonLibs 3.7 REQUIRED)
 message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
 message(STATUS "PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
 message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
+
 
 find_package(Boost 1.67 REQUIRED COMPONENTS
     date_time
@@ -266,9 +268,39 @@ else()
     target_compile_options(boost_1_67_0 PRIVATE -fPIC)
     target_compile_options(eosiolib.native PRIVATE -fPIC)
     target_compile_options(eth_account PRIVATE -fPIC)
+
+
+target_compile_options(chainbase PRIVATE -fPIC)
+target_compile_options(appbase PRIVATE -fPIC)
+target_compile_options(login_plugin PRIVATE -fPIC)
+target_compile_options(history_plugin PRIVATE -fPIC)
+target_compile_options(state_history_plugin PRIVATE -fPIC)
+target_compile_options(history_api_plugin PRIVATE -fPIC)
+target_compile_options(chain_api_plugin PRIVATE -fPIC)
+target_compile_options(net_plugin PRIVATE -fPIC)
+target_compile_options(net_api_plugin PRIVATE -fPIC)
+target_compile_options(txn_test_gen_plugin PRIVATE -fPIC)
+target_compile_options(db_size_api_plugin PRIVATE -fPIC)
+target_compile_options(producer_api_plugin PRIVATE -fPIC)
+target_compile_options(test_control_plugin PRIVATE -fPIC)
+target_compile_options(test_control_api_plugin PRIVATE -fPIC)
+target_compile_options(debug_api_plugin PRIVATE -fPIC)
+target_compile_options(contract_api_plugin PRIVATE -fPIC)
+target_compile_options(action_publisher_plugin PRIVATE -fPIC)
+target_compile_options(chain_plugin PRIVATE -fPIC)
+target_compile_options(http_plugin PRIVATE -fPIC)
+target_compile_options(producer_plugin PRIVATE -fPIC)
+target_compile_options(http_client_plugin PRIVATE -fPIC)
+target_compile_options(eosio_chain PRIVATE -fPIC)
+target_compile_options(eosio_testing PRIVATE -fPIC)
+target_compile_options(secp256k1 PRIVATE -fPIC)
+target_compile_options(vm_manager PRIVATE -fPIC)
+target_compile_options(wasm2c_contracts PRIVATE -fPIC)
+
 endif()
 
 add_dependencies(test_contracts_project contracts_project)
+add_dependencies(chainbase boost_1_67_0)
 
 install_directory_permissions(DIRECTORY ${CMAKE_INSTALL_FULL_SYSCONFDIR}/eosio)
 
