@@ -121,6 +121,8 @@ class UUOSMain(application.Application):
             if os.path.exists(shared_memory_file):
                 raise Exception("Snapshot can only be used to initialize an empty database.")
 
+        cfg.state_size = args.chain_state_db_size_mb * 1024 * 1024
+
         print('args.uuos_mainnet', args.uuos_mainnet)
         cfg.uuos_mainnet = False
         if self.args.network == 'uuos':
@@ -309,13 +311,15 @@ if __name__ == "__main__":
     parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
     parser.add_argument('--p2p-max-nodes-per-host',   type=int, default=1,                   help ='Maximum number of client nodes from any single IP address')
 
-
+    #chain
     parser.add_argument('--hard-replay-blockchain', default=False, action="store_true",      help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
     parser.add_argument('--replay-blockchain',      default=False, action="store_true",      help='clear chain state database and replay all blocks')
     parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
     parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,             help='uuos main network')
     parser.add_argument('--snapshot',               type=str,      default='',               help='File to read Snapshot State from')
     parser.add_argument('--snapshots-dir',          type=str,      default='snapshots',      help='the location of the snapshots directory (absolute path or relative to application data dir)')
+    parser.add_argument('--chain-state-db-size-mb', type=int,      default=300,              help='the location of the snapshots directory (absolute path or relative to application data dir)')
+
 
     #producer
     parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
@@ -351,4 +355,3 @@ if __name__ == "__main__":
         logger.info(e)
     UUOSMain.finish()
 
-    
