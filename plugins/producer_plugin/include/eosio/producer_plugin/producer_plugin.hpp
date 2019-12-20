@@ -36,6 +36,7 @@ public:
       int producer_threads;
       int keosd_provider_timeout_us;
       string snapshots_dir;
+      string data_dir;
       bool production_enabled;
 
       int32_t   max_transaction_time_ms;
@@ -158,6 +159,7 @@ FC_REFLECT(eosio::producer_plugin::producer_params,
    (producer_threads)
    (keosd_provider_timeout_us)
    (snapshots_dir)
+   (data_dir)
    (production_enabled)
    (max_transaction_time_ms)
    (max_irreversible_block_age)

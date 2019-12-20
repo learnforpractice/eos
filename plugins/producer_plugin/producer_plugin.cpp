@@ -317,7 +317,7 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
          while (!snapshots_by_height.empty() && snapshots_by_height.begin()->get_height() <= lib_height) {
             const auto& pending = snapshots_by_height.begin();
             auto next = pending->next;
-
+            
             try {
                next(pending->finalize(chain));
             } CATCH_AND_CALL(next);
@@ -763,7 +763,7 @@ void producer_plugin::plugin_initialize(chain::controller& chain, const producer
    
    auto sd = bfs::path(options.snapshots_dir);
    if( sd.is_relative()) {
-      my->_snapshots_dir = app().data_dir() / sd;
+      my->_snapshots_dir = bfs::path(options.data_dir) / sd;
       if (!fc::exists(my->_snapshots_dir)) {
          fc::create_directories(my->_snapshots_dir);
       }
@@ -2049,6 +2049,7 @@ void *producer_new_(void *chain_ptr, string& config) {
    elog("${cfg}", ("cfg", fc::variant(_config)));
 
    producer->plugin_initialize(chain, _config);
+   producer->plugin_startup();
    return (void *)producer;
 }
 
@@ -2288,4 +2289,30 @@ void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& b
             ("n",block_header::num_from_id(block->id()))("t",block->timestamp)
             ("count",block->transactions.size())("lib",chain.last_irreversible_block_num())("confs", block->confirmed)("latency", (fc::time_point::now() - block->timestamp).count()/1000 ) );
    }
+}
+
+int producer_create_snapshot_(void *ptr, string& out) {
+   auto& producer = *(producer_plugin*)ptr;
+   int ret = 0;
+   // auto next = [&out, &ret](const fc::static_variant<fc::exception_ptr, producer_plugin::snapshot_information>& result) {
+   //    if (result.contains<fc::exception_ptr>()) {
+   //       const auto& e = result.get<fc::exception_ptr>();
+   //       out = e->to_detail_string();
+   //       ret = 0;
+   //    } else {
+   //       const auto& r = result.get<producer_plugin::snapshot_information>();
+   //       out = fc::json::to_string(fc::variant(r));
+   //       ret = 1;
+   //    }
+   // };
+
+   auto next = [](const fc::static_variant<fc::exception_ptr, producer_plugin::snapshot_information>& result) {
+   };
+
+   try {
+      producer.create_snapshot(next);
+      return 1;
+   } LOG_AND_DROP();
+
+   return 0;
 }

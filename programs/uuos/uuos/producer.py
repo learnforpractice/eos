@@ -12,7 +12,8 @@ from _uuos import (
     producer_now_time,
     producer_get_pending_block_mode,
     producer_process_incomming_transaction,
-    producer_process_raw_transaction
+    producer_process_raw_transaction,
+    producer_create_snapshot
 )
 
 from .native_object import ProducerParams
@@ -55,7 +56,7 @@ config = dict(
     greylist_account = [],
     producer_threads = 1,
     keosd_provider_timeout_us = 5000,
-    snapshots_dir = 'snapshot',
+    snapshots_dir = 'snapshots',
     max_transaction_time_ms = 30,
     max_irreversible_block_age = -1,
     produce_time_offset_us = 0,
@@ -85,6 +86,9 @@ class Producer(object):
         print('+++producer:', args.enable_stale_production)
         config['production_enabled'] = args.enable_stale_production
         config['producers'] = args.producer_name
+        config['snapshots_dir'] = args.snapshots_dir
+        config['data_dir'] = args.data_dir
+        
         cfg = json.dumps(config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
         self.args = args
@@ -142,6 +146,9 @@ class Producer(object):
         num, block_id = producer_on_incoming_block(self.ptr, block)
         self.start_production_loop()
         return num, block_id
+    
+    def create_snapshot(self):
+        return producer_create_snapshot(self.ptr)
 
     async def run(self):
         if not self.args.producer_name:

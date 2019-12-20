@@ -208,6 +208,14 @@ async def push_transaction():
     result = await msg.wait()
     return result
 
+@app.route('/v1/producer/create_snapshot', methods=["POST"])
+async def create_snapshot():
+    ret, result = application.get_app().producer.create_snapshot()
+    logger.info(f'{ret}, {result}')
+    if not ret:
+        return result, 201
+    return result
+
 @app.websocket('/ws')
 async def ws():
     while True:

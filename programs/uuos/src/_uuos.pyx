@@ -22,7 +22,7 @@ cdef extern from "native_object.hpp":
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
 
-    void*   chain_new_(string& config, string& protocol_features_dir)
+    void*   chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir)
     void    chain_free_(void *ptr)
     void    chain_api_get_info_(void *chain_ptr, string& info)
     void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
@@ -69,6 +69,7 @@ cdef extern from "native_object.hpp":
     int         producer_get_pending_block_mode_(void *ptr)
     void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out)
     void        producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out)
+    int         producer_create_snapshot_(void *ptr, string& out)
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -89,8 +90,8 @@ def unpack_native_object(int _type, string& packed_message):
     unpack_native_object_(_type, packed_message, msg)
     return <bytes>msg
 
-def chain_new(string& config, string& protocol_features_dir):
-    return <unsigned long long>chain_new_(config, protocol_features_dir)
+def chain_new(string& config, string& protocol_features_dir, string& snapshot_dir):
+    return <unsigned long long>chain_new_(config, protocol_features_dir, snapshot_dir)
 
 def chain_free(unsigned long long  ptr):
     chain_free_(<void *>ptr);
@@ -286,6 +287,11 @@ def producer_process_raw_transaction(uint64_t ptr, string& raw_packed_trx):
     cdef string out
     producer_process_raw_transaction_(<void *>ptr, raw_packed_trx, out)
     return PyBytes_FromStringAndSize(out.c_str(), out.size())
+
+def producer_create_snapshot(uint64_t ptr):
+    cdef string out
+    ret = producer_create_snapshot_(<void *>ptr, out)
+    return ret, out
 
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):

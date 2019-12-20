@@ -5,7 +5,7 @@ using namespace std;
 void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
 
-void*   chain_new_(string& config, string& protocol_features_dir);
+void*   chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir);
 void    chain_free_(void *ptr);
 void    chain_api_get_info_(void *chain_ptr, string& info);
 
@@ -61,6 +61,7 @@ uint64_t    producer_now_time_();
 int         producer_get_pending_block_mode_(void *ptr);
 void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out);
 void        producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out);
+int         producer_create_snapshot_(void *ptr, string& out);
 
 enum {
     handshake_message_type,
