@@ -107,12 +107,20 @@ class UUOSMain(application.Application):
         self.connections = []
         self.tasks = []
         self.client_count = 0
+        self.chain_ptr = None
+        self.producer = None
+        UUOSMain.uuos = self
 
         cfg = ControllerConfig(default_config)
         # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
         cfg.blocks_dir = os.path.join(args.data_dir, 'blocks')
         cfg.state_dir = os.path.join(args.data_dir, 'state')
+        if args.snapshot:
+            shared_memory_file = os.path.join(cfg.state_dir, 'shared_memory.bin')
+            if os.path.exists(shared_memory_file):
+                raise Exception("Snapshot can only be used to initialize an empty database.")
+
         print('args.uuos_mainnet', args.uuos_mainnet)
         cfg.uuos_mainnet = False
         if self.args.network == 'uuos':
@@ -127,7 +135,7 @@ class UUOSMain(application.Application):
 
         cfg = cfg.dumps()
         print(cfg)
-        self.chain_ptr = chain_new(cfg, 'cd')
+        self.chain_ptr = chain_new(cfg, args.config_dir, args.snapshot)
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
         self.producer = Producer(self.args)
@@ -204,7 +212,9 @@ class UUOSMain(application.Application):
         if self.chain_ptr:
             chain_free(self.chain_ptr)
             self.chain_ptr = None
-        del self.producer
+        
+        if self.producer:
+            del self.producer
         for c in self.connections:
             logger.info(f'close {c.host}')
             c.close()
@@ -230,7 +240,12 @@ class UUOSMain(application.Application):
 
     @classmethod
     async def main(cls, args, loop):
-        uuos = UUOSMain(args)
+        try:
+            uuos = UUOSMain(args)
+        except Exception as e:
+            logger.info(f'+++exception:{e}')
+            return
+
         uuos.loop = loop
 
         signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
@@ -264,16 +279,14 @@ class UUOSMain(application.Application):
         return res
 
     @classmethod
-    def run(cls, args):
-        logger.info(args)
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(UUOSMain.main(args, loop))
-
-    def finish(self):
+    def finish(cls):
+        self = cls.uuos
         if self.chain_ptr:
             chain_free(self.chain_ptr)
             self.chain_ptr = None
-        del self.producer
+
+        if self.producer:
+            del self.producer
 
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
@@ -294,13 +307,15 @@ if __name__ == "__main__":
     parser.add_argument('--max-clients',            type=int, default=25,                    help='Maximum number of clients from which connections are accepted, use 0 for no limit')
     parser.add_argument('--peer-private-key',       type=str, default='',                    help='peer private key')
     parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
-    parser.add_argument('--p2p-max-nodes-per-host',   type=int, default=1,                     help ='Maximum number of client nodes from any single IP address')
+    parser.add_argument('--p2p-max-nodes-per-host',   type=int, default=1,                   help ='Maximum number of client nodes from any single IP address')
 
 
     parser.add_argument('--hard-replay-blockchain', default=False, action="store_true",      help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
     parser.add_argument('--replay-blockchain',      default=False, action="store_true",      help='clear chain state database and replay all blocks')
     parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
     parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,             help='uuos main network')
+    parser.add_argument('--snapshot',               type=str,      default='',               help='File to read Snapshot State from')
+    parser.add_argument('--snapshots-dir',          type=str,      default='snapshots',      help='the location of the snapshots directory (absolute path or relative to application data dir)')
 
     #producer
     parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
@@ -324,11 +339,16 @@ if __name__ == "__main__":
     # signal.signal(signal.SIGINT, shutting_down)
 
     try:
-        UUOSMain.run(args)
+        logger.info(args)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(UUOSMain.main(args, loop))
         # uuos = UUOSMain(args)
         # uuos.run(loop)
         # asyncio.run(main(args))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
-    uuos.finish()
+    except Exception as e:
+        logger.info(e)
+    UUOSMain.finish()
+
     

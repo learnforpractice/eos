@@ -27,7 +27,19 @@ void register_on_accepted_block(fn_on_accepted_block cb) {
     g_on_accepted_block = cb;
 }
 
-chain_manager::chain_manager(string& config, string& protocol_features_dir) {
+void chain_manager::log_guard_exception(const chain::guard_exception&e ) {
+   if (e.code() == chain::database_guard_exception::code_value) {
+      elog("Database has reached an unsafe level of usage, shutting down to avoid corrupting the database.  "
+           "Please increase the value set for \"chain-state-db-size-mb\" and restart the process!");
+   } else if (e.code() == chain::reversible_guard_exception::code_value) {
+      elog("Reversible block database has reached an unsafe level of usage, shutting down to avoid corrupting the database.  "
+           "Please increase the value set for \"reversible-blocks-db-size-mb\" and restart the process!");
+   }
+
+   dlog("Details: ${details}", ("details", e.to_detail_string()));
+}
+
+chain_manager::chain_manager(string& config, string& protocol_features_dir, string& snapshot_dir) {
     evm_init();
     vm_api_init();
     vm_api_ro_init();
@@ -44,16 +56,29 @@ chain_manager::chain_manager(string& config, string& protocol_features_dir) {
 
     cc = new eosio::chain::controller(cfg, std::move(pfs));
     cc->add_indices();
+    cc->accepted_block.connect(  boost::bind(&chain_manager::on_accepted_block, this, _1));
 
     auto shutdown = [](){ return false; };
-    cc->startup(shutdown);
 
-    cc->accepted_block.connect(  boost::bind(&chain_manager::on_accepted_block, this, _1));
+    try {
+        if (snapshot_dir.size()) {
+            auto infile = std::ifstream(snapshot_dir, (std::ios::in | std::ios::binary));
+            auto reader = std::make_shared<istream_snapshot_reader>(infile);
+            cc->startup(shutdown, reader);
+            infile.close();
+        } else {
+            cc->startup(shutdown);
+        }
+    } catch (const database_guard_exception& e) {
+        log_guard_exception(e);
+        // make sure to properly close the db
+        delete cc;
+    }
 }
 
-chain_manager *chain_manager::init(string& config, string& protocol_features_dir) {
+chain_manager *chain_manager::init(string& config, string& protocol_features_dir, string& snapshot_dir) {
     if (!instance) {
-        instance = new chain_manager(config, protocol_features_dir);
+        instance = new chain_manager(config, protocol_features_dir, snapshot_dir);
     }
     return instance;
 }
@@ -86,7 +111,7 @@ chain_manager::~chain_manager() {
     delete cc;
 }
 
-void *chain_new_(string& config, string& protocol_features_dir) {
+void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir) {
 //    auto plugin = eosio::chain_plugin();
 /*
     auto shutdown = [](){ return app().is_quiting(); };
@@ -99,7 +124,7 @@ void *chain_new_(string& config, string& protocol_features_dir) {
         my->chain->startup(shutdown);
     }
 */
-    g_manager = chain_manager::init(config, protocol_features_dir);
+    g_manager = chain_manager::init(config, protocol_features_dir, snapshot_dir);
     return (void *)g_manager->cc;
 }
 
