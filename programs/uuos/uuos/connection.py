@@ -215,9 +215,15 @@ class Connection(object):
         num = chain.last_irreversible_block_num()
         msg.last_irreversible_block_num = num
         msg.last_irreversible_block_id = chain.get_block_id_for_num(num)
+        if not msg.last_irreversible_block_id:
+            msg.last_irreversible_block_id = (b'\x00'*32).hex()
+            msg.last_irreversible_block_num = 0
         num = chain.fork_db_pending_head_block_num()
         msg.head_num = num
         msg.head_id = chain.get_block_id_for_num(num)
+        if not msg.head_id:
+            msg.head_num = 0
+            msg.head_id = (b'\x00'*32).hex()
         msg.generation = self.handshake_count
 #        msg.time = int(time.time()*1000000000)
         
