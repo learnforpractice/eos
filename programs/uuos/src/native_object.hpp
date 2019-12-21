@@ -35,9 +35,6 @@ DEF_CHAIN_API_RO(get_required_keys)
 DEF_CHAIN_API_RO(get_transaction_id)
 
 
-void    chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
-
-
 void        chain_id_(void *ptr, string& chain_id);
 uint32_t    chain_fork_db_pending_head_block_num_(void *ptr);
 uint32_t    chain_last_irreversible_block_num_(void *ptr);
@@ -59,8 +56,8 @@ uint64_t    producer_calc_pending_block_deadline_time_(void *ptr);
 bool        producer_maybe_produce_block_(void *ptr);
 uint64_t    producer_now_time_();
 int         producer_get_pending_block_mode_(void *ptr);
-void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out);
-void        producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out);
+int         producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out);
+int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out);
 int         producer_create_snapshot_(void *ptr, string& out);
 
 enum {
