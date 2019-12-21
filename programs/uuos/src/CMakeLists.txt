@@ -5,7 +5,7 @@ add_library(_uuos MODULE ${_uuos} uuos.cpp)
 
 python_extension_module(_uuos)
 
-target_link_libraries(_uuos /Users/newworld/dev/uuos2/build/programs/nodeos/libpyuuos.dylib)
+target_link_libraries(_uuos ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/programs/nodeos/libpyuuos${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_include_directories(_uuos PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
