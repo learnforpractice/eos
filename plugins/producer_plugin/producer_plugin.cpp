@@ -2131,7 +2131,7 @@ fc::variant handle_transaction_trace(eosio::chain::controller& db, const fc::sta
    }
 }
 
-void producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out) {
+int producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out) {
    auto& producer = *(producer_plugin*)ptr;
    auto& db = producer.my->chain_plug->chain();
    auto next = [&out, &db](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
@@ -2153,16 +2153,16 @@ void producer_process_incomming_transaction_(void *ptr, string& packed_trx, stri
       raw_packed_trx = string(buffer_size, 0);
       fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), buffer_size );
       fc::raw::pack( ds, _packed_trx );
-   }
-   catch ( boost::interprocess::bad_alloc& ) {
+      return 1;
+   } catch ( boost::interprocess::bad_alloc& ) {
       chain_plugin::handle_db_exhaustion();
    } catch ( const std::bad_alloc& ) {
       chain_plugin::handle_bad_alloc();
    } CATCH_AND_CALL(next);
-
+   return 0;
 }
 
-void producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out) {
+int producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out) {
    auto& producer = *(producer_plugin*)ptr;
    auto next = [&out](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
       if (result.contains<fc::exception_ptr>()) {
@@ -2186,13 +2186,14 @@ void producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string
 //   rw->push_transaction(params->at(index), wrapped_next);
       bool persist_until_expired = false;
       producer.my->process_incoming_transaction_async(ptrx, false, next);
+      return 1;
    }
    catch ( boost::interprocess::bad_alloc& ) {
       chain_plugin::handle_db_exhaustion();
    } catch ( const std::bad_alloc& ) {
       chain_plugin::handle_bad_alloc();
    } CATCH_AND_CALL(next);
-
+   return 0;
 }
 
 void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id) {
@@ -2248,47 +2249,6 @@ int producer_get_pending_block_mode_(void *ptr) {
 
 uint64_t producer_now_time_() {
    return fc::time_point::now().time_since_epoch().count();
-}
-
-void chain_on_incoming_block(chain::controller& chain, const signed_block_ptr& block) {
-   auto id = block->id();
-
-   dlog("received incoming block ${id} block num ${n}", ("id", id)("n",block_header::num_from_id(block->id())));
-
-   EOS_ASSERT( block->timestamp < (fc::time_point::now() + fc::seconds( 7 )), block_from_the_future,
-               "received a block from the future, ignoring it: ${id}", ("id", id) );
-
-   /* de-dupe here... no point in aborting block if we already know the block */
-   auto existing = chain.fetch_block_by_id( id );
-   if( existing ) { return; }
-
-   // start processing of block
-   auto bsf = chain.create_block_state_future( block );
-
-   // abort the pending block
-   chain.abort_block();
-   // push the new block
-   bool except = false;
-   try {
-      chain.push_block( bsf );
-   } catch ( const guard_exception& e ) {
-      chain_plugin::handle_guard_exception(e);
-      return;
-   } catch( const fc::exception& e ) {
-      elog((e.to_detail_string()));
-      except = true;
-   } catch ( const std::bad_alloc& ) {
-      chain_plugin::handle_bad_alloc();
-   } catch ( boost::interprocess::bad_alloc& ) {
-      chain_plugin::handle_db_exhaustion();
-   }
-   return;
-   if( fc::time_point::now() - block->timestamp < fc::minutes(5) ) {
-      ilog("Received block ${id}... #${n} @ ${t} signed by ${p} [trxs: ${count}, lib: ${lib}, conf: ${confs}, latency: ${latency} ms]",
-            ("p",block->producer)("id",fc::variant(block->id()).as_string().substr(8,16))
-            ("n",block_header::num_from_id(block->id()))("t",block->timestamp)
-            ("count",block->transactions.size())("lib",chain.last_irreversible_block_num())("confs", block->confirmed)("latency", (fc::time_point::now() - block->timestamp).count()/1000 ) );
-   }
 }
 
 int producer_create_snapshot_(void *ptr, string& out) {

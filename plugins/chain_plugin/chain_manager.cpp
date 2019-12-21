@@ -4,8 +4,6 @@ namespace eosio {
     protocol_feature_set initialize_protocol_features( const fc::path& p, bool populate_missing_builtins = true );
 }
 
-void chain_on_incoming_block(controller& chain, const signed_block_ptr& block);
-
 extern "C"
 {
    void evm_init();
@@ -56,7 +54,14 @@ chain_manager::chain_manager(string& config, string& protocol_features_dir, stri
 
     cc = new eosio::chain::controller(cfg, std::move(pfs));
     cc->add_indices();
-    cc->accepted_block.connect(  boost::bind(&chain_manager::on_accepted_block, this, _1));
+    cc->accepted_block.connect(boost::bind(&chain_manager::on_accepted_block, this, _1));
+    cc->accepted_transaction.connect(boost::bind(&chain_manager::on_accepted_transaction, this, _1));
+
+
+
+//     my->chain->accepted_transaction.connect([this]( const transaction_metadata_ptr& meta ) {
+//        my->accepted_transaction_channel.publish( priority::low, meta );
+//     } );
 
     auto shutdown = [](){ return false; };
 
@@ -85,6 +90,10 @@ chain_manager *chain_manager::init(string& config, string& protocol_features_dir
 
 chain_manager& chain_manager::get() {
     return *instance;
+}
+
+void chain_manager::on_accepted_transaction( const transaction_metadata_ptr& meta ) {
+
 }
 
 void chain_manager::on_accepted_block(const block_state_ptr& bsp) {
@@ -134,19 +143,6 @@ void chain_free_(void *ptr) {
         return;
     }
     delete g_manager;
-}
-
-void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id) {
-    try {
-        auto& chain = *(eosio::chain::controller*)(ptr);
-        std::shared_ptr<signed_block> block = std::make_shared<signed_block>();
-        fc::datastream<const char*> ds( packed_signed_block.c_str(), packed_signed_block.size() );
-        fc::raw::unpack( ds, *block );
-        num = block->block_num();
-        id = fc::json::to_string<block_id_type>(block->id());
-    //    elog("+++++block: ${block}", ("block", *block));
-        chain_on_incoming_block(chain, block);
-    } FC_LOG_AND_DROP();
 }
 
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {

@@ -15,8 +15,6 @@ using namespace eosio::chain;
 
 void *chain_new_(string& config, string& protocol_features_dir);
 void chain_free_(void *ptr);
-void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
-
 
 class chain_manager {
 private:
@@ -26,6 +24,7 @@ public:
     static chain_manager& get();
 
     void log_guard_exception(const chain::guard_exception&e );
+    void on_accepted_transaction( const transaction_metadata_ptr& meta );
     void on_accepted_block(const block_state_ptr& bsp);
     controller& chain();
     controller::config& config();
