@@ -18,6 +18,8 @@ logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
 sync_req_span = 200
+max_package_size = 5*1024*1024
+
 DEBUG = False
 
 def gen_node_id():
@@ -29,7 +31,7 @@ def gen_node_id():
 g_node_id = gen_node_id()
 
 class Connection(object):
-    def __init__(self, host, port, producer):
+    def __init__(self, host, port):
         self.reader = None
         self.writer = None
         self.handshake_count = 0
@@ -37,12 +39,13 @@ class Connection(object):
         self.target = 0
         self.syncing = False
         self.chain_ptr = chain.get_chain_ptr()
-        self.producer = producer
+        self.producer = get_app().producer
         self.closed = False
         self.catch_up = False
         self.host = host
         self.port = port
         self.sync_msg = None
+        self.app = get_app()
 
     async def connect(self):
         try:
@@ -67,6 +70,7 @@ class Connection(object):
         while True:
             data = await self.reader.read(length)
             if not data:
+                self.close()
                 return None
             buffer.write(data)
             length -= len(data)
@@ -79,7 +83,7 @@ class Connection(object):
         if not msg_len:
             return (None, None)
         msg_len = int.from_bytes(msg_len, 'little')
-        if msg_len >=500*1024 or msg_len < 2:
+        if msg_len >= max_package_size or msg_len < 2:
             logger.info(f'bad length: {msg_len}')
             return (None, None)
 
