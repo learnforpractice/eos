@@ -210,7 +210,7 @@ class UUOSMain(application.Application):
         logger.info("uuos main task done!")
 
     async def shutdown(self, signal, loop):
-        logger.info(f'Shutdown uuos {self.chain_ptr}')
+        logger.info(f'Shutdown uuos {signal} {self.chain_ptr}')
         if self.chain_ptr:
             chain_free(self.chain_ptr)
             self.chain_ptr = None
