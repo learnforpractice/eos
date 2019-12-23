@@ -174,7 +174,7 @@ class UUOSMain(application.Application):
         print(f"connection from {addr!r}")
         host = writer.get_extra_info('peername')
         logger.info(host)
-        c = Connection(host, 0, self.producer)
+        c = Connection(host, 0)
         c.reader = reader
         c.writer = writer
         c.send_handshake()
@@ -195,7 +195,7 @@ class UUOSMain(application.Application):
             try:
                 print(address)
                 host, port = address.split(':')
-                c = Connection(host, port, self.producer)
+                c = Connection(host, port)
                 ret = await c.connect()
                 if not ret:
                     continue
@@ -238,7 +238,7 @@ class UUOSMain(application.Application):
         msg = context.get("exception", context["message"])
         logging.error(f"Caught exception: {msg}")
         logging.info("Shutting down...")
-        asyncio.create_task(shutdown(loop))
+        asyncio.create_task(self.shutdown(0, loop))
 
     @classmethod
     async def main(cls, args, loop):
@@ -270,10 +270,10 @@ class UUOSMain(application.Application):
 #        self.producer = Producer(self.args)
         task = asyncio.create_task(uuos.producer.run())
         tasks.append(task)
-
+        # register accepted block callback
         set_accepted_block_callback(uuos.on_accepted_block)
 
-        loop.set_exception_handler(uuos.handle_exception)
+#        loop.set_exception_handler(uuos.handle_exception)
 
     #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
