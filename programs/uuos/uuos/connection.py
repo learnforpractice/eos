@@ -12,7 +12,8 @@ import random
 from . import chain, chain_api
 from .native_object import *
 from pyeoskit import wallet
-from .application import get_app, RawTransactionMessage
+from .application import get_app
+from .producer import RawTransactionMessage
 
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())

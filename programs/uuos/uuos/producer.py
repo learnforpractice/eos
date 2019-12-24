@@ -1,5 +1,5 @@
 import asyncio
-from .application import Application
+from .application import get_app, Application
 
 from _uuos import (
     producer_new,
@@ -19,6 +19,10 @@ from _uuos import (
 from .native_object import ProducerParams
 import ujson as json
 from . import chain
+
+import logging
+logger=logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
 
 '''
    struct producer_params {
@@ -81,6 +85,70 @@ class PendingBlockMode:
 block_interval_ms = 500
 block_interval_us = block_interval_ms*1000
 
+
+
+class Hub(object):
+
+    def __init__(self):
+        self.subscriptions = set()
+
+    def publish(self, message):
+        for queue in self.subscriptions:
+            queue.put_nowait(message)
+
+class Subscription(object):
+
+    def __init__(self, hub):
+        self.hub = hub
+        self.queue = asyncio.Queue()
+        self.hub.subscriptions.add(self.queue)
+
+    def get_queue(self):
+        return self.queue
+
+    def __enter__(self):
+        self.hub.subscriptions.add(self.queue)
+        return self.queue
+
+    def __exit__(self, type, value, traceback):
+        self.hub.subscriptions.remove(self.queue)
+
+class Message(object):
+    type_transaction = 0
+    type_raw_transaction = 1
+    def __init__(self, message_type, data):
+        self.type = message_type
+        self.data = data
+        self.event = asyncio.Event()
+        self.result = None
+
+    def get_data(self):
+        return self.data
+
+    def publish(self):
+        get_app().producer.publish_message(self)
+
+    def notify(self, result):
+        self.result = result
+        self.event.set()
+
+    async def wait(self):
+        await self.event.wait()
+        return self.result
+
+class TransactionMessage(Message):
+
+    def __init__(self, packed_trx):
+        super().__init__(Message.type_transaction, packed_trx)
+        get_app().producer.publish_message(self)
+
+class RawTransactionMessage(Message):
+
+    def __init__(self, packed_trx):
+        super().__init__(Message.type_raw_transaction, packed_trx)
+        get_app().producer.publish_message(self)
+
+
 class Producer(object):
     def __init__(self, args):
         print('+++producer:', args.enable_stale_production)
@@ -92,6 +160,114 @@ class Producer(object):
         cfg = json.dumps(config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
         self.args = args
+
+        self.pending_trx = {}
+
+        self.hub = Hub()
+        self.subs = Subscription(self.hub)
+        self.trx_queue = self.subs.get_queue()
+
+#        self.task = asyncio.create_task(self.handle_message())
+
+
+    def publish_message(self, msg):
+        self.hub.publish(msg)
+
+    async def handle_message(self):
+        with Subscription(self.hub) as queue:
+            while True:
+                msg = await queue.get()
+#                logger.info(f'process message {msg}')
+                try:
+                    if msg.type == Message.type_transaction:
+                        self.start_block()
+                        ret, result, raw_packed_trx = self.process_incomming_transaction(msg.data.decode('utf8'))
+                        #TODO: check failure of process transaction
+                        msg.notify(result)
+                        # continue
+                        if ret == 0:
+                            continue
+                        for c in get_app().connections:
+                            c.send_transaction(raw_packed_trx)
+                    elif msg.type == Message.type_raw_transaction:
+                        if chain.is_building_block():
+                            ret, result = self.process_raw_transaction(msg.data)
+                            msg.notify(result)
+                            if ret == 0:
+                                continue
+                            for c in get_app().connections:
+                                c.send_transaction(msg.data)
+                except Exception as e:
+                    logger.exception(e)
+        logger.info('+++++++++++++handle message returned!')
+        raise Exception('handle message return')
+
+    def process_trx(self, msg):
+#        logger.info(f'process message {msg}')
+        try:
+            if msg.type == Message.type_transaction:
+                self.start_block()
+                ret, result, raw_packed_trx = self.process_incomming_transaction(msg.data.decode('utf8'))
+                #TODO: check failure of process transaction
+                msg.notify(result)
+                # continue
+                if ret == 0:
+                    return
+                for c in get_app().connections:
+                    c.send_transaction(raw_packed_trx)
+            elif msg.type == Message.type_raw_transaction:
+                if chain.is_building_block():
+                    ret, result = self.process_raw_transaction(msg.data)
+                    if not ret:
+                        print(result)
+                    msg.notify(result)
+                    if ret == 0:
+                        return
+                    for c in get_app().connections:
+                        c.send_transaction(msg.data)
+        except Exception as e:
+            logger.exception(e)
+
+    async def run(self):
+        # if not self.args.producer_name:
+        #     return
+        while True:
+            result = self.start_block()
+            logger.info(f'+++++++++++++{result}')
+            if result == 0 or result == 3: #succeeded
+                while not self.trx_queue.empty():
+                    msg = await self.trx_queue.get()
+                    self.process_trx(msg)
+
+                mode = self.get_pending_block_mode()
+                if mode == 0: #producing
+                    deadline = self.calc_pending_block_deadline_time()
+                    delay = deadline - self.now_time()
+                    print('++++++delay:',delay/1e6)
+                    await asyncio.sleep(delay/1e6)
+                    self.maybe_produce_block()
+                    continue
+#                    deadline = self.calc_pending_block_deadline_time()
+#                    delay = deadline - self.now_time()
+
+#                    task = asyncio.create_task(self.produce_block(delay))
+            elif result == 1: #failed
+                pass
+                # await asyncio.sleep(0.5)
+            elif result == 2: #waiting
+                pass
+                # await asyncio.sleep(0.5)
+            elif result == 3: #exhausted
+                pass
+            await asyncio.sleep(0.5)
+        # while True:
+        #     if not self.can_produce_block():
+        #         await asyncio.sleep(0.2)
+
+        #     self.start_produce_block()
+        #     sleep_time = self.get_sleep_time()
+        #     await asyncio.sleep(sleep_time)
+        #     self.end_produce_block()
 
     def __delete__(self):
         producer_free(self.ptr)
@@ -150,39 +326,4 @@ class Producer(object):
     def create_snapshot(self):
         return producer_create_snapshot(self.ptr)
 
-    async def run(self):
-        if not self.args.producer_name:
-            return
-        while True:
-            result = self.start_block()
-            if result == 0 or result == 3: #succeeded
-                mode = self.get_pending_block_mode()
-                if mode == 0: #producing
-                    deadline = self.calc_pending_block_deadline_time()
-                    delay = deadline - self.now_time()
-                    print('++++++delay:',delay/1e6)
-                    await asyncio.sleep(delay/1e6)
-                    self.maybe_produce_block()
-                    continue
-#                    deadline = self.calc_pending_block_deadline_time()
-#                    delay = deadline - self.now_time()
-
-#                    task = asyncio.create_task(self.produce_block(delay))
-            elif result == 1: #failed
-                pass
-                # await asyncio.sleep(0.5)
-            elif result == 2: #waiting
-                pass
-                # await asyncio.sleep(0.5)
-            elif result == 3: #exhausted
-                pass
-            await asyncio.sleep(0.5)
-        # while True:
-        #     if not self.can_produce_block():
-        #         await asyncio.sleep(0.2)
-
-        #     self.start_produce_block()
-        #     sleep_time = self.get_sleep_time()
-        #     await asyncio.sleep(sleep_time)
-        #     self.end_produce_block()
 
