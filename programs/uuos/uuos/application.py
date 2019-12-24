@@ -39,6 +39,7 @@ class Subscription(object):
 
 class Message(object):
     type_transaction = 0
+    type_raw_transaction = 1
     def __init__(self, message_type, data):
         self.type = message_type
         self.data = data
@@ -47,6 +48,9 @@ class Message(object):
 
     def get_data(self):
         return self.data
+
+    def publish(self):
+        get_app().publish_message(self)
 
     def notify(self, result):
         self.result = result
@@ -61,6 +65,13 @@ class TransactionMessage(Message):
     def __init__(self, packed_trx):
         super().__init__(Message.type_transaction, packed_trx)
         get_app().publish_message(self)
+
+class RawTransactionMessage(Message):
+
+    def __init__(self, packed_trx):
+        super().__init__(Message.type_raw_transaction, packed_trx)
+        get_app().publish_message(self)
+
 
 class Application(object):
 
@@ -78,12 +89,22 @@ class Application(object):
                 try:
                     if msg.type == Message.type_transaction:
                         self.producer.start_block()
-                        result, raw_packed_trx = self.producer.process_incomming_transaction(msg.data.decode('utf8'))
+                        ret, result, raw_packed_trx = self.producer.process_incomming_transaction(msg.data.decode('utf8'))
                         #TODO: check failure of process transaction
                         msg.notify(result)
                         # continue
+                        if ret == 0:
+                            continue
                         for c in self.connections:
                             c.send_transaction(raw_packed_trx)
+                    elif msg.type == Message.type_raw_transaction:
+                        self.producer.start_block()
+                        ret, result = self.producer.process_raw_transaction(msg.data)
+                        msg.notify(result)
+                        if ret == 0:
+                            continue
+                        for c in self.connections:
+                            c.send_transaction(msg.data)
                 except Exception as e:
                     logger.exception(e)
         logger.info('+++++++++++++handle message returned!')
