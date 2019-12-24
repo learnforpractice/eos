@@ -1,5 +1,6 @@
 import os
 import io
+import gc
 import time
 import sys
 import ujson as json
@@ -19,6 +20,8 @@ from uuos.native_object import *
 from uuos import application
 
 from _uuos import set_accepted_block_callback
+
+gc.set_debug(gc.DEBUG_STATS)
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
