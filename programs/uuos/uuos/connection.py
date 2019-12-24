@@ -12,7 +12,7 @@ import random
 from . import chain, chain_api
 from .native_object import *
 from pyeoskit import wallet
-from .application import get_app
+from .application import get_app, RawTransactionMessage
 
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -446,8 +446,8 @@ class Connection(object):
 
             num, block_id = self.producer.on_incoming_block(msg)
             if num == 0:
-                logger.info("something went wrong, close connection!")
-                return False
+                logger.info("something went wrong, ignore it!")
+                return True
 #                logger.info(f"{num}, {block_id}")
 #                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
             if num % 10000 == 0:
@@ -467,4 +467,5 @@ class Connection(object):
             if DEBUG:
                 msg = PackedTransactionMessage(msg)
                 logger.info(msg)
+            RawTransactionMessage(msg)
         return True
