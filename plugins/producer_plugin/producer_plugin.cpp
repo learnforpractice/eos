@@ -444,7 +444,7 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
 
       void process_incoming_transaction_async(const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next) {
          chain::controller& chain = chain_plug->chain();
-         elog("++++chain.is_building_block() ${b}", ("b", chain.is_building_block()));
+//         elog("++++chain.is_building_block() ${b}", ("b", chain.is_building_block()));
          if (!chain.is_building_block()) {
             _pending_incoming_transactions.emplace_back(trx, persist_until_expired, next);
             return;
@@ -1440,7 +1440,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
    if( !_production_enabled ) {
       _pending_block_mode = pending_block_mode::speculating;
    } else if( _producers.find(scheduled_producer.producer_name) == _producers.end()) {
-      elog("speculating...");
+      dlog("speculating...");
       _pending_block_mode = pending_block_mode::speculating;
    } else if (signature_provider_itr == _signature_providers.end()) {
       elog("Not producing block because I don't have the private key for ${scheduled_key}", ("scheduled_key", scheduled_producer.block_signing_key));
