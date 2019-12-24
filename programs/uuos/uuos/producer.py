@@ -137,7 +137,7 @@ class Producer(object):
         return producer_process_incomming_transaction(self.ptr, trx)
     
     def process_raw_transaction(self, raw_packed_trx):
-        producer_process_raw_transaction(self.ptr, raw_packed_trx)
+        return producer_process_raw_transaction(self.ptr, raw_packed_trx)
 
     def start_production_loop(self):
         pass
