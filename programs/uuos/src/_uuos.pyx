@@ -44,8 +44,6 @@ cdef extern from "native_object.hpp":
     void    chain_api_get_required_keys_(void *ptr, string& params, string& result)
     void    chain_api_get_transaction_id_(void *ptr, string& params, string& result)
 
-    void chain_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id)
-
     uint32_t    chain_fork_db_pending_head_block_num_(void *ptr)
     uint32_t    chain_last_irreversible_block_num_(void *ptr)
     void        chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
@@ -67,8 +65,8 @@ cdef extern from "native_object.hpp":
     bool        producer_maybe_produce_block_(void *ptr)
     uint64_t    producer_now_time_()
     int         producer_get_pending_block_mode_(void *ptr)
-    void        producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out)
-    void        producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out)
+    int         producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out)
+    int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out)
     int         producer_create_snapshot_(void *ptr, string& out)
 
 cpdef void hello(str strArg):
@@ -95,12 +93,6 @@ def chain_new(string& config, string& protocol_features_dir, string& snapshot_di
 
 def chain_free(unsigned long long  ptr):
     chain_free_(<void *>ptr);
-
-def chain_on_incoming_block(unsigned long long ptr, string& packed_signed_block):
-    cdef uint32_t block_num = 0
-    cdef string block_id
-    chain_on_incoming_block_(<void *>ptr, packed_signed_block, block_num, block_id)
-    return (block_num, block_id)
 
 def chain_api_get_info(uint64_t chain_ptr):
     cdef string info
@@ -280,13 +272,13 @@ def producer_get_pending_block_mode(uint64_t ptr):
 def producer_process_incomming_transaction(uint64_t ptr, string& packed_trx):
     cdef string out
     cdef string raw_packed_trx
-    producer_process_incomming_transaction_(<void *>ptr, packed_trx, raw_packed_trx, out)
-    return out, PyBytes_FromStringAndSize(raw_packed_trx.c_str(), raw_packed_trx.size())
+    err = producer_process_incomming_transaction_(<void *>ptr, packed_trx, raw_packed_trx, out)
+    return err, out, PyBytes_FromStringAndSize(raw_packed_trx.c_str(), raw_packed_trx.size())
 
 def producer_process_raw_transaction(uint64_t ptr, string& raw_packed_trx):
     cdef string out
-    producer_process_raw_transaction_(<void *>ptr, raw_packed_trx, out)
-    return PyBytes_FromStringAndSize(out.c_str(), out.size())
+    err = producer_process_raw_transaction_(<void *>ptr, raw_packed_trx, out)
+    return err, out
 
 def producer_create_snapshot(uint64_t ptr):
     cdef string out
