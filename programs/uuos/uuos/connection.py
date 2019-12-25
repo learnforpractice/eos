@@ -235,7 +235,7 @@ class Connection(object):
 #        msg.time = int(time.time()*1000000000)
         
         msg.node_id = g_node_id
-        msg.p2p_address = get_app().args.p2p_listen_endpoint + " - " + msg.node_id[:8]
+        msg.p2p_address = get_app().config.p2p_listen_endpoint + " - " + msg.node_id[:8]
         peer_public_key = "EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH"
         peer_private_key = "5J8Jz3iicC4J9gCiUqZqJtNx3Q6Pa3BBaDmiu4GNeBUPDHmmrsm"
 
