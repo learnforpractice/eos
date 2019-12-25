@@ -24,7 +24,7 @@ class Config(object):
         parser.add_argument('--p2p-peer-address',       type=str, default=[], action='append',   help='p2p peer address')
         parser.add_argument('--network',                type=str, default='test',                help='network: uuos, eos, test')
         parser.add_argument('--max-clients',            type=int, default=25,                    help='Maximum number of clients from which connections are accepted, use 0 for no limit')
-        parser.add_argument('--peer-private-key',       type=str, default='',                    help='peer private key')
+        parser.add_argument('--peer-private-key',       type=str, default='[]',                    help='peer private key')
         parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
         parser.add_argument('--p2p-max-nodes-per-host',   type=int, default=1,                   help ='Maximum number of client nodes from any single IP address')
 

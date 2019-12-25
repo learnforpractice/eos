@@ -53,7 +53,7 @@ class Connection(object):
         self.client_mode = client_mode
 
         self.timeout = False
-        self.time_counter = 5
+        self.time_counter = 30
         self.message_task = None
 
     async def connect(self):
@@ -73,7 +73,8 @@ class Connection(object):
     async def start(self):
         logger.info('++++++++++connection start')
         self.send_handshake()
-        ret = await self.handle_message()
+        msg_type, msg = await self.read_message()
+        ret = await self.handle_message(msg_type, msg)
         logger.info(f'handle_message return {ret}')
         if not ret:
             return False
@@ -249,22 +250,36 @@ class Connection(object):
         
         msg.node_id = g_node_id
         msg.p2p_address = get_app().config.p2p_listen_endpoint + " - " + msg.node_id[:8]
-        peer_public_key = "EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH"
-        peer_private_key = "5J8Jz3iicC4J9gCiUqZqJtNx3Q6Pa3BBaDmiu4GNeBUPDHmmrsm"
+        peer_key = get_app().config.peer_private_key
+        peer_key = json.loads(peer_key)
+        if peer_key:
+            peer_public_key = peer_key[0]
+            peer_private_key = peer_key[1]
+        else:
+            peer_public_key = "EOS5vLqH3A65RYjiKGzyoHVg2jGHQFgTXK6Zco1qCt2oqMiCnsczH"
+            peer_private_key = "5J8Jz3iicC4J9gCiUqZqJtNx3Q6Pa3BBaDmiu4GNeBUPDHmmrsm"
+            peer_public_key = "EOS1111111111111111111111111111111114T1Anm"
+            peer_private_key = "1111111111111111111111111111111111111"
 
         msg.key = peer_public_key
-        if os.path.exists('a.wallet'):
-            os.remove('a.wallet')
-        wallet.create('a')
-        wallet.import_key('a', peer_private_key)
+
         handshake_time = int(time.time()*1000000000)
         msg.time = str(handshake_time)
-        h = hashlib.sha256()
-        data = int.to_bytes(handshake_time, 8, 'little')
-        h.update(data)
-        msg.token = h.hexdigest()
-        msg.sig = wallet.sign_digest(h.digest(), peer_public_key)
 
+        if peer_key:
+            h = hashlib.sha256()
+            data = int.to_bytes(handshake_time, 8, 'little')
+            h.update(data)
+            msg.token = h.hexdigest()
+
+            if os.path.exists('a.wallet'):
+                os.remove('a.wallet')
+            wallet.create('a')
+            wallet.import_key('a', peer_private_key)
+            msg.sig = wallet.sign_digest(h.digest(), peer_public_key)
+        else:
+            msg.token = '0000000000000000000000000000000000000000000000000000000000000000'
+            msg.sig = 'SIG_K1_111111111111111111111111111111111111111111111111111111111111111116uk5ne'
         logger.info(f'++++send handshake {msg}')
         msg = msg.pack()
         self.write(msg)
@@ -300,15 +315,16 @@ class Connection(object):
 
     async def handle_message_loop(self):
         try:
-            while await self.handle_message():
-                pass
+            while True:
+                msg_type, msg = await self.read_message()
+                if not await self.handle_message(msg_type, msg):
+                    break
         except Exception as e:
             print(e)
         logger.info('exit handle message loop')
         self.close()
 
-    async def handle_message(self):
-        msg_type, msg = await self.read_message()
+    async def handle_message(self, msg_type, msg):
         if msg_type is None or msg is None:
             self.close()
             return

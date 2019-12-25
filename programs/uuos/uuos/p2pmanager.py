@@ -17,11 +17,11 @@ class P2pManager(object):
     async def monitor(self):
         while True:
             await asyncio.sleep(2)
-            logger.info('++++++check connection')
+#            logger.info('++++++check connection')
             timeout_connections = set()
             for c in self.connections:
                 c.time_counter -= 1
-                logger.info(f'++++++time_counter {c.time_counter}')
+#                logger.info(f'++++++time_counter {c.time_counter}')
                 if c.time_counter > 0:
                     continue
                 c.time_counter = 5
@@ -107,7 +107,8 @@ class P2pManager(object):
                 if not ret:
                     return
                 c.send_handshake()
-                ret = await c.handle_message()
+                msg_type, msg = await c.read_message()
+                ret = await c.handle_message(msg_type, msg)
                 c.close()
                 if not ret:
                     return
@@ -147,16 +148,34 @@ class P2pManager(object):
         print(f"connection from {addr!r}")
         print(f"connection from {addr}")
 
+        if self.config.allowed_connection == 'any': #specified any
+            pass
+
         host = writer.get_extra_info('peername')
         logger.info(f'++++host:{host}')
         sock = writer.get_extra_info('socket')
         if sock is not None:
             logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
         c = Connection(host[0], host[1], False)
+        try:
+            msg_type, msg = await asyncio.wait_for(c.read_message(), timeout=5.0)
+            if msg is None or msg_type is None:
+                return
+            if not msg_type == 0:
+                logger.info('bad message, not handshake message')
+                return
+            handshake_message = HandshakeMessage.unpack(msg)
+            if handshake_message.generation == 1:
+                pass
+            #TODO verify handshake message
+            c.send_handshake()
+            c.handle_message(msg_type, msg)
+        except asyncio.TimeoutError:
+            logger.info('timeout!')
+            return
         self.p2p_manager.add(c)
         c.reader = reader
         c.writer = writer
-        c.send_handshake()
         self.add(c)
         task = asyncio.create_task(self.handle_connection(c))
 
@@ -193,6 +212,7 @@ class P2pManager(object):
             if not c.last_handshake:
                 continue
             if c.catch_up:
+                c.timeout = False
 #                print('+++block:',block)
                 c.send_block(block)
 
