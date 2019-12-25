@@ -5,10 +5,10 @@ class ConnectionManager(object):
         self.config = config
         self.connections = set()
 
-    def add_connection(self, c):
+    def add(self, c):
         self.connections.add(c)
     
-    def remove_connection(self, c):
+    def remove(self, c):
         self.connections.remove(c)
 
     def broadcast_trx(self, trx):

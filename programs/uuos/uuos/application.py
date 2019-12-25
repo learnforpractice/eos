@@ -20,6 +20,9 @@ class Application(object):
     def __init__(self):
         pass
 
+    def get_connection_manager(self):
+        pass
+
 __all__ = {
     'Application',
     'app',
