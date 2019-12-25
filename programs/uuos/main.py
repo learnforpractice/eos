@@ -18,6 +18,7 @@ from uuos.producer import Producer
 from uuos.rpc_server import rpc_server
 from uuos.native_object import *
 from uuos import application
+from uuos.config import Config
 
 from _uuos import set_accepted_block_callback
 
@@ -175,9 +176,14 @@ class UUOSMain(application.Application):
         self.client_count += 1
         addr = writer.get_extra_info('peername')
         print(f"connection from {addr!r}")
+        print(f"connection from {addr}")
+
         host = writer.get_extra_info('peername')
-        logger.info(host)
-        c = Connection(host, 0)
+        logger.info(f'++++host:{host}')
+        sock = writer.get_extra_info('socket')
+        if sock is not None:
+            logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
+        c = Connection(*host)
         c.reader = reader
         c.writer = writer
         c.send_handshake()
@@ -366,48 +372,12 @@ class UUOSMain(application.Application):
         if self.producer:
             del self.producer
 
-def str2bool(v):
-  return v.lower() in ("yes", "true", "t", "1")
-
 if __name__ == "__main__":
     print(os.getpid())
 #    time.sleep(10)
-    parser = argparse.ArgumentParser(description='')
-    parser.register('type','bool',str2bool) # add type keyword to registries
-    parser.add_argument('--data-dir',               type=str, default='dd',                  help='data directory')
-    parser.add_argument('--config-dir',             type=str, default='cd',                  help='config directory')
-    parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',      help='http server address')
-
-    #p2p
-    parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:9877',      help='p2p listen endpoint')
-    parser.add_argument('--p2p-peer-address',       type=str, default=[], action='append',   help='p2p peer address')
-    parser.add_argument('--network',                type=str, default='test',                help='network: uuos, eos, test')
-    parser.add_argument('--max-clients',            type=int, default=25,                    help='Maximum number of clients from which connections are accepted, use 0 for no limit')
-    parser.add_argument('--peer-private-key',       type=str, default='',                    help='peer private key')
-    parser.add_argument('--peer-key',               type=str, default=[], action='append',   help='peer key')
-    parser.add_argument('--p2p-max-nodes-per-host',   type=int, default=1,                   help ='Maximum number of client nodes from any single IP address')
-
-    #chain
-    parser.add_argument('--hard-replay-blockchain', default=False, action="store_true",      help='clear chain state database, recover as many blocks as possible from the block log, and then replay those blocks')
-    parser.add_argument('--replay-blockchain',      default=False, action="store_true",      help='clear chain state database and replay all blocks')
-    parser.add_argument('--fix-reversible-blocks',  default=False, action="store_true",      help='recovers reversible block database if that database is in a bad state')
-    parser.add_argument('--uuos-mainnet',           type=str2bool, default=True,             help='uuos main network')
-    parser.add_argument('--snapshot',               type=str,      default='',               help='File to read Snapshot State from')
-    parser.add_argument('--snapshots-dir',          type=str,      default='snapshots',      help='the location of the snapshots directory (absolute path or relative to application data dir)')
-    parser.add_argument('--chain-state-db-size-mb', type=int,      default=300,              help='the location of the snapshots directory (absolute path or relative to application data dir)')
-
-
-    #producer
-    parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
-    parser.add_argument('-e', '--enable-stale-production',    default=False, action="store_true", help='Enable block production, even if the chain is stale.')
-
-
-    args = parser.parse_args()
-    print('++++peer key:', args.peer_key)
-#    print(args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
-    print(args.p2p_peer_address)
-    print(args.data_dir)
-    print(args.uuos_mainnet)
+    config = Config()
+    args = config.get_config()
+    
     if args.replay_blockchain:
         state_dir = os.path.join(args.data_dir, 'state')
         import shutil
