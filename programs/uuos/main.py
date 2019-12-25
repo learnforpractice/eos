@@ -268,7 +268,7 @@ class UUOSMain(application.Application):
             await task
         print(self.delays)
 
-    async def uuos_main(self):
+    async def connect_to_peers(self):
         for address in self.args.p2p_peer_address:
             try:
                 print(address)
@@ -343,7 +343,7 @@ class UUOSMain(application.Application):
         task = asyncio.create_task(server)
         tasks.append(task)
         
-        task = asyncio.create_task(uuos.uuos_main())
+        task = asyncio.create_task(uuos.connect_to_peers())
         tasks.append(task)
 
         task = asyncio.create_task(uuos.p2p_server())
@@ -357,7 +357,7 @@ class UUOSMain(application.Application):
 
 #        loop.set_exception_handler(uuos.handle_exception)
 
-    #    res = await asyncio.gather(uuos_main(args), app.server(host=host, port=port), return_exceptions=True)
+    #    res = await asyncio.gather(connect_to_peers(args), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
         print(res)
         return res
