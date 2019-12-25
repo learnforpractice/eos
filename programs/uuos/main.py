@@ -19,7 +19,7 @@ from uuos.rpc_server import rpc_server
 from uuos.native_object import *
 from uuos import application
 from uuos.config import Config
-
+from uuos.connectionmanager import ConnectionManager
 from _uuos import set_accepted_block_callback
 
 gc.set_debug(gc.DEBUG_STATS)
@@ -113,6 +113,7 @@ class UUOSMain(application.Application):
         self.client_count = 0
         self.chain_ptr = None
         self.producer = None
+        self.cm = ConnectionManager(config)
         UUOSMain.uuos = self
 
         cfg = ControllerConfig(default_config)
