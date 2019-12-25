@@ -86,6 +86,14 @@ block_interval_ms = 500
 block_interval_us = block_interval_ms*1000
 
 
+g_producer = None
+
+def set_producer(producer):
+    global g_producer
+    g_producer = producer
+
+def get_producer():
+    pass
 
 class Hub(object):
 
