@@ -55,12 +55,12 @@ class Config(object):
         
         configs = []
         if not config_file:
-            configs = sys.argv[1:]
+            args = sys.argv[1:]
             index = 0
-            for arg in configs:
+            for arg in args:
                 index += 1
                 if arg.startswith('--config-dir'):
-                    self.config_dir = configs[index]
+                    self.config_dir = args[index]
                     break
             config_file = os.path.join(self.config_dir, 'config.ini')
 

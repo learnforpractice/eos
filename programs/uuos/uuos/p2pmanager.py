@@ -12,6 +12,39 @@ class P2pManager(object):
         self.config = config
         self.connections = set()
         set_accepted_block_callback(self.on_accepted_block)
+        self.monitor_task = asyncio.create_task(self.monitor())
+
+    async def monitor(self):
+        while True:
+            await asyncio.sleep(2)
+            logger.info('++++++check connection')
+            timeout_connections = set()
+            for c in self.connections:
+                c.time_counter -= 1
+                logger.info(f'++++++time_counter {c.time_counter}')
+                if c.time_counter > 0:
+                    continue
+                c.time_counter = 5
+                if not c.timeout:
+                    c.timeout = True
+                    continue
+                c.close()
+                timeout_connections.add(c)
+
+            for c in timeout_connections:
+                if not c.client_mode:
+                    continue
+                logger.info(f'reconnec to {c.host}:{c.port}')
+                new_connection = Connection(c.host, c.port)
+                ret = await new_connection.connect()
+                if not ret:
+                    continue
+                ret = await new_connection.start()
+                if not ret:
+                    continue
+                self.add(new_connection)
+                self.connections.remove(c)
+
 
     def add(self, c):
         self.connections.add(c)
@@ -137,15 +170,15 @@ class P2pManager(object):
             await server.serve_forever()
 
     async def connect_to_peers(self):
+        logger.info(self.config.p2p_peer_address)
         for address in self.config.p2p_peer_address:
             try:
-                print(address)
+                logger.info(address)
                 host, port = address.split(':')
                 c = Connection(host, port)
                 ret = await c.connect()
                 if not ret:
                     continue
-                print('send hashshake message to ', address)
                 ret = await c.start()
                 if ret:
                     self.add(c)

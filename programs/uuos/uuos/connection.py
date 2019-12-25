@@ -8,6 +8,7 @@ import logging
 import asyncio
 import hashlib
 import random
+import traceback
 
 from . import chain, chain_api
 from .native_object import *
@@ -52,30 +53,12 @@ class Connection(object):
         self.client_mode = client_mode
 
         self.timeout = False
-#        self.monitor_task = asyncio.create_task(self.monitor())
+        self.time_counter = 5
         self.message_task = None
-
-    async def monitor(self):
-        while True:
-            self.timeout = True
-            await asyncio.sleep(10)
-            logger.info(f'+++timeout {self.timeout}')
-            if not self.timeout:
-                continue
-            self.close()
-
-            logger.info('wait for message task')
-            await self.message_task
-            self.message_task = None
-            ret = await c.connect()
-            logger.info(f'reconnect to {self.host}:{self.port} {ret}')
-            if not ret:
-                continue
-            await c.start()
-            logger.info('restart connection done!')
 
     async def connect(self):
         logger.info(f'++++++connect to {self.host}:{self.port}')
+#        traceback.print_stack()
         try:
             self.reader, self.writer = await asyncio.open_connection(self.host, self.port, limit=1024*1024)
             return True
@@ -91,9 +74,10 @@ class Connection(object):
         logger.info('++++++++++connection start')
         self.send_handshake()
         ret = await self.handle_message()
-        assert not self.message_task
+        logger.info(f'handle_message return {ret}')
         if not ret:
             return False
+        logger.info('+++++=create handle message loop task')
         self.message_task = asyncio.create_task(self.handle_message_loop())
         return True
 
@@ -328,7 +312,7 @@ class Connection(object):
         if msg_type is None or msg is None:
             self.close()
             return
-
+#        logger.info(f'+++handle_message {msg_type} {msg}')
         self.timeout = False
         if msg_type == 0: #handshake_message_type
 #                logger.info('bad handshake_message')

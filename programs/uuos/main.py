@@ -170,7 +170,7 @@ class UUOSMain(application.Application):
         msg = context.get("exception", context["message"])
         logging.error(f"Caught exception: {msg}")
         logging.info("Shutting down...")
-        asyncio.create_task(self.shutdown(0, loop))
+#        asyncio.create_task(self.shutdown(0, loop))
 
     @classmethod
     async def main(cls, config, loop):
@@ -208,7 +208,7 @@ class UUOSMain(application.Application):
         tasks.append(task)
         # register accepted block callback
 
-#        loop.set_exception_handler(uuos.handle_exception)
+        loop.set_exception_handler(uuos.handle_exception)
 
     #    res = await asyncio.gather(connect_to_peers(config), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
