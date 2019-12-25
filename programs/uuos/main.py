@@ -113,7 +113,7 @@ class UUOSMain(application.Application):
         self.client_count = 0
         self.chain_ptr = None
         self.producer = None
-        self.cm = P2pManager(config)
+        self.p2p_manager = P2pManager(config)
         UUOSMain.uuos = self
 
         cfg = ControllerConfig(default_config)
@@ -151,7 +151,7 @@ class UUOSMain(application.Application):
         application.set_app(self)
 
     def get_p2p_manager(self):
-        return self.cm
+        return self.p2p_manager
 
     # async def handle_transaction(self):
     #     with Subscription(hub) as queue:
@@ -188,7 +188,7 @@ class UUOSMain(application.Application):
         if sock is not None:
             logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
         c = Connection(*host)
-        self.cm.add(c)
+        self.p2p_manager.add(c)
         c.reader = reader
         c.writer = writer
         c.send_handshake()
@@ -210,7 +210,7 @@ class UUOSMain(application.Application):
                 print(address)
                 host, port = address.split(':')
                 c = Connection(host, port)
-                self.cm.add(c)
+                self.p2p_manager.add(c)
                 ret = await c.connect()
                 if not ret:
                     continue
