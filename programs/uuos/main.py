@@ -20,7 +20,6 @@ from uuos.native_object import *
 from uuos import application
 from uuos.config import Config
 from uuos.p2pmanager import P2pManager
-from _uuos import set_accepted_block_callback
 
 gc.set_debug(gc.DEBUG_STATS)
 
@@ -108,7 +107,6 @@ class UUOSMain(application.Application):
     def __init__(self, config):
         super().__init__()
         self.config = config
-        self.connections = []
         self.tasks = []
         self.client_count = 0
         self.chain_ptr = None
@@ -153,77 +151,6 @@ class UUOSMain(application.Application):
     def get_p2p_manager(self):
         return self.p2p_manager
 
-    # async def handle_transaction(self):
-    #     with Subscription(hub) as queue:
-    #         while True:
-    #             msg = await queue.get()
-    #             for c in self.connections:
-    #                 c.send_transaction(msg)
-
-    def select_connection(self):
-        if not self.connections:
-            return None
-        return self.connections[0]
-
-    async def handle_connection(self, c):
-        try:
-            await c.handle_message_loop()
-        except Exception as e:
-            logger.exception(e)
-        finally:
-            self.client_count -= 1
-
-    async def handle_p2p_client(self, reader, writer):
-        if self.config.max_clients and self.client_count > self.config.max_clients:
-            writer.close()
-            return
-        self.client_count += 1
-        addr = writer.get_extra_info('peername')
-        print(f"connection from {addr!r}")
-        print(f"connection from {addr}")
-
-        host = writer.get_extra_info('peername')
-        logger.info(f'++++host:{host}')
-        sock = writer.get_extra_info('socket')
-        if sock is not None:
-            logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
-        c = Connection(*host)
-        self.p2p_manager.add(c)
-        c.reader = reader
-        c.writer = writer
-        c.send_handshake()
-        self.connections.append(c)
-        task = asyncio.create_task(self.handle_connection(c))
-
-    async def p2p_server(self):
-        address, port = self.config.p2p_listen_endpoint.split(':')
-        port = int(port)
-        server = await asyncio.start_server(self.handle_p2p_client, address, port)
-        addr = server.sockets[0].getsockname()
-        print(f'Serving on {addr}')
-        async with server:
-            await server.serve_forever()
-
-    async def connect_to_peers(self):
-        for address in self.config.p2p_peer_address:
-            try:
-                print(address)
-                host, port = address.split(':')
-                c = Connection(host, port)
-                self.p2p_manager.add(c)
-                ret = await c.connect()
-                if not ret:
-                    continue
-                self.connections.append(c)
-                print('send hashshake message to ', address)
-                await c.start()
-            except ConnectionResetError as e:
-                print(e)
-            except Exception as e:
-                print(e)
-#                logger.exception(e)
-        logger.info("uuos main task done!")
-
     async def shutdown(self, signal, loop):
         logger.info(f'Shutdown uuos {signal} {self.chain_ptr}')
         if self.chain_ptr:
@@ -232,21 +159,11 @@ class UUOSMain(application.Application):
         
         if self.producer:
             del self.producer
-        for c in self.connections:
-            logger.info(f'close {c.host}')
-            c.close()
+        self.p2p_manager.close()
         logger.info('Done!')
 #        self.reader.close()
 #        self.writer.close()
         import sys;sys.exit(0)
-
-    def on_accepted_block(self, block, num, block_id):
-        for c in self.connections:
-            if not c.last_handshake:
-                continue
-            if c.catch_up:
-#                print('+++block:',block)
-                c.send_block(block)
 
     def handle_exception(self, loop, context):
         # context["message"] will always be there; but context["exception"] may not
@@ -280,17 +197,16 @@ class UUOSMain(application.Application):
         task = asyncio.create_task(server)
         tasks.append(task)
         
-        task = asyncio.create_task(uuos.connect_to_peers())
+        task = asyncio.create_task(uuos.p2p_manager.connect_to_peers())
         tasks.append(task)
 
-        task = asyncio.create_task(uuos.p2p_server())
+        task = asyncio.create_task(uuos.p2p_manager.p2p_server())
         tasks.append(task)
 
 #        self.producer = Producer(self.config)
         task = asyncio.create_task(uuos.producer.run())
         tasks.append(task)
         # register accepted block callback
-        set_accepted_block_callback(uuos.on_accepted_block)
 
 #        loop.set_exception_handler(uuos.handle_exception)
 

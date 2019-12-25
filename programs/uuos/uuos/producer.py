@@ -195,7 +195,7 @@ class Producer(object):
                         # continue
                         if ret == 0:
                             continue
-                        for c in get_app().connections:
+                        for c in get_app().get_p2p_manager().connections:
                             c.send_transaction(raw_packed_trx)
                     elif msg.type == Message.type_raw_transaction:
                         if chain.is_building_block():
@@ -203,7 +203,7 @@ class Producer(object):
                             msg.notify(result)
                             if ret == 0:
                                 continue
-                            for c in get_app().connections:
+                            for c in get_app().get_p2p_manager().connections:
                                 c.send_transaction(msg.data)
                 except Exception as e:
                     logger.exception(e)
@@ -221,7 +221,7 @@ class Producer(object):
                 # continue
                 if ret == 0:
                     return
-                for c in get_app().connections:
+                for c in get_app().get_p2p_manager().connections:
                     c.send_transaction(raw_packed_trx)
             elif msg.type == Message.type_raw_transaction:
                 if chain.is_building_block():
@@ -231,7 +231,7 @@ class Producer(object):
                     msg.notify(result)
                     if ret == 0:
                         return
-                    for c in get_app().connections:
+                    for c in get_app().get_p2p_manger().connections:
                         c.send_transaction(msg.data)
         except Exception as e:
             logger.exception(e)

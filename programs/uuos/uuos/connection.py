@@ -32,7 +32,7 @@ def gen_node_id():
 g_node_id = gen_node_id()
 
 class Connection(object):
-    def __init__(self, host, port):
+    def __init__(self, host, port, client_mode=True):
         self.reader = None
         self.writer = None
         self.handshake_count = 0
@@ -49,8 +49,33 @@ class Connection(object):
         self.app = get_app()
         self.first_sync = True
         self.last_notice = None
+        self.client_mode = client_mode
+
+        self.timeout = False
+#        self.monitor_task = asyncio.create_task(self.monitor())
+        self.message_task = None
+
+    async def monitor(self):
+        while True:
+            self.timeout = True
+            await asyncio.sleep(10)
+            logger.info(f'+++timeout {self.timeout}')
+            if not self.timeout:
+                continue
+            self.close()
+
+            logger.info('wait for message task')
+            await self.message_task
+            self.message_task = None
+            ret = await c.connect()
+            logger.info(f'reconnect to {self.host}:{self.port} {ret}')
+            if not ret:
+                continue
+            await c.start()
+            logger.info('restart connection done!')
 
     async def connect(self):
+        logger.info(f'++++++connect to {self.host}:{self.port}')
         try:
             self.reader, self.writer = await asyncio.open_connection(self.host, self.port, limit=1024*1024)
             return True
@@ -63,10 +88,14 @@ class Connection(object):
         return False
 
     async def start(self):
+        logger.info('++++++++++connection start')
         self.send_handshake()
-        await self.handle_message()
-        print('handle message return')
-        task = asyncio.create_task(self.handle_message_loop())
+        ret = await self.handle_message()
+        assert not self.message_task
+        if not ret:
+            return False
+        self.message_task = asyncio.create_task(self.handle_message_loop())
+        return True
 
     async def read(self, length):
         buffer = io.BytesIO()
@@ -291,14 +320,16 @@ class Connection(object):
                 pass
         except Exception as e:
             print(e)
+        logger.info('exit handle message loop')
         self.close()
 
     async def handle_message(self):
         msg_type, msg = await self.read_message()
         if msg_type is None or msg is None:
-            logger.error('Fail to read msg')
             self.close()
             return
+
+        self.timeout = False
         if msg_type == 0: #handshake_message_type
 #                logger.info('bad handshake_message')
             self.last_handshake = msg = HandshakeMessage.unpack(msg)

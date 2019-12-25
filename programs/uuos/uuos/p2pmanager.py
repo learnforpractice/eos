@@ -1,9 +1,17 @@
+import asyncio
 from .connection import Connection
+from _uuos import set_accepted_block_callback
+
+import logging
+logger=logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
+
 class P2pManager(object):
     
     def __init__(self, config):
         self.config = config
         self.connections = set()
+        set_accepted_block_callback(self.on_accepted_block)
 
     def add(self, c):
         self.connections.add(c)
@@ -87,3 +95,75 @@ class P2pManager(object):
         for task in tasks:
             await task
         print(self.delays)
+
+
+    async def handle_connection(self, c):
+        try:
+            await c.handle_message_loop()
+        except Exception as e:
+            logger.exception(e)
+        finally:
+            self.client_count -= 1
+
+    async def handle_p2p_client(self, reader, writer):
+        if self.config.max_clients and self.client_count > self.config.max_clients:
+            writer.close()
+            return
+        self.client_count += 1
+        addr = writer.get_extra_info('peername')
+        print(f"connection from {addr!r}")
+        print(f"connection from {addr}")
+
+        host = writer.get_extra_info('peername')
+        logger.info(f'++++host:{host}')
+        sock = writer.get_extra_info('socket')
+        if sock is not None:
+            logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
+        c = Connection(host[0], host[1], False)
+        self.p2p_manager.add(c)
+        c.reader = reader
+        c.writer = writer
+        c.send_handshake()
+        self.add(c)
+        task = asyncio.create_task(self.handle_connection(c))
+
+    async def p2p_server(self):
+        address, port = self.config.p2p_listen_endpoint.split(':')
+        port = int(port)
+        server = await asyncio.start_server(self.handle_p2p_client, address, port)
+        addr = server.sockets[0].getsockname()
+        print(f'Serving on {addr}')
+        async with server:
+            await server.serve_forever()
+
+    async def connect_to_peers(self):
+        for address in self.config.p2p_peer_address:
+            try:
+                print(address)
+                host, port = address.split(':')
+                c = Connection(host, port)
+                ret = await c.connect()
+                if not ret:
+                    continue
+                print('send hashshake message to ', address)
+                ret = await c.start()
+                if ret:
+                    self.add(c)
+            except ConnectionResetError as e:
+                print(e)
+            except Exception as e:
+                print(e)
+#                logger.exception(e)
+
+    def on_accepted_block(self, block, num, block_id):
+        for c in self.connections:
+            if not c.last_handshake:
+                continue
+            if c.catch_up:
+#                print('+++block:',block)
+                c.send_block(block)
+
+    def close(self):
+        for c in self.connections:
+            logger.info(f'close {c.host}')
+            c.close()
