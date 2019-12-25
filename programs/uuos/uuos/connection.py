@@ -47,6 +47,8 @@ class Connection(object):
         self.port = port
         self.sync_msg = None
         self.app = get_app()
+        self.first_sync = True
+        self.last_notice = None
 
     async def connect(self):
         try:
@@ -256,10 +258,16 @@ class Connection(object):
 
     def start_sync(self):
         # print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
-        # start_block = chain.last_irreversible_block_num() + 1
-        start_block = chain.fork_db_pending_head_block_num() + 1
+        if self.first_sync:
+            start_block = chain.last_irreversible_block_num() + 1
+            self.first_sync = False
+        else:
+            start_block = chain.fork_db_pending_head_block_num() + 1
         end_block = start_block + sync_req_span
-        pending = self.last_notice.known_blocks['pending']
+        if self.last_notice:
+            pending = self.last_notice.known_blocks['pending']
+        else:
+            pending = self.last_handshake.head_num
         # if end_block > self.last_handshake.head_num:
         #     end_block = self.last_handshake.head_num
         if end_block > pending:
@@ -368,6 +376,7 @@ class Connection(object):
             self.last_notice = msg
             if pending > chain.fork_db_pending_head_block_num():
                 self.target = pending
+                logger.info(f'receive notice message: {msg}')
                 self.start_sync()
                 # request_msg = {
                 #     "req_trx":{
@@ -387,7 +396,6 @@ class Connection(object):
                 # }
                 # self.send_request_message(request_msg)
                 #self.send_handshake(c)
-            logger.info(f'receive notice message: {msg}')
             # msg = NoticeMessage({
             #     "known_trx":{
             #         "mode":0,
