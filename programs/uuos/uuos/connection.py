@@ -21,6 +21,7 @@ logger.addHandler(logging.StreamHandler())
 
 sync_req_span = 200
 max_package_size = 5*1024*1024
+max_time_interval = 30
 
 DEBUG = False
 
@@ -52,9 +53,11 @@ class Connection(object):
         self.last_notice = None
         self.client_mode = client_mode
 
-        self.timeout = False
-        self.time_counter = 30
+        self.time_counter = max_time_interval
         self.message_task = None
+
+    def reset_time_counter(self):
+        self.time_counter = max_time_interval
 
     async def connect(self):
         logger.info(f'++++++connect to {self.host}:{self.port}')
@@ -286,16 +289,19 @@ class Connection(object):
 
     def start_sync(self):
         # print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
-        if self.first_sync:
-            start_block = chain.last_irreversible_block_num() + 1
-            self.first_sync = False
-        else:
-            start_block = chain.fork_db_pending_head_block_num() + 1
-        end_block = start_block + sync_req_span
         if self.last_notice:
             pending = self.last_notice.known_blocks['pending']
         else:
             pending = self.last_handshake.head_num
+
+        if self.first_sync:
+            start_block = chain.last_irreversible_block_num() + 1
+            end_block = chain.fork_db_pending_head_block_num()
+            self.first_sync = False
+        else:
+            start_block = chain.fork_db_pending_head_block_num() + 1
+            end_block = start_block + sync_req_span
+
         # if end_block > self.last_handshake.head_num:
         #     end_block = self.last_handshake.head_num
         if end_block > pending:
@@ -329,7 +335,7 @@ class Connection(object):
             self.close()
             return
 #        logger.info(f'+++handle_message {msg_type} {msg}')
-        self.timeout = False
+        self.time_counter = max_time_interval
         if msg_type == 0: #handshake_message_type
 #                logger.info('bad handshake_message')
             self.last_handshake = msg = HandshakeMessage.unpack(msg)
@@ -493,7 +499,7 @@ class Connection(object):
             if num % 10000 == 0:
                 logger.info(f"{num}, {block_id}")
             # if self.target - num < 1000:
-            # logger.info(f"{num}, {block_id}")
+            logger.info(f"{num}, {block_id}")
             # if self.sync_msg:
             #     logger.info(f"{self.sync_msg.end_block} {num}")
             if self.sync_msg and self.sync_msg.end_block == num:

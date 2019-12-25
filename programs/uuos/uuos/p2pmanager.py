@@ -24,27 +24,24 @@ class P2pManager(object):
 #                logger.info(f'++++++time_counter {c.time_counter}')
                 if c.time_counter > 0:
                     continue
-                c.time_counter = 5
-                if not c.timeout:
-                    c.timeout = True
-                    continue
+                #too long to not receive a message, consider it as a dead connection
                 c.close()
                 timeout_connections.add(c)
 
             for c in timeout_connections:
-                if not c.client_mode:
-                    continue
-                logger.info(f'reconnec to {c.host}:{c.port}')
-                new_connection = Connection(c.host, c.port)
-                ret = await new_connection.connect()
-                if not ret:
-                    continue
-                ret = await new_connection.start()
-                if not ret:
-                    continue
-                self.add(new_connection)
-                self.connections.remove(c)
-
+                if c.client_mode:
+                    logger.info(f'reconnec to {c.host}:{c.port}')
+                    new_connection = Connection(c.host, c.port)
+                    ret = await new_connection.connect()
+                    if not ret:
+                        continue
+                    ret = await new_connection.start()
+                    if not ret:
+                        continue
+                    self.add(new_connection)
+                    self.connections.remove(c)
+                else:
+                    self.connections.remove(c)
 
     def add(self, c):
         self.connections.add(c)
@@ -212,7 +209,7 @@ class P2pManager(object):
             if not c.last_handshake:
                 continue
             if c.catch_up:
-                c.timeout = False
+                c.reset_time_counter()
 #                print('+++block:',block)
                 c.send_block(block)
 
