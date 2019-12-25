@@ -299,3 +299,30 @@ def set_accepted_block_callback(cb):
     g_accepted_block_cb = cb
 
 register_on_accepted_block_cb_()
+
+
+g_config = None
+def uuos_set_config(config):
+    global g_config
+    g_config = config
+
+cdef extern string uuos_config_get_str(option):
+    global g_config
+    cdef string ret
+    try:
+        value = getattr(g_config, option)
+        value = str(value)
+        ret = value
+    except Exception as e:
+        pass
+    return ret
+
+cdef extern int uuos_config_get_int(option):
+    global g_config
+    try:
+        value = getattr(g_config, option)
+        value = int(value)
+        return value
+    except Exception as e:
+        print(e)
+    return 0
