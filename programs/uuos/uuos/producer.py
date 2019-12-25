@@ -233,8 +233,8 @@ class Producer(object):
         #     return
         while True:
             result = self.start_block()
-            logger.info(f'+++++++++++++{result}')
-            if result == 0 or result == 3: #succeeded
+#            logger.info(f'+++++++++++++{result}')
+            if result == 0 or result == 3: #succeeded or exhausted
                 while not self.trx_queue.empty():
                     msg = await self.trx_queue.get()
                     self.process_trx(msg)
