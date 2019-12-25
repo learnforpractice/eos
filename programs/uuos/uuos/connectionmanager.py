@@ -1,7 +1,8 @@
 from .connection import Connection
 class ConnectionManager(object):
     
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.connections = set()
 
     def add_connection(self, c):

@@ -1,3 +1,4 @@
+import os
 import sys
 import argparse
 
@@ -11,6 +12,7 @@ def str2bool(v):
 
 class Config(object):
     def __init__(self, config_file = None):
+        self.config_dir = 'cd'
         parser = argparse.ArgumentParser(description='')
         parser.register('type','bool',str2bool) # add type keyword to registries
         parser.add_argument('--data-dir',               type=str, default='dd',                  help='data directory')
@@ -51,24 +53,33 @@ class Config(object):
         #--allowed-connection=any
         parser.add_argument('--allowed-connection', type=str, default='any', help='')
         
-        configs = None
-        if config_file:
+        configs = []
+        if not config_file:
+            configs = sys.argv[1:]
+            index = 0
+            for arg in configs:
+                index += 1
+                if arg.startswith('--config-dir'):
+                    self.config_dir = configs[index]
+                    break
+            config_file = os.path.join(self.config_dir, 'config.ini')
+
+        if os.path.exists(config_file):
             with open(config_file, 'r') as f:
                 configs = f.readlines()
                 configs = self.parse_config(configs)
-                configs.extend(sys.argv[1:])
-                self.args = parser.parse_args(configs)
-        else:
-            self.args = parser.parse_args(sys.argv[1:])
+        configs.extend(sys.argv[1:])
 
-        print('++++peer key:', self.args.peer_key)
-    #    print(self.args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
-        print(self.args.p2p_peer_address)
-        print(self.args.data_dir)
-        print(self.args.uuos_mainnet)
+        self._config = parser.parse_args(configs)
+
+        print('++++peer key:', self._config.peer_key)
+    #    print(self._config.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
+        print(self._config.p2p_peer_address)
+        print(self._config.data_dir)
+        print(self._config.uuos_mainnet)
 
     def get_config(self):
-        return self.args
+        return self._config
 
     def parse_config(self, configs):
         line = 0
@@ -94,6 +105,8 @@ class Config(object):
             if value[0] == '"' and value[-1] == '"':
                 value = value[1:-1]
             config = f'--{name}={value}'
+            if name == 'data-dir':
+                self.config_dir = value
             args.append(config)
         return args
 

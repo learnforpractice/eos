@@ -105,9 +105,9 @@ class Subscription():
 
 class UUOSMain(application.Application):
 
-    def __init__(self, args):
+    def __init__(self, config):
         super().__init__()
-        self.args = args
+        self.config = config
         self.connections = []
         self.tasks = []
         self.client_count = 0
@@ -118,33 +118,33 @@ class UUOSMain(application.Application):
         cfg = ControllerConfig(default_config)
         # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
-        cfg.blocks_dir = os.path.join(args.data_dir, 'blocks')
-        cfg.state_dir = os.path.join(args.data_dir, 'state')
-        if args.snapshot:
+        cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
+        cfg.state_dir = os.path.join(config.data_dir, 'state')
+        if config.snapshot:
             shared_memory_file = os.path.join(cfg.state_dir, 'shared_memory.bin')
             if os.path.exists(shared_memory_file):
                 raise Exception("Snapshot can only be used to initialize an empty database.")
 
-        cfg.state_size = args.chain_state_db_size_mb * 1024 * 1024
+        cfg.state_size = config.chain_state_db_size_mb * 1024 * 1024
 
-        print('args.uuos_mainnet', args.uuos_mainnet)
+        print('config.uuos_mainnet', config.uuos_mainnet)
         cfg.uuos_mainnet = False
-        if self.args.network == 'uuos':
+        if self.config.network == 'uuos':
             cfg.uuos_mainnet = True
             cfg.genesis = genesis_uuos
-        elif self.args.network == 'eos':
+        elif self.config.network == 'eos':
             cfg.genesis = genesis_eos
-        elif self.args.network == 'test':
+        elif self.config.network == 'test':
             pass
         else:
             raise Exception('unknown network')
 
         cfg = cfg.dumps()
         print(cfg)
-        self.chain_ptr = chain_new(cfg, args.config_dir, args.snapshot)
+        self.chain_ptr = chain_new(cfg, config.config_dir, config.snapshot)
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
-        self.producer = Producer(self.args)
+        self.producer = Producer(self.config)
         # self.hub = Hub()
 
         application.set_app(self)
@@ -170,7 +170,7 @@ class UUOSMain(application.Application):
             self.client_count -= 1
 
     async def handle_p2p_client(self, reader, writer):
-        if self.args.max_clients and self.client_count > self.args.max_clients:
+        if self.config.max_clients and self.client_count > self.config.max_clients:
             writer.close()
             return
         self.client_count += 1
@@ -191,7 +191,7 @@ class UUOSMain(application.Application):
         task = asyncio.create_task(self.handle_connection(c))
 
     async def p2p_server(self):
-        address, port = self.args.p2p_listen_endpoint.split(':')
+        address, port = self.config.p2p_listen_endpoint.split(':')
         port = int(port)
         server = await asyncio.start_server(self.handle_p2p_client, address, port)
         addr = server.sockets[0].getsockname()
@@ -269,7 +269,7 @@ class UUOSMain(application.Application):
         print(self.delays)
 
     async def connect_to_peers(self):
-        for address in self.args.p2p_peer_address:
+        for address in self.config.p2p_peer_address:
             try:
                 print(address)
                 host, port = address.split(':')
@@ -319,9 +319,9 @@ class UUOSMain(application.Application):
         asyncio.create_task(self.shutdown(0, loop))
 
     @classmethod
-    async def main(cls, args, loop):
+    async def main(cls, config, loop):
         try:
-            uuos = UUOSMain(args)
+            uuos = UUOSMain(config)
         except Exception as e:
             logger.info(f'+++exception:{e}')
             return
@@ -339,7 +339,7 @@ class UUOSMain(application.Application):
 #        tasks.append(task)
 
         uuos.producer.main = uuos
-        server = rpc_server(uuos.producer, loop, args.http_server_address)
+        server = rpc_server(uuos.producer, loop, config.http_server_address)
         task = asyncio.create_task(server)
         tasks.append(task)
         
@@ -349,7 +349,7 @@ class UUOSMain(application.Application):
         task = asyncio.create_task(uuos.p2p_server())
         tasks.append(task)
 
-#        self.producer = Producer(self.args)
+#        self.producer = Producer(self.config)
         task = asyncio.create_task(uuos.producer.run())
         tasks.append(task)
         # register accepted block callback
@@ -357,7 +357,7 @@ class UUOSMain(application.Application):
 
 #        loop.set_exception_handler(uuos.handle_exception)
 
-    #    res = await asyncio.gather(connect_to_peers(args), app.server(host=host, port=port), return_exceptions=True)
+    #    res = await asyncio.gather(connect_to_peers(config), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
         print(res)
         return res
@@ -376,25 +376,25 @@ if __name__ == "__main__":
     print(os.getpid())
 #    time.sleep(10)
     config = Config()
-    args = config.get_config()
+    config = config.get_config()
     
-    if args.replay_blockchain:
-        state_dir = os.path.join(args.data_dir, 'state')
+    if config.replay_blockchain:
+        state_dir = os.path.join(config.data_dir, 'state')
         import shutil
         shutil.rmtree(state_dir)
-        reversible_dir = os.path.join(args.data_dir, 'blocks/reversible')
+        reversible_dir = os.path.join(config.data_dir, 'blocks/reversible')
         shutil.rmtree(reversible_dir)
     # signal.signal(signal.SIGHUP, shutting_down)
     # signal.signal(signal.SIGTERM, shutting_down)
     # signal.signal(signal.SIGINT, shutting_down)
 
     try:
-        logger.info(args)
+        logger.info(config)
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(UUOSMain.main(args, loop))
-        # uuos = UUOSMain(args)
+        loop.run_until_complete(UUOSMain.main(config, loop))
+        # uuos = UUOSMain(config)
         # uuos.run(loop)
-        # asyncio.run(main(args))
+        # asyncio.run(main(config))
     except KeyboardInterrupt:
         logger.info("Processing interrupted")
     except Exception as e:

@@ -54,7 +54,7 @@ logger.addHandler(logging.StreamHandler())
 }
 '''
 
-config = dict(
+g_producer_config = dict(
     producers = [],
     signature_providers = ['EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV=KEY:5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'],
     greylist_account = [],
@@ -150,16 +150,16 @@ class RawTransactionMessage(Message):
 
 
 class Producer(object):
-    def __init__(self, args):
-        print('+++producer:', args.enable_stale_production)
-        config['production_enabled'] = args.enable_stale_production
-        config['producers'] = args.producer_name
-        config['snapshots_dir'] = args.snapshots_dir
-        config['data_dir'] = args.data_dir
+    def __init__(self, config):
+        print('+++producer:', config.enable_stale_production)
+        g_producer_config['production_enabled'] = config.enable_stale_production
+        g_producer_config['producers'] = config.producer_name
+        g_producer_config['snapshots_dir'] = config.snapshots_dir
+        g_producer_config['data_dir'] = config.data_dir
         
-        cfg = json.dumps(config)
+        cfg = json.dumps(g_producer_config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
-        self.args = args
+        self.config = config
 
         self.pending_trx = {}
 
@@ -229,7 +229,7 @@ class Producer(object):
             logger.exception(e)
 
     async def run(self):
-        # if not self.args.producer_name:
+        # if not self.config.producer_name:
         #     return
         while True:
             result = self.start_block()
