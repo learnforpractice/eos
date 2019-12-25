@@ -1,4 +1,10 @@
+import sys
 import argparse
+
+default_abi_serializer_max_time_ms = 15*1000
+default_state_guard_size      =    128*1024*1024#
+default_reversible_cache_size = 340*1024*1024 # 1MB * 340 blocks based on 21 producer BFT delay
+default_reversible_guard_size = 2*1024*1024 # 1MB * 340 blocks based on 21 producer BFT delay
 
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
@@ -35,25 +41,38 @@ class Config(object):
         parser.add_argument('-e', '--enable-stale-production',    default=False, action="store_true", help='Enable block production, even if the chain is stale.')
 
 
-        self.args = parser.parse_args()
+        parser.add_argument('--abi-serializer-max-time-ms',  type=int, default=default_abi_serializer_max_time_ms,         help='Override default maximum ABI serialization time allowed in ms')
+
+        parser.add_argument('--chain-state-db-guard-size-mb',type=int, default=default_state_guard_size//1024//1024,       help="Safely shut down node when free space remaining in the chain state database drops below this size (in MiB).")
+        parser.add_argument('--reversible-blocks-db-size-mb', type=int, default=default_reversible_cache_size//1024//1024, help="Maximum size (in MiB) of the reversible blocks database")
+        parser.add_argument('--reversible-blocks-db-guard-size-mb', type=int, default=default_reversible_guard_size//1024//1024, help="Safely shut down node when free space remaining in the reverseible blocks database drops below this size (in MiB).")
+        parser.add_argument('--plugin', type=str, action='append', help='')
+        # --plugin=eosio::net_api_plugin --plugin=eosio::chain_plugin --plugin=eosio::chain_api_plugin --plugin=eosio::producer_plugin --plugin=eosio::producer_api_plugin
+        #--allowed-connection=any
+        parser.add_argument('--allowed-connection', type=str, default='any', help='')
+        
+        configs = None
+        if config_file:
+            with open(config_file, 'r') as f:
+                configs = f.readlines()
+                configs = self.parse_config(configs)
+                configs.extend(sys.argv[1:])
+                self.args = parser.parse_args(configs)
+        else:
+            self.args = parser.parse_args(sys.argv[1:])
+
         print('++++peer key:', self.args.peer_key)
     #    print(self.args.data_dir, args.config_dir, args.http_server_address, args.p2p_listen_endpoint)
         print(self.args.p2p_peer_address)
         print(self.args.data_dir)
         print(self.args.uuos_mainnet)
-        
-        if not config_file:
-            return
 
-        with open(config_file, 'r') as f:
-            configs = f.readlines()
-            self.parse_config(configs)
-    
     def get_config(self):
         return self.args
 
     def parse_config(self, configs):
         line = 0
+        args = []
         for config in configs:
             line += 1
             config_bk = config
@@ -71,4 +90,10 @@ class Config(object):
             if not name:
                 raise Exception(f'bad config at line {line}')
             value = config[index+1:]
-            print(name, value)
+            value = value.strip()
+            if value[0] == '"' and value[-1] == '"':
+                value = value[1:-1]
+            config = f'--{name}={value}'
+            args.append(config)
+        return args
+
