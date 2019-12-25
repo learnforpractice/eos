@@ -398,7 +398,7 @@ class Connection(object):
         elif msg_type == 3:
             msg = TimeMessage.unpack(msg)
             xmt = msg.xmt
-            xmt = int(xmt)/1e6
+            xmt = int(xmt)/1e9
             logger.info(msg)
             logger.info(time.localtime(xmt))
         elif msg_type == 4:
