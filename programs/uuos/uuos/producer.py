@@ -9,7 +9,7 @@ from _uuos import (
     producer_calc_pending_block_time,
     producer_calc_pending_block_deadline_time,
     producer_maybe_produce_block,
-    producer_now_time,
+    uuos_current_time_nano,
     producer_get_pending_block_mode,
     producer_process_incomming_transaction,
     producer_process_raw_transaction,
@@ -312,7 +312,7 @@ class Producer(object):
         return producer_maybe_produce_block(self.ptr)
 
     def now_time(self):
-        return producer_now_time()
+        return uuos_current_time_nano()
 
     def get_pending_block_mode(self):
         return producer_get_pending_block_mode(self.ptr)

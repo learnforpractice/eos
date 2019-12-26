@@ -2247,10 +2247,6 @@ int producer_get_pending_block_mode_(void *ptr) {
    return (int)producer.my->_pending_block_mode;
 }
 
-uint64_t producer_now_time_() {
-   return fc::time_point::now().time_since_epoch().count();
-}
-
 int producer_create_snapshot_(void *ptr, string& out) {
    auto& producer = *(producer_plugin*)ptr;
    int ret = 0;
