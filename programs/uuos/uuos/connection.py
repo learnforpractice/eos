@@ -10,6 +10,7 @@ import hashlib
 import random
 import traceback
 
+from _uuos import uuos_current_time_nano, uuos_sign_digest
 from . import chain, chain_api
 from .native_object import *
 from pyeoskit import wallet
@@ -21,7 +22,20 @@ logger.addHandler(logging.StreamHandler())
 
 sync_req_span = 100
 max_package_size = 5*1024*1024
-max_time_interval = 30
+max_time_interval = 60
+
+#    void connection::send_time(const time_message& msg) {
+#       time_message xpkt;
+#       xpkt.org = msg.xmt;
+#       xpkt.rec = msg.dst;
+#       xpkt.xmt = get_time();
+#       enqueue(xpkt);
+#    }
+#       if(msg.org == 0)
+#          {
+#             c->send_time(msg);
+#             return;  // We don't have enough data to perform the calculation yet.
+#          }
 
 DEBUG = False
 
@@ -57,6 +71,12 @@ class Connection(object):
         self.message_task = None
         self.sync_task = None
         self.cancel_sync_request = False
+        self.time_message = None
+
+        self.org=0
+        self.rec=0
+        self.xmt=0
+        self.dst=0
 
     def reset_time_counter(self):
         self.time_counter = max_time_interval
@@ -188,6 +208,16 @@ class Connection(object):
         msg = NoticeMessage(msg)
         self.writer.write(msg.pack())
 
+    def send_time_message(self, msg=None):
+        if msg:
+            msg = TimeMessage(msg)
+        else:
+            current_time = uuos_current_time_nano()
+            self.org = current_time
+            t = dict(org=self.org, rec=msg.dst, xmt=current_time, dst=0)
+            msg = TimeMessage(msg)
+        self.writer.write(msg.pack())
+
     def send_notice_message(self, msg):
         logger.info(f'send notice message {msg}')
         msg = NoticeMessage(msg)
@@ -268,7 +298,7 @@ class Connection(object):
 
         msg.key = peer_public_key
 
-        handshake_time = int(time.time()*1000000000)
+        handshake_time = int(time.time()*1e9) #uuos_current_time_nano()
         msg.time = str(handshake_time)
 
         if peer_key:
@@ -276,12 +306,7 @@ class Connection(object):
             data = int.to_bytes(handshake_time, 8, 'little')
             h.update(data)
             msg.token = h.hexdigest()
-
-            if os.path.exists('a.wallet'):
-                os.remove('a.wallet')
-            wallet.create('a')
-            wallet.import_key('a', peer_private_key)
-            msg.sig = wallet.sign_digest(h.digest(), peer_public_key)
+            msg.sig = uuos_sign_digest(peer_private_key, h.digest())
         else:
             msg.token = '0000000000000000000000000000000000000000000000000000000000000000'
             msg.sig = 'SIG_K1_111111111111111111111111111111111111111111111111111111111111111116uk5ne'
@@ -296,9 +321,11 @@ class Connection(object):
         else:
             pending = self.last_handshake.head_num
 
-        if self.first_sync:
-            start_block = chain.last_irreversible_block_num() + 1
-            end_block = chain.fork_db_pending_head_block_num()
+        irr_block_num = chain.last_irreversible_block_num()
+        block_num = chain.fork_db_pending_head_block_num()
+        if self.first_sync and irr_block_num < block_num:
+            start_block = irr_block_num + 1
+            end_block = block_num
             self.first_sync = False
         else:
             start_block = chain.fork_db_pending_head_block_num() + 1
@@ -409,6 +436,11 @@ class Connection(object):
             xmt = int(xmt)/1e9
             logger.info(msg)
             logger.info(time.localtime(xmt))
+            current_time = uuos_current_time_nano()
+            if msg.org == 0:
+                t = dict(org=msg.xmt, rec=current_time, xmt=current_time, dst=0)
+                self.send_time_message(t)
+            self.time_message = msg
         elif msg_type == 4:
             msg = NoticeMessage.unpack(msg)
             pending = msg.known_blocks['pending']
