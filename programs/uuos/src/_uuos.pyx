@@ -63,13 +63,14 @@ cdef extern from "native_object.hpp":
     uint64_t    producer_calc_pending_block_time_(void *ptr)
     uint64_t    producer_calc_pending_block_deadline_time_(void *ptr)
     bool        producer_maybe_produce_block_(void *ptr)
-    uint64_t    producer_now_time_()
     int         producer_get_pending_block_mode_(void *ptr)
     int         producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out)
     int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out)
     int         producer_create_snapshot_(void *ptr, string& out)
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
+    uint64_t    uuos_current_time_nano_()
+    void        uuos_sign_digest_(string& _priv_key, string& _digest, string& out)
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -265,9 +266,6 @@ def producer_calc_pending_block_deadline_time(uint64_t ptr):
 def producer_maybe_produce_block(uint64_t ptr):
     return producer_maybe_produce_block_(<void *>ptr);
 
-def producer_now_time():
-    return producer_now_time_();
-
 def producer_get_pending_block_mode(uint64_t ptr):
     return producer_get_pending_block_mode_(<void *>ptr)
 
@@ -333,3 +331,11 @@ def uuos_recover_key(string& digest, string& sign):
     cdef string pub
     uuos_recover_key_(digest, sign, pub)
     return pub
+
+def uuos_current_time_nano():
+    return uuos_current_time_nano_()
+
+def uuos_sign_digest(string& _priv_key, string& _digest):
+    cdef string out
+    uuos_sign_digest_(_priv_key, _digest, out)
+    return out

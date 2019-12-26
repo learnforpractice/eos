@@ -200,3 +200,18 @@ void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
       _pub = string(fc::crypto::public_key( s, digest, false ));
    } FC_LOG_AND_DROP();
 }
+
+uint64_t uuos_current_time_nano_() {
+   auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+   return uint64_t(ns);
+}
+
+void uuos_sign_digest_(string& _priv_key, string& _digest, string& out) {
+    try {
+        chain::private_key_type priv_key(_priv_key);
+        chain::digest_type digest(_digest.c_str(), _digest.size());
+        auto sign = priv_key.sign(digest);
+        out = string(sign);
+    } FC_LOG_AND_DROP();
+}
+
