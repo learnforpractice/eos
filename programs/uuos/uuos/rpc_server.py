@@ -82,127 +82,105 @@ app = App(__name__)
 async def hello():
     return 'hello'
 
-@app.route('/v1/chain/get_info', methods=["GET", "POST"])
 async def get_info():
     return chain_api.get_info()
 
-@app.route('/v1/chain/get_activated_protocol_features', methods=["POST"])
 async def get_activated_protocol_features():
     data = await request.data
     return chain_api.get_activated_protocol_features(data.decode('utf8'))
 
-@app.route('/v1/chain/get_block', methods=["POST"])
 async def get_block():
     data = await request.data
     return chain_api.get_block(data.decode('utf8'))
 
-@app.route('/v1/chain/get_block_header_state', methods=["POST"])
 async def get_block_header_state():
     data = await request.data
     return chain_api.get_block_header_state(data.decode('utf8'))
 
-@app.route('/v1/chain/get_account', methods=["POST"])
 async def get_account():
     data = await request.data
     return chain_api.get_account(data.decode('utf8'))
 
-@app.route('/v1/chain/get_code', methods=["POST"])
 async def get_code():
     data = await request.data
     result = chain_api.get_code(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_code_hash', methods=["POST"])
 async def get_code_hash():
     data = await request.data
     result = chain_api.get_code_hash(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_abi', methods=["POST"])
 async def get_abi():
     data = await request.data
     result = chain_api.get_abi(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_raw_code_and_abi', methods=["POST"])
 async def get_raw_code_and_abi():
     data = await request.data
     result = chain_api.get_raw_code_and_abi(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_raw_abi', methods=["POST"])
 async def get_raw_abi():
     data = await request.data
     result = chain_api.get_raw_abi(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_table_rows', methods=["POST"])
 async def get_table_rows():
     data = await request.data
     result = chain_api.get_table_rows(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_table_by_scope', methods=["POST"])
 async def get_table_by_scope():
     data = await request.data
     result = chain_api.get_table_by_scope(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_currency_balance', methods=["POST"])
 async def get_currency_balance():
     data = await request.data
     result = chain_api.get_currency_balance(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_currency_stats', methods=["POST"])
 async def get_currency_stats():
     data = await request.data
     result = chain_api.get_currency_stats(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_producers', methods=["POST"])
 async def get_producers():
     data = await request.data
     result = chain_api.get_producers(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_producer_schedule', methods=["POST"])
 async def get_producer_schedule():
     data = await request.data
     result = chain_api.get_producer_schedule(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_scheduled_transactions', methods=["POST"])
 async def get_scheduled_transactions():
     data = await request.data
     result = chain_api.get_scheduled_transactions(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/abi_json_to_bin', methods=["POST"])
 async def abi_json_to_bin():
     data = await request.data
     result = chain_api.abi_json_to_bin(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/abi_bin_to_json', methods=["POST"])
 async def abi_bin_to_json():
     data = await request.data
     result = chain_api.abi_bin_to_json(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_required_keys', methods=["POST"])
 async def get_required_keys():
     data = await request.data
     result = chain_api.get_required_keys(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/get_transaction_id', methods=["POST"])
 async def get_transaction_id():
     data = await request.data
     result = chain_api.get_transaction_id(data.decode('utf8'))
     return result
 
-@app.route('/v1/chain/push_transaction', methods=["POST"])
 async def push_transaction():
     data = await request.data
     msg = producer.TransactionMessage(data)
@@ -231,14 +209,46 @@ async def ws():
     while True:
         await websocket.send('hello')
 
+post_method = ["POST"]
+get_post_method = ["GET", "POST"]
 async def rpc_server(producer, loop, http_server_address):
-    producer_routes = [
-        ("/v1/producer/create_snapshot", create_snapshot),
-        ("/v1/producer/schedule_protocol_feature_activations", schedule_protocol_feature_activations)
+
+    chain_api_routes = [
+        ('/v1/chain/get_info',                          get_post_method, get_info),
+        ('/v1/chain/get_activated_protocol_features',   post_method, get_activated_protocol_features),
+        ('/v1/chain/get_block',                         post_method, get_block),
+        ('/v1/chain/get_block_header_state',            post_method, get_block_header_state),
+        ('/v1/chain/get_account',                       post_method, get_account),
+        ('/v1/chain/get_code',                          post_method, get_code),
+        ('/v1/chain/get_code_hash',                     post_method, get_code_hash),
+        ('/v1/chain/get_abi',                           post_method, get_abi),
+        ('/v1/chain/get_raw_code_and_abi',              post_method, get_raw_code_and_abi),
+        ('/v1/chain/get_raw_abi',                       post_method, get_raw_abi),
+        ('/v1/chain/get_table_rows',                    post_method, get_table_rows),
+        ('/v1/chain/get_table_by_scope',                post_method, get_table_by_scope),
+        ('/v1/chain/get_currency_balance',              post_method, get_currency_balance),
+        ('/v1/chain/get_currency_stats',                post_method, get_currency_stats),
+        ('/v1/chain/get_producers',                     post_method, get_producers),
+        ('/v1/chain/get_producer_schedule',             post_method, get_producer_schedule),
+        ('/v1/chain/get_scheduled_transactions',        post_method, get_scheduled_transactions),
+        ('/v1/chain/abi_json_to_bin',                   post_method, abi_json_to_bin),
+        ('/v1/chain/abi_bin_to_json',                   post_method, abi_bin_to_json),
+        ('/v1/chain/get_required_keys',                 post_method, get_required_keys),
+        ('/v1/chain/get_transaction_id',                post_method, get_transaction_id),
+        ('/v1/chain/push_transaction',                  post_method, push_transaction),
     ]
-    if 'eosio::producer_plugin' in producer.config.plugin:
-        for route, view_func in producer_routes:
-            app.route(route, methods=["POST"])(view_func)
+    producer_api_routes = [
+        ("/v1/producer/create_snapshot",                        post_method, create_snapshot),
+        ("/v1/producer/schedule_protocol_feature_activations",  get_post_method, schedule_protocol_feature_activations)
+    ]
+
+    if 'eosio::chain_api_plugin' in producer.config.plugin:
+        for route, method, view_func in chain_api_routes:
+            app.route(route, methods=method)(view_func)
+
+    if 'eosio::producer_api_plugin' in producer.config.plugin:
+        for route, method, view_func in producer_api_routes:
+            app.route(route, methods=method)(view_func)
     app.producer = producer
     try:
         host, port = http_server_address.split(':')
