@@ -2272,3 +2272,12 @@ int producer_create_snapshot_(void *ptr, string& out) {
 
    return 0;
 }
+
+int producer_is_producer_key_(void *ptr, string& _public_key) {
+   try {
+      auto& producer = *(producer_plugin*)ptr;
+      auto public_key = chain::public_key_type(_public_key);
+      return producer.is_producer_key(public_key);
+   } LOG_AND_DROP();
+   return 0;
+}

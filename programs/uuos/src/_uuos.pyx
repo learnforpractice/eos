@@ -67,6 +67,8 @@ cdef extern from "native_object.hpp":
     int         producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out)
     int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out)
     int         producer_create_snapshot_(void *ptr, string& out)
+    int         producer_is_producer_key_(void *ptr, string& _public_key)
+
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
     uint64_t    uuos_current_time_nano_()
@@ -285,6 +287,9 @@ def producer_create_snapshot(uint64_t ptr):
     ret = producer_create_snapshot_(<void *>ptr, out)
     return ret, out
 
+def producer_is_producer_key(uint64_t ptr, string& public_key):
+    return producer_is_producer_key_(<void *>ptr, public_key)
+
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
     global g_accepted_block_cb
@@ -339,3 +344,4 @@ def uuos_sign_digest(string& _priv_key, string& _digest):
     cdef string out
     uuos_sign_digest_(_priv_key, _digest, out)
     return out
+
