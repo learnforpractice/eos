@@ -51,7 +51,7 @@ class Config(object):
         parser.add_argument('--plugin', type=str, action='append', help='')
         # --plugin=eosio::net_api_plugin --plugin=eosio::chain_plugin --plugin=eosio::chain_api_plugin --plugin=eosio::producer_plugin --plugin=eosio::producer_api_plugin
         #--allowed-connection=any
-        parser.add_argument('--allowed-connection', type=str, default='any', help='')
+        parser.add_argument('--allowed-connection', type=str, default=[], action='append', help="Can be 'any' or 'producers' or 'specified' or 'none'. If 'specified', peer-key must be specified at least once. If only 'producers', peer-key is not required. 'producers' and 'specified' may be combined.")
         
         configs = []
         if not config_file:
@@ -77,6 +77,10 @@ class Config(object):
         print(self._config.p2p_peer_address)
         print(self._config.data_dir)
         print(self._config.uuos_mainnet)
+
+        if 'specified' in self._config.allowed_connection:
+            if not len(self._config.peer_key):
+                raise Exception("At least one peer-key must accompany 'allowed-connection=specified'")
 
     def get_config(self):
         return self._config
