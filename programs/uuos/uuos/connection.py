@@ -99,10 +99,18 @@ class Connection(object):
         logger.info('++++++++++connection start')
         self.send_handshake()
         msg_type, msg = await self.read_message()
-        ret = await self.handle_message(msg_type, msg)
-        logger.info(f'handle_message return {ret}')
-        if not ret:
+        if msg_type != 0:
+            self.close()
             return False
+        msg = HandshakeMessage.unpack(msg)
+        print('+++handshake message:', msg)
+        if not self.verify_handshake_message(msg):
+            self.close()
+            return False
+#        ret = await self.handle_message(msg_type, msg)
+        # logger.info(f'handle_message return {ret}')
+        # if not ret:
+        #     return False
         logger.info('+++++=create handle message loop task')
         self.message_task = asyncio.create_task(self.handle_message_loop())
         return True
@@ -313,6 +321,30 @@ class Connection(object):
         logger.info(f'++++send handshake {msg}')
         msg = msg.pack()
         self.write(msg)
+
+    def verify_handshake_message(self, msg):
+        config = get_app().config
+        print(config.allowed_connection)
+        if 'none' in config.allowed_connection:
+            return False
+
+        if 'any' in config.allowed_connection:
+            return True
+
+        if 'specified' in config.allowed_connection:
+            public_key = uuos_recover_key(msg.token, msg.sig)
+            if public_key == msg.key and public_key in config.peer_key:
+                return True
+
+        if 'producers' in config.allowed_connection:
+            if not get_app().producer.is_producer_key(msg.key):
+                return False
+            public_key = uuos_recover_key(msg.token, msg.sig)
+            if public_key == msg.key and public_key in config.peer_key:
+                return True
+
+        logger.info(f'Peer {self.host} sent a handshake with an unauthorized key: {msg.key}.')
+        return False
 
     def start_sync(self):
         # print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
