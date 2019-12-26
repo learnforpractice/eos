@@ -69,6 +69,8 @@ cdef extern from "native_object.hpp":
     int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out)
     int         producer_create_snapshot_(void *ptr, string& out)
 
+    void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
+
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
     print("Hello, {}!)".format(strArg))
@@ -326,3 +328,8 @@ cdef extern int uuos_config_get_int(option):
     except Exception as e:
         print(e)
     return 0
+
+def uuos_recover_key(string& digest, string& sign):
+    cdef string pub
+    uuos_recover_key_(digest, sign, pub)
+    return pub

@@ -39,16 +39,16 @@ void        chain_id_(void *ptr, string& chain_id);
 uint32_t    chain_fork_db_pending_head_block_num_(void *ptr);
 uint32_t    chain_last_irreversible_block_num_(void *ptr);
 void        chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id);
-void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
+void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block);
 int         chain_is_building_block_(void *ptr);
 
-int     chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block);
-void    chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir);
-void    chain_api_get_table_rows_(void *ptr, string& params, string& results );
+int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block);
+void        chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir);
+void        chain_api_get_table_rows_(void *ptr, string& params, string& results);
 
-void*   producer_new_(void *chain_ptr, string& config);
-void    producer_free_(void *ptr);
-void    producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
+void*       producer_new_(void *chain_ptr, string& config);
+void        producer_free_(void *ptr);
+void        producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_t& num, string& id);
 
 int         producer_start_block_(void *ptr);
 uint64_t    producer_calc_pending_block_time_(void *ptr);
@@ -59,6 +59,8 @@ int         producer_get_pending_block_mode_(void *ptr);
 int         producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out);
 int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out);
 int         producer_create_snapshot_(void *ptr, string& out);
+
+void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);
 
 enum {
     handshake_message_type,

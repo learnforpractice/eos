@@ -192,3 +192,11 @@ int chain_is_building_block_(void *ptr) {
     return chain.is_building_block();
 }
 
+void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
+   try {
+//      ilog("+++++${n}", ("n", _sig));
+      auto digest = fc::sha256(_digest);
+      auto s = fc::crypto::signature(_sig);
+      _pub = string(fc::crypto::public_key( s, digest, false ));
+   } FC_LOG_AND_DROP();
+}
