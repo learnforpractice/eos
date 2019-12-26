@@ -1440,7 +1440,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
    if( !_production_enabled ) {
       _pending_block_mode = pending_block_mode::speculating;
    } else if( _producers.find(scheduled_producer.producer_name) == _producers.end()) {
-      dlog("speculating...");
+      elog("speculating... ${n1} ${n2}", ("n1", _producers)("n2", scheduled_producer.producer_name));
       _pending_block_mode = pending_block_mode::speculating;
    } else if (signature_provider_itr == _signature_providers.end()) {
       elog("Not producing block because I don't have the private key for ${scheduled_key}", ("scheduled_key", scheduled_producer.block_signing_key));
