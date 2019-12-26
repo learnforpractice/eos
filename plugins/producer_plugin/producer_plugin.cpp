@@ -2059,7 +2059,7 @@ void producer_free_(void *ptr) {
 
 fc::variant handle_transaction_trace(eosio::chain::controller& db, const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
    fc::variant output;
-   auto next = [&output, &db](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
+   auto next = [&output](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
       output = fc::json::to_string(result);
    };
    
@@ -2281,3 +2281,18 @@ int producer_is_producer_key_(void *ptr, string& _public_key) {
    } LOG_AND_DROP();
    return 0;
 }
+
+int producer_schedule_protocol_feature_activations_(void *ptr, string& _features, string& err) {
+   auto next = [&err](const fc::exception_ptr& result) {
+      err = result->to_detail_string();
+   };
+
+   try {
+      auto& producer = *(producer_plugin*)ptr;
+      auto features = fc::json::from_string(_features).as<eosio::producer_plugin::scheduled_protocol_feature_activations>();
+      producer.schedule_protocol_feature_activations(features);
+      return 1;
+   } CATCH_AND_CALL(next);
+   return 0;
+}
+

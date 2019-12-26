@@ -1,3 +1,4 @@
+import ujson as json
 import asyncio
 from .application import get_app, Application
 
@@ -14,7 +15,8 @@ from _uuos import (
     producer_process_incomming_transaction,
     producer_process_raw_transaction,
     producer_create_snapshot,
-    producer_is_producer_key
+    producer_is_producer_key,
+    producer_schedule_protocol_feature_activations,
 )
 
 from .native_object import ProducerParams
@@ -255,7 +257,6 @@ class Producer(object):
                     print('++++++delay:',delay/1e6)
                     await asyncio.sleep(delay/1e6)
                     self.maybe_produce_block()
-                    continue
 #                    deadline = self.calc_pending_block_deadline_time()
 #                    delay = deadline - self.now_time()
 
@@ -337,5 +338,10 @@ class Producer(object):
     
     def is_producer_key(self):
         return producer_is_producer_key(self.ptr)
+
+    def schedule_protocol_feature_activations(self, features):
+        if isinstance(features, dict):
+            features = json.dumps(features)
+        return producer_schedule_protocol_feature_activations(self.ptr, features)
 
 

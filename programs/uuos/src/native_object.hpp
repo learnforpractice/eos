@@ -59,6 +59,7 @@ int         producer_process_incomming_transaction_(void *ptr, string& packed_tr
 int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string& out);
 int         producer_create_snapshot_(void *ptr, string& out);
 int         producer_is_producer_key_(void *ptr, string& _public_key);
+int         producer_schedule_protocol_feature_activations_(void *ptr, string& _features, string& err);
 
 void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);
