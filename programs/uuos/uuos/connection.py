@@ -72,6 +72,7 @@ class Connection(object):
         self.sync_task = None
         self.cancel_sync_request = False
         self.time_message = None
+        self.current_block = 0
 
         self.org=0
         self.rec=0
@@ -98,19 +99,19 @@ class Connection(object):
     async def start(self):
         logger.info('++++++++++connection start')
         self.send_handshake()
-        msg_type, msg = await self.read_message()
+        msg_type, raw_msg = await self.read_message()
         if msg_type != 0:
             self.close()
             return False
-        msg = HandshakeMessage.unpack(msg)
-        print('+++handshake message:', msg)
-        if not self.verify_handshake_message(msg):
+        handshake_message = HandshakeMessage.unpack(raw_msg)
+        print('+++receive handshake message:', handshake_message)
+        if not self.verify_handshake_message(handshake_message):
             self.close()
             return False
-#        ret = await self.handle_message(msg_type, msg)
-        # logger.info(f'handle_message return {ret}')
-        # if not ret:
-        #     return False
+        ret = await self.handle_message(msg_type, raw_msg)
+        logger.info(f'handle_message return {ret}')
+        if not ret:
+            return False
         logger.info('+++++=create handle message loop task')
         self.message_task = asyncio.create_task(self.handle_message_loop())
         return True
@@ -264,7 +265,6 @@ class Connection(object):
 
     def on_sync_request(self):
         self.sync_task = asyncio.create_task(self.sync_blocks())
-        logger.info(f'++++on_sync_request {self.current_block}')
         print(self.last_sync_request.end_block)
 
         # self.last_sync_request.start_block
@@ -325,6 +325,9 @@ class Connection(object):
     def verify_handshake_message(self, msg):
         config = get_app().config
         print(config.allowed_connection)
+        if not config.allowed_connection:
+            return True
+
         if 'none' in config.allowed_connection:
             return False
 
@@ -406,7 +409,7 @@ class Connection(object):
 
             head_num = chain.fork_db_pending_head_block_num()
             print(self.last_handshake.head_num, head_num, chain.last_irreversible_block_num())
-            print(self.last_handshake)
+            print('+++handle message:', self.last_handshake)
             if msg.head_num < chain.last_irreversible_block_num():
 #                    self.target = msg.head_num
 #                    self.notify_none()

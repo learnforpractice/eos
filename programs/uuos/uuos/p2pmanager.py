@@ -1,6 +1,8 @@
+from _uuos import set_accepted_block_callback
+
 import asyncio
 from .connection import Connection
-from _uuos import set_accepted_block_callback
+from .native_object import HandshakeMessage
 
 import logging
 logger=logging.getLogger(__name__)
@@ -15,6 +17,7 @@ class P2pManager(object):
         self.connections = set()
         set_accepted_block_callback(self.on_accepted_block)
         self.monitor_task = asyncio.create_task(self.monitor())
+        self.client_count = 0
 
     async def monitor(self):
         counter = 0
@@ -146,25 +149,29 @@ class P2pManager(object):
             self.client_count -= 1
 
     async def handle_p2p_client(self, reader, writer):
+        addr = writer.get_extra_info('peername')
+        print(f"connection from {addr}")
+        print(f"connection from {addr} {self.config.max_clients} {self.client_count}")
         if self.config.max_clients and self.client_count > self.config.max_clients:
             writer.close()
             return
         self.client_count += 1
-        addr = writer.get_extra_info('peername')
-        print(f"connection from {addr!r}")
-        print(f"connection from {addr}")
 
         if self.config.allowed_connection == 'any': #specified any
             pass
 
-        host = writer.get_extra_info('peername')
-        logger.info(f'++++host:{host}')
-        sock = writer.get_extra_info('socket')
-        if sock is not None:
-            logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
-        c = Connection(host[0], host[1], False)
         try:
+            host = writer.get_extra_info('peername')
+            logger.info(f'++++host:{host}')
+            sock = writer.get_extra_info('socket')
+            if sock is not None:
+                logger.info(f'++++++++++sock.getsockname: {sock.getsockname()}')
+            c = Connection(host[0], host[1], False)
+            c.reader = reader
+            c.writer = writer
+
             msg_type, msg = await asyncio.wait_for(c.read_message(), timeout=5.0)
+            print(msg_type, msg)
             if msg is None or msg_type is None:
                 return
             if not msg_type == 0:
@@ -175,19 +182,21 @@ class P2pManager(object):
                 pass
             #TODO verify handshake message
             c.send_handshake()
-            c.handle_message(msg_type, msg)
+            if not await c.handle_message(msg_type, msg):
+                return
+            self.add(c)
+            task = asyncio.create_task(self.handle_connection(c))
+
         except asyncio.TimeoutError:
             logger.info('timeout!')
             return
-        self.p2p_manager.add(c)
-        c.reader = reader
-        c.writer = writer
-        self.add(c)
-        task = asyncio.create_task(self.handle_connection(c))
+        except Exception as e:
+            logger.exception(e)
 
     async def p2p_server(self):
         address, port = self.config.p2p_listen_endpoint.split(':')
         port = int(port)
+        logger.info(f'listen p2p connection on {address}:{port}')
         server = await asyncio.start_server(self.handle_p2p_client, address, port)
         addr = server.sockets[0].getsockname()
         print(f'Serving on {addr}')
