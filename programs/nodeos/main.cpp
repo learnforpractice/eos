@@ -93,6 +93,10 @@ extern "C"
    }
 }
 
+void uuos_set_version() {
+   app().set_version(eosio::nodeos::config::version);
+}
+
 const char *g_argv[] = {"python"};
 int main(int argc, char** argv)
 {

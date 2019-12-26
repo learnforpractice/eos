@@ -60,6 +60,7 @@ int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx,
 int         producer_create_snapshot_(void *ptr, string& out);
 int         producer_is_producer_key_(void *ptr, string& _public_key);
 
+void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);
 uint64_t    uuos_current_time_nano_();
 void        uuos_sign_digest_(string& _priv_key, string& _digest, string& out);

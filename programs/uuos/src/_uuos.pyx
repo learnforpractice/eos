@@ -73,6 +73,7 @@ cdef extern from "native_object.hpp":
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
     uint64_t    uuos_current_time_nano_()
     void        uuos_sign_digest_(string& _priv_key, string& _digest, string& out)
+    void        uuos_set_version()
 
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
@@ -345,3 +346,4 @@ def uuos_sign_digest(string& _priv_key, string& _digest):
     uuos_sign_digest_(_priv_key, _digest, out)
     return out
 
+uuos_set_version()
