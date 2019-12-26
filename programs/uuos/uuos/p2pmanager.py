@@ -6,6 +6,8 @@ import logging
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
+keep_alive_interval = 32
+
 class P2pManager(object):
     
     def __init__(self, config):
@@ -15,8 +17,10 @@ class P2pManager(object):
         self.monitor_task = asyncio.create_task(self.monitor())
 
     async def monitor(self):
+        counter = 0
         while True:
-            await asyncio.sleep(2)
+            await asyncio.sleep(1.0)
+            counter += 1
 #            logger.info('++++++check connection')
             timeout_connections = set()
             for c in self.connections:
@@ -42,6 +46,11 @@ class P2pManager(object):
                     self.connections.remove(c)
                 else:
                     self.connections.remove(c)
+
+            if counter >= keep_alive_interval:
+                counter = keep_alive_interval
+                for c in self.connections:
+                    c.send_time_message()
 
     def add(self, c):
         self.connections.add(c)
