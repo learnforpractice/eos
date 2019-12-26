@@ -167,7 +167,8 @@ class Producer(object):
         g_producer_config['producers'] = config.producer_name
         g_producer_config['snapshots_dir'] = config.snapshots_dir
         g_producer_config['data_dir'] = config.data_dir
-        
+        g_producer_config['producers'] = config.producer_name
+        g_producer_config['signature_providers'] = config.signature_provider
         cfg = json.dumps(g_producer_config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
         self.config = config
@@ -244,7 +245,7 @@ class Producer(object):
         #     return
         while True:
             result = self.start_block()
-#            logger.info(f'+++++++++++++{result}')
+            # logger.info(f'+++++++++++++{result}')
             if result == 0 or result == 3: #succeeded or exhausted
                 while not self.trx_queue.empty():
                     msg = await self.trx_queue.get()

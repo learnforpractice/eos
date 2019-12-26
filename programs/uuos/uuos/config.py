@@ -41,7 +41,7 @@ class Config(object):
         #producer
         parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
         parser.add_argument('-e', '--enable-stale-production',    default=False, action="store_true", help='Enable block production, even if the chain is stale.')
-
+        parser.add_argument('--signature-provider',     type=str, default=[], action='append',   help='')
 
         parser.add_argument('--abi-serializer-max-time-ms',  type=int, default=default_abi_serializer_max_time_ms,         help='Override default maximum ABI serialization time allowed in ms')
 
