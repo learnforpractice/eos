@@ -16,6 +16,7 @@ from pyeoskit import eosapi
 
 from . import chain_api
 from . import application
+from . import producer
 
 from typing import (
     Any,
@@ -204,17 +205,26 @@ async def get_transaction_id():
 @app.route('/v1/chain/push_transaction', methods=["POST"])
 async def push_transaction():
     data = await request.data
-    msg = application.TransactionMessage(data)
+    msg = producer.TransactionMessage(data)
     result = await msg.wait()
     return result
 
-@app.route('/v1/producer/create_snapshot', methods=["POST"])
+#@app.route('/v1/producer/create_snapshot', methods=["POST"])
 async def create_snapshot():
     ret, result = application.get_app().producer.create_snapshot()
     logger.info(f'{ret}, {result}')
     if not ret:
         return result, 201
-    return result
+    return '{}'
+
+#@app.route('/v1/producer/schedule_protocol_feature_activations', methods=["POST"])
+async def schedule_protocol_feature_activations():
+    features = await request.data
+    ret, result = application.get_app().producer.schedule_protocol_feature_activations(features)
+    logger.info(f'{ret}, {result}')
+    if not ret:
+        return result, 201
+    return '{}'
 
 @app.websocket('/ws')
 async def ws():
@@ -222,6 +232,13 @@ async def ws():
         await websocket.send('hello')
 
 async def rpc_server(producer, loop, http_server_address):
+    producer_routes = [
+        ("/v1/producer/create_snapshot", create_snapshot),
+        ("/v1/producer/schedule_protocol_feature_activations", schedule_protocol_feature_activations)
+    ]
+    if 'eosio::producer_plugin' in producer.config.plugin:
+        for route, view_func in producer_routes:
+            app.route(route, methods=["POST"])(view_func)
     app.producer = producer
     try:
         host, port = http_server_address.split(':')
