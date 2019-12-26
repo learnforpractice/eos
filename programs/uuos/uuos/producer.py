@@ -13,7 +13,8 @@ from _uuos import (
     producer_get_pending_block_mode,
     producer_process_incomming_transaction,
     producer_process_raw_transaction,
-    producer_create_snapshot
+    producer_create_snapshot,
+    producer_is_producer_key
 )
 
 from .native_object import ProducerParams
@@ -333,5 +334,8 @@ class Producer(object):
     
     def create_snapshot(self):
         return producer_create_snapshot(self.ptr)
+    
+    def is_producer_key(self):
+        return producer_is_producer_key(self.ptr)
 
 
