@@ -19,7 +19,7 @@ from .producer import RawTransactionMessage
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
-sync_req_span = 200
+sync_req_span = 100
 max_package_size = 5*1024*1024
 max_time_interval = 30
 
@@ -55,6 +55,8 @@ class Connection(object):
 
         self.time_counter = max_time_interval
         self.message_task = None
+        self.sync_task = None
+        self.cancel_sync_request = False
 
     def reset_time_counter(self):
         self.time_counter = max_time_interval
@@ -214,17 +216,17 @@ class Connection(object):
         self.writer.write(msg_type)
         self.writer.write(raw_packed_trx)
 
-    async def send_block_task(self):
+    async def sync_blocks(self):
+        self.current_block = self.last_sync_request.start_block
         while self.current_block <= self.last_sync_request.end_block:
 #            print("current_block:", self.current_block)
             self.send_block_by_num(self.current_block)
             self.current_block += 1
             await asyncio.sleep(0)
 
-    def start_send_block(self):
-        self.current_block = self.last_sync_request.start_block
-        self.task = asyncio.create_task(self.send_block_task())
-        logger.info(f'++++start_send_block {self.current_block}')
+    def on_sync_request(self):
+        self.sync_task = asyncio.create_task(self.sync_blocks())
+        logger.info(f'++++on_sync_request {self.current_block}')
         print(self.last_sync_request.end_block)
 
         # self.last_sync_request.start_block
@@ -475,7 +477,13 @@ class Connection(object):
                 return True
             self.last_sync_request = msg
             if msg.start_block <= chain.fork_db_pending_head_block_num():
-                self.start_send_block()
+                if self.sync_task:
+                    self.sync_task.cancel()
+                    try:
+                        await self.sync_task
+                    except asyncio.CancelledError:
+                        pass
+                self.on_sync_request()
             else:
                 logger.info(f"bad sync request message: {msg}")
         elif msg_type == 7:
@@ -499,7 +507,7 @@ class Connection(object):
             if num % 10000 == 0:
                 logger.info(f"{num}, {block_id}")
             # if self.target - num < 1000:
-            logger.info(f"{num}, {block_id}")
+            # logger.info(f"{num}, {block_id}")
             # if self.sync_msg:
             #     logger.info(f"{self.sync_msg.end_block} {num}")
             if self.sync_msg and self.sync_msg.end_block == num:
