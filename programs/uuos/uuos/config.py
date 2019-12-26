@@ -48,7 +48,7 @@ class Config(object):
         parser.add_argument('--chain-state-db-guard-size-mb',type=int, default=default_state_guard_size//1024//1024,       help="Safely shut down node when free space remaining in the chain state database drops below this size (in MiB).")
         parser.add_argument('--reversible-blocks-db-size-mb', type=int, default=default_reversible_cache_size//1024//1024, help="Maximum size (in MiB) of the reversible blocks database")
         parser.add_argument('--reversible-blocks-db-guard-size-mb', type=int, default=default_reversible_guard_size//1024//1024, help="Safely shut down node when free space remaining in the reverseible blocks database drops below this size (in MiB).")
-        parser.add_argument('--plugin', type=str, action='append', help='')
+        parser.add_argument('--plugin', type=str, default=[], action='append', help='')
         # --plugin=eosio::net_api_plugin --plugin=eosio::chain_plugin --plugin=eosio::chain_api_plugin --plugin=eosio::producer_plugin --plugin=eosio::producer_api_plugin
         #--allowed-connection=any
         parser.add_argument('--allowed-connection', type=str, default=[], action='append', help="Can be 'any' or 'producers' or 'specified' or 'none'. If 'specified', peer-key must be specified at least once. If only 'producers', peer-key is not required. 'producers' and 'specified' may be combined.")
