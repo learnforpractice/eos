@@ -20,7 +20,7 @@ class Config(object):
         parser.add_argument('--http-server-address',    type=str, default='127.0.0.1:8888',      help='http server address')
 
         #p2p
-        parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:9877',      help='p2p listen endpoint')
+        parser.add_argument('--p2p-listen-endpoint',    type=str, default='127.0.0.1:9876',      help='p2p listen endpoint')
         parser.add_argument('--p2p-peer-address',       type=str, default=[], action='append',   help='p2p peer address')
         parser.add_argument('--network',                type=str, default='test',                help='network: uuos, eos, test')
         parser.add_argument('--max-clients',            type=int, default=25,                    help='Maximum number of clients from which connections are accepted, use 0 for no limit')
