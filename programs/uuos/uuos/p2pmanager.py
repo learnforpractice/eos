@@ -226,10 +226,9 @@ class P2pManager(object):
         for c in self.connections:
             if not c.last_handshake:
                 continue
-            if c.catch_up:
-                c.reset_time_counter()
-#                print('+++block:',block)
-                c.send_block(block)
+            # if c.catch_up:
+            c.reset_time_counter()
+            c.send_block(block)
 
     def close(self):
         for c in self.connections:

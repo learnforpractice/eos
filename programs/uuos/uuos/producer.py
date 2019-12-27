@@ -27,6 +27,9 @@ import logging
 logger=logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
+block_interval_ms = 500
+block_interval_us = 500*1000
+
 '''
    struct producer_params {
       vector<string> producers;
@@ -246,7 +249,7 @@ class Producer(object):
         while True:
             result = self.start_block()
             # logger.info(f'+++++++++++++{result}')
-            if result == 0 or result == 3: #succeeded or exhausted
+            if result == 0: # or result == 3: #succeeded or exhausted
                 while not self.trx_queue.empty():
                     msg = await self.trx_queue.get()
                     self.process_trx(msg)
@@ -254,23 +257,24 @@ class Producer(object):
                 mode = self.get_pending_block_mode()
                 if mode == 0: #producing
                     deadline = self.calc_pending_block_deadline_time()
-                    delay = deadline - self.now_time()
+                    delay = deadline - self.now_time()/1000.0
                     print('++++++delay:',delay/1e6)
                     await asyncio.sleep(delay/1e6)
                     self.maybe_produce_block()
+                    continue
 #                    deadline = self.calc_pending_block_deadline_time()
 #                    delay = deadline - self.now_time()
 
 #                    task = asyncio.create_task(self.produce_block(delay))
             elif result == 1: #failed
-                pass
+                await asyncio.sleep(block_interval_ms/1e3/10)
                 # await asyncio.sleep(0.5)
             elif result == 2: #waiting
-                pass
                 # await asyncio.sleep(0.5)
             elif result == 3: #exhausted
                 pass
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(block_interval_ms/1e3/2)
+
         # while True:
         #     if not self.can_produce_block():
         #         await asyncio.sleep(0.2)
