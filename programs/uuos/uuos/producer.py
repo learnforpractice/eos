@@ -1,6 +1,7 @@
 import ujson as json
 import asyncio
 from .application import get_app, Application
+from . import chain
 
 from _uuos import (
     producer_new,
@@ -186,7 +187,10 @@ class Producer(object):
 
 
     def publish_message(self, msg):
-        self.hub.publish(msg)
+        if chain.is_building_block():
+            self.process_trx(msg)
+        else:
+            self.hub.publish(msg)
 
     async def handle_message(self):
         with Subscription(self.hub) as queue:
@@ -248,7 +252,7 @@ class Producer(object):
         #     return
         while True:
             result = self.start_block()
-            # logger.info(f'+++++++++++++{result}')
+            logger.info(f'+++++++++++++{result}')
             if result == 0: # or result == 3: #succeeded or exhausted
                 while not self.trx_queue.empty():
                     msg = await self.trx_queue.get()
@@ -271,9 +275,10 @@ class Producer(object):
                 # await asyncio.sleep(0.5)
             elif result == 2: #waiting
                 # await asyncio.sleep(0.5)
+                pass
             elif result == 3: #exhausted
                 pass
-            await asyncio.sleep(block_interval_ms/1e3/2)
+            await asyncio.sleep(block_interval_ms/1e3)
 
         # while True:
         #     if not self.can_produce_block():
