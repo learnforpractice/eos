@@ -17,6 +17,7 @@ from pyeoskit import eosapi
 from . import chain_api
 from . import application
 from . import producer
+from . import application
 
 from typing import (
     Any,
@@ -74,8 +75,8 @@ class App(Quart):
         else:
             asyncio.run(serve(self, config), debug=config.debug)
 
-logger=logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logger = application.get_logger(__name__)
+
 app = App(__name__)
 
 @app.route('/')

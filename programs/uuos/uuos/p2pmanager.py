@@ -3,10 +3,9 @@ from _uuos import set_accepted_block_callback
 import asyncio
 from .connection import Connection
 from .native_object import HandshakeMessage
+from . import application
 
-import logging
-logger=logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logger=application.get_logger(__name__)
 
 keep_alive_interval = 32
 

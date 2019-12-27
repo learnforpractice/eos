@@ -1,8 +1,16 @@
 import asyncio
 import logging
 
-logger=logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logging.basicConfig(filename='logfile.log', level=logging.INFO,
+                    format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+
+def get_logger(name):
+    logger=logging.getLogger(name)
+    logger.addHandler(handler)
+    return logger
 
 app = None
 

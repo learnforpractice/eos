@@ -1,6 +1,6 @@
 import ujson as json
 import asyncio
-from .application import get_app, Application
+from .application import get_app, Application, get_logger
 from . import chain
 
 from _uuos import (
@@ -24,9 +24,7 @@ from .native_object import ProducerParams
 import ujson as json
 from . import chain
 
-import logging
-logger=logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logger = get_logger(__name__)
 
 block_interval_ms = 500
 block_interval_us = 500*1000
@@ -252,7 +250,7 @@ class Producer(object):
         #     return
         while True:
             result = self.start_block()
-            logger.info(f'+++++++++++++{result}')
+            # logger.info(f'+++++++++++++{result}')
             if result == 0: # or result == 3: #succeeded or exhausted
                 while not self.trx_queue.empty():
                     msg = await self.trx_queue.get()
@@ -262,7 +260,7 @@ class Producer(object):
                 if mode == 0: #producing
                     deadline = self.calc_pending_block_deadline_time()
                     delay = deadline - self.now_time()/1000.0
-                    print('++++++delay:',delay/1e6)
+#                    logger.info(f'++++++delay:{delay/1e6}')
                     await asyncio.sleep(delay/1e6)
                     self.maybe_produce_block()
                     continue

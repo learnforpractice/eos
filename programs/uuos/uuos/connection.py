@@ -14,11 +14,10 @@ from _uuos import uuos_current_time_nano, uuos_sign_digest
 from . import chain, chain_api
 from .native_object import *
 from pyeoskit import wallet
-from .application import get_app
+from .application import get_app, get_logger
 from .producer import RawTransactionMessage
 
-logger=logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logger=get_logger(__name__)
 
 sync_req_span = 100
 max_package_size = 5*1024*1024
@@ -94,7 +93,7 @@ class Connection(object):
 #            logger.exception(e)
 #            self.p2p_client_task.cancel()
         except Exception as e:
-            print(e)
+            logger.exception(e)
         return False
 
     async def start(self):
@@ -105,7 +104,6 @@ class Connection(object):
             self.close()
             return False
         handshake_message = HandshakeMessage.unpack(raw_msg)
-        print('+++receive handshake message:', handshake_message)
         if not self.verify_handshake_message(handshake_message):
             self.close()
             return False
@@ -421,8 +419,8 @@ class Connection(object):
                 return
 
             head_num = chain.fork_db_pending_head_block_num()
-            print(self.last_handshake.head_num, head_num, chain.last_irreversible_block_num())
-            print('+++handle message:', self.last_handshake)
+#            print(self.last_handshake.head_num, head_num, chain.last_irreversible_block_num())
+            logger.info(f'+++handle message:{self.last_handshake}')
             if msg.head_num < chain.last_irreversible_block_num():
 #                    self.target = msg.head_num
 #                    self.notify_none()
