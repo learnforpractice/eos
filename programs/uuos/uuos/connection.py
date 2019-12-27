@@ -73,6 +73,7 @@ class Connection(object):
         self.cancel_sync_request = False
         self.time_message = None
         self.current_block = 0
+        self.start_sync_block_num = 0
 
         self.org=0
         self.rec=0
@@ -239,7 +240,10 @@ class Connection(object):
 
     def send_block_by_num(self, num):
         block = chain.fetch_block_by_number(num)
+        if not block:
+            return False
         self.send_block(block)
+        return True
 
     def send_block(self, block):
         msg_len = struct.pack('I', len(block) + 1)
@@ -256,11 +260,12 @@ class Connection(object):
         self.writer.write(raw_packed_trx)
 
     async def sync_blocks(self):
-        self.current_block = self.last_sync_request.start_block
-        while self.current_block <= self.last_sync_request.end_block:
+        current_block = self.last_sync_request.start_block
+        while current_block <= self.last_sync_request.end_block:
 #            print("current_block:", self.current_block)
-            self.send_block_by_num(self.current_block)
-            self.current_block += 1
+            if not self.send_block_by_num(current_block):
+                break
+            current_block += 1
             await asyncio.sleep(0)
 
     def on_sync_request(self):
@@ -355,16 +360,24 @@ class Connection(object):
             pending = self.last_notice.known_blocks['pending']
         else:
             pending = self.last_handshake.head_num
-
+        
         irr_block_num = chain.last_irreversible_block_num()
         block_num = chain.fork_db_pending_head_block_num()
+        print(irr_block_num, block_num)
+        # if self.start_sync_block_num == 0:
+        #     self.start_sync_block_num = irr_block_num + 1
+
         if self.first_sync and irr_block_num < block_num:
             start_block = irr_block_num + 1
             end_block = block_num
             self.first_sync = False
         else:
-            start_block = chain.fork_db_pending_head_block_num() + 1
+            start_block = block_num + 1
             end_block = start_block + sync_req_span
+
+        # start_block = self.start_sync_block_num
+        # end_block = start_block + sync_req_span
+        # self.start_sync_block_num = end_block
 
         # if end_block > self.last_handshake.head_num:
         #     end_block = self.last_handshake.head_num
@@ -574,7 +587,7 @@ class Connection(object):
             if num % 10000 == 0:
                 logger.info(f"{num}, {block_id}")
             # if self.target - num < 1000:
-            # logger.info(f"{num}, {block_id}")
+            #logger.info(f"{num}, {block_id}")
             # if self.sync_msg:
             #     logger.info(f"{self.sync_msg.end_block} {num}")
             if self.sync_msg and self.sync_msg.end_block == num:
