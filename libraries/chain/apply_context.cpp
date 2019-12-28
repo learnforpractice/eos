@@ -59,6 +59,7 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 extern "C" {
    void native_eosio_system_apply(uint64_t a, uint64_t b, uint64_t c);
    void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
+   void wasm2c_eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
    typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
    void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size);
    void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action);
@@ -107,7 +108,13 @@ void apply_context::exec_one()
             try {
                if (receiver_account->vm_type == 0) {
                   if (!get_chain_api()->is_debug_enabled()) {
-                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                     if ( receiver.to_uint64_t() == N(eosio.token) && control.fork_db_pending_head_block_num() >= 90000000 ) {
+                     //if (false) {
+                        //wasm2c_eosio_token_apply( receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t() );
+                        native_eosio_token_apply( receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t() );
+                     } else {
+                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                     }
                   } else {
                      string contract_name = account_name(receiver).to_string();
                      fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
