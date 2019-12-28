@@ -3,7 +3,7 @@
 
 #define EOSIO_DISPATCH_NATIVE( TYPE, MEMBERS ) \
 extern "C" { \
-   __attribute__ ((visibility ("default"))) void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action ) { \
+   __attribute__ ((visibility ("default"))) void native_eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action ) { \
       if( code == receiver ) { \
          switch( action ) { \
             EOSIO_DISPATCH_HELPER( TYPE, MEMBERS ) \
@@ -13,10 +13,10 @@ extern "C" { \
    } \
 }
 
-#ifdef _NATIVE
+#ifdef EOSIO_NATIVE
 EOSIO_DISPATCH_NATIVE( eosio::token, (create)(issue)(transfer)(open)(retire) )
 #endif
 
-EOSIO_DISPATCH( eosio::token, (create)(issue)(transfer)(open)(retire) )
+//EOSIO_DISPATCH( eosio::token, (create)(issue)(transfer)(open)(retire) )
 
 
