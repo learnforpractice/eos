@@ -233,7 +233,7 @@ static u32 g0;
 static u32 g1;
 static u32 g2;
 
-static void init_globals(void) {
+void init_globals(void) {
   g0 = 8192u;
   g1 = 9638u;
   g2 = 9638u;
@@ -7963,14 +7963,14 @@ static void init_table(void) {
 }
 
 /* export: 'apply' */
-void (*WASM_RT_ADD_PREFIX(apply_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf))(u64, u64, u64);
+void (*WASM_RT_ADD_PREFIX(apply_eosio_token_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf))(u64, u64, u64);
 
 static void init_exports(void) {
   /* export: 'apply' */
-  WASM_RT_ADD_PREFIX(apply_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf) = (&apply);
+  WASM_RT_ADD_PREFIX(apply_eosio_token_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf) = (&apply);
 }
 
-void WASM_RT_ADD_PREFIX(init_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf)(void) {
+void WASM_RT_ADD_PREFIX(init_eosio_token_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf)(void) {
   init_func_types();
   init_globals();
   init_memory();
@@ -7978,7 +7978,14 @@ void WASM_RT_ADD_PREFIX(init_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d
   init_exports();
 }
 
-wasm_rt_memory_t* get_memory_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf() {
+wasm_rt_memory_t* get_memory_eosio_token_6790d1941faa86d7405f41c7150ba746f99960bc6e37cce277d42d95f28b56bf() {
     return &M0;
 }
-        
+
+wasm_rt_memory_t* get_eosio_token_memory() {
+  return &M0;
+}
+
+void eosio_token_init_globals() {
+  init_globals();
+}

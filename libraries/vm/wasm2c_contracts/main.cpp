@@ -109,11 +109,14 @@ extern "C" wasm_rt_memory_t* get_wasm_rt_memory() {
 #if 0
     if (receiver == 6138663577826885632) { //eosio
        return get_eosio_system_memory();
-    } else if (receiver == 6138663591592764928) {//eosio.token
-      return get_eosio_token_memory();
     }
 #endif
     uint64_t receiver = get_vm_api()->current_receiver();
+
+    if (receiver == 6138663591592764928) {//eosio.token
+      return get_eosio_token_memory();
+    }
+
     std::array<uint8_t,32> hash;
     get_vm_api()->get_code_version(receiver, (char *)hash.data(), 32);
    return get_contract_memory(hash);
@@ -153,6 +156,6 @@ extern "C" void sandboxed_contracts_init() {
     (*WASM_RT_ADD_PREFIX(init))();
 }
 
-extern "C" void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
-    (*WASM_RT_ADD_PREFIX(eosio_token_apply))(receiver, first_receiver, action);
-}
+// extern "C" void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
+//     (*WASM_RT_ADD_PREFIX(eosio_token_apply))(receiver, first_receiver, action);
+// }

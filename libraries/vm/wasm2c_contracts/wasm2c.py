@@ -7,20 +7,20 @@ import hashlib
 
 def wasm2c(contract_name, wasm_file):
     if not wasm_file.endswith('.wasm'):
-        continue
+        return
     hash = hashlib.sha256()
     with open(wasm_file, 'rb') as f:
-        hash.update(f.data())
+        hash.update(f.read())
     hash_hex = hash.hexdigest()
 
     file_injected = wasm_file.replace('.wasm', '.wasm2')
     src_file = contract_name + '.c'
 
     if os.path.exists(src_file):
-        continue
+        return
 
     wasm_injector = [
-        "../libraries/vm/vm_wasm/wasm_injector",
+        "../../../libraries/vm/vm_wasm/wasm_injector",
         wasm_file,
         file_injected
     ]
