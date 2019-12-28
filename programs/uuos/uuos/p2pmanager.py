@@ -21,38 +21,42 @@ class P2pManager(object):
     async def monitor(self):
         counter = 0
         while True:
-            await asyncio.sleep(1.0)
-            counter += 1
-#            logger.info('++++++check connection')
-            timeout_connections = set()
-            for c in self.connections:
-                c.time_counter -= 1
-#                logger.info(f'++++++time_counter {c.time_counter}')
-                if c.time_counter > 0:
-                    continue
-                #too long to not receive a message, consider it as a dead connection
-                c.close()
-                timeout_connections.add(c)
+            try:
+                await asyncio.sleep(1.0)
+                counter += 1
+                # if counter >= keep_alive_interval:
+                #     counter = 0
+                #     for c in self.connections:
+                #         if not c.closed:
+                #             c.send_time_message()
 
-            for c in timeout_connections:
-                if c.client_mode:
-                    logger.info(f'reconnec to {c.host}:{c.port}')
-                    new_connection = Connection(c.host, c.port)
-                    ret = await new_connection.connect()
-                    if not ret:
-                        continue
-                    ret = await new_connection.start()
-                    if not ret:
-                        continue
-                    self.add(new_connection)
-                    self.connections.remove(c)
-                else:
-                    self.connections.remove(c)
-
-            if counter >= keep_alive_interval:
-                counter = keep_alive_interval
+    #            logger.info('++++++check connection')
+                timeout_connections = set()
                 for c in self.connections:
-                    c.send_time_message()
+                    c.time_counter -= 1
+                    # logger.info(f'++++++time_counter {c.time_counter}')
+                    if c.time_counter > 0:
+                        continue
+                    #too long to not receive a message, consider it as a dead connection
+                    c.close()
+                    timeout_connections.add(c)
+
+                for c in timeout_connections:
+                    if c.client_mode:
+                        logger.info(f'reconnec to {c.host}:{c.port}')
+                        new_connection = Connection(c.host, c.port)
+                        ret = await new_connection.connect()
+                        if not ret:
+                            continue
+                        ret = await new_connection.start()
+                        if not ret:
+                            continue
+                        self.add(new_connection)
+                        self.connections.remove(c)
+                    else:
+                        self.connections.remove(c)
+            except Exception as e:
+                logger.exception(e)
 
     def add(self, c):
         self.connections.add(c)
