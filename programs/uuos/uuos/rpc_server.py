@@ -51,14 +51,14 @@ class App(Quart):
     ) -> None:
 
         config = HyperConfig()
-        config.access_log_format = "%(h)s %(r)s %(s)s %(b)s %(D)s"
-        config.accesslog = create_serving_logger()
+        # config.access_log_format = "%(h)s %(r)s %(s)s %(b)s %(D)s"
+        # config.accesslog = create_serving_logger()
+        # config.errorlog = config.accesslog
         config.bind = [f"{host}:{port}"]
         config.ca_certs = ca_certs
         config.certfile = certfile
         if debug is not None:
             self.debug = debug
-        config.errorlog = config.accesslog
         config.keyfile = keyfile
         config.use_reloader = use_reloader
 
@@ -213,6 +213,8 @@ async def ws():
 post_method = ["POST"]
 get_post_method = ["GET", "POST"]
 async def rpc_server(producer, loop, http_server_address):
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
 
     chain_api_routes = [
         ('/v1/chain/get_info',                          get_post_method, get_info),
