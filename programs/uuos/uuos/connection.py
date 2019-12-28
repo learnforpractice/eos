@@ -9,6 +9,7 @@ import asyncio
 import hashlib
 import random
 import traceback
+from datetime import datetime
 
 from _uuos import uuos_current_time_nano, uuos_sign_digest
 from . import chain, chain_api
@@ -21,7 +22,7 @@ logger=get_logger(__name__)
 
 sync_req_span = 100
 max_package_size = 5*1024*1024
-max_time_interval = 60
+max_time_interval = 30
 
 #    void connection::send_time(const time_message& msg) {
 #       time_message xpkt;
@@ -73,6 +74,8 @@ class Connection(object):
         self.time_message = None
         self.current_block = 0
         self.start_sync_block_num = 0
+        self.received_block_count = 0
+        self.start_time = time.time()
 
         self.org=0
         self.rec=0
@@ -108,7 +111,7 @@ class Connection(object):
             self.close()
             return False
         ret = await self.handle_message(msg_type, raw_msg)
-        logger.info(f'handle_message return {ret}')
+        # logger.info(f'handle_message return {ret}')
         if not ret:
             return False
         logger.info('+++++=create handle message loop task')
@@ -120,6 +123,7 @@ class Connection(object):
         while True:
             data = await self.reader.read(length)
             if not data:
+                logger.error('error reading data')
                 self.close()
                 return None
             buffer.write(data)
@@ -142,7 +146,7 @@ class Connection(object):
             logger.error('fail to read msg type')
             return (None, None)
         msg_type = msg_type[0]
-
+        # logger.info(f'+++{msg_type}, {msg_len}')
         msg = await self.read(msg_len-1)
         if not msg:
             logger.error('fail to read msg')
@@ -222,7 +226,7 @@ class Connection(object):
         else:
             current_time = uuos_current_time_nano()
             self.org = current_time
-            t = dict(org=self.org, rec=msg.dst, xmt=current_time, dst=0)
+            t = dict(org=self.org, rec=0, xmt=current_time, dst=0)
             msg = TimeMessage(msg)
         self.writer.write(msg.pack())
 
@@ -398,23 +402,26 @@ class Connection(object):
         try:
             while True:
                 msg_type, msg = await self.read_message()
+                # logger.info(f'+++++read message {msg_type} {len(msg)}')
                 if not await self.handle_message(msg_type, msg):
                     break
         except Exception as e:
-            print(e)
+            logger.exception(e)
         logger.info('exit handle message loop')
+        self.message_task = None
         self.close()
 
     async def handle_message(self, msg_type, msg):
         if msg_type is None or msg is None:
+            logger.info('bad message')
             self.close()
             return
-#        logger.info(f'+++handle_message {msg_type} {msg}')
         self.time_counter = max_time_interval
         if msg_type == 0: #handshake_message_type
 #                logger.info('bad handshake_message')
             self.last_handshake = msg = HandshakeMessage.unpack(msg)
             if not self.last_handshake:
+                logger.info(f'unpack handshake message error!')
                 self.close()
                 return
 
@@ -584,6 +591,24 @@ class Connection(object):
 #                num, block_id = chain_on_incoming_block(self.chain_ptr, msg)
             if num % 10000 == 0:
                 logger.info(f"{num}, {block_id}")
+            self.received_block_count += 1
+            if self.received_block_count % 100 == 0:
+                t1 = time.gmtime(int(self.last_handshake.time)/1e9)
+                t2 = time.gmtime()
+                dt1 = datetime.fromtimestamp(time.mktime(t1))
+                dt2 = datetime.fromtimestamp(time.mktime(t2))
+                delta = dt2-dt1
+                head_num = self.last_handshake.head_num + delta.seconds*2
+                block_remains = head_num - num
+                duration = time.time()-self.start_time
+                
+                if block_remains > 100:
+                    bps = self.received_block_count/duration
+                    logger.info('+++++BPS: %.2f, estimate remain blocks: %d, estimate remain time: %02d:%02d:%02d'%(bps, block_remains, block_remains/bps/60/60, block_remains/bps%(60*60)/60, block_remains/bps%60))
+                if duration >= 120.0:
+                    logger.info('+++reset block counter')
+                    self.received_block_count = 0
+                    self.start_time = time.time()
             # if self.target - num < 1000:
             #logger.info(f"{num}, {block_id}")
             # if self.sync_msg:
@@ -599,5 +624,5 @@ class Connection(object):
             if DEBUG:
                 msg = PackedTransactionMessage(msg)
                 logger.info(msg)
-            RawTransactionMessage(msg)
+            msg = RawTransactionMessage(self, msg)
         return True
