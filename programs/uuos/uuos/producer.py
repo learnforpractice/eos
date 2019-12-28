@@ -134,6 +134,7 @@ class Message(object):
         self.data = data
         self.event = asyncio.Event()
         self.result = None
+        self.connection = None
 
     def get_data(self):
         return self.data
@@ -157,8 +158,9 @@ class TransactionMessage(Message):
 
 class RawTransactionMessage(Message):
 
-    def __init__(self, packed_trx):
+    def __init__(self, con, packed_trx):
         super().__init__(Message.type_raw_transaction, packed_trx)
+        self.connection = con
         get_app().producer.publish_message(self)
 
 
@@ -170,7 +172,8 @@ class Producer(object):
         g_producer_config['snapshots_dir'] = config.snapshots_dir
         g_producer_config['data_dir'] = config.data_dir
         g_producer_config['producers'] = config.producer_name
-        g_producer_config['signature_providers'] = config.signature_provider
+        if config.signature_provider:
+            g_producer_config['signature_providers'] = config.signature_provider
         cfg = json.dumps(g_producer_config)
         self.ptr = producer_new(chain.chain_ptr, cfg)
         self.config = config
@@ -223,7 +226,6 @@ class Producer(object):
 #        logger.info(f'process message {msg}')
         try:
             if msg.type == Message.type_transaction:
-                self.start_block()
                 ret, result, raw_packed_trx = self.process_incomming_transaction(msg.data.decode('utf8'))
                 #TODO: check failure of process transaction
                 msg.notify(result)
@@ -240,8 +242,9 @@ class Producer(object):
                     msg.notify(result)
                     if ret == 0:
                         return
-                    for c in get_app().get_p2p_manger().connections:
-                        c.send_transaction(msg.data)
+                    for c in get_app().get_p2p_manager().connections:
+                        if not c is msg.connection:
+                            c.send_transaction(msg.data)
         except Exception as e:
             logger.exception(e)
 
@@ -269,7 +272,7 @@ class Producer(object):
 
 #                    task = asyncio.create_task(self.produce_block(delay))
             elif result == 1: #failed
-                await asyncio.sleep(block_interval_ms/1e3/10)
+                await asyncio.sleep(block_interval_ms/1e3)
                 # await asyncio.sleep(0.5)
             elif result == 2: #waiting
                 # await asyncio.sleep(0.5)
