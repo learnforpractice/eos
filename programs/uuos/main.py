@@ -21,7 +21,7 @@ from uuos.native_object import *
 from uuos import application
 from uuos.config import Config
 from uuos.p2pmanager import P2pManager
-import _uuos
+import uuos
 
 gc.set_debug(gc.DEBUG_STATS)
 
@@ -208,6 +208,11 @@ class UUOSMain(application.Application):
 
         # task = asyncio.create_task(uuos.p2p_manager.analyze_peer())
         # tasks.append(task)
+        if uuos.config.interact_server:
+            host, port = uuos.config.interact_server.split(':')
+            port = int(port)
+            task = asyncio.create_task(aioconsole.start_interactive_server(host=host, port=port))
+        tasks.append(task)
 
 #        self.producer = Producer(self.config)
         task = asyncio.create_task(uuos.producer.run())

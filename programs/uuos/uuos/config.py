@@ -54,6 +54,7 @@ class Config(object):
         parser.add_argument('--allowed-connection', type=str, default=[], action='append', help="Can be 'any' or 'producers' or 'specified' or 'none'. If 'specified', peer-key must be specified at least once. If only 'producers', peer-key is not required. 'producers' and 'specified' may be combined.")
 
         parser.add_argument('-i', '--interact',    default=False, action="store_true", help='Enable interactive console.')
+        parser.add_argument('--interact-server',   type=str,  default='', help='Enable interactive console server.')
 
         configs = []
         if not config_file:
