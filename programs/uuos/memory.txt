@@ -1,0 +1,493 @@
+Address           Kbytes     RSS   Dirty Mode  Mapping
+0000000000400000    4096    3072       0 r-x-- python3.7
+0000000000400000       0       0       0 r-x-- python3.7
+00000000009ff000       4       4       4 r---- python3.7
+00000000009ff000       0       0       0 r---- python3.7
+0000000000a00000     664     600     316 rw--- python3.7
+0000000000a00000       0       0       0 rw--- python3.7
+0000000000aa6000     140     140     140 rw---   [ anon ]
+0000000000aa6000       0       0       0 rw---   [ anon ]
+00000000020ff000  288360  262632  262632 rw---   [ anon ]
+00000000020ff000       0       0       0 rw---   [ anon ]
+00007ff2c4000000     132       4       4 rw---   [ anon ]
+00007ff2c4000000       0       0       0 rw---   [ anon ]
+00007ff2c4021000   65404       0       0 -----   [ anon ]
+00007ff2c4021000       0       0       0 -----   [ anon ]
+00007ff2c8000000     132      24      24 rw---   [ anon ]
+00007ff2c8000000       0       0       0 rw---   [ anon ]
+00007ff2c8021000   65404       0       0 -----   [ anon ]
+00007ff2c8021000       0       0       0 -----   [ anon ]
+00007ff2cc000000    2532    2532    2532 rw---   [ anon ]
+00007ff2cc000000       0       0       0 rw---   [ anon ]
+00007ff2cc279000   63004       0       0 -----   [ anon ]
+00007ff2cc279000       0       0       0 -----   [ anon ]
+00007ff2d4000000    5196    5196    5196 rw---   [ anon ]
+00007ff2d4000000       0       0       0 rw---   [ anon ]
+00007ff2d4513000   60340       0       0 -----   [ anon ]
+00007ff2d4513000       0       0       0 -----   [ anon ]
+00007ff2d9741000     256      48      48 rw---   [ anon ]
+00007ff2d9741000       0       0       0 rw---   [ anon ]
+00007ff2d9781000      92      88       0 r-x-- libresolv-2.27.so
+00007ff2d9781000       0       0       0 r-x-- libresolv-2.27.so
+00007ff2d9798000    2048       0       0 ----- libresolv-2.27.so
+00007ff2d9798000       0       0       0 ----- libresolv-2.27.so
+00007ff2d9998000       4       4       4 r---- libresolv-2.27.so
+00007ff2d9998000       0       0       0 r---- libresolv-2.27.so
+00007ff2d9999000       4       4       4 rw--- libresolv-2.27.so
+00007ff2d9999000       0       0       0 rw--- libresolv-2.27.so
+00007ff2d999a000       8       0       0 rw---   [ anon ]
+00007ff2d999a000       0       0       0 rw---   [ anon ]
+00007ff2d999c000      20      20       0 r-x-- libnss_dns-2.27.so
+00007ff2d999c000       0       0       0 r-x-- libnss_dns-2.27.so
+00007ff2d99a1000    2048       0       0 ----- libnss_dns-2.27.so
+00007ff2d99a1000       0       0       0 ----- libnss_dns-2.27.so
+00007ff2d9ba1000       4       4       4 r---- libnss_dns-2.27.so
+00007ff2d9ba1000       0       0       0 r---- libnss_dns-2.27.so
+00007ff2d9ba2000       4       4       4 rw--- libnss_dns-2.27.so
+00007ff2d9ba2000       0       0       0 rw--- libnss_dns-2.27.so
+00007ff2d9ba3000      44      44       0 r-x-- libnss_files-2.27.so
+00007ff2d9ba3000       0       0       0 r-x-- libnss_files-2.27.so
+00007ff2d9bae000    2044       0       0 ----- libnss_files-2.27.so
+00007ff2d9bae000       0       0       0 ----- libnss_files-2.27.so
+00007ff2d9dad000       4       4       4 r---- libnss_files-2.27.so
+00007ff2d9dad000       0       0       0 r---- libnss_files-2.27.so
+00007ff2d9dae000       4       4       4 rw--- libnss_files-2.27.so
+00007ff2d9dae000       0       0       0 rw--- libnss_files-2.27.so
+00007ff2d9daf000      24       0       0 rw---   [ anon ]
+00007ff2d9daf000       0       0       0 rw---   [ anon ]
+00007ff2d9db5000       4       0       0 -----   [ anon ]
+00007ff2d9db5000       0       0       0 -----   [ anon ]
+00007ff2d9db6000    8192      24      24 rwx--   [ anon ]
+00007ff2d9db6000       0       0       0 rwx--   [ anon ]
+00007ff2da5b6000       4       0       0 -----   [ anon ]
+00007ff2da5b6000       0       0       0 -----   [ anon ]
+00007ff2da5b7000    8192       8       8 rwx--   [ anon ]
+00007ff2da5b7000       0       0       0 rwx--   [ anon ]
+00007ff2dadb7000       4       0       0 -----   [ anon ]
+00007ff2dadb7000       0       0       0 -----   [ anon ]
+00007ff2dadb8000    8192      16      16 rwx--   [ anon ]
+00007ff2dadb8000       0       0       0 rwx--   [ anon ]
+00007ff2db5b8000       4       0       0 -----   [ anon ]
+00007ff2db5b8000       0       0       0 -----   [ anon ]
+00007ff2db5b9000    8192     228     228 rwx--   [ anon ]
+00007ff2db5b9000       0       0       0 rwx--   [ anon ]
+00007ff2dbdb9000   30732   30732   30732 rw---   [ anon ]
+00007ff2dbdb9000       0       0       0 rw---   [ anon ]
+00007ff2ddbbc000  348160    8428    3600 rw-s- shared_memory.bin
+00007ff2ddbbc000       0       0       0 rw-s- shared_memory.bin
+00007ff2f2fbc000 10240000    3072    2536 r--s- shared_memory.bin
+00007ff2f2fbc000       0       0       0 r--s- shared_memory.bin
+00007ff563fbc000 10240000 4782352   98132 rw-s- shared_memory.bin
+00007ff563fbc000       0       0       0 rw-s- shared_memory.bin
+00007ff7d4fbc000    2560    2560    2560 rw---   [ anon ]
+00007ff7d4fbc000       0       0       0 rw---   [ anon ]
+00007ff7d523c000      64      64       0 r-x-- _multidict.cpython-37m-x86_64-linux-gnu.so
+00007ff7d523c000       0       0       0 r-x-- _multidict.cpython-37m-x86_64-linux-gnu.so
+00007ff7d524c000    2044       0       0 ----- _multidict.cpython-37m-x86_64-linux-gnu.so
+00007ff7d524c000       0       0       0 ----- _multidict.cpython-37m-x86_64-linux-gnu.so
+00007ff7d544b000      12      12      12 rw--- _multidict.cpython-37m-x86_64-linux-gnu.so
+00007ff7d544b000       0       0       0 rw--- _multidict.cpython-37m-x86_64-linux-gnu.so
+00007ff7d544e000    2560    2560    2560 rw---   [ anon ]
+00007ff7d544e000       0       0       0 rw---   [ anon ]
+00007ff7d56ce000      12      12       0 r-x-- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d56ce000       0       0       0 r-x-- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d56d1000    2044       0       0 ----- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d56d1000       0       0       0 ----- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d58d0000       4       4       4 r---- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d58d0000       0       0       0 r---- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d58d1000       4       4       4 rw--- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d58d1000       0       0       0 rw--- _multiprocessing.cpython-37m-x86_64-linux-gnu.so
+00007ff7d58d2000    1792    1792    1792 rw---   [ anon ]
+00007ff7d58d2000       0       0       0 rw---   [ anon ]
+00007ff7d5a92000       8       8       0 r-x-- _speedups.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5a92000       0       0       0 r-x-- _speedups.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5a94000    2048       0       0 ----- _speedups.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5a94000       0       0       0 ----- _speedups.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5c94000       4       4       4 rw--- _speedups.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5c94000       0       0       0 rw--- _speedups.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5c95000     768     768     768 rw---   [ anon ]
+00007ff7d5c95000       0       0       0 rw---   [ anon ]
+00007ff7d5d55000    8704    3116       0 r-x-- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d5d55000       0       0       0 r-x-- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d65d5000    2048       0       0 ----- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d65d5000       0       0       0 ----- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d67d5000     172     172     172 r---- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d67d5000       0       0       0 r---- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6800000      92      92      92 rw--- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6800000       0       0       0 rw--- _hello.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6817000    1048    1036    1036 rw---   [ anon ]
+00007ff7d6817000       0       0       0 rw---   [ anon ]
+00007ff7d691d000     144      64       0 r-x-- liblzma.so.5.2.2
+00007ff7d691d000       0       0       0 r-x-- liblzma.so.5.2.2
+00007ff7d6941000    2048       0       0 ----- liblzma.so.5.2.2
+00007ff7d6941000       0       0       0 ----- liblzma.so.5.2.2
+00007ff7d6b41000       4       4       4 r---- liblzma.so.5.2.2
+00007ff7d6b41000       0       0       0 r---- liblzma.so.5.2.2
+00007ff7d6b42000       4       4       4 rw--- liblzma.so.5.2.2
+00007ff7d6b42000       0       0       0 rw--- liblzma.so.5.2.2
+00007ff7d6b43000      24      24       0 r-x-- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6b43000       0       0       0 r-x-- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6b49000    2044       0       0 ----- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6b49000       0       0       0 ----- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6d48000       4       4       4 r---- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6d48000       0       0       0 r---- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6d49000       8       8       8 rw--- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6d49000       0       0       0 rw--- _lzma.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6d4b000     256     256     256 rw---   [ anon ]
+00007ff7d6d4b000       0       0       0 rw---   [ anon ]
+00007ff7d6d8b000      60      60       0 r-x-- libbz2.so.1.0.4
+00007ff7d6d8b000       0       0       0 r-x-- libbz2.so.1.0.4
+00007ff7d6d9a000    2044       0       0 ----- libbz2.so.1.0.4
+00007ff7d6d9a000       0       0       0 ----- libbz2.so.1.0.4
+00007ff7d6f99000       4       4       4 r---- libbz2.so.1.0.4
+00007ff7d6f99000       0       0       0 r---- libbz2.so.1.0.4
+00007ff7d6f9a000       4       4       4 rw--- libbz2.so.1.0.4
+00007ff7d6f9a000       0       0       0 rw--- libbz2.so.1.0.4
+00007ff7d6f9b000      16      16       0 r-x-- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6f9b000       0       0       0 r-x-- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6f9f000    2044       0       0 ----- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d6f9f000       0       0       0 ----- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d719e000       4       4       4 r---- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d719e000       0       0       0 r---- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d719f000       4       4       4 rw--- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d719f000       0       0       0 rw--- _bz2.cpython-37m-x86_64-linux-gnu.so
+00007ff7d71a0000    1024    1024    1024 rw---   [ anon ]
+00007ff7d71a0000       0       0       0 rw---   [ anon ]
+00007ff7d72a0000      60      60       0 r-x-- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d72a0000       0       0       0 r-x-- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d72af000    2044       0       0 ----- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d72af000       0       0       0 ----- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d74ae000       4       4       4 r---- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d74ae000       0       0       0 r---- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d74af000       4       4       4 rw--- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d74af000       0       0       0 rw--- _json.cpython-37m-x86_64-linux-gnu.so
+00007ff7d74b0000    1524     984     984 rw---   [ anon ]
+00007ff7d74b0000       0       0       0 rw---   [ anon ]
+00007ff7d763c000    1280    1280    1280 rw---   [ anon ]
+00007ff7d763c000       0       0       0 rw---   [ anon ]
+00007ff7d777c000    6040    3964       0 r-x-- libevm4uuos.so
+00007ff7d777c000       0       0       0 r-x-- libevm4uuos.so
+00007ff7d7d62000    2044       0       0 ----- libevm4uuos.so
+00007ff7d7d62000       0       0       0 ----- libevm4uuos.so
+00007ff7d7f61000     312     312     312 r---- libevm4uuos.so
+00007ff7d7f61000       0       0       0 r---- libevm4uuos.so
+00007ff7d7faf000      12       8       8 rw--- libevm4uuos.so
+00007ff7d7faf000       0       0       0 rw--- libevm4uuos.so
+00007ff7d7fb2000     148     144     144 rw---   [ anon ]
+00007ff7d7fb2000       0       0       0 rw---   [ anon ]
+00007ff7d7fd7000       8       8       0 r-x-- libchain_api.so
+00007ff7d7fd7000       0       0       0 r-x-- libchain_api.so
+00007ff7d7fd9000    2044       0       0 ----- libchain_api.so
+00007ff7d7fd9000       0       0       0 ----- libchain_api.so
+00007ff7d81d8000       4       4       4 r---- libchain_api.so
+00007ff7d81d8000       0       0       0 r---- libchain_api.so
+00007ff7d81d9000       4       4       4 rw--- libchain_api.so
+00007ff7d81d9000       0       0       0 rw--- libchain_api.so
+00007ff7d81da000      28      28       0 r-x-- libvm_api.so
+00007ff7d81da000       0       0       0 r-x-- libvm_api.so
+00007ff7d81e1000    2044       0       0 ----- libvm_api.so
+00007ff7d81e1000       0       0       0 ----- libvm_api.so
+00007ff7d83e0000       4       4       4 r---- libvm_api.so
+00007ff7d83e0000       0       0       0 r---- libvm_api.so
+00007ff7d83e1000       4       4       4 rw--- libvm_api.so
+00007ff7d83e1000       0       0       0 rw--- libvm_api.so
+00007ff7d83e2000     364     284       0 r-x-- libnative_contracts.so
+00007ff7d83e2000       0       0       0 r-x-- libnative_contracts.so
+00007ff7d843d000    2048       0       0 ----- libnative_contracts.so
+00007ff7d843d000       0       0       0 ----- libnative_contracts.so
+00007ff7d863d000       4       4       4 r---- libnative_contracts.so
+00007ff7d863d000       0       0       0 r---- libnative_contracts.so
+00007ff7d863e000       4       4       4 rw--- libnative_contracts.so
+00007ff7d863e000       0       0       0 rw--- libnative_contracts.so
+00007ff7d863f000    9504    5056       0 r-x-- libvm_python.so
+00007ff7d863f000       0       0       0 r-x-- libvm_python.so
+00007ff7d8f87000    2044       0       0 ----- libvm_python.so
+00007ff7d8f87000       0       0       0 ----- libvm_python.so
+00007ff7d9186000       4       4       4 r---- libvm_python.so
+00007ff7d9186000       0       0       0 r---- libvm_python.so
+00007ff7d9187000    3092     512      12 rw--- libvm_python.so
+00007ff7d9187000       0       0       0 rw--- libvm_python.so
+00007ff7d948c000     148      64       0 r-x-- libtinfo.so.5.9
+00007ff7d948c000       0       0       0 r-x-- libtinfo.so.5.9
+00007ff7d94b1000    2048       0       0 ----- libtinfo.so.5.9
+00007ff7d94b1000       0       0       0 ----- libtinfo.so.5.9
+00007ff7d96b1000      16      16      16 r---- libtinfo.so.5.9
+00007ff7d96b1000       0       0       0 r---- libtinfo.so.5.9
+00007ff7d96b5000       4       4       4 rw--- libtinfo.so.5.9
+00007ff7d96b5000       0       0       0 rw--- libtinfo.so.5.9
+00007ff7d96b6000      28      28       0 r-x-- librt-2.27.so
+00007ff7d96b6000       0       0       0 r-x-- librt-2.27.so
+00007ff7d96bd000    2044       0       0 ----- librt-2.27.so
+00007ff7d96bd000       0       0       0 ----- librt-2.27.so
+00007ff7d98bc000       4       4       4 r---- librt-2.27.so
+00007ff7d98bc000       0       0       0 r---- librt-2.27.so
+00007ff7d98bd000       4       4       4 rw--- librt-2.27.so
+00007ff7d98bd000       0       0       0 rw--- librt-2.27.so
+00007ff7d98be000    4276     484       0 r-x-- libpython3.7m.so.1.0
+00007ff7d98be000       0       0       0 r-x-- libpython3.7m.so.1.0
+00007ff7d9ceb000    2048       0       0 ----- libpython3.7m.so.1.0
+00007ff7d9ceb000       0       0       0 ----- libpython3.7m.so.1.0
+00007ff7d9eeb000      16      16      16 r---- libpython3.7m.so.1.0
+00007ff7d9eeb000       0       0       0 r---- libpython3.7m.so.1.0
+00007ff7d9eef000     664     372     328 rw--- libpython3.7m.so.1.0
+00007ff7d9eef000       0       0       0 rw--- libpython3.7m.so.1.0
+00007ff7d9f95000     144       0       0 rw---   [ anon ]
+00007ff7d9f95000       0       0       0 rw---   [ anon ]
+00007ff7d9fb9000      92      88       0 r-x-- libgcc_s.so.1
+00007ff7d9fb9000       0       0       0 r-x-- libgcc_s.so.1
+00007ff7d9fd0000    2044       0       0 ----- libgcc_s.so.1
+00007ff7d9fd0000       0       0       0 ----- libgcc_s.so.1
+00007ff7da1cf000       4       4       4 r---- libgcc_s.so.1
+00007ff7da1cf000       0       0       0 r---- libgcc_s.so.1
+00007ff7da1d0000       4       4       4 rw--- libgcc_s.so.1
+00007ff7da1d0000       0       0       0 rw--- libgcc_s.so.1
+00007ff7da1d1000    1508    1324       0 r-x-- libstdc++.so.6.0.25
+00007ff7da1d1000       0       0       0 r-x-- libstdc++.so.6.0.25
+00007ff7da34a000    2048       0       0 ----- libstdc++.so.6.0.25
+00007ff7da34a000       0       0       0 ----- libstdc++.so.6.0.25
+00007ff7da54a000      40      40      40 r---- libstdc++.so.6.0.25
+00007ff7da54a000       0       0       0 r---- libstdc++.so.6.0.25
+00007ff7da554000       8       8       8 rw--- libstdc++.so.6.0.25
+00007ff7da554000       0       0       0 rw--- libstdc++.so.6.0.25
+00007ff7da556000      16      16      16 rw---   [ anon ]
+00007ff7da556000       0       0       0 rw---   [ anon ]
+00007ff7da55a000  122568   31624       0 r-x-- libpyuuos.so
+00007ff7da55a000       0       0       0 r-x-- libpyuuos.so
+00007ff7e1d0c000    2044       0       0 ----- libpyuuos.so
+00007ff7e1d0c000       0       0       0 ----- libpyuuos.so
+00007ff7e1f0b000    1428    1428    1428 r---- libpyuuos.so
+00007ff7e1f0b000       0       0       0 r---- libpyuuos.so
+00007ff7e2070000     480     228     228 rw--- libpyuuos.so
+00007ff7e2070000       0       0       0 rw--- libpyuuos.so
+00007ff7e20e8000     168     144     144 rw---   [ anon ]
+00007ff7e20e8000       0       0       0 rw---   [ anon ]
+00007ff7e2112000     128     120       0 r-x-- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2112000       0       0       0 r-x-- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2132000    2048       0       0 ----- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2132000       0       0       0 ----- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2332000       8       8       8 r---- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2332000       0       0       0 r---- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2334000       4       4       4 rw--- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2334000       0       0       0 rw--- _uuos.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2335000       4       4       4 rw---   [ anon ]
+00007ff7e2335000       0       0       0 rw---   [ anon ]
+00007ff7e2336000       8       8       0 r-x-- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2336000       0       0       0 r-x-- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2338000    2048       0       0 ----- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2338000       0       0       0 ----- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2538000       4       4       4 r---- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2538000       0       0       0 r---- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2539000       4       4       4 rw--- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2539000       0       0       0 rw--- _queue.cpython-37m-x86_64-linux-gnu.so
+00007ff7e253a000     256     256     256 rw---   [ anon ]
+00007ff7e253a000       0       0       0 rw---   [ anon ]
+00007ff7e257a000      28      28       0 r-x-- libffi.so.6.0.4
+00007ff7e257a000       0       0       0 r-x-- libffi.so.6.0.4
+00007ff7e2581000    2044       0       0 ----- libffi.so.6.0.4
+00007ff7e2581000       0       0       0 ----- libffi.so.6.0.4
+00007ff7e2780000       4       4       4 r---- libffi.so.6.0.4
+00007ff7e2780000       0       0       0 r---- libffi.so.6.0.4
+00007ff7e2781000       4       4       4 rw--- libffi.so.6.0.4
+00007ff7e2781000       0       0       0 rw--- libffi.so.6.0.4
+00007ff7e2782000     108     108       0 r-x-- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2782000       0       0       0 r-x-- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e279d000    2044       0       0 ----- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e279d000       0       0       0 ----- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e299c000       4       4       4 r---- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e299c000       0       0       0 r---- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e299d000      16      16      16 rw--- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e299d000       0       0       0 rw--- _ctypes.cpython-37m-x86_64-linux-gnu.so
+00007ff7e29a1000     512     512     512 rw---   [ anon ]
+00007ff7e29a1000       0       0       0 rw---   [ anon ]
+00007ff7e2a21000      24      24       0 r-x-- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2a21000       0       0       0 r-x-- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2a27000    2044       0       0 ----- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2a27000       0       0       0 ----- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2c26000       4       4       4 r---- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2c26000       0       0       0 r---- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2c27000       4       4       4 rw--- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2c27000       0       0       0 rw--- _hashlib.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2c28000    1536    1536    1536 rw---   [ anon ]
+00007ff7e2c28000       0       0       0 rw---   [ anon ]
+00007ff7e2da8000      56      56       0 r-x-- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2da8000       0       0       0 r-x-- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2db6000    2044       0       0 ----- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2db6000       0       0       0 ----- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fb5000       4       4       4 r---- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fb5000       0       0       0 r---- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fb6000      16      16      16 rw--- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fb6000       0       0       0 rw--- _asyncio.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fba000       4       4       0 r-x-- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fba000       0       0       0 r-x-- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fbb000    2044       0       0 ----- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e2fbb000       0       0       0 ----- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31ba000       4       4       4 r---- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31ba000       0       0       0 r---- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31bb000       4       4       4 rw--- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31bb000       0       0       0 rw--- _contextvars.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31bc000     256     256     256 rw---   [ anon ]
+00007ff7e31bc000       0       0       0 rw---   [ anon ]
+00007ff7e31fc000       4       4       0 r-x-- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31fc000       0       0       0 r-x-- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31fd000    2044       0       0 ----- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e31fd000       0       0       0 ----- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e33fc000       4       4       4 r---- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e33fc000       0       0       0 r---- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e33fd000       4       4       4 rw--- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e33fd000       0       0       0 rw--- _opcode.cpython-37m-x86_64-linux-gnu.so
+00007ff7e33fe000     256     256     256 rw---   [ anon ]
+00007ff7e33fe000       0       0       0 rw---   [ anon ]
+00007ff7e343e000    2668    2092       0 r-x-- libcrypto.so.1.1
+00007ff7e343e000       0       0       0 r-x-- libcrypto.so.1.1
+00007ff7e36d9000    2044       0       0 ----- libcrypto.so.1.1
+00007ff7e36d9000       0       0       0 ----- libcrypto.so.1.1
+00007ff7e38d8000     176     176     176 r---- libcrypto.so.1.1
+00007ff7e38d8000       0       0       0 r---- libcrypto.so.1.1
+00007ff7e3904000       8       8       8 rw--- libcrypto.so.1.1
+00007ff7e3904000       0       0       0 rw--- libcrypto.so.1.1
+00007ff7e3906000      12      12      12 rw---   [ anon ]
+00007ff7e3906000       0       0       0 rw---   [ anon ]
+00007ff7e3909000     512     412       0 r-x-- libssl.so.1.1
+00007ff7e3909000       0       0       0 r-x-- libssl.so.1.1
+00007ff7e3989000    2048       0       0 ----- libssl.so.1.1
+00007ff7e3989000       0       0       0 ----- libssl.so.1.1
+00007ff7e3b89000      36      36      36 r---- libssl.so.1.1
+00007ff7e3b89000       0       0       0 r---- libssl.so.1.1
+00007ff7e3b92000      16      16      16 rw--- libssl.so.1.1
+00007ff7e3b92000       0       0       0 rw--- libssl.so.1.1
+00007ff7e3b96000      92      92       0 r-x-- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3b96000       0       0       0 r-x-- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3bad000    2044       0       0 ----- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3bad000       0       0       0 ----- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3dac000       4       4       4 r---- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3dac000       0       0       0 r---- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3dad000      20      20      16 rw--- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3dad000       0       0       0 rw--- _ssl.cpython-37m-x86_64-linux-gnu.so
+00007ff7e3db2000     512     512     512 rw---   [ anon ]
+00007ff7e3db2000       0       0       0 rw---   [ anon ]
+00007ff7e3e3b000    1536    1536    1536 rw---   [ anon ]
+00007ff7e3e3b000       0       0       0 rw---   [ anon ]
+00007ff7e3fbb000     220     124       0 r-x-- libmpdec.so.2.4.2
+00007ff7e3fbb000       0       0       0 r-x-- libmpdec.so.2.4.2
+00007ff7e3ff2000    2044       0       0 ----- libmpdec.so.2.4.2
+00007ff7e3ff2000       0       0       0 ----- libmpdec.so.2.4.2
+00007ff7e41f1000       4       4       4 r---- libmpdec.so.2.4.2
+00007ff7e41f1000       0       0       0 r---- libmpdec.so.2.4.2
+00007ff7e41f2000       4       4       4 rw--- libmpdec.so.2.4.2
+00007ff7e41f2000       0       0       0 rw--- libmpdec.so.2.4.2
+00007ff7e41f3000     140     140       0 r-x-- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e41f3000       0       0       0 r-x-- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4216000    2044       0       0 ----- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4216000       0       0       0 ----- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4415000       4       4       4 r---- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4415000       0       0       0 r---- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4416000      36      36      16 rw--- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4416000       0       0       0 rw--- _decimal.cpython-37m-x86_64-linux-gnu.so
+00007ff7e441f000      40      40       0 r-x-- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e441f000       0       0       0 r-x-- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4429000    2044       0       0 ----- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4429000       0       0       0 ----- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4628000       4       4       4 r---- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4628000       0       0       0 r---- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4629000       4       4       4 rw--- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e4629000       0       0       0 rw--- ujson.cpython-37m-x86_64-linux-gnu.so
+00007ff7e462a000     512     512     512 rw---   [ anon ]
+00007ff7e462a000       0       0       0 rw---   [ anon ]
+00007ff7e46cf000    1280    1280    1280 rw---   [ anon ]
+00007ff7e46cf000       0       0       0 rw---   [ anon ]
+00007ff7e480f000       8       8       0 r-x-- ISO8859-1.so
+00007ff7e480f000       0       0       0 r-x-- ISO8859-1.so
+00007ff7e4811000    2044       0       0 ----- ISO8859-1.so
+00007ff7e4811000       0       0       0 ----- ISO8859-1.so
+00007ff7e4a10000       4       4       4 r---- ISO8859-1.so
+00007ff7e4a10000       0       0       0 r---- ISO8859-1.so
+00007ff7e4a11000       4       4       4 rw--- ISO8859-1.so
+00007ff7e4a11000       0       0       0 rw--- ISO8859-1.so
+00007ff7e4a12000    1652     728       0 r-x-- libm-2.27.so
+00007ff7e4a12000       0       0       0 r-x-- libm-2.27.so
+00007ff7e4baf000    2044       0       0 ----- libm-2.27.so
+00007ff7e4baf000       0       0       0 ----- libm-2.27.so
+00007ff7e4dae000       4       4       4 r---- libm-2.27.so
+00007ff7e4dae000       0       0       0 r---- libm-2.27.so
+00007ff7e4daf000       4       4       4 rw--- libm-2.27.so
+00007ff7e4daf000       0       0       0 rw--- libm-2.27.so
+00007ff7e4db0000     112     112       0 r-x-- libz.so.1.2.11
+00007ff7e4db0000       0       0       0 r-x-- libz.so.1.2.11
+00007ff7e4dcc000    2044       0       0 ----- libz.so.1.2.11
+00007ff7e4dcc000       0       0       0 ----- libz.so.1.2.11
+00007ff7e4fcb000       4       4       4 r---- libz.so.1.2.11
+00007ff7e4fcb000       0       0       0 r---- libz.so.1.2.11
+00007ff7e4fcc000       4       4       4 rw--- libz.so.1.2.11
+00007ff7e4fcc000       0       0       0 rw--- libz.so.1.2.11
+00007ff7e4fcd000     188      64       0 r-x-- libexpat.so.1.6.7
+00007ff7e4fcd000       0       0       0 r-x-- libexpat.so.1.6.7
+00007ff7e4ffc000    2048       0       0 ----- libexpat.so.1.6.7
+00007ff7e4ffc000       0       0       0 ----- libexpat.so.1.6.7
+00007ff7e51fc000       8       8       8 r---- libexpat.so.1.6.7
+00007ff7e51fc000       0       0       0 r---- libexpat.so.1.6.7
+00007ff7e51fe000       4       4       4 rw--- libexpat.so.1.6.7
+00007ff7e51fe000       0       0       0 rw--- libexpat.so.1.6.7
+00007ff7e51ff000       8       4       0 r-x-- libutil-2.27.so
+00007ff7e51ff000       0       0       0 r-x-- libutil-2.27.so
+00007ff7e5201000    2044       0       0 ----- libutil-2.27.so
+00007ff7e5201000       0       0       0 ----- libutil-2.27.so
+00007ff7e5400000       4       4       4 r---- libutil-2.27.so
+00007ff7e5400000       0       0       0 r---- libutil-2.27.so
+00007ff7e5401000       4       4       4 rw--- libutil-2.27.so
+00007ff7e5401000       0       0       0 rw--- libutil-2.27.so
+00007ff7e5402000      12      12       0 r-x-- libdl-2.27.so
+00007ff7e5402000       0       0       0 r-x-- libdl-2.27.so
+00007ff7e5405000    2044       0       0 ----- libdl-2.27.so
+00007ff7e5405000       0       0       0 ----- libdl-2.27.so
+00007ff7e5604000       4       4       4 r---- libdl-2.27.so
+00007ff7e5604000       0       0       0 r---- libdl-2.27.so
+00007ff7e5605000       4       4       4 rw--- libdl-2.27.so
+00007ff7e5605000       0       0       0 rw--- libdl-2.27.so
+00007ff7e5606000     104     104       0 r-x-- libpthread-2.27.so
+00007ff7e5606000       0       0       0 r-x-- libpthread-2.27.so
+00007ff7e5620000    2044       0       0 ----- libpthread-2.27.so
+00007ff7e5620000       0       0       0 ----- libpthread-2.27.so
+00007ff7e581f000       4       4       4 r---- libpthread-2.27.so
+00007ff7e581f000       0       0       0 r---- libpthread-2.27.so
+00007ff7e5820000       4       4       4 rw--- libpthread-2.27.so
+00007ff7e5820000       0       0       0 rw--- libpthread-2.27.so
+00007ff7e5821000      16       4       4 rw---   [ anon ]
+00007ff7e5821000       0       0       0 rw---   [ anon ]
+00007ff7e5825000    1948    1564       0 r-x-- libc-2.27.so
+00007ff7e5825000       0       0       0 r-x-- libc-2.27.so
+00007ff7e5a0c000    2048       0       0 ----- libc-2.27.so
+00007ff7e5a0c000       0       0       0 ----- libc-2.27.so
+00007ff7e5c0c000      16      16      16 r---- libc-2.27.so
+00007ff7e5c0c000       0       0       0 r---- libc-2.27.so
+00007ff7e5c10000       8       8       8 rw--- libc-2.27.so
+00007ff7e5c10000       0       0       0 rw--- libc-2.27.so
+00007ff7e5c12000      16      16      16 rw---   [ anon ]
+00007ff7e5c12000       0       0       0 rw---   [ anon ]
+00007ff7e5c16000     156     156       0 r-x-- ld-2.27.so
+00007ff7e5c16000       0       0       0 r-x-- ld-2.27.so
+00007ff7e5c46000    1948     252       0 r---- locale-archive
+00007ff7e5c46000       0       0       0 r---- locale-archive
+00007ff7e5e2d000      28      24      24 rw---   [ anon ]
+00007ff7e5e2d000       0       0       0 rw---   [ anon ]
+00007ff7e5e35000       4       4       4 rwx--   [ anon ]
+00007ff7e5e35000       0       0       0 rwx--   [ anon ]
+00007ff7e5e36000      28      28       0 r--s- gconv-modules.cache
+00007ff7e5e36000       0       0       0 r--s- gconv-modules.cache
+00007ff7e5e3d000       4       4       4 r---- ld-2.27.so
+00007ff7e5e3d000       0       0       0 r---- ld-2.27.so
+00007ff7e5e3e000       4       4       4 rw--- ld-2.27.so
+00007ff7e5e3e000       0       0       0 rw--- ld-2.27.so
+00007ff7e5e3f000       4       4       4 rw---   [ anon ]
+00007ff7e5e3f000       0       0       0 rw---   [ anon ]
+00007ffe9cb13000     136      84      84 rwx--   [ stack ]
+00007ffe9cb13000       0       0       0 rwx--   [ stack ]
+00007ffe9cb35000       8       4       4 rw---   [ anon ]
+00007ffe9cb35000       0       0       0 rw---   [ anon ]
+00007ffe9cb5f000      12       0       0 r----   [ anon ]
+00007ffe9cb5f000       0       0       0 r----   [ anon ]
+00007ffe9cb62000       8       4       0 r-x--   [ anon ]
+00007ffe9cb62000       0       0       0 r-x--   [ anon ]
+ffffffffff600000       4       0       0 r-x--   [ anon ]
+ffffffffff600000       0       0       0 r-x--   [ anon ]
+---------------- ------- ------- ------- 
+total kB         21730584 5175148  428824
