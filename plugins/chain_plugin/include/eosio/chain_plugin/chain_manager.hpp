@@ -31,3 +31,5 @@ public:
     controller *cc = nullptr;
     controller::config cfg;
 };
+
+eosio::chain::controller& chain_manager_get_controller(void *ptr);

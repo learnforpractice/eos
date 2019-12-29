@@ -2037,13 +2037,15 @@ void producer_plugin_impl::produce_block() {
 using namespace std;
 using namespace eosio;
 
+eosio::chain::controller& chain_manager_get_controller(void *ptr);
+
 void print_producer_params(producer_plugin::producer_params &imp) {
    auto msg = fc::json::to_string(fc::variant(imp));
    elog("++++msg ${msg}", ("msg", msg));
 }
 
 void *producer_new_(void *chain_ptr, string& config) {
-   eosio::chain::controller& chain = *(eosio::chain::controller*)chain_ptr;
+   eosio::chain::controller& chain = chain_manager_get_controller(chain_ptr);
    auto producer = new producer_plugin();
    auto _config = fc::json::from_string(config).as<producer_plugin::producer_params>();
    elog("${cfg}", ("cfg", fc::variant(_config)));
