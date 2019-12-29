@@ -65,6 +65,7 @@ void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);
 uint64_t    uuos_current_time_nano_();
 void        uuos_sign_digest_(string& _priv_key, string& _digest, string& out);
+void        uuos_set_log_level_(string& logger_name, int level);
 
 enum {
     handshake_message_type,

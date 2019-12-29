@@ -365,7 +365,7 @@ class Connection(object):
         
         irr_block_num = chain.last_irreversible_block_num()
         block_num = chain.fork_db_pending_head_block_num()
-        print(irr_block_num, block_num)
+        logger.info(f'{irr_block_num}, {block_num}')
         # if self.start_sync_block_num == 0:
         #     self.start_sync_block_num = irr_block_num + 1
 
@@ -601,7 +601,7 @@ class Connection(object):
                 head_num = self.last_handshake.head_num + delta.seconds*2
                 block_remains = head_num - num
                 duration = time.time()-self.start_time
-                
+
                 if block_remains > 100:
                     bps = self.received_block_count/duration
                     logger.info('+++++BPS: %.2f, estimate remain blocks: %d, estimate remain time: %02d:%02d:%02d'%(bps, block_remains, block_remains/bps/60/60, block_remains/bps%(60*60)/60, block_remains/bps%60))
