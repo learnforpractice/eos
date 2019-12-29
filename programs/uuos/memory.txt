@@ -7,7 +7,7 @@ Address           Kbytes     RSS   Dirty Mode  Mapping
 0000000000a00000       0       0       0 rw--- python3.7
 0000000000aa6000     140     140     140 rw---   [ anon ]
 0000000000aa6000       0       0       0 rw---   [ anon ]
-00000000020ff000  288360  262632  262632 rw---   [ anon ]
+00000000020ff000  300596  274072  274072 rw---   [ anon ]
 00000000020ff000       0       0       0 rw---   [ anon ]
 00007ff2c4000000     132       4       4 rw---   [ anon ]
 00007ff2c4000000       0       0       0 rw---   [ anon ]
@@ -25,7 +25,7 @@ Address           Kbytes     RSS   Dirty Mode  Mapping
 00007ff2d4000000       0       0       0 rw---   [ anon ]
 00007ff2d4513000   60340       0       0 -----   [ anon ]
 00007ff2d4513000       0       0       0 -----   [ anon ]
-00007ff2d9741000     256      48      48 rw---   [ anon ]
+00007ff2d9741000     256      52      52 rw---   [ anon ]
 00007ff2d9741000       0       0       0 rw---   [ anon ]
 00007ff2d9781000      92      88       0 r-x-- libresolv-2.27.so
 00007ff2d9781000       0       0       0 r-x-- libresolv-2.27.so
@@ -73,11 +73,11 @@ Address           Kbytes     RSS   Dirty Mode  Mapping
 00007ff2db5b9000       0       0       0 rwx--   [ anon ]
 00007ff2dbdb9000   30732   30732   30732 rw---   [ anon ]
 00007ff2dbdb9000       0       0       0 rw---   [ anon ]
-00007ff2ddbbc000  348160    8428    2816 rw-s- shared_memory.bin
+00007ff2ddbbc000  348160    8464    1000 rw-s- shared_memory.bin
 00007ff2ddbbc000       0       0       0 rw-s- shared_memory.bin
-00007ff2f2fbc000 10240000    3072    2616 r--s- shared_memory.bin
+00007ff2f2fbc000 10240000    3072    2592 r--s- shared_memory.bin
 00007ff2f2fbc000       0       0       0 r--s- shared_memory.bin
-00007ff563fbc000 10240000 4957876  106524 rw-s- shared_memory.bin
+00007ff563fbc000 10240000 5144804   98892 rw-s- shared_memory.bin
 00007ff563fbc000       0       0       0 rw-s- shared_memory.bin
 00007ff7d4fbc000    2560    2560    2560 rw---   [ anon ]
 00007ff7d4fbc000       0       0       0 rw---   [ anon ]
@@ -490,4 +490,4 @@ Address           Kbytes     RSS   Dirty Mode  Mapping
 ffffffffff600000       4       0       0 r-x--   [ anon ]
 ffffffffff600000       0       0       0 r-x--   [ anon ]
 ---------------- ------- ------- ------- 
-total kB         21730584 5350672  436512
+total kB         21742820 5549080  438484
