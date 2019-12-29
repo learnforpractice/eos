@@ -215,3 +215,9 @@ void uuos_sign_digest_(string& _priv_key, string& _digest, string& out) {
     } FC_LOG_AND_DROP();
 }
 
+
+void uuos_set_log_level_(string& logger_name, int level) {
+//fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+    fc::logger::get(logger_name).set_log_level(fc::log_level(level));
+}
+
