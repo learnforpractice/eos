@@ -7,6 +7,7 @@ import ujson as json
 import struct
 import logging
 import asyncio
+import aioconsole
 import argparse
 import signal
 
@@ -20,6 +21,7 @@ from uuos.native_object import *
 from uuos import application
 from uuos.config import Config
 from uuos.p2pmanager import P2pManager
+import _uuos
 
 gc.set_debug(gc.DEBUG_STATS)
 
@@ -166,6 +168,9 @@ class UUOSMain(application.Application):
         logging.info("Shutting down...")
 #        asyncio.create_task(self.shutdown(0, loop))
 
+    async def interactive_console(self):
+        await aioconsole.interact()
+
     @classmethod
     async def main(cls, config, loop):
         try:
@@ -196,6 +201,13 @@ class UUOSMain(application.Application):
 
         task = asyncio.create_task(uuos.p2p_manager.p2p_server())
         tasks.append(task)
+
+        if self.config.interact
+            task = asyncio.create_task(uuos.interactive_console())
+            tasks.append(task)
+
+        # task = asyncio.create_task(uuos.p2p_manager.analyze_peer())
+        # tasks.append(task)
 
 #        self.producer = Producer(self.config)
         task = asyncio.create_task(uuos.producer.run())

@@ -52,7 +52,9 @@ class Config(object):
         # --plugin=eosio::net_api_plugin --plugin=eosio::chain_plugin --plugin=eosio::chain_api_plugin --plugin=eosio::producer_plugin --plugin=eosio::producer_api_plugin
         #--allowed-connection=any
         parser.add_argument('--allowed-connection', type=str, default=[], action='append', help="Can be 'any' or 'producers' or 'specified' or 'none'. If 'specified', peer-key must be specified at least once. If only 'producers', peer-key is not required. 'producers' and 'specified' may be combined.")
-        
+
+        parser.add_argument('-i', '--interact',    default=False, action="store_true", help='Enable interactive console.')
+
         configs = []
         if not config_file:
             args = sys.argv[1:]
