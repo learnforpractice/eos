@@ -23,5 +23,8 @@ def current_time_nano():
 def sign_digest(priv_key, digest):
     return _uuos.uuos_sign_digest(priv_key, digest)
 
-def set_log_level(logger_name, level):
+def set_log_level(logger_name='default', level=10):
     return _uuos.uuos_set_log_level(logger_name, level)
+
+def set_default_log_level(level):
+    return _uuos.uuos_set_log_level('default', level)

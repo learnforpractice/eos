@@ -7,6 +7,14 @@ default_state_guard_size      =    128*1024*1024#
 default_reversible_cache_size = 340*1024*1024 # 1MB * 340 blocks based on 21 producer BFT delay
 default_reversible_guard_size = 2*1024*1024 # 1MB * 340 blocks based on 21 producer BFT delay
 
+class LogLevel(object):
+    all = 0
+    debug = 1
+    info = 2
+    warn = 3
+    error = 4
+    off  = 5
+
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
 
