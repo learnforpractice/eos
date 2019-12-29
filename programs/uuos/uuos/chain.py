@@ -9,6 +9,10 @@ def set_chain_ptr(ptr):
     global chain_ptr
     chain_ptr = ptr
 
+def free():
+    if chain_ptr:
+        chain_free(chain_ptr)
+
 def id():
     return chain_id(chain_ptr)
 
