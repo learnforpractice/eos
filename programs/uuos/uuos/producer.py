@@ -1,28 +1,19 @@
+__all__ = [
+    'set_producer',
+    'get_producer',
+    'TransactionMessage',
+    'RawTransactionMessage',
+    'Producer'
+]
+
 import ujson as json
 import asyncio
-from .application import get_app, Application, get_logger
+from .application import get_app, get_logger
 from . import chain
-
-from _uuos import (
-    producer_new,
-    producer_free,
-    producer_on_incoming_block,
-    producer_start_block,
-    producer_calc_pending_block_time,
-    producer_calc_pending_block_deadline_time,
-    producer_maybe_produce_block,
-    uuos_current_time_nano,
-    producer_get_pending_block_mode,
-    producer_process_incomming_transaction,
-    producer_process_raw_transaction,
-    producer_create_snapshot,
-    producer_is_producer_key,
-    producer_schedule_protocol_feature_activations,
-)
-
-from .native_object import ProducerParams
+import _uuos
 import ujson as json
 from . import chain
+
 
 logger = get_logger(__name__)
 
@@ -175,7 +166,7 @@ class Producer(object):
         if config.signature_provider:
             g_producer_config['signature_providers'] = config.signature_provider
         cfg = json.dumps(g_producer_config)
-        self.ptr = producer_new(chain.chain_ptr, cfg)
+        self.ptr = _uuos.producer_new(chain.chain_ptr, cfg)
         self.config = config
 
         self.pending_trx = {}
@@ -291,7 +282,7 @@ class Producer(object):
         #     self.end_produce_block()
 
     def __delete__(self):
-        producer_free(self.ptr)
+        _uuos.producer_free(self.ptr)
 
     def get_sleep_time(self):
         return 1.0
@@ -313,46 +304,44 @@ class Producer(object):
         return False
 
     def start_block(self):
-        return producer_start_block(self.ptr)
+        return _uuos.producer_start_block(self.ptr)
 
     def calc_pending_block_time(self):
-        return producer_calc_pending_block_time(self.ptr)
+        return _uuos.producer_calc_pending_block_time(self.ptr)
 
     def calc_pending_block_deadline_time(self):
-        return producer_calc_pending_block_deadline_time(self.ptr)
+        return _uuos.producer_calc_pending_block_deadline_time(self.ptr)
 
     def maybe_produce_block(self):
-        return producer_maybe_produce_block(self.ptr)
+        return _uuos.producer_maybe_produce_block(self.ptr)
 
     def now_time(self):
-        return uuos_current_time_nano()
+        return _uuos.uuos_current_time_nano()
 
     def get_pending_block_mode(self):
-        return producer_get_pending_block_mode(self.ptr)
+        return _uuos.producer_get_pending_block_mode(self.ptr)
 
     def process_incomming_transaction(self, trx):
-        return producer_process_incomming_transaction(self.ptr, trx)
+        return _uuos.producer_process_incomming_transaction(self.ptr, trx)
     
     def process_raw_transaction(self, raw_packed_trx):
-        return producer_process_raw_transaction(self.ptr, raw_packed_trx)
+        return _uuos.producer_process_raw_transaction(self.ptr, raw_packed_trx)
 
     def start_production_loop(self):
         pass
 
     def on_incoming_block(self, block):
-        num, block_id = producer_on_incoming_block(self.ptr, block)
+        num, block_id = _uuos.producer_on_incoming_block(self.ptr, block)
         self.start_production_loop()
         return num, block_id
     
     def create_snapshot(self):
-        return producer_create_snapshot(self.ptr)
+        return _uuos.producer_create_snapshot(self.ptr)
     
     def is_producer_key(self):
-        return producer_is_producer_key(self.ptr)
+        return _uuos.producer_is_producer_key(self.ptr)
 
     def schedule_protocol_feature_activations(self, features):
         if isinstance(features, dict):
             features = json.dumps(features)
-        return producer_schedule_protocol_feature_activations(self.ptr, features)
-
-
+        return _uuos.producer_schedule_protocol_feature_activations(self.ptr, features)
