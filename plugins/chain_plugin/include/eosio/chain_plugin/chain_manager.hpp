@@ -17,11 +17,9 @@ void *chain_new_(string& config, string& protocol_features_dir);
 void chain_free_(void *ptr);
 
 class chain_manager {
-private:
-    chain_manager(string& config, string& protocol_features_dir, string& snapshot_dir);
 public:
-    static chain_manager *init(string& config, string& protocol_features_dir, string& snapshot_dir);
-    static chain_manager& get();
+    chain_manager();
+    bool init(string& config, string& protocol_features_dir, string& snapshot_dir);
 
     void log_guard_exception(const chain::guard_exception&e );
     void on_accepted_transaction( const transaction_metadata_ptr& meta );
@@ -32,5 +30,4 @@ public:
 
     controller *cc = nullptr;
     controller::config cfg;
-    static chain_manager *instance;
 };

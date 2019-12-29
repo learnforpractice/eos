@@ -2409,12 +2409,13 @@ FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ig
 #define max_abi_time (10000)
 using namespace eosio::chain_apis;
 using namespace eosio;
+eosio::chain::controller& chain_manager_get_controller(void *ptr);
 
 void chain_api_get_info_(void *ptr, string& info) {
    try {
       read_only::get_info_params params;
       read_only::get_info_results results;
-      auto& cc = *(eosio::chain::controller*)ptr;
+      auto& cc = chain_manager_get_controller(ptr);
 
       results = read_only(cc, fc::microseconds(max_abi_time)).get_info(params);
       info = fc::json::to_string(fc::variant(results));
@@ -2424,7 +2425,7 @@ void chain_api_get_info_(void *ptr, string& info) {
 #define CHAIN_API_RO(api_name) \
 void chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
    try { \
-      auto& cc = *(eosio::chain::controller*)ptr; \
+      auto& cc = chain_manager_get_controller(ptr); \
       auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
       auto _result = read_only(cc, fc::microseconds(max_abi_time)).api_name(_params); \
       result = fc::json::to_string(fc::variant(_result)); \
@@ -2456,7 +2457,7 @@ CHAIN_API_RO(get_transaction_id)
 
 void chain_api_push_transaction_(void *ptr, string& params, string& result) {
    try {
-      auto& cc = *(eosio::chain::controller*)ptr;
+      auto& cc = chain_manager_get_controller(ptr);
       auto _params = fc::json::from_string(params).as<read_write::push_transaction_params>();
       read_write(cc, fc::microseconds(max_abi_time)).push_transaction(_params,
          [&result](const fc::static_variant<fc::exception_ptr, chain_apis::read_write::push_transaction_results>& results){
@@ -2477,7 +2478,7 @@ void chain_api_push_transaction_(void *ptr, string& params, string& result) {
 }
 
 int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {
-//   auto& cc = *(eosio::chain::controller*)ptr;
+//   auto& cc = chain_manager_get_controller(ptr);
 //   uint32_t cache_size = cc.get_config().reversible_cache_size;
    fc::optional<fc::path> new_db_dir;
    if (new_reversible_blocks_dir.size()) {

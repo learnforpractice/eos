@@ -137,6 +137,8 @@ class UUOSMain(application.Application):
         cfg = cfg.dumps()
         print(cfg)
         self.chain_ptr = chain_new(cfg, config.config_dir, config.snapshot)
+        if not self.chain_ptr:
+            raise Exception('chain initialization failture!')
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
         self.producer = Producer(self.config)

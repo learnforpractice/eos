@@ -13,9 +13,6 @@ extern "C"
    void sandboxed_contracts_init();
 }
 
-chain_manager *chain_manager::instance = nullptr;
-static chain_manager *g_manager = nullptr;
-
 #include <fc/log/logger_config.hpp>
 
 typedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id);
@@ -37,35 +34,36 @@ void chain_manager::log_guard_exception(const chain::guard_exception&e ) {
    dlog("Details: ${details}", ("details", e.to_detail_string()));
 }
 
-chain_manager::chain_manager(string& config, string& protocol_features_dir, string& snapshot_dir) {
-    evm_init();
-    vm_api_init();
-    vm_api_ro_init();
-    chain_api_init();
-    sandboxed_contracts_init();
+chain_manager::chain_manager() {
+}
 
-//    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
-    fc::logger::get("producer_plugin").set_log_level(fc::log_level::debug);
-    fc::logger::get("transaction_tracing").set_log_level(fc::log_level::debug);
-
-    auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
-    cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
-    ilog("${cfg}", ("cfg", cfg));
-
-    cc = new eosio::chain::controller(cfg, std::move(pfs));
-    cc->add_indices();
-    cc->accepted_block.connect(boost::bind(&chain_manager::on_accepted_block, this, _1));
-    cc->accepted_transaction.connect(boost::bind(&chain_manager::on_accepted_transaction, this, _1));
-
-
-
-//     my->chain->accepted_transaction.connect([this]( const transaction_metadata_ptr& meta ) {
-//        my->accepted_transaction_channel.publish( priority::low, meta );
-//     } );
-
+bool chain_manager::init(string& config, string& protocol_features_dir, string& snapshot_dir) {
     auto shutdown = [](){ return false; };
 
     try {
+        evm_init();
+        vm_api_init();
+        vm_api_ro_init();
+        chain_api_init();
+        sandboxed_contracts_init();
+
+    //    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+        fc::logger::get("producer_plugin").set_log_level(fc::log_level::debug);
+        fc::logger::get("transaction_tracing").set_log_level(fc::log_level::debug);
+
+        auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
+        cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
+        ilog("${cfg}", ("cfg", cfg));
+
+        cc = new eosio::chain::controller(cfg, std::move(pfs));
+        cc->add_indices();
+        cc->accepted_block.connect(boost::bind(&chain_manager::on_accepted_block, this, _1));
+        cc->accepted_transaction.connect(boost::bind(&chain_manager::on_accepted_transaction, this, _1));
+
+    //     my->chain->accepted_transaction.connect([this]( const transaction_metadata_ptr& meta ) {
+    //        my->accepted_transaction_channel.publish( priority::low, meta );
+    //     } );
+
         if (snapshot_dir.size()) {
             auto infile = std::ifstream(snapshot_dir, (std::ios::in | std::ios::binary));
             auto reader = std::make_shared<istream_snapshot_reader>(infile);
@@ -74,22 +72,13 @@ chain_manager::chain_manager(string& config, string& protocol_features_dir, stri
         } else {
             cc->startup(shutdown);
         }
+        return true;
     } catch (const database_guard_exception& e) {
         log_guard_exception(e);
         // make sure to properly close the db
-        delete cc;
-    }
-}
-
-chain_manager *chain_manager::init(string& config, string& protocol_features_dir, string& snapshot_dir) {
-    if (!instance) {
-        instance = new chain_manager(config, protocol_features_dir, snapshot_dir);
-    }
-    return instance;
-}
-
-chain_manager& chain_manager::get() {
-    return *instance;
+    } FC_LOG_AND_DROP();
+    delete cc;
+    return false;
 }
 
 void chain_manager::on_accepted_transaction( const transaction_metadata_ptr& meta ) {
@@ -121,33 +110,29 @@ chain_manager::~chain_manager() {
 }
 
 void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir) {
-//    auto plugin = eosio::chain_plugin();
-/*
-    auto shutdown = [](){ return app().is_quiting(); };
-    if (my->snapshot_path) {
-        auto infile = std::ifstream(my->snapshot_path->generic_string(), (std::ios::in | std::ios::binary));
-        auto reader = std::make_shared<istream_snapshot_reader>(infile);
-        my->chain->startup(shutdown, reader);
-        infile.close();
-    } else {
-        my->chain->startup(shutdown);
+    chain_manager *manager = new chain_manager();
+    if (!manager->init(config, protocol_features_dir, snapshot_dir)) {
+        delete manager;
+        return (void *)0;
     }
-*/
-    g_manager = chain_manager::init(config, protocol_features_dir, snapshot_dir);
-    return (void *)g_manager->cc;
+    return (void *)manager;
 }
 
 void chain_free_(void *ptr) {
-//    g_manager
     if (!ptr) {
         return;
     }
-    delete g_manager;
+    delete (chain_manager*)ptr;
+}
+
+eosio::chain::controller& chain_manager_get_controller(void *ptr) {
+    chain_manager *manager = (chain_manager *)ptr;
+    return manager->chain();
 }
 
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
     try {
-        auto& chain = *(eosio::chain::controller*)(ptr);
+        auto& chain = chain_manager_get_controller(ptr);
         return chain.fork_db_pending_head_block_num();
     } FC_LOG_AND_DROP();
     return 0;
@@ -155,7 +140,7 @@ uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
 
 uint32_t chain_last_irreversible_block_num_(void *ptr) {
     try {
-        auto& chain = *(eosio::chain::controller*)(ptr);
+        auto& chain = chain_manager_get_controller(ptr);
         return chain.last_irreversible_block_num();
     } FC_LOG_AND_DROP();
     return 0;
@@ -163,21 +148,21 @@ uint32_t chain_last_irreversible_block_num_(void *ptr) {
 
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id) {
     try {
-        auto& chain = *(eosio::chain::controller*)(ptr);
+        auto& chain = chain_manager_get_controller(ptr);
         block_id = chain.get_block_id_for_num(num).str();
     } FC_LOG_AND_DROP();
 }
 
 void chain_id_(void *ptr, string& chain_id) {
     try {
-        auto& chain = *(eosio::chain::controller*)(ptr);
+        auto& chain = chain_manager_get_controller(ptr);
         chain_id = chain.get_chain_id().str();
     } FC_LOG_AND_DROP();
 }
 
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
     try {
-        auto& chain = *(eosio::chain::controller*)(ptr);
+        auto& chain = chain_manager_get_controller(ptr);
         auto block_ptr = chain.fetch_block_by_number(block_num);
         if (!block_ptr) {
             return;
@@ -188,7 +173,7 @@ void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_blo
 }
 
 int chain_is_building_block_(void *ptr) {
-    auto& chain = *(eosio::chain::controller*)(ptr);
+    auto& chain = chain_manager_get_controller(ptr);
     return chain.is_building_block();
 }
 
