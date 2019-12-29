@@ -202,7 +202,7 @@ class UUOSMain(application.Application):
         task = asyncio.create_task(uuos.p2p_manager.p2p_server())
         tasks.append(task)
 
-        if self.config.interact
+        if uuos.config.interact:
             task = asyncio.create_task(uuos.interactive_console())
             tasks.append(task)
 
@@ -258,5 +258,9 @@ if __name__ == "__main__":
         logger.info("Processing interrupted")
     except Exception as e:
         logger.exception(e)
+    except RuntimeError as e:
+        logger.exception(e)
+    finally:
+        logger.info('exiting...')
     UUOSMain.finish()
 
