@@ -196,17 +196,6 @@ async def push_transaction():
     result = await msg.wait()
     return result
 
-async def create_snapshot():
-    ret = application.get_app().producer.create_snapshot()
-    logger.info(ret)
-    return ret[1], http_return_code[ret[0]]
-
-async def schedule_protocol_feature_activations():
-    features = await request.data
-    ret = application.get_app().producer.schedule_protocol_feature_activations(features)
-    return ret[1], http_return_code[ret[0]]
-
-
 #---------------history api----------------
 async def get_actions():
     data = await request.data
@@ -218,6 +207,76 @@ async def get_key_accounts():
     data = await request.data
 
 async def get_controlled_accounts():
+    data = await request.data
+
+#------------------------net api---------------------
+async def connect():
+    data = await request.data
+
+async def disconnect():
+    data = await request.data
+
+async def connections():
+    data = await request.data
+
+async def status():
+    data = await request.data
+
+
+
+#------------producer api ---------------
+async def pause():
+    pass
+
+async def resume():
+    pass
+
+async def paused():
+    pass
+
+async def get_runtime_options():
+    pass
+
+async def update_runtime_options():
+    pass
+
+async def get_greylist():
+    pass
+
+async def add_greylist_accounts():
+    pass
+
+async def remove_greylist_accounts():
+    pass
+
+async def get_whitelist_blacklist():
+    pass
+
+async def set_whitelist_blacklist():
+    pass
+
+async def create_snapshot():
+    ret = application.get_app().producer.create_snapshot()
+    logger.info(ret)
+    return ret[1], http_return_code[ret[0]]
+
+async def get_integrity_hash():
+    pass
+
+async def schedule_protocol_feature_activations():
+    features = await request.data
+    ret = application.get_app().producer.schedule_protocol_feature_activations(features)
+    return ret[1], http_return_code[ret[0]]
+
+async def get_activated_protocol_features():
+    pass
+
+async def get_supported_protocol_features():
+    pass
+
+
+#----------------db size api-------------------
+async def db_get_size():
     data = await request.data
 
 
@@ -264,9 +323,33 @@ async def rpc_server(producer, loop, http_server_address):
         ('/v1/history/get_controlled_accounts',         post_method, get_controlled_accounts),
     ]
 
+    net_api_routes = [
+        ('/v1/net/connect',                             post_method, connect),
+        ('/v1/net/disconnect',                          post_method, disconnect),
+        ('/v1/net/connections',                         post_method, connections),
+        ('/v1/net/status',                              post_method, status),
+    ]
+    
     producer_api_routes = [
-        ("/v1/producer/create_snapshot",                        post_method, create_snapshot),
-        ("/v1/producer/schedule_protocol_feature_activations",  get_post_method, schedule_protocol_feature_activations)
+        ("/v1/producer/pause",                          post_method, pause),
+        ("/v1/producer/resume",                         post_method, resume),
+        ("/v1/producer/paused",                         post_method, paused),
+        ("/v1/producer/get_runtime_options",            post_method, get_runtime_options),
+        ("/v1/producer/update_runtime_options",         post_method, update_runtime_options),
+        ("/v1/producer/get_greylist",                   post_method, get_greylist),
+        ("/v1/producer/add_greylist_accounts",          post_method, add_greylist_accounts),
+        ("/v1/producer/remove_greylist_accounts",       post_method, remove_greylist_accounts),
+        ("/v1/producer/get_whitelist_blacklist",        post_method, get_whitelist_blacklist),
+        ("/v1/producer/set_whitelist_blacklist",        post_method, set_whitelist_blacklist),
+        ("/v1/producer/create_snapshot",                post_method, create_snapshot),
+        ("/v1/producer/get_integrity_hash",             post_method, get_integrity_hash),
+        ("/v1/producer/schedule_protocol_feature_activations",  post_method, schedule_protocol_feature_activations),
+        ("/v1/producer/get_activated_protocol_features",        post_method, get_activated_protocol_features),
+        ("/v1/producer/get_supported_protocol_features",        post_method, get_supported_protocol_features),
+    ]
+
+    db_size_api_routers = [
+        ("/v1/dbsize/get",                        post_method, db_get_size),
     ]
 
     if 'eosio::chain_api_plugin' in producer.config.plugin:
@@ -277,9 +360,19 @@ async def rpc_server(producer, loop, http_server_address):
         for route, method, view_func in history_api_routes:
             app.route(route, methods=method)(view_func)
 
+    if 'eosio::net_api_plugin' in producer.config.plugin:
+        for route, method, view_func in net_api_routes:
+            app.route(route, methods=method)(view_func)
+
     if 'eosio::producer_api_plugin' in producer.config.plugin:
         for route, method, view_func in producer_api_routes:
             app.route(route, methods=method)(view_func)
+
+    if 'eosio::db_size_api_plugin' in producer.config.plugin:
+        for route, method, view_func in db_size_api_routers:
+            app.route(route, methods=method)(view_func)
+
+
     app.producer = producer
     try:
         host, port = http_server_address.split(':')
