@@ -7,10 +7,10 @@ void unpack_native_object_(int type, string& packed_message, string& msg);
 
 void*   chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir);
 void    chain_free_(void *ptr);
-void    chain_api_get_info_(void *chain_ptr, string& info);
+int     chain_api_get_info_(void *chain_ptr, string& info);
 
 #define DEF_CHAIN_API_RO(api_name) \
-    void    chain_api_ ## api_name ## _(void *ptr, string& params, string& result);
+    int chain_api_ ## api_name ## _(void *ptr, string& params, string& result);
 
 DEF_CHAIN_API_RO(get_activated_protocol_features)
 DEF_CHAIN_API_RO(get_block)
@@ -43,8 +43,8 @@ void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& 
 int         chain_is_building_block_(void *ptr);
 
 int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block);
-void        chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir);
-void        chain_api_get_table_rows_(void *ptr, string& params, string& results);
+int         chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir);
+int         chain_api_get_table_rows_(void *ptr, string& params, string& results);
 
 void*       producer_new_(void *chain_ptr, string& config);
 void        producer_free_(void *ptr);

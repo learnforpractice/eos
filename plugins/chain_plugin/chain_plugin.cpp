@@ -2411,25 +2411,35 @@ using namespace eosio::chain_apis;
 using namespace eosio;
 eosio::chain::controller& chain_manager_get_controller(void *ptr);
 
-void chain_api_get_info_(void *ptr, string& info) {
+int chain_api_get_info_(void *ptr, string& result) {
+   auto next = [&result](const fc::exception_ptr& ex) {
+      result = ex->to_detail_string();
+   };
    try {
       read_only::get_info_params params;
       read_only::get_info_results results;
       auto& cc = chain_manager_get_controller(ptr);
 
       results = read_only(cc, fc::microseconds(max_abi_time)).get_info(params);
-      info = fc::json::to_string(fc::variant(results));
-    } FC_LOG_AND_DROP();
+      result = fc::json::to_string(fc::variant(results));
+      return 1;
+    } CATCH_AND_CALL(next);
+    return 0;
 }
 
 #define CHAIN_API_RO(api_name) \
-void chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
+int chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
+   auto next = [&result](const fc::exception_ptr& ex) { \
+      result = ex->to_detail_string(); \
+   }; \
    try { \
       auto& cc = chain_manager_get_controller(ptr); \
       auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
       auto _result = read_only(cc, fc::microseconds(max_abi_time)).api_name(_params); \
       result = fc::json::to_string(fc::variant(_result)); \
-   } FC_LOG_AND_DROP(); \
+      return 1;\
+   } CATCH_AND_CALL(next); \
+   return 0; \
 }
 
 
@@ -2455,7 +2465,10 @@ CHAIN_API_RO(abi_bin_to_json)
 CHAIN_API_RO(get_required_keys)
 CHAIN_API_RO(get_transaction_id)
 
-void chain_api_push_transaction_(void *ptr, string& params, string& result) {
+int chain_api_push_transaction_(void *ptr, string& params, string& result) {
+   auto next = [&result](const fc::exception_ptr& ex) {
+      result = ex->to_detail_string();
+   };
    try {
       auto& cc = chain_manager_get_controller(ptr);
       auto _params = fc::json::from_string(params).as<read_write::push_transaction_params>();
@@ -2473,8 +2486,10 @@ void chain_api_push_transaction_(void *ptr, string& params, string& result) {
             }
          }
       );
+      return 1;
 //      result = fc::json::to_string(fc::variant(_result));
-   } FC_LOG_AND_DROP();
+   } CATCH_AND_CALL(next);
+   return 0;
 }
 
 int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {

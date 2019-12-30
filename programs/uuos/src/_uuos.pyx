@@ -24,25 +24,32 @@ cdef extern from "native_object.hpp":
 
     void*   chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir)
     void    chain_free_(void *ptr)
-    void    chain_api_get_info_(void *chain_ptr, string& info)
-    void    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
-    void    chain_api_get_block_(void *ptr, string& params, string& result)
-    void    chain_api_get_block_header_state_(void *ptr, string& params, string& result)
-    void    chain_api_get_account_(void *chain_ptr, string& params, string& result)
-    void    chain_api_get_abi_(void *ptr, string& params, string& results)
-    void    chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& results)
-    void    chain_api_get_raw_abi_(void *ptr, string& params, string& results)
-    void    chain_api_get_table_by_scope_(void *ptr, string& params, string& result)
-    void    chain_api_get_currency_balance_(void *ptr, string& params, string& result)
-    void    chain_api_get_currency_stats_(void *ptr, string& params, string& result)
-    void    chain_api_get_producers_(void *ptr, string& params, string& result)
-    void    chain_api_get_producer_schedule_(void *ptr, string& params, string& result)
+    int    chain_api_get_info_(void *chain_ptr, string& info)
+    int    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
+    int    chain_api_get_block_(void *ptr, string& params, string& result)
+    int    chain_api_get_block_header_state_(void *ptr, string& params, string& result)
+    int    chain_api_get_account_(void *chain_ptr, string& params, string& result)
+    int    chain_api_get_abi_(void *ptr, string& params, string& results)
+    int    chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& results)
+    int    chain_api_get_raw_abi_(void *ptr, string& params, string& results)
+    int    chain_api_get_table_by_scope_(void *ptr, string& params, string& result)
+    int    chain_api_get_currency_balance_(void *ptr, string& params, string& result)
+    int    chain_api_get_currency_stats_(void *ptr, string& params, string& result)
+    int    chain_api_get_producers_(void *ptr, string& params, string& result)
+    int    chain_api_get_producer_schedule_(void *ptr, string& params, string& result)
 
-    void    chain_api_get_scheduled_transactions_(void *ptr, string& params, string& result)
-    void    chain_api_abi_json_to_bin_(void *ptr, string& params, string& result)
-    void    chain_api_abi_bin_to_json_(void *ptr, string& params, string& result)
-    void    chain_api_get_required_keys_(void *ptr, string& params, string& result)
-    void    chain_api_get_transaction_id_(void *ptr, string& params, string& result)
+    int    chain_api_get_scheduled_transactions_(void *ptr, string& params, string& result)
+    int    chain_api_abi_json_to_bin_(void *ptr, string& params, string& result)
+    int    chain_api_abi_bin_to_json_(void *ptr, string& params, string& result)
+    int    chain_api_get_required_keys_(void *ptr, string& params, string& result)
+    int    chain_api_get_transaction_id_(void *ptr, string& params, string& result)
+
+    int    chain_api_get_code_(void *ptr, string& params, string& results)
+    int    chain_api_get_code_hash_(void *ptr, string& account, string& code_hash)
+    int    chain_api_get_table_rows_(void *ptr, string& params, string& results)
+
+    int    chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
+    int    chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
 
     uint32_t    chain_fork_db_pending_head_block_num_(void *ptr)
     uint32_t    chain_last_irreversible_block_num_(void *ptr)
@@ -50,11 +57,6 @@ cdef extern from "native_object.hpp":
     void        chain_id_(void *ptr, string& chain_id)
     void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
     int         chain_is_building_block_(void *ptr);
-    int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
-    void        chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
-    void        chain_api_get_code_(void *ptr, string& params, string& results)
-    void        chain_api_get_code_hash_(void *ptr, string& account, string& code_hash)
-    void        chain_api_get_table_rows_(void *ptr, string& params, string& results)
 
     void*       producer_new_(void *chain_ptr, string& config);
     void        producer_free_(void *ptr);
@@ -104,112 +106,112 @@ def chain_free(unsigned long long  ptr):
 
 def chain_api_get_info(uint64_t chain_ptr):
     cdef string info
-    chain_api_get_info_(<void *>chain_ptr, info)
-    return info
+    err = chain_api_get_info_(<void *>chain_ptr, info)
+    return err, info
 
 def chain_api_get_activated_protocol_features(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_activated_protocol_features_(<void *>chain_ptr, params, result)
-    return result
+    err = chain_api_get_activated_protocol_features_(<void *>chain_ptr, params, result)
+    return err, result
 
 def chain_api_get_block(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_block_(<void *>chain_ptr, params, result)
-    return result
+    err = chain_api_get_block_(<void *>chain_ptr, params, result)
+    return err, result
 
 def chain_api_get_block_header_state(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_block_header_state_(<void *>chain_ptr, params, result)
-    return result
+    err = chain_api_get_block_header_state_(<void *>chain_ptr, params, result)
+    return err, result
 
 def chain_api_get_account(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_account_(<void *>chain_ptr, params, result)
-    return result
+    err = chain_api_get_account_(<void *>chain_ptr, params, result)
+    return err, result
 
 def chain_api_get_code(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_code_(<void *>chain_ptr, params, result)
+    err = chain_api_get_code_(<void *>chain_ptr, params, result)
     r = PyBytes_FromStringAndSize(result.c_str(), result.size())
 #    print(r)
-    return r.decode('utf8')
+    return err, r.decode('utf8')
 
 def chain_api_get_code_hash(uint64_t chain_ptr, string& params):
     cdef string code_hash
-    chain_api_get_code_hash_(<void *>chain_ptr, params, code_hash)
-    return code_hash
+    err = chain_api_get_code_hash_(<void *>chain_ptr, params, code_hash)
+    return err, code_hash
 
 def chain_api_get_abi(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_abi_(<void *>chain_ptr, params, result)
+    err = chain_api_get_abi_(<void *>chain_ptr, params, result)
     r = PyBytes_FromStringAndSize(result.c_str(), result.size())
-    return r.decode('utf8')
+    return err, r.decode('utf8')
 
 def chain_api_get_raw_code_and_abi(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_raw_code_and_abi_(<void *>chain_ptr, params, result)
-    return result
+    err = chain_api_get_raw_code_and_abi_(<void *>chain_ptr, params, result)
+    return err, result
 
 def chain_api_get_raw_abi(uint64_t chain_ptr, string& params):
     cdef string result
-    chain_api_get_raw_abi_(<void *>chain_ptr, params, result)
+    err = chain_api_get_raw_abi_(<void *>chain_ptr, params, result)
     r = PyBytes_FromStringAndSize(result.c_str(), result.size())
-    return r.decode('utf8')
+    return err, r.decode('utf8')
 
 def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_table_rows_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_table_rows_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_table_by_scope(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_table_by_scope_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_table_by_scope_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_currency_balance(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_currency_balance_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_currency_balance_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_currency_stats(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_currency_stats_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_currency_stats_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_producers(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_producers_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_producers_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_producer_schedule(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_producer_schedule_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_producer_schedule_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_scheduled_transactions(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_scheduled_transactions_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_scheduled_transactions_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_abi_json_to_bin(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_abi_json_to_bin_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_abi_json_to_bin_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_abi_bin_to_json(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_abi_bin_to_json_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_abi_bin_to_json_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_required_keys(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_required_keys_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_required_keys_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_get_transaction_id(uint64_t chain_ptr, string& params):
     cdef string results
-    chain_api_get_transaction_id_(<void *>chain_ptr, params, results)
-    return results
+    err = chain_api_get_transaction_id_(<void *>chain_ptr, params, results)
+    return err, results
 
 def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):
     return chain_api_recover_reversible_blocks_(old_reversible_blocks_dir, new_reversible_blocks_dir, reversible_cache_size, truncate_at_block)
@@ -218,9 +220,6 @@ def chain_api_repair_log(string& blocks_dir, uint32_t truncate_at_block):
     cdef string backup_blocks_dir
     chain_api_repair_log_(blocks_dir, truncate_at_block, backup_blocks_dir)
     return backup_blocks_dir
-
-
-
 
 
 def chain_fork_db_pending_head_block_num(uint64_t ptr):
