@@ -76,7 +76,8 @@ enum {
     request_message_type,
     sync_request_message_type,
     signed_block_type,         // which = 7
-    packed_transaction_type,
-    producer_params_type,
-    genesis_state_type,
+    packed_transaction_type, //8
+    controller_config_type, //9
+    producer_params_type, //10
+    genesis_state_type, //11
 };
