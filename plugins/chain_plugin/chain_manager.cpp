@@ -181,6 +181,11 @@ int chain_is_building_block_(void *ptr) {
     return chain.is_building_block();
 }
 
+int chain_abort_block_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.abort_block();
+}
+
 void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
    try {
 //      ilog("+++++${n}", ("n", _sig));

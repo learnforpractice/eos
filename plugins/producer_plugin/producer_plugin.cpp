@@ -2249,6 +2249,26 @@ int producer_get_pending_block_mode_(void *ptr) {
    return (int)producer.my->_pending_block_mode;
 }
 
+// int producer_production_disabled_by_policy(void *ptr) {
+//    auto& producer = *(producer_plugin*)ptr;
+//    return producer.my->production_disabled_by_policy();
+// }
+
+void producer_pause_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   return producer.pause();
+}
+
+void producer_resume_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   return producer.resume();
+}
+
+bool producer_paused_(void *ptr) {
+   auto& producer = *(producer_plugin*)ptr;
+   return producer.paused();
+}
+
 int producer_create_snapshot_(void *ptr, string& out) {
    auto& producer = *(producer_plugin*)ptr;
    int ret = 0;
