@@ -88,98 +88,98 @@ async def get_info():
 
 async def get_activated_protocol_features():
     data = await request.data
-    return chain_api.get_activated_protocol_features(data.decode('utf8'))
+    return chain_api.get_activated_protocol_features(data)
 
 async def get_block():
     data = await request.data
-    return chain_api.get_block(data.decode('utf8'))
+    return chain_api.get_block(data)
 
 async def get_block_header_state():
     data = await request.data
-    return chain_api.get_block_header_state(data.decode('utf8'))
+    return chain_api.get_block_header_state(data)
 
 async def get_account():
     data = await request.data
-    return chain_api.get_account(data.decode('utf8'))
+    return chain_api.get_account(data)
 
 async def get_code():
     data = await request.data
-    result = chain_api.get_code(data.decode('utf8'))
+    result = chain_api.get_code(data)
     return result
 
 async def get_code_hash():
     data = await request.data
-    result = chain_api.get_code_hash(data.decode('utf8'))
+    result = chain_api.get_code_hash(data)
     return result
 
 async def get_abi():
     data = await request.data
-    result = chain_api.get_abi(data.decode('utf8'))
+    result = chain_api.get_abi(data)
     return result
 
 async def get_raw_code_and_abi():
     data = await request.data
-    result = chain_api.get_raw_code_and_abi(data.decode('utf8'))
+    result = chain_api.get_raw_code_and_abi(data)
     return result
 
 async def get_raw_abi():
     data = await request.data
-    result = chain_api.get_raw_abi(data.decode('utf8'))
+    result = chain_api.get_raw_abi(data)
     return result
 
 async def get_table_rows():
     data = await request.data
-    result = chain_api.get_table_rows(data.decode('utf8'))
+    result = chain_api.get_table_rows(data)
     return result
 
 async def get_table_by_scope():
     data = await request.data
-    result = chain_api.get_table_by_scope(data.decode('utf8'))
+    result = chain_api.get_table_by_scope(data)
     return result
 
 async def get_currency_balance():
     data = await request.data
-    result = chain_api.get_currency_balance(data.decode('utf8'))
+    result = chain_api.get_currency_balance(data)
     return result
 
 async def get_currency_stats():
     data = await request.data
-    result = chain_api.get_currency_stats(data.decode('utf8'))
+    result = chain_api.get_currency_stats(data)
     return result
 
 async def get_producers():
     data = await request.data
-    result = chain_api.get_producers(data.decode('utf8'))
+    result = chain_api.get_producers(data)
     return result
 
 async def get_producer_schedule():
     data = await request.data
-    result = chain_api.get_producer_schedule(data.decode('utf8'))
+    result = chain_api.get_producer_schedule(data)
     return result
 
 async def get_scheduled_transactions():
     data = await request.data
-    result = chain_api.get_scheduled_transactions(data.decode('utf8'))
+    result = chain_api.get_scheduled_transactions(data)
     return result
 
 async def abi_json_to_bin():
     data = await request.data
-    result = chain_api.abi_json_to_bin(data.decode('utf8'))
+    result = chain_api.abi_json_to_bin(data)
     return result
 
 async def abi_bin_to_json():
     data = await request.data
-    result = chain_api.abi_bin_to_json(data.decode('utf8'))
+    result = chain_api.abi_bin_to_json(data)
     return result
 
 async def get_required_keys():
     data = await request.data
-    result = chain_api.get_required_keys(data.decode('utf8'))
+    result = chain_api.get_required_keys(data)
     return result
 
 async def get_transaction_id():
     data = await request.data
-    result = chain_api.get_transaction_id(data.decode('utf8'))
+    result = chain_api.get_transaction_id(data)
     return result
 
 async def push_transaction():
