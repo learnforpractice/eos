@@ -2,6 +2,7 @@ import io
 import os
 import struct
 import ujson as json
+from .jsonobject import JsonObject
 from _uuos import unpack_native_object
 
 min_supported_version = 1
@@ -16,13 +17,13 @@ class BlockLog(object):
         
         self.index_fd = open(self.block_log_index_file, 'rb+')
         self.fd = open(self.block_log_file, 'rb+')
-        self.version = self.fd.read(4)
-        self.version, = struct.unpack('I', self.version)
+        self._version = self.fd.read(4)
+        self._version, = struct.unpack('I', self._version)
 
-        assert self.version >= min_supported_version and self.version <= max_supported_version, \
-                f"Unsupported version of block log. Block log version is {self.version} while code supports version(s) [{min_supported_version},{max_supported_version}]"
+        assert self._version >= min_supported_version and self._version <= max_supported_version, \
+                f"Unsupported version of block log. Block log version is {self._version} while code supports version(s) [{min_supported_version},{max_supported_version}]"
 
-        if self.version > 1:
+        if self._version > 1:
             self._first_block_num = self.fd.read(4)
             self._first_block_num, = struct.unpack('I', self._first_block_num)
         else:
@@ -32,7 +33,7 @@ class BlockLog(object):
         pos = self.fd.read(8)
         print(pos)
         pos, = struct.unpack('Q', pos)
-        print(self.version, self._first_block_num, pos)
+        print(self._version, self._first_block_num, pos)
 
         self.index_fd.seek(-8, io.SEEK_END)
         pos = self.index_fd.read(8)
@@ -53,6 +54,10 @@ class BlockLog(object):
         pos = self.index_fd.read(8)
         pos, = struct.unpack('Q', pos)
         print(pos)
+    
+    @property
+    def version(self):
+        return self._version
 
     def get_block_count(self):
         print(self.block_log_index_file)
@@ -96,4 +101,18 @@ class BlockLog(object):
         return self.read_block_by_num(previous + 1)
 
     def extract_genesis_state(self):
-        pass
+        self.fd.seek(0)
+        version = self.fd.read(4)
+        version, = struct.unpack('I', version)
+        if version != 1:
+            first_block_num = self.fd.read(4)
+        genesis_state = self.fd.read(1024*10)
+        genesis_state = unpack_native_object(11, genesis_state)
+        genesis_state = genesis_state.decode('utf8')
+        genesis_state = json.loads(genesis_state)
+        return JsonObject(genesis_state)
+
+if __name__ == '__main__':
+#    from uuos import blocklog
+    blog = blocklog.BlockLog('dd-uuosmain/blocks')
+    print(blog.extract_genesis_state())
