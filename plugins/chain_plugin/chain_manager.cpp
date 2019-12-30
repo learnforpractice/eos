@@ -109,30 +109,34 @@ chain_manager::~chain_manager() {
     delete cc;
 }
 
+#include <map>
+static std::map<void *, chain_manager *> chain_map;
+
 void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir) {
     chain_manager *manager = new chain_manager();
     if (!manager->init(config, protocol_features_dir, snapshot_dir)) {
         delete manager;
         return (void *)0;
     }
-    return (void *)manager;
+    chain_map[manager->cc] = manager;
+    return (void *)manager->cc;
 }
 
 void chain_free_(void *ptr) {
-    if (!ptr) {
+    auto itr = chain_map.find(ptr);
+    if (itr == chain_map.end()) {
         return;
     }
-    delete (chain_manager*)ptr;
+    delete (chain_manager*)itr->second;
 }
 
-eosio::chain::controller& chain_manager_get_controller(void *ptr) {
-    chain_manager *manager = (chain_manager *)ptr;
-    return manager->chain();
+eosio::chain::controller& chain_get_controller(void *ptr) {
+    return *(eosio::chain::controller*)ptr;
 }
 
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
     try {
-        auto& chain = chain_manager_get_controller(ptr);
+        auto& chain = chain_get_controller(ptr);
         return chain.fork_db_pending_head_block_num();
     } FC_LOG_AND_DROP();
     return 0;
@@ -140,7 +144,7 @@ uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
 
 uint32_t chain_last_irreversible_block_num_(void *ptr) {
     try {
-        auto& chain = chain_manager_get_controller(ptr);
+        auto& chain = chain_get_controller(ptr);
         return chain.last_irreversible_block_num();
     } FC_LOG_AND_DROP();
     return 0;
@@ -148,21 +152,21 @@ uint32_t chain_last_irreversible_block_num_(void *ptr) {
 
 void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id) {
     try {
-        auto& chain = chain_manager_get_controller(ptr);
+        auto& chain = chain_get_controller(ptr);
         block_id = chain.get_block_id_for_num(num).str();
     } FC_LOG_AND_DROP();
 }
 
 void chain_id_(void *ptr, string& chain_id) {
     try {
-        auto& chain = chain_manager_get_controller(ptr);
+        auto& chain = chain_get_controller(ptr);
         chain_id = chain.get_chain_id().str();
     } FC_LOG_AND_DROP();
 }
 
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
     try {
-        auto& chain = chain_manager_get_controller(ptr);
+        auto& chain = chain_get_controller(ptr);
         auto block_ptr = chain.fetch_block_by_number(block_num);
         if (!block_ptr) {
             return;
@@ -173,7 +177,7 @@ void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_blo
 }
 
 int chain_is_building_block_(void *ptr) {
-    auto& chain = chain_manager_get_controller(ptr);
+    auto& chain = chain_get_controller(ptr);
     return chain.is_building_block();
 }
 

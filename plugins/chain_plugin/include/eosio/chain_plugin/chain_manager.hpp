@@ -32,4 +32,4 @@ public:
     controller::config cfg;
 };
 
-eosio::chain::controller& chain_manager_get_controller(void *ptr);
+eosio::chain::controller& chain_get_controller(void *ptr);
