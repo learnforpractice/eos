@@ -56,7 +56,6 @@ class Connection(object):
         self.last_handshake = None
         self.target = 0
         self.syncing = False
-        self.chain_ptr = chain.get_chain_ptr()
         self.producer = get_app().producer
         self.closed = False
         self.catch_up = False
