@@ -86,192 +86,192 @@ http_return_code = (500, 200)
 async def hello():
     return 'hello'
 
-async def get_info():
+async def chain_get_info():
     ret = chain_api.get_info()
     return ret[1], http_return_code[ret[0]]
 
-async def get_activated_protocol_features():
+async def chain_get_activated_protocol_features():
     data = await request.data
     ret = chain_api.get_activated_protocol_features(data)
     return ret[1], http_return_code[ret[0]]
     
-async def get_block():
+async def chain_get_block():
     data = await request.data
     ret = chain_api.get_block(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_block_header_state():
+async def chain_get_block_header_state():
     data = await request.data
     ret = chain_api.get_block_header_state(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_account():
+async def chain_get_account():
     data = await request.data
     ret = chain_api.get_account(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_code():
+async def chain_get_code():
     data = await request.data
     ret = chain_api.get_code(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_code_hash():
+async def chain_get_code_hash():
     data = await request.data
     ret = chain_api.get_code_hash(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_abi():
+async def chain_get_abi():
     data = await request.data
     ret = chain_api.get_abi(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_raw_code_and_abi():
+async def chain_get_raw_code_and_abi():
     data = await request.data
     ret = chain_api.get_raw_code_and_abi(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_raw_abi():
+async def chain_get_raw_abi():
     data = await request.data
     ret = chain_api.get_raw_abi(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_table_rows():
+async def chain_get_table_rows():
     data = await request.data
     ret = chain_api.get_table_rows(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_table_by_scope():
+async def chain_get_table_by_scope():
     data = await request.data
     ret = chain_api.get_table_by_scope(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_currency_balance():
+async def chain_get_currency_balance():
     data = await request.data
     ret = chain_api.get_currency_balance(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_currency_stats():
+async def chain_get_currency_stats():
     data = await request.data
     ret = chain_api.get_currency_stats(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_producers():
+async def chain_get_producers():
     data = await request.data
     ret = chain_api.get_producers(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_producer_schedule():
+async def chain_get_producer_schedule():
     data = await request.data
     ret = chain_api.get_producer_schedule(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_scheduled_transactions():
+async def chain_get_scheduled_transactions():
     data = await request.data
     ret = chain_api.get_scheduled_transactions(data)
     return ret[1], http_return_code[ret[0]]
 
-async def abi_json_to_bin():
+async def chain_abi_json_to_bin():
     data = await request.data
     ret = chain_api.abi_json_to_bin(data)
     return ret[1], http_return_code[ret[0]]
 
-async def abi_bin_to_json():
+async def chain_abi_bin_to_json():
     data = await request.data
     ret = chain_api.abi_bin_to_json(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_required_keys():
+async def chain_get_required_keys():
     data = await request.data
     ret = chain_api.get_required_keys(data)
     return ret[1], http_return_code[ret[0]]
 
-async def get_transaction_id():
+async def chain_get_transaction_id():
     data = await request.data
     ret = chain_api.get_transaction_id(data)
     return ret[1], http_return_code[ret[0]]
 
-async def push_transaction():
+async def chain_push_transaction():
     data = await request.data
     msg = producer.TransactionMessage(data)
     result = await msg.wait()
     return result
 
 #---------------history api----------------
-async def get_actions():
+async def history_get_actions():
     data = await request.data
 
-async def get_transaction():
+async def history_get_transaction():
     data = await request.data
 
-async def get_key_accounts():
+async def history_get_key_accounts():
     data = await request.data
 
-async def get_controlled_accounts():
+async def history_get_controlled_accounts():
     data = await request.data
 
 #------------------------net api---------------------
-async def connect():
+async def net_connect():
     data = await request.data
 
-async def disconnect():
+async def net_disconnect():
     data = await request.data
 
-async def connections():
+async def net_connections():
     data = await request.data
 
-async def status():
+async def net_status():
     data = await request.data
 
 
 
 #------------producer api ---------------
-async def pause():
+async def producer_pause():
     application.get_app().producer.pause()
 
-async def resume():
+async def producer_resume():
     application.get_app().producer.resume()
 
-async def paused():
+async def producer_paused():
     return application.get_app().producer.paused()
 
-async def get_runtime_options():
+async def producer_get_runtime_options():
     pass
 
-async def update_runtime_options():
+async def producer_update_runtime_options():
     pass
 
-async def get_greylist():
+async def producer_get_greylist():
     pass
 
-async def add_greylist_accounts():
+async def producer_add_greylist_accounts():
     pass
 
-async def remove_greylist_accounts():
+async def producer_remove_greylist_accounts():
     pass
 
-async def get_whitelist_blacklist():
+async def producer_get_whitelist_blacklist():
     pass
 
-async def set_whitelist_blacklist():
+async def producer_set_whitelist_blacklist():
     pass
 
-async def create_snapshot():
+async def producer_create_snapshot():
     ret = application.get_app().producer.create_snapshot()
     logger.info(ret)
     return ret[1], http_return_code[ret[0]]
 
-async def get_integrity_hash():
+async def producer_get_integrity_hash():
     pass
 
-async def schedule_protocol_feature_activations():
+async def producer_schedule_protocol_feature_activations():
     features = await request.data
     ret = application.get_app().producer.schedule_protocol_feature_activations(features)
     return ret[1], http_return_code[ret[0]]
 
-async def get_activated_protocol_features():
+async def producer_get_activated_protocol_features():
     pass
 
-async def get_supported_protocol_features():
+async def producer_get_supported_protocol_features():
     pass
 
 
@@ -292,60 +292,60 @@ async def rpc_server(producer, loop, http_server_address):
     log.setLevel(logging.ERROR)
 
     chain_api_routes = [
-        ('/v1/chain/get_info',                          get_post_method, get_info),
-        ('/v1/chain/get_activated_protocol_features',   post_method, get_activated_protocol_features),
-        ('/v1/chain/get_block',                         post_method, get_block),
-        ('/v1/chain/get_block_header_state',            post_method, get_block_header_state),
-        ('/v1/chain/get_account',                       post_method, get_account),
-        ('/v1/chain/get_code',                          post_method, get_code),
-        ('/v1/chain/get_code_hash',                     post_method, get_code_hash),
-        ('/v1/chain/get_abi',                           post_method, get_abi),
-        ('/v1/chain/get_raw_code_and_abi',              post_method, get_raw_code_and_abi),
-        ('/v1/chain/get_raw_abi',                       post_method, get_raw_abi),
-        ('/v1/chain/get_table_rows',                    post_method, get_table_rows),
-        ('/v1/chain/get_table_by_scope',                post_method, get_table_by_scope),
-        ('/v1/chain/get_currency_balance',              post_method, get_currency_balance),
-        ('/v1/chain/get_currency_stats',                post_method, get_currency_stats),
-        ('/v1/chain/get_producers',                     post_method, get_producers),
-        ('/v1/chain/get_producer_schedule',             post_method, get_producer_schedule),
-        ('/v1/chain/get_scheduled_transactions',        post_method, get_scheduled_transactions),
-        ('/v1/chain/abi_json_to_bin',                   post_method, abi_json_to_bin),
-        ('/v1/chain/abi_bin_to_json',                   post_method, abi_bin_to_json),
-        ('/v1/chain/get_required_keys',                 post_method, get_required_keys),
-        ('/v1/chain/get_transaction_id',                post_method, get_transaction_id),
-        ('/v1/chain/push_transaction',                  post_method, push_transaction),
+        ('/v1/chain/get_info',                          get_post_method, chain_get_info),
+        ('/v1/chain/get_activated_protocol_features',   post_method, chain_get_activated_protocol_features),
+        ('/v1/chain/get_block',                         post_method, chain_get_block),
+        ('/v1/chain/get_block_header_state',            post_method, chain_get_block_header_state),
+        ('/v1/chain/get_account',                       post_method, chain_get_account),
+        ('/v1/chain/get_code',                          post_method, chain_get_code),
+        ('/v1/chain/get_code_hash',                     post_method, chain_get_code_hash),
+        ('/v1/chain/get_abi',                           post_method, chain_get_abi),
+        ('/v1/chain/get_raw_code_and_abi',              post_method, chain_get_raw_code_and_abi),
+        ('/v1/chain/get_raw_abi',                       post_method, chain_get_raw_abi),
+        ('/v1/chain/get_table_rows',                    post_method, chain_get_table_rows),
+        ('/v1/chain/get_table_by_scope',                post_method, chain_get_table_by_scope),
+        ('/v1/chain/get_currency_balance',              post_method, chain_get_currency_balance),
+        ('/v1/chain/get_currency_stats',                post_method, chain_get_currency_stats),
+        ('/v1/chain/get_producers',                     post_method, chain_get_producers),
+        ('/v1/chain/get_producer_schedule',             post_method, chain_get_producer_schedule),
+        ('/v1/chain/get_scheduled_transactions',        post_method, chain_get_scheduled_transactions),
+        ('/v1/chain/abi_json_to_bin',                   post_method, chain_abi_json_to_bin),
+        ('/v1/chain/abi_bin_to_json',                   post_method, chain_abi_bin_to_json),
+        ('/v1/chain/get_required_keys',                 post_method, chain_get_required_keys),
+        ('/v1/chain/get_transaction_id',                post_method, chain_get_transaction_id),
+        ('/v1/chain/push_transaction',                  post_method, chain_push_transaction),
     ]
 
     history_api_routes = [
-        ('/v1/history/get_actions',                     post_method, get_actions),
-        ('/v1/history/get_transaction',                 post_method, get_transaction),
-        ('/v1/history/get_key_accounts',                post_method, get_key_accounts),
-        ('/v1/history/get_controlled_accounts',         post_method, get_controlled_accounts),
+        ('/v1/history/get_actions',                     post_method, history_get_actions),
+        ('/v1/history/get_transaction',                 post_method, history_get_transaction),
+        ('/v1/history/get_key_accounts',                post_method, history_get_key_accounts),
+        ('/v1/history/get_controlled_accounts',         post_method, history_get_controlled_accounts),
     ]
 
     net_api_routes = [
-        ('/v1/net/connect',                             post_method, connect),
-        ('/v1/net/disconnect',                          post_method, disconnect),
-        ('/v1/net/connections',                         post_method, connections),
-        ('/v1/net/status',                              post_method, status),
+        ('/v1/net/connect',                             post_method, net_connect),
+        ('/v1/net/disconnect',                          post_method, net_disconnect),
+        ('/v1/net/connections',                         post_method, net_connections),
+        ('/v1/net/status',                              post_method, net_status),
     ]
     
     producer_api_routes = [
-        ("/v1/producer/pause",                          post_method, pause),
-        ("/v1/producer/resume",                         post_method, resume),
-        ("/v1/producer/paused",                         post_method, paused),
-        ("/v1/producer/get_runtime_options",            post_method, get_runtime_options),
-        ("/v1/producer/update_runtime_options",         post_method, update_runtime_options),
-        ("/v1/producer/get_greylist",                   post_method, get_greylist),
-        ("/v1/producer/add_greylist_accounts",          post_method, add_greylist_accounts),
-        ("/v1/producer/remove_greylist_accounts",       post_method, remove_greylist_accounts),
-        ("/v1/producer/get_whitelist_blacklist",        post_method, get_whitelist_blacklist),
-        ("/v1/producer/set_whitelist_blacklist",        post_method, set_whitelist_blacklist),
-        ("/v1/producer/create_snapshot",                post_method, create_snapshot),
-        ("/v1/producer/get_integrity_hash",             post_method, get_integrity_hash),
-        ("/v1/producer/schedule_protocol_feature_activations",  post_method, schedule_protocol_feature_activations),
-        ("/v1/producer/get_activated_protocol_features",        post_method, get_activated_protocol_features),
-        ("/v1/producer/get_supported_protocol_features",        post_method, get_supported_protocol_features),
+        ("/v1/producer/pause",                          post_method, producer_pause),
+        ("/v1/producer/resume",                         post_method, producer_resume),
+        ("/v1/producer/paused",                         post_method, producer_paused),
+        ("/v1/producer/get_runtime_options",            post_method, producer_get_runtime_options),
+        ("/v1/producer/update_runtime_options",         post_method, producer_update_runtime_options),
+        ("/v1/producer/get_greylist",                   post_method, producer_get_greylist),
+        ("/v1/producer/add_greylist_accounts",          post_method, producer_add_greylist_accounts),
+        ("/v1/producer/remove_greylist_accounts",       post_method, producer_remove_greylist_accounts),
+        ("/v1/producer/get_whitelist_blacklist",        post_method, producer_get_whitelist_blacklist),
+        ("/v1/producer/set_whitelist_blacklist",        post_method, producer_set_whitelist_blacklist),
+        ("/v1/producer/create_snapshot",                post_method, producer_create_snapshot),
+        ("/v1/producer/get_integrity_hash",             post_method, producer_get_integrity_hash),
+        ("/v1/producer/schedule_protocol_feature_activations",  post_method, producer_schedule_protocol_feature_activations),
+        ("/v1/producer/get_activated_protocol_features",        post_method, producer_get_activated_protocol_features),
+        ("/v1/producer/get_supported_protocol_features",        post_method, producer_get_supported_protocol_features),
     ]
 
     db_size_api_routers = [
