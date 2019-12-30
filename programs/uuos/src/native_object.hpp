@@ -41,6 +41,7 @@ uint32_t    chain_last_irreversible_block_num_(void *ptr);
 void        chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id);
 void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block);
 int         chain_is_building_block_(void *ptr);
+int         chain_abort_block_(void *ptr);
 
 int         chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block);
 int         chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir);
@@ -60,6 +61,10 @@ int         producer_process_raw_transaction_(void *ptr, string& raw_packed_trx,
 int         producer_create_snapshot_(void *ptr, string& out);
 int         producer_is_producer_key_(void *ptr, string& _public_key);
 int         producer_schedule_protocol_feature_activations_(void *ptr, string& _features, string& err);
+
+void        producer_pause_(void *ptr);
+void        producer_resume_(void *ptr);
+bool        producer_paused_(void *ptr);
 
 void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);

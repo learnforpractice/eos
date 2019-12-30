@@ -39,3 +39,7 @@ def fetch_block_by_nun(block_num):
 
 def is_building_block():
     return _uuos.chain_is_building_block(chain_ptr)
+
+def abort_block():
+    return _uuos.chain_abort_block(chain_ptr)
+

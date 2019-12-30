@@ -226,13 +226,13 @@ async def status():
 
 #------------producer api ---------------
 async def pause():
-    pass
+    application.get_app().producer.pause()
 
 async def resume():
-    pass
+    application.get_app().producer.resume()
 
 async def paused():
-    pass
+    return application.get_app().producer.paused()
 
 async def get_runtime_options():
     pass

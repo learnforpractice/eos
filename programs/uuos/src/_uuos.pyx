@@ -57,6 +57,7 @@ cdef extern from "native_object.hpp":
     void        chain_id_(void *ptr, string& chain_id)
     void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
     int         chain_is_building_block_(void *ptr);
+    int         chain_abort_block_(void *ptr)
 
     void*       producer_new_(void *chain_ptr, string& config);
     void        producer_free_(void *ptr);
@@ -71,6 +72,10 @@ cdef extern from "native_object.hpp":
     int         producer_create_snapshot_(void *ptr, string& out)
     int         producer_is_producer_key_(void *ptr, string& _public_key)
     int         producer_schedule_protocol_feature_activations_(void *ptr, string& _features, string& err);
+
+    void        producer_pause_(void *ptr)
+    void        producer_resume_(void *ptr)
+    bool        producer_paused_(void *ptr)
 
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
@@ -246,6 +251,9 @@ def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
 def chain_is_building_block(uint64_t ptr):
     return chain_is_building_block_(<void *>ptr);
 
+def chain_abort_block(uint64_t ptr):
+    return chain_abort_block_(<void *>ptr)
+
 def producer_new(uint64_t chain_ptr, string& config):
     return <uint64_t>producer_new_(<void *>chain_ptr, config)
 
@@ -260,6 +268,15 @@ def producer_on_incoming_block(uint64_t ptr, string& packed_signed_block):
 
 def producer_start_block(uint64_t ptr):
     return producer_start_block_(<void *>ptr)
+
+def producer_pause(uint64_t ptr):
+    producer_pause_(<void *>ptr)
+
+def producer_resume(uint64_t ptr):
+    producer_resume_(<void *>ptr)
+
+def producer_paused(uint64_t ptr):
+    return producer_paused_(<void *>ptr)
 
 def producer_calc_pending_block_time(uint64_t ptr):
     return producer_calc_pending_block_time_(<void *>ptr)

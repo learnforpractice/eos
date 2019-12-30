@@ -174,10 +174,20 @@ class Producer(object):
         self.hub = Hub()
         self.subs = Subscription(self.hub)
         self.trx_queue = self.subs.get_queue()
+        self._paused = False
 
 #        self.task = asyncio.create_task(self.handle_message())
 
+    def pause(self):
+        _uuos.producer_pause()
 
+    @property
+    def paused(self):
+        return _uuos.producer_paused()
+
+    def resume(self):
+        _uuos.producer_resume()
+    
     def publish_message(self, msg):
         if chain.is_building_block():
             self.process_trx(msg)
