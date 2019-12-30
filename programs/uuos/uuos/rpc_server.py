@@ -196,17 +196,30 @@ async def push_transaction():
     result = await msg.wait()
     return result
 
-#@app.route('/v1/producer/create_snapshot', methods=["POST"])
 async def create_snapshot():
     ret = application.get_app().producer.create_snapshot()
     logger.info(ret)
     return ret[1], http_return_code[ret[0]]
 
-#@app.route('/v1/producer/schedule_protocol_feature_activations', methods=["POST"])
 async def schedule_protocol_feature_activations():
     features = await request.data
     ret = application.get_app().producer.schedule_protocol_feature_activations(features)
     return ret[1], http_return_code[ret[0]]
+
+
+#---------------history api----------------
+async def get_actions():
+    data = await request.data
+
+async def get_transaction():
+    data = await request.data
+
+async def get_key_accounts():
+    data = await request.data
+
+async def get_controlled_accounts():
+    data = await request.data
+
 
 @app.websocket('/ws')
 async def ws():
@@ -243,6 +256,14 @@ async def rpc_server(producer, loop, http_server_address):
         ('/v1/chain/get_transaction_id',                post_method, get_transaction_id),
         ('/v1/chain/push_transaction',                  post_method, push_transaction),
     ]
+
+    history_api_routes = [
+        ('/v1/history/get_actions',                     post_method, get_actions),
+        ('/v1/history/get_transaction',                 post_method, get_transaction),
+        ('/v1/history/get_key_accounts',                post_method, get_key_accounts),
+        ('/v1/history/get_controlled_accounts',         post_method, get_controlled_accounts),
+    ]
+
     producer_api_routes = [
         ("/v1/producer/create_snapshot",                        post_method, create_snapshot),
         ("/v1/producer/schedule_protocol_feature_activations",  get_post_method, schedule_protocol_feature_activations)
@@ -250,6 +271,10 @@ async def rpc_server(producer, loop, http_server_address):
 
     if 'eosio::chain_api_plugin' in producer.config.plugin:
         for route, method, view_func in chain_api_routes:
+            app.route(route, methods=method)(view_func)
+
+    if 'eosio::history_api_plugin' in producer.config.plugin:
+        for route, method, view_func in history_api_routes:
             app.route(route, methods=method)(view_func)
 
     if 'eosio::producer_api_plugin' in producer.config.plugin:
