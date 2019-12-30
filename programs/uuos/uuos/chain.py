@@ -10,8 +10,16 @@ def set_chain_ptr(ptr):
     global chain_ptr
     chain_ptr = ptr
 
-def free():
-    if chain_ptr:
+def new(config, protocol_features_dir, snapshot_dir):
+    global chain_ptr
+    chain_ptr = _uuos.chain_new(config, protocol_features_dir, snapshot_dir)
+    return chain_ptr
+
+def free(ptr=None):
+    if not ptr:
+        if chain_ptr:
+            _uuos.chain_free(chain_ptr)
+    else:
         _uuos.chain_free(chain_ptr)
 
 def id():

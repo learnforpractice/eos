@@ -28,7 +28,7 @@ class Application(object):
     def __init__(self):
         pass
 
-    def get_connection_manager(self):
+    def get_p2p_manager(self):
         pass
 
 __all__ = {

@@ -136,7 +136,7 @@ class UUOSMain(application.Application):
 
         cfg = cfg.dumps()
         print(cfg)
-        self.chain_ptr = chain_new(cfg, config.config_dir, config.snapshot)
+        self.chain_ptr = chain.new(cfg, config.config_dir, config.snapshot)
         if not self.chain_ptr:
             raise Exception('chain initialization failture!')
         chain_api.chain_ptr = self.chain_ptr
@@ -152,7 +152,7 @@ class UUOSMain(application.Application):
     async def shutdown(self, signal, loop):
         logger.info(f'Shutdown uuos {signal} {self.chain_ptr}')
         if self.chain_ptr:
-            chain_free(self.chain_ptr)
+            chain.free(self.chain_ptr)
             self.chain_ptr = None
         
         if self.producer:

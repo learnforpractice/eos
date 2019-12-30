@@ -17,6 +17,7 @@ from .native_object import *
 from pyeoskit import wallet
 from .application import get_app, get_logger
 from .producer import RawTransactionMessage
+import uuos
 
 logger=get_logger(__name__)
 
@@ -342,14 +343,14 @@ class Connection(object):
             return True
 
         if 'specified' in config.allowed_connection:
-            public_key = uuos_recover_key(msg.token, msg.sig)
+            public_key = uuos.recover_key(msg.token, msg.sig)
             if public_key == msg.key and public_key in config.peer_key:
                 return True
 
         if 'producers' in config.allowed_connection:
             if not get_app().producer.is_producer_key(msg.key):
                 return False
-            public_key = uuos_recover_key(msg.token, msg.sig)
+            public_key = uuos.recover_key(msg.token, msg.sig)
             if public_key == msg.key and public_key in config.peer_key:
                 return True
 

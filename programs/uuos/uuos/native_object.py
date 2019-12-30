@@ -1,7 +1,7 @@
 import ujson as json
 import struct
 
-from _uuos import *
+from _uuos import pack_native_object, unpack_native_object
 
 message_header_size = 4
 
@@ -160,9 +160,6 @@ default_config = {
     "greylist_limit": 1000
 }
 
-def normal_setattr(self, attr, value):
-    self._dict[attr] = value
-
 def custom_setattr(self, attr, value):
     if attr == '_dict':
         type(self).old_setattr(self, attr, value)
@@ -170,9 +167,6 @@ def custom_setattr(self, attr, value):
         if not attr in self._dict:
             raise AttributeError(attr)
         self._dict[attr] = value
-
-def custom_getattr(self, attr):
-    return self._dict[attr]
 
 class NativeObject(object):
     def __init__(self, msg_dict):
