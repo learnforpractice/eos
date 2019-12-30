@@ -101,48 +101,48 @@ class Subscription():
 
 class UUOSMain(application.Application):
 
-    def __init__(self, cfg):
+    def __init__(self, config):
         super().__init__()
-        self.cfg = cfg
+        self.config = config
         self.tasks = []
         self.client_count = 0
         self.chain_ptr = None
         self.producer = None
-        self.p2p_manager = P2pManager(cfg)
+        self.p2p_manager = P2pManager(config)
         UUOSMain.uuos = self
 
-        cfg = ControllerConfig(default_config)
+        chain_cfg = ControllerConfig(default_config)
         # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
-        cfg.blocks_dir = os.path.join(cfg.data_dir, 'blocks')
-        cfg.state_dir = os.path.join(cfg.data_dir, 'state')
-        if cfg.snapshot:
-            shared_memory_file = os.path.join(cfg.state_dir, 'shared_memory.bin')
+        chain_cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
+        chain_cfg.state_dir = os.path.join(config.data_dir, 'state')
+        if config.snapshot:
+            shared_memory_file = os.path.join(chain_cfg.state_dir, 'shared_memory.bin')
             if os.path.exists(shared_memory_file):
                 raise Exception("Snapshot can only be used to initialize an empty database.")
 
-        cfg.state_size = cfg.chain_state_db_size_mb * 1024 * 1024
+        chain_cfg.state_size = config.chain_state_db_size_mb * 1024 * 1024
 
-        print('config.uuos_mainnet', cfg.uuos_mainnet)
-        cfg.uuos_mainnet = False
-        if self.cfg.network == 'uuos':
-            cfg.uuos_mainnet = True
-            cfg.genesis = genesis_uuos
-        elif self.cfg.network == 'eos':
-            cfg.genesis = genesis_eos
-        elif self.cfg.network == 'test':
+        print('config.uuos_mainnet', config.uuos_mainnet)
+        chain_cfg.uuos_mainnet = False
+        if self.config.network == 'uuos':
+            chain_cfg.uuos_mainnet = True
+            chain_cfg.genesis = genesis_uuos
+        elif self.config.network == 'eos':
+            chain_cfg.genesis = genesis_eos
+        elif self.config.network == 'test':
             pass
         else:
             raise Exception('unknown network')
 
-        cfg = cfg.dumps()
-        logger.info(cfg)
-        self.chain_ptr = chain.new(cfg, cfg.config_dir, cfg.snapshot)
+        chain_cfg = chain_cfg.dumps()
+        logger.info(chain_cfg)
+        self.chain_ptr = chain.new(chain_cfg, config.config_dir, config.snapshot)
         if not self.chain_ptr:
             raise Exception('chain initialization failture!')
         chain_api.chain_ptr = self.chain_ptr
         chain.set_chain_ptr(self.chain_ptr)
-        self.producer = Producer(self.cfg)
+        self.producer = Producer(self.config)
         # self.hub = Hub()
 
         application.set_app(self)
@@ -175,9 +175,9 @@ class UUOSMain(application.Application):
         await aioconsole.interact()
 
     @classmethod
-    async def main(cls, cfg, loop):
+    async def main(cls, config, loop):
         try:
-            uuos = UUOSMain(cfg)
+            uuos = UUOSMain(config)
         except Exception as e:
             logger.info(f'+++exception:{e}')
             return
@@ -195,7 +195,7 @@ class UUOSMain(application.Application):
 #        tasks.append(task)
 
         uuos.producer.main = uuos
-        server = rpc_server(uuos.producer, loop, cfg.http_server_address)
+        server = rpc_server(uuos.producer, loop, config.http_server_address)
         task = asyncio.create_task(server)
         tasks.append(task)
         
@@ -205,26 +205,26 @@ class UUOSMain(application.Application):
         task = asyncio.create_task(uuos.p2p_manager.p2p_server())
         tasks.append(task)
 
-        if uuos.cfg.interact:
+        if uuos.config.interact:
             task = asyncio.create_task(uuos.interactive_console())
             tasks.append(task)
 
         # task = asyncio.create_task(uuos.p2p_manager.analyze_peer())
         # tasks.append(task)
-        if uuos.cfg.interact_server:
-            host, port = uuos.cfg.interact_server.split(':')
+        if uuos.config.interact_server:
+            host, port = uuos.config.interact_server.split(':')
             port = int(port)
             task = asyncio.create_task(aioconsole.start_interactive_server(host=host, port=port))
         tasks.append(task)
 
-#        self.producer = Producer(self.cfg)
+#        self.producer = Producer(self.config)
         task = asyncio.create_task(uuos.producer.run())
         tasks.append(task)
         # register accepted block callback
 
         loop.set_exception_handler(uuos.handle_exception)
 
-    #    res = await asyncio.gather(connect_to_peers(cfg), app.server(host=host, port=port), return_exceptions=True)
+    #    res = await asyncio.gather(connect_to_peers(config), app.server(host=host, port=port), return_exceptions=True)
         res = await asyncio.gather(*tasks, return_exceptions=False)
         print(res)
         return res

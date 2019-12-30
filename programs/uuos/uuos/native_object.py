@@ -1,6 +1,7 @@
 import ujson as json
 import struct
 
+from uuos.jsonobject import JsonObject
 from _uuos import pack_native_object, unpack_native_object
 
 message_header_size = 4
@@ -103,47 +104,7 @@ default_handshake_msg = {
     "generation":1
 }
 
-def custom_setattr(self, attr, value):
-    if attr == '_dict':
-        type(self).old_setattr(self, attr, value)
-    else:
-        if not attr in self._dict:
-            raise AttributeError(attr)
-        self._dict[attr] = value
-
-class NativeObject(object):
-    def __init__(self, msg_dict):
-#        super(NativeObject, self).__init__(msg_dict)
-        self._dict = msg_dict
-        if hasattr(NativeObject, 'old_setattr'):
-            pass
-        else:
-            NativeObject.old_setattr = NativeObject.__setattr__
-            NativeObject.__setattr__ = custom_setattr
-
-    def __getattr__(self, attr):
-        return self._dict[attr]
-
-    def dumps(self):
-        return json.dumps(self._dict)
-
-    def pack(self):
-        msg = json.dumps(self._dict)
-        return pack_native_object(self.obj_type, msg)
-
-    @classmethod
-    def unpack(cls, msg):
-        msg = unpack_native_object(cls.obj_type, msg)
-        msg = json.loads(msg)
-        return cls(msg)
-
-    def __str__(self):
-        return json.dumps(self._dict, sort_keys=False, indent=4)
-
-    def __repr__(self):
-        return json.dumps(self._dict, sort_keys=False, indent=4)
-
-class NativeMessage(NativeObject):
+class NativeMessage(JsonObject):
 
     def pack(self):
         msg = json.dumps(self._dict)
@@ -194,10 +155,10 @@ class PackedTransactionMessage(NativeMessage):
     obj_type = packed_transaction_message_type
 
 
-class ControllerConfig(NativeObject):
+class ControllerConfig(JsonObject):
     obj_type = controller_config_type
 
-class ProducerParams(NativeObject):
+class ProducerParams(JsonObject):
     obj_type = producer_params_type
 
 def pack_transaction(trx):
