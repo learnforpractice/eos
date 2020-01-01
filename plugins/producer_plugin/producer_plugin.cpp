@@ -2318,3 +2318,8 @@ int producer_schedule_protocol_feature_activations_(void *ptr, string& _features
    return 0;
 }
 
+void producer_get_runtime_options_(void *ptr, string& result) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto options = producer.get_runtime_options();
+   result = fc::json::to_string(options);
+}

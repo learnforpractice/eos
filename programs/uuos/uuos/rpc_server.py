@@ -242,7 +242,7 @@ async def producer_paused():
         return 'false'
 
 async def producer_get_runtime_options():
-    pass
+    return application.get_app().producer.get_runtime_options()
 
 async def producer_update_runtime_options():
     pass

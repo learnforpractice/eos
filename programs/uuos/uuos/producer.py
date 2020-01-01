@@ -186,7 +186,10 @@ class Producer(object):
 
     def resume(self):
         _uuos.producer_resume(self.ptr)
-    
+
+    def get_runtime_options(self):
+        return producer_get_runtime_options(self.ptr)
+
     def publish_message(self, msg):
         if chain.is_building_block():
             self.process_trx(msg)

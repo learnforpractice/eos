@@ -56,7 +56,7 @@ cdef extern from "native_object.hpp":
     void        chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
     void        chain_id_(void *ptr, string& chain_id)
     void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
-    int         chain_is_building_block_(void *ptr);
+    bool        chain_is_building_block_(void *ptr);
     int         chain_abort_block_(void *ptr)
 
     void*       producer_new_(void *chain_ptr, string& config);
@@ -76,6 +76,7 @@ cdef extern from "native_object.hpp":
     void        producer_pause_(void *ptr)
     void        producer_resume_(void *ptr)
     bool        producer_paused_(void *ptr)
+    void        producer_get_runtime_options_(void *ptr, string& result)
 
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
@@ -313,6 +314,11 @@ def producer_schedule_protocol_feature_activations(uint64_t ptr, string& feature
     cdef string err
     ret = producer_schedule_protocol_feature_activations_(<void *>ptr, features, err)
     return ret, err
+
+def producer_get_runtime_options(uint64_t ptr):
+    cdef string result
+    producer_get_runtime_options_(<void *>ptr, result)
+    return result
 
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
