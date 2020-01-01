@@ -182,8 +182,12 @@ int chain_is_building_block_(void *ptr) {
 }
 
 int chain_abort_block_(void *ptr) {
-    auto& chain = chain_get_controller(ptr);
-    return chain.abort_block();
+   try {
+        auto& chain = chain_get_controller(ptr);
+        chain.abort_block();
+        return 1;
+   } FC_LOG_AND_DROP();
+   return 0;
 }
 
 void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
