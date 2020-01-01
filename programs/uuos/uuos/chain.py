@@ -120,10 +120,10 @@ class Chain(object):
         return _uuos.chain_fork_db_pending_head_block_id(self.ptr)
 
     def fork_db_pending_head_block_time(self):
-        return _uuos.chain_fork_db_pending_head_block_time(self.ptr, result)
+        return _uuos.chain_fork_db_pending_head_block_time(self.ptr)
 
     def fork_db_pending_head_block_producer(self):
-        return _uuos.chain_fork_db_pending_head_block_producer(self.ptr, result)
+        return _uuos.chain_fork_db_pending_head_block_producer(self.ptr)
 
     def pending_block_time(self):
         return _uuos.chain_pending_block_time(self.ptr)
@@ -138,25 +138,26 @@ class Chain(object):
         return _uuos.chain_pending_producer_block_id(self.ptr)
 
     def get_pending_trx_receipts(self):
-        return _uuos.chain_get_pending_trx_receipts(self.ptr)
+        ret = _uuos.chain_get_pending_trx_receipts(self.ptr)
+        return JsonObject(ret)
 
     def active_producers(self):
-        return _uuos.chain_active_producers(self.ptr)
-
-    def active_producers(self):
-        return _uuos.chain_active_producers(self.ptr)
+        ret = _uuos.chain_active_producers(self.ptr)
+        return JsonObject(ret)
 
     def pending_producers(self):
-        return _uuos.chain_pending_producers(self.ptr, result)
+        ret = _uuos.chain_pending_producers(self.ptr)
+        return JsonObject(ret)
 
     def proposed_producers(self):
-        return _uuos.chain_proposed_producers(self.ptr, result)
+        ret = _uuos.chain_proposed_producers(self.ptr)
+        return JsonObject(ret)
 
     def last_irreversible_block_num(self):
         return _uuos.chain_last_irreversible_block_num(self.ptr)
 
     def last_irreversible_block_id(self):
-        return _uuos.chain_last_irreversible_block_id(self.ptr, result)
+        return _uuos.chain_last_irreversible_block_id(self.ptr)
 
     def fetch_block_by_number(self, block_num):
         return _uuos.chain_fetch_block_by_number(self.ptr, block_num, raw_block)
@@ -213,19 +214,20 @@ class Chain(object):
         return _uuos.chain_get_resource_greylist(self.ptr)
 
     def get_config(self):
-        return _uuos.chain_get_config(self.ptr)
+        ret = _uuos.chain_get_config(self.ptr)
+        return JsonObject(ret)
 
     def validate_expiration(self, trx):
-        return _uuos.chain_validate_expiration(self.ptr, trx, err)
+        return _uuos.chain_validate_expiration(self.ptr, trx)
 
     def validate_tapos(self, trx):
-        return _uuos.chain_validate_tapos(self.ptr, trx, err)
+        return _uuos.chain_validate_tapos(self.ptr, trx)
 
     def validate_db_available_size(self):
-        return _uuos.chain_validate_db_available_size(self.ptr, err)
+        return _uuos.chain_validate_db_available_size(self.ptr)
 
     def validate_reversible_available_size(self):
-        return _uuos.chain_validate_reversible_available_size(self.ptr, err)
+        return _uuos.chain_validate_reversible_available_size(self.ptr)
 
     def is_protocol_feature_activated(self, digest):
         return _uuos.chain_is_protocol_feature_activated(self.ptr, digest)

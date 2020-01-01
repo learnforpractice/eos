@@ -19,8 +19,8 @@ cdef extern from "uuos.hpp":
 
 cdef extern from "native_object.hpp":
 
-    string& uuos_get_last_error();
-    void uuos_set_last_error(string& error);
+    string& uuos_get_last_error_();
+    void uuos_set_last_error_(string& error);
 
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
@@ -179,10 +179,10 @@ cpdef long elevation():
     return 21463L
 
 def uuos_get_last_error():
-    return uuos_get_last_error()
+    return uuos_get_last_error_()
 
 def uuos_set_last_error(string& error):
-    uuos_set_last_error(error)
+    uuos_set_last_error_(error)
 
 def pack_native_object(int _type, string& msg):
     cdef string packed_message
@@ -345,11 +345,6 @@ def chain_pending_producer_block_id(uint64_t ptr):
 def chain_get_pending_trx_receipts(uint64_t ptr):
     cdef string result
     chain_get_pending_trx_receipts_(<void *>ptr, result)
-    return result
-
-def chain_active_producers(uint64_t ptr):
-    cdef string result
-    chain_active_producers_(<void *>ptr, result)
     return result
 
 def chain_active_producers(uint64_t ptr):

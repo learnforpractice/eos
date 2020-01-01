@@ -20,11 +20,11 @@
 
 static string s_last_error;
 
-string& uuos_get_last_error() {
+string& uuos_get_last_error_() {
     return s_last_error;
 }
 
-void uuos_set_last_error(string& error) {
+void uuos_set_last_error_(string& error) {
     s_last_error = error;
 }
 
@@ -319,12 +319,12 @@ void chain_fork_db_pending_head_block_id_(void *ptr, string& result) {
 
 void chain_fork_db_pending_head_block_time_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.fork_db_pending_head_block_time());
+    result = chain.fork_db_pending_head_block_time();
 }
 
 void chain_fork_db_pending_head_block_producer_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.fork_db_pending_head_block_producer());
+    result = chain.fork_db_pending_head_block_producer().to_string();
 }
 
 void chain_pending_block_time_(void *ptr, string& result) {
@@ -450,7 +450,7 @@ void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result )
 void chain_calculate_integrity_hash_(void *ptr, string& result ) {
     auto& chain = chain_get_controller(ptr);
     auto hash = chain.calculate_integrity_hash();
-    result = fc::json::to_string(hash);
+    result = hash.str();
 }
 
 /*

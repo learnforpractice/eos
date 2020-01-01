@@ -2,8 +2,8 @@
 #include <string>
 using namespace std;
 
-string& uuos_get_last_error();
-void uuos_set_last_error(string& error);
+string& uuos_get_last_error_();
+void uuos_set_last_error_(string& error);
 
 void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
