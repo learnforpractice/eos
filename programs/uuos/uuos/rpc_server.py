@@ -227,12 +227,19 @@ async def net_status():
 #------------producer api ---------------
 async def producer_pause():
     application.get_app().producer.pause()
+    return 'true'
 
 async def producer_resume():
     application.get_app().producer.resume()
+    return 'true'
 
 async def producer_paused():
-    return application.get_app().producer.paused()
+    ret = application.get_app().producer.paused()
+    logger.info(f'+++++++++++++++producer_paused: {ret}')
+    if ret:
+        return 'true'
+    else:
+        return 'false'
 
 async def producer_get_runtime_options():
     pass
@@ -256,6 +263,7 @@ async def producer_set_whitelist_blacklist():
     pass
 
 async def producer_create_snapshot():
+    logger.info('+++++producer_create_snapshot')
     ret = application.get_app().producer.create_snapshot()
     logger.info(ret)
     return ret[1], http_return_code[ret[0]]
@@ -331,18 +339,18 @@ async def rpc_server(producer, loop, http_server_address):
     ]
     
     producer_api_routes = [
-        ("/v1/producer/pause",                          post_method, producer_pause),
-        ("/v1/producer/resume",                         post_method, producer_resume),
-        ("/v1/producer/paused",                         post_method, producer_paused),
-        ("/v1/producer/get_runtime_options",            post_method, producer_get_runtime_options),
+        ("/v1/producer/pause",                          get_post_method, producer_pause),
+        ("/v1/producer/resume",                         get_post_method, producer_resume),
+        ("/v1/producer/paused",                         get_post_method, producer_paused),
+        ("/v1/producer/get_runtime_options",            get_post_method, producer_get_runtime_options),
         ("/v1/producer/update_runtime_options",         post_method, producer_update_runtime_options),
-        ("/v1/producer/get_greylist",                   post_method, producer_get_greylist),
+        ("/v1/producer/get_greylist",                   get_post_method, producer_get_greylist),
         ("/v1/producer/add_greylist_accounts",          post_method, producer_add_greylist_accounts),
         ("/v1/producer/remove_greylist_accounts",       post_method, producer_remove_greylist_accounts),
-        ("/v1/producer/get_whitelist_blacklist",        post_method, producer_get_whitelist_blacklist),
+        ("/v1/producer/get_whitelist_blacklist",        get_post_method, producer_get_whitelist_blacklist),
         ("/v1/producer/set_whitelist_blacklist",        post_method, producer_set_whitelist_blacklist),
         ("/v1/producer/create_snapshot",                post_method, producer_create_snapshot),
-        ("/v1/producer/get_integrity_hash",             post_method, producer_get_integrity_hash),
+        ("/v1/producer/get_integrity_hash",             get_post_method, producer_get_integrity_hash),
         ("/v1/producer/schedule_protocol_feature_activations",  post_method, producer_schedule_protocol_feature_activations),
         ("/v1/producer/get_activated_protocol_features",        post_method, producer_get_activated_protocol_features),
         ("/v1/producer/get_supported_protocol_features",        post_method, producer_get_supported_protocol_features),
@@ -354,18 +362,22 @@ async def rpc_server(producer, loop, http_server_address):
 
     if 'eosio::chain_api_plugin' in producer.config.plugin:
         for route, method, view_func in chain_api_routes:
+            logger.info(f'route {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::history_api_plugin' in producer.config.plugin:
         for route, method, view_func in history_api_routes:
+            logger.info(f'route {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::net_api_plugin' in producer.config.plugin:
         for route, method, view_func in net_api_routes:
+            logger.info(f'route {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::producer_api_plugin' in producer.config.plugin:
         for route, method, view_func in producer_api_routes:
+            logger.info(f'route {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::db_size_api_plugin' in producer.config.plugin:

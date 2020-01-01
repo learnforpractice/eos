@@ -179,14 +179,13 @@ class Producer(object):
 #        self.task = asyncio.create_task(self.handle_message())
 
     def pause(self):
-        _uuos.producer_pause()
+        _uuos.producer_pause(self.ptr)
 
-    @property
     def paused(self):
-        return _uuos.producer_paused()
+        return _uuos.producer_paused(self.ptr)
 
     def resume(self):
-        _uuos.producer_resume()
+        _uuos.producer_resume(self.ptr)
     
     def publish_message(self, msg):
         if chain.is_building_block():
