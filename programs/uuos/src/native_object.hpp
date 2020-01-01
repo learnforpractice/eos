@@ -93,7 +93,7 @@ int chain_get_read_mode_(void *ptr);
 int chain_get_validation_mode_(void *ptr);
 void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway);
 void chain_set_greylist_limit_(void *ptr, uint32_t limit);
-uint32_t chain_set_greylist_limit_(void *ptr);
+uint32_t chain_get_greylist_limit_(void *ptr);
 void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
 bool chain_all_subjective_mitigations_disabled_(void *ptr);
 

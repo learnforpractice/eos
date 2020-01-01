@@ -659,7 +659,7 @@ void chain_set_greylist_limit_(void *ptr, uint32_t limit) {
     chain.set_greylist_limit(limit);
 }
 
-uint32_t chain_set_greylist_limit_(void *ptr) {
+uint32_t chain_get_greylist_limit_(void *ptr) {
     auto& chain = chain_get_controller(ptr);
     return chain.get_greylist_limit();
 }

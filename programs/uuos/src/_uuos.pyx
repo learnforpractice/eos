@@ -108,7 +108,7 @@ cdef extern from "native_object.hpp":
     int chain_get_validation_mode_(void *ptr);
     void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway);
     void chain_set_greylist_limit_(void *ptr, uint32_t limit);
-    uint32_t chain_set_greylist_limit_(void *ptr);
+    uint32_t chain_get_greylist_limit_(void *ptr);
     void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
     bool chain_all_subjective_mitigations_disabled_(void *ptr);
 
@@ -427,37 +427,103 @@ def chain_is_building_block(uint64_t ptr):
 def chain_is_producing_block(uint64_t ptr):
     return chain_is_producing_block_(<void *>ptr)
 
-    # bool chain_is_ram_billing_in_notify_allowed_(void *ptr);
-    # void chain_add_resource_greylist_(void *ptr, string& param);
-    # void chain_remove_resource_greylist_(void *ptr, string& param);
-    # bool chain_is_resource_greylisted_(void *ptr, string& param);
-    # void chain_get_resource_greylist_(void *ptr, string& result);
-    # void chain_get_config_(void *ptr, string& result);
-    # bool chain_validate_expiration_(void *ptr, string& param, string& err);
-    # bool chain_validate_tapos_(void *ptr, string& param, string& err);
-    # bool chain_validate_db_available_size_(void *ptr, string& err);
-    # bool chain_validate_reversible_available_size_(void *ptr, string& err);
-    # bool chain_is_protocol_feature_activated_(void *ptr, string& param);
-    # bool chain_is_builtin_activated_(void *ptr, int feature);
-    # bool chain_is_known_unexpired_transaction_(void *ptr, string& param);
-    # int64_t chain_set_proposed_producers_(void *ptr, string& param);
-    # bool chain_light_validation_allowed_(void *ptr, bool replay_opts_disabled_by_policy);
-    # bool chain_skip_auth_check_(void *ptr);
+def chain_is_ram_billing_in_notify_allowed(uint64_t ptr):
+    return chain_is_ram_billing_in_notify_allowed_(<void *>ptr)
 
-    # bool chain_skip_db_sessions_(void *ptr);
-    # bool chain_skip_trx_checks_(void *ptr);
-    # bool chain_contracts_console_(void *ptr);
+def chain_add_resource_greylist(uint64_t ptr, string& param):
+    chain_add_resource_greylist_(<void *>ptr, param)
 
-    # bool chain_is_uuos_mainnet_(void *ptr);
-    # void chain_get_chain_id_(void *ptr, string& result);
-    # int chain_get_read_mode_(void *ptr);
-    # int chain_get_validation_mode_(void *ptr);
-    # void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway);
-    # void chain_set_greylist_limit_(void *ptr, uint32_t limit);
-    # uint32_t chain_set_greylist_limit_(void *ptr);
-    # void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
-    # bool chain_all_subjective_mitigations_disabled_(void *ptr);
+def chain_remove_resource_greylist(uint64_t ptr, string& param):
+    chain_remove_resource_greylist_(<void *>ptr, param)
 
+def chain_is_resource_greylisted(uint64_t ptr, string& param):
+    return chain_is_resource_greylisted_(<void *>ptr, param)
+
+def chain_get_resource_greylist(uint64_t ptr):
+    cdef string result
+    chain_get_resource_greylist_(<void *>ptr, result)
+    return result
+
+def chain_get_config(uint64_t ptr):
+    cdef string result
+    chain_get_config_(<void *>ptr, result)
+    return result
+
+def chain_validate_expiration(uint64_t ptr, string& trx):
+    cdef string err
+    ret = chain_validate_expiration_(<void *>ptr, trx, err)
+    return ret, err
+
+def chain_validate_tapos(uint64_t ptr, string& trx):
+    cdef string err
+    ret = chain_validate_tapos_(<void *>ptr, trx, err)
+    return ret, err
+
+def chain_validate_db_available_size(uint64_t ptr):
+    cdef string err
+    ret = chain_validate_db_available_size_(<void *>ptr, err)
+    return ret, err
+
+def chain_validate_reversible_available_size(uint64_t ptr):
+    cdef string err
+    ret = chain_validate_reversible_available_size_(<void *>ptr, err)
+    return ret, err
+
+def chain_is_protocol_feature_activated(uint64_t ptr, string& digest):
+    return chain_is_protocol_feature_activated_(<void *>ptr, digest)
+
+def chain_is_builtin_activated(uint64_t ptr, int feature):
+    return chain_is_builtin_activated_(<void *>ptr, feature)
+
+def chain_is_known_unexpired_transaction(uint64_t ptr, string& trx):
+    return chain_is_known_unexpired_transaction_(<void *>ptr, trx)
+
+def chain_set_proposed_producers(uint64_t ptr, string& param):
+    return chain_set_proposed_producers_(<void *>ptr, param)
+
+def chain_light_validation_allowed(uint64_t ptr, bool replay_opts_disabled_by_policy):
+    return chain_light_validation_allowed_(<void *>ptr, replay_opts_disabled_by_policy)
+
+def chain_skip_auth_check(uint64_t ptr):
+    return chain_skip_auth_check_(<void *>ptr)
+
+def chain_skip_db_sessions(uint64_t ptr):
+    return chain_skip_db_sessions_(<void *>ptr)
+
+def chain_skip_trx_checks(uint64_t ptr):
+    return chain_skip_trx_checks_(<void *>ptr)
+
+def chain_contracts_console(uint64_t ptr):
+    return chain_contracts_console_(<void *>ptr)
+
+def chain_is_uuos_mainnet(uint64_t ptr):
+    return chain_is_uuos_mainnet_(<void *>ptr)
+
+def chain_get_chain_id(uint64_t ptr):
+    cdef string chain_id
+    chain_get_chain_id_(<void *>ptr, chain_id)
+    return chain_id
+
+def chain_get_read_mode(uint64_t ptr):
+    return chain_get_read_mode_(<void *>ptr)
+
+def chain_get_validation_mode(uint64_t ptr):
+    return chain_get_validation_mode_(<void *>ptr)
+
+def chain_set_subjective_cpu_leeway(uint64_t ptr, leeway):
+    chain_set_subjective_cpu_leeway_(<void *>ptr, leeway)
+
+def chain_set_greylist_limit(uint64_t ptr, limit):
+    chain_set_greylist_limit_(<void *>ptr, limit)
+
+def chain_get_greylist_limit(uint64_t ptr):
+    return chain_get_greylist_limit_(<void *>ptr)
+
+def chain_add_to_ram_correction(uint64_t ptr, string& account, uint64_t ram_bytes):
+    return chain_add_to_ram_correction_(<void *>ptr, account, ram_bytes)
+
+def chain_all_subjective_mitigations_disabled(uint64_t ptr):
+    return chain_all_subjective_mitigations_disabled_(<void *>ptr)
 
 def chain_fork_db_pending_head_block_num(uint64_t ptr):
     return chain_fork_db_pending_head_block_num_(<void *>ptr)
