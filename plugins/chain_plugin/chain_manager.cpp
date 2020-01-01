@@ -247,7 +247,7 @@ uint32_t chain_head_block_num_(void *ptr) {
 
 void chain_head_block_time_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.head_block_time());
+    result = chain.head_block_time();
 }
 
 void chain_head_block_id_(void *ptr, string& result) {
@@ -257,7 +257,7 @@ void chain_head_block_id_(void *ptr, string& result) {
 
 void chain_head_block_producer_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.head_block_producer());
+    result = chain.head_block_producer().to_string();
 }
 
 void chain_head_block_header_(void *ptr, string& result) {
@@ -282,12 +282,12 @@ void chain_fork_db_head_block_id_(void *ptr, string& result) {
 
 void chain_fork_db_head_block_time_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.fork_db_head_block_time());
+    result = chain.fork_db_head_block_time();
 }
 
 void chain_fork_db_head_block_producer_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.fork_db_head_block_producer());
+    result = chain.fork_db_head_block_producer().to_string();
 }
 
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
@@ -315,17 +315,32 @@ void chain_fork_db_pending_head_block_producer_(void *ptr, string& result) {
 
 void chain_pending_block_time_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.pending_block_time());
+    result = chain.pending_block_time();
 }
 
 void chain_pending_block_producer_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.pending_block_producer());
+    result = chain.pending_block_producer().to_string();
+}
+
+static string s_last_error;
+
+string& uuos_get_last_error() {
+    return s_last_error;
+}
+
+void uuos_set_last_error(string& error) {
+    s_last_error = error;
 }
 
 void chain_pending_block_signing_key_(void *ptr, string& result) {
-    auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.pending_block_signing_key());
+    auto next = [](const fc::exception_ptr& ex) {
+        s_last_error = ex->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        result = std::string(chain.pending_block_signing_key());
+    } CATCH_AND_CALL(next)
 }
 
 void chain_pending_producer_block_id_(void *ptr, string& result) {
@@ -337,8 +352,13 @@ void chain_pending_producer_block_id_(void *ptr, string& result) {
 }
 
 void chain_get_pending_trx_receipts_(void *ptr, string& result) {
-    auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_pending_trx_receipts());
+    auto next = [](const fc::exception_ptr& ex) {
+        s_last_error = ex->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        result = fc::json::to_string(chain.get_pending_trx_receipts());
+    } CATCH_AND_CALL(next)
 }
 
 void chain_active_producers_(void *ptr, string& result) {

@@ -12,6 +12,8 @@ def custom_setattr(self, attr, value):
 class JsonObject(object):
     def __init__(self, msg_dict):
 #        super(JsonObject, self).__init__(msg_dict)
+        if isinstance(msg_dict, str):
+            msg_dict = json.loads(msg_dict)
         self._dict = msg_dict
         if hasattr(JsonObject, 'old_setattr'):
             pass

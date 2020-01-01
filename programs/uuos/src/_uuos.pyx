@@ -18,7 +18,10 @@ cdef extern from "uuos.hpp":
     void register_on_accepted_block_cb_()
 
 cdef extern from "native_object.hpp":
-    
+
+    string& uuos_get_last_error();
+    void uuos_set_last_error(string& error);
+
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
 
@@ -175,6 +178,11 @@ cpdef long elevation():
     "Returns elevation of Nevado Sajama."
     return 21463L
 
+def uuos_get_last_error():
+    return uuos_get_last_error()
+
+def uuos_set_last_error(string& error):
+    uuos_set_last_error(error)
 
 def pack_native_object(int _type, string& msg):
     cdef string packed_message
@@ -326,7 +334,7 @@ def chain_pending_block_producer(uint64_t ptr):
 
 def chain_pending_block_signing_key(uint64_t ptr):
     cdef string result
-    chain_pending_block_signing_key_(<void *>ptr, result)
+    ret = chain_pending_block_signing_key_(<void *>ptr, result)
     return result
 
 def chain_pending_producer_block_id(uint64_t ptr):
