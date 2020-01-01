@@ -1,4 +1,22 @@
 #include <eosio/chain_plugin/chain_manager.hpp>
+#include <eosio/chain/global_property_object.hpp>
+
+#define CATCH_AND_CALL(NEXT)\
+   catch ( const fc::exception& err ) {\
+      NEXT(err.dynamic_copy_exception());\
+   } catch ( const std::exception& e ) {\
+      fc::exception fce( \
+         FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
+         fc::std_exception_code,\
+         BOOST_CORE_TYPEID(e).name(),\
+         e.what() ) ;\
+      NEXT(fce.dynamic_copy_exception());\
+   } catch( ... ) {\
+      fc::unhandled_exception e(\
+         FC_LOG_MESSAGE(warn, "rethrow"),\
+         std::current_exception());\
+      NEXT(e.dynamic_copy_exception());\
+   }
 
 namespace eosio {
     protocol_feature_set initialize_protocol_features( const fc::path& p, bool populate_missing_builtins = true );
@@ -134,12 +152,205 @@ eosio::chain::controller& chain_get_controller(void *ptr) {
     return *(eosio::chain::controller*)ptr;
 }
 
+void chain_id_(void *ptr, string& chain_id) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        chain_id = chain.get_chain_id().str();
+    } FC_LOG_AND_DROP();
+}
+
+int chain_abort_block_(void *ptr) {
+   try {
+        auto& chain = chain_get_controller(ptr);
+        chain.abort_block();
+        return 1;
+   } FC_LOG_AND_DROP();
+   return 0;
+}
+
+void chain_get_global_properties_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    auto& obj = chain.get_global_properties();
+    result = fc::json::to_string(obj);
+}
+
+void chain_get_dynamic_global_properties_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    auto& obj = chain.get_dynamic_global_properties();
+    result = fc::json::to_string(obj);
+}
+
+void chain_get_actor_whitelist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_actor_whitelist());
+}
+
+void chain_get_actor_blacklist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_actor_blacklist());
+}
+
+void chain_get_contract_whitelist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_contract_whitelist());
+}
+
+void chain_get_contract_blacklist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_contract_blacklist());
+}
+
+void chain_get_action_blacklist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_action_blacklist());
+}
+
+void chain_get_key_blacklist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_key_blacklist());
+}
+
+void chain_set_actor_whitelist_(void *ptr, string& params) {
+    auto& chain = chain_get_controller(ptr);
+    auto whitelist = fc::json::from_string(params).as<flat_set<account_name>>();
+    chain.set_actor_whitelist(whitelist);
+}
+
+void chain_set_actor_blacklist_(void *ptr, string& params) {
+    auto& chain = chain_get_controller(ptr);
+    auto whitelist = fc::json::from_string(params).as<flat_set<account_name>>();
+    chain.set_actor_blacklist(whitelist);
+}
+
+void chain_set_contract_whitelist_(void *ptr, string& params) {
+    auto& chain = chain_get_controller(ptr);
+    auto whitelist = fc::json::from_string(params).as<flat_set<account_name>>();
+    chain.set_contract_whitelist(whitelist);
+}
+
+void chain_set_action_blacklist_(void *ptr, string& params) {
+    auto& chain = chain_get_controller(ptr);
+    auto whitelist = fc::json::from_string(params).as<flat_set< pair<account_name, action_name> >>();
+    chain.set_action_blacklist(whitelist);
+}
+
+void chain_set_key_blacklist_(void *ptr, string& params) {
+    auto& chain = chain_get_controller(ptr);
+    auto whitelist = fc::json::from_string(params).as<flat_set<public_key_type>>();
+    chain.set_key_blacklist(whitelist);
+}
+
+uint32_t chain_head_block_num_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.head_block_num();
+}
+
+void chain_head_block_time_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.head_block_time());
+}
+
+void chain_head_block_id_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.head_block_id());
+}
+
+void chain_head_block_producer_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.head_block_producer());
+}
+
+void chain_head_block_header_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.head_block_header());
+}
+
+void chain_head_block_state_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.head_block_state());
+}
+
+uint32_t chain_fork_db_head_block_num_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.fork_db_head_block_num();
+}
+
+void chain_fork_db_head_block_id_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.fork_db_head_block_id());
+}
+
+void chain_fork_db_head_block_time_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.fork_db_head_block_time());
+}
+
+void chain_fork_db_head_block_producer_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.fork_db_head_block_producer());
+}
+
 uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
     try {
         auto& chain = chain_get_controller(ptr);
         return chain.fork_db_pending_head_block_num();
     } FC_LOG_AND_DROP();
     return 0;
+}
+
+void chain_fork_db_pending_head_block_id_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.fork_db_pending_head_block_id());
+}
+
+void chain_fork_db_pending_head_block_time_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.fork_db_pending_head_block_time());
+}
+
+void chain_fork_db_pending_head_block_producer_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.fork_db_pending_head_block_producer());
+}
+
+void chain_pending_block_time_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.pending_block_time());
+}
+
+void chain_pending_block_producer_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.pending_block_producer());
+}
+
+void chain_pending_block_signing_key_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.pending_block_signing_key());
+}
+
+void chain_pending_producer_block_id_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.pending_producer_block_id());
+}
+
+void chain_get_pending_trx_receipts_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.get_pending_trx_receipts());
+}
+
+void chain_active_producers_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.active_producers());
+}
+
+void chain_pending_producers_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.pending_producers());
+}
+
+void chain_proposed_producers_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.proposed_producers());
 }
 
 uint32_t chain_last_irreversible_block_num_(void *ptr) {
@@ -150,18 +361,9 @@ uint32_t chain_last_irreversible_block_num_(void *ptr) {
     return 0;
 }
 
-void chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id) {
-    try {
-        auto& chain = chain_get_controller(ptr);
-        block_id = chain.get_block_id_for_num(num).str();
-    } FC_LOG_AND_DROP();
-}
-
-void chain_id_(void *ptr, string& chain_id) {
-    try {
-        auto& chain = chain_get_controller(ptr);
-        chain_id = chain.get_chain_id().str();
-    } FC_LOG_AND_DROP();
+void chain_last_irreversible_block_id_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result = fc::json::to_string(chain.last_irreversible_block_id());
 }
 
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
@@ -176,19 +378,281 @@ void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_blo
     } FC_LOG_AND_DROP();
 }
 
-int chain_is_building_block_(void *ptr) {
+void chain_fetch_block_by_id_(void *ptr, string& params, string& raw_block ) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto block_id = fc::json::from_string(params).as<block_id_type>();
+        auto block_ptr = chain.fetch_block_by_id(block_id);
+        if (!block_ptr) {
+            return;
+        }
+        auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
+        raw_block = string(_raw_block.data(), _raw_block.size());
+    } FC_LOG_AND_DROP();
+}
+
+void chain_fetch_block_state_by_number_(void *ptr, uint32_t block_num, string& raw_block_state ) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto block_ptr = chain.fetch_block_state_by_number(block_num);
+        if (!block_ptr) {
+            return;
+        }
+        auto _raw_block_state = fc::raw::pack<eosio::chain::block_state>(*block_ptr);
+        raw_block_state = string(_raw_block_state.data(), _raw_block_state.size());
+    } FC_LOG_AND_DROP();
+}
+
+void chain_fetch_block_state_by_id_(void *ptr, string& params, string& raw_block_state ) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto block_id = fc::json::from_string(params).as<block_id_type>();
+        auto block_ptr = chain.fetch_block_state_by_id(block_id);
+        if (!block_ptr) {
+            return;
+        }
+        auto _raw_block_state = fc::raw::pack<eosio::chain::block_state>(*block_ptr);
+        raw_block_state = string(_raw_block_state.data(), _raw_block_state.size());
+    } FC_LOG_AND_DROP();
+}
+
+void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result ) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto id = chain.get_block_id_for_num(block_num);
+        result = fc::json::to_string(id);
+    } FC_LOG_AND_DROP();
+}
+
+void chain_calculate_integrity_hash_(void *ptr, string& result ) {
+    auto& chain = chain_get_controller(ptr);
+    auto hash = chain.calculate_integrity_hash();
+    result = fc::json::to_string(hash);
+}
+
+/*
+         void write_snapshot( const snapshot_writer_ptr& snapshot )const;
+*/
+
+bool chain_sender_avoids_whitelist_blacklist_enforcement_(void *ptr, string& sender, string& result ) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.sender_avoids_whitelist_blacklist_enforcement(account_name(sender));
+}
+
+void chain_check_actor_list_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    auto _param = fc::json::from_string(param).as<flat_set<account_name>>();
+    chain.check_actor_list(_param);
+}
+
+void chain_check_contract_list_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    auto _param = fc::json::from_string(param).as<account_name>();
+    chain.check_contract_list(_param);
+}
+
+void chain_check_action_list_(void *ptr, string& code, string& action) {
+    auto& chain = chain_get_controller(ptr);
+    chain.check_action_list(name(code), name(action));
+}
+
+void chain_check_key_list_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    auto _param = fc::json::from_string(param).as<public_key_type>();
+    chain.check_key_list(_param);
+}
+
+bool chain_is_building_block_(void *ptr) {
     auto& chain = chain_get_controller(ptr);
     return chain.is_building_block();
 }
 
-int chain_abort_block_(void *ptr) {
-   try {
-        auto& chain = chain_get_controller(ptr);
-        chain.abort_block();
-        return 1;
-   } FC_LOG_AND_DROP();
-   return 0;
+bool chain_is_producing_block_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.is_producing_block();
 }
+
+bool chain_is_ram_billing_in_notify_allowed_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.is_ram_billing_in_notify_allowed();
+}
+
+void chain_add_resource_greylist_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    chain.add_resource_greylist(name(param));
+}
+
+void chain_remove_resource_greylist_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    chain.remove_resource_greylist(name(param));
+}
+
+bool chain_is_resource_greylisted_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.is_resource_greylisted(name(param));
+}
+
+void chain_get_resource_greylist_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result =fc::json::to_string(chain.get_resource_greylist());
+}
+
+void chain_get_config_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    result =fc::json::to_string(chain.get_config());
+}
+
+bool chain_validate_expiration_(void *ptr, string& param, string& err) {
+    auto next = [&err](const fc::exception_ptr& result) {
+        err = result->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto trx = fc::json::from_string(param).as<transaction>();
+        chain.validate_expiration(trx);
+        return true;
+    } CATCH_AND_CALL(next)
+    return false;
+}
+
+bool chain_validate_tapos_(void *ptr, string& param, string& err) {
+    auto next = [&err](const fc::exception_ptr& result) {
+        err = result->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto trx = fc::json::from_string(param).as<transaction>();
+        chain.validate_tapos(trx);
+        return true;
+    } CATCH_AND_CALL(next)
+    return false;
+}
+
+bool chain_validate_db_available_size_(void *ptr, string& err) {
+    auto next = [&err](const fc::exception_ptr& result) {
+        err = result->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        chain.validate_db_available_size();
+    } CATCH_AND_CALL(next)
+    return false;
+}
+
+bool chain_validate_reversible_available_size_(void *ptr, string& err) {
+    auto next = [&err](const fc::exception_ptr& result) {
+        err = result->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        chain.validate_reversible_available_size();
+    } CATCH_AND_CALL(next)
+    return false;
+}
+
+bool chain_is_protocol_feature_activated_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    auto digest = fc::json::from_string(param).as<digest_type>();
+    return chain.is_protocol_feature_activated(digest);
+}
+
+bool chain_is_builtin_activated_(void *ptr, int feature) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.is_builtin_activated((builtin_protocol_feature_t)feature);
+}
+
+bool chain_is_known_unexpired_transaction_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    auto id = fc::json::from_string(param).as<transaction_id_type>();
+    return chain.is_known_unexpired_transaction(id);
+}
+
+int64_t chain_set_proposed_producers_(void *ptr, string& param) {
+    auto& chain = chain_get_controller(ptr);
+    auto id = fc::json::from_string(param).as<vector<producer_key>>();
+    return chain.set_proposed_producers(id);
+}
+
+bool chain_light_validation_allowed_(void *ptr, bool replay_opts_disabled_by_policy) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.light_validation_allowed(replay_opts_disabled_by_policy);
+}
+
+bool chain_skip_auth_check_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.skip_auth_check();
+}
+
+bool chain_skip_db_sessions_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.skip_db_sessions();
+}
+
+bool chain_skip_trx_checks_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.skip_trx_checks();
+}
+
+bool chain_contracts_console_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.contracts_console();
+}
+
+bool chain_is_uuos_mainnet_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.is_uuos_mainnet();
+}
+
+void chain_get_chain_id_(void *ptr, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    fc::json::to_string(chain.get_chain_id());
+}
+
+int chain_get_read_mode_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return (int)chain.get_read_mode();
+}
+
+int chain_get_validation_mode_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return (int)chain.get_validation_mode();
+}
+
+void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway) {
+    auto& chain = chain_get_controller(ptr);
+    chain.set_subjective_cpu_leeway(fc::microseconds(leeway));
+}
+
+void chain_set_greylist_limit_(void *ptr, uint32_t limit) {
+    auto& chain = chain_get_controller(ptr);
+    chain.set_greylist_limit(limit);
+}
+
+uint32_t chain_set_greylist_limit_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return chain.get_greylist_limit();
+}
+
+void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes) {
+    auto& chain = chain_get_controller(ptr);
+    chain.add_to_ram_correction(account, ram_bytes);
+}
+
+bool chain_all_subjective_mitigations_disabled_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    chain.all_subjective_mitigations_disabled();
+}
+/*
+         bool skip_db_sessions( block_status bs )const;
+*/
+/*
+         void set_subjective_cpu_leeway(fc::microseconds leeway);
+         void set_greylist_limit( uint32_t limit );
+         uint32_t get_greylist_limit()const;
+
+         void add_to_ram_correction( account_name account, uint64_t ram_bytes );
+         bool all_subjective_mitigations_disabled()const;
+*/
 
 void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
    try {
