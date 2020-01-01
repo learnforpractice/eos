@@ -434,32 +434,60 @@ void chain_calculate_integrity_hash_(void *ptr, string& result ) {
          void write_snapshot( const snapshot_writer_ptr& snapshot )const;
 */
 
-bool chain_sender_avoids_whitelist_blacklist_enforcement_(void *ptr, string& sender, string& result ) {
+bool chain_sender_avoids_whitelist_blacklist_enforcement_(void *ptr, string& sender ) {
     auto& chain = chain_get_controller(ptr);
     return chain.sender_avoids_whitelist_blacklist_enforcement(account_name(sender));
 }
 
-void chain_check_actor_list_(void *ptr, string& param) {
-    auto& chain = chain_get_controller(ptr);
-    auto _param = fc::json::from_string(param).as<flat_set<account_name>>();
-    chain.check_actor_list(_param);
+bool chain_check_actor_list_(void *ptr, string& param, string& err) {
+    auto next = [&err](const fc::exception_ptr& ex) {
+        err = ex->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto _param = fc::json::from_string(param).as<flat_set<account_name>>();
+        chain.check_actor_list(_param);
+        return true;
+    } CATCH_AND_CALL(next)
+    return false;
 }
 
-void chain_check_contract_list_(void *ptr, string& param) {
-    auto& chain = chain_get_controller(ptr);
-    auto _param = fc::json::from_string(param).as<account_name>();
-    chain.check_contract_list(_param);
+bool chain_check_contract_list_(void *ptr, string& param, string& err) {
+    auto next = [&err](const fc::exception_ptr& ex) {
+        err = ex->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto _param = fc::json::from_string(param).as<account_name>();
+        chain.check_contract_list(_param);
+        return true;
+    } CATCH_AND_CALL(next)
+    return false;
 }
 
-void chain_check_action_list_(void *ptr, string& code, string& action) {
-    auto& chain = chain_get_controller(ptr);
-    chain.check_action_list(name(code), name(action));
+bool chain_check_action_list_(void *ptr, string& code, string& action, string& err) {
+    auto next = [&err](const fc::exception_ptr& ex) {
+        err = ex->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        chain.check_action_list(name(code), name(action));
+        return true;
+    } CATCH_AND_CALL(next)
+    return false;
 }
 
-void chain_check_key_list_(void *ptr, string& param) {
-    auto& chain = chain_get_controller(ptr);
-    auto _param = fc::json::from_string(param).as<public_key_type>();
-    chain.check_key_list(_param);
+bool chain_check_key_list_(void *ptr, string& param, string& err) {
+    auto next = [&err](const fc::exception_ptr& ex) {
+        err = ex->to_detail_string();
+    };
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto _param = fc::json::from_string(param).as<public_key_type>();
+        chain.check_key_list(_param);
+        return true;
+    } CATCH_AND_CALL(next)
+    return false;
 }
 
 bool chain_is_building_block_(void *ptr) {

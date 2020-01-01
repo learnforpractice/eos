@@ -22,8 +22,97 @@ cdef extern from "native_object.hpp":
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
 
-    void*   chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir)
-    void    chain_free_(void *ptr)
+    void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir);
+    void chain_free_(void *ptr);
+    int chain_abort_block_(void *ptr);
+
+    void chain_get_global_properties_(void *ptr, string& result);
+    void chain_get_dynamic_global_properties_(void *ptr, string& result);
+    void chain_get_actor_whitelist_(void *ptr, string& result);
+    void chain_get_actor_blacklist_(void *ptr, string& result);
+    void chain_get_contract_whitelist_(void *ptr, string& result);
+    void chain_get_contract_blacklist_(void *ptr, string& result);
+    void chain_get_action_blacklist_(void *ptr, string& result);
+    void chain_get_key_blacklist_(void *ptr, string& result);
+    void chain_set_actor_whitelist_(void *ptr, string& params);
+    void chain_set_actor_blacklist_(void *ptr, string& params);
+    void chain_set_contract_whitelist_(void *ptr, string& params);
+    void chain_set_action_blacklist_(void *ptr, string& params);
+    void chain_set_key_blacklist_(void *ptr, string& params);
+    uint32_t chain_head_block_num_(void *ptr);
+    void chain_head_block_time_(void *ptr, string& result);
+    void chain_head_block_id_(void *ptr, string& result);
+    void chain_head_block_producer_(void *ptr, string& result);
+    void chain_head_block_header_(void *ptr, string& result);
+    void chain_head_block_state_(void *ptr, string& result);
+    uint32_t chain_fork_db_head_block_num_(void *ptr);
+    void chain_fork_db_head_block_id_(void *ptr, string& result);
+    void chain_fork_db_head_block_time_(void *ptr, string& result);
+    void chain_fork_db_head_block_producer_(void *ptr, string& result);
+    uint32_t chain_fork_db_pending_head_block_num_(void *ptr);
+    void chain_fork_db_pending_head_block_id_(void *ptr, string& result);
+    void chain_fork_db_pending_head_block_time_(void *ptr, string& result);
+    void chain_fork_db_pending_head_block_producer_(void *ptr, string& result);
+    void chain_pending_block_time_(void *ptr, string& result);
+    void chain_pending_block_producer_(void *ptr, string& result);
+    void chain_pending_block_signing_key_(void *ptr, string& result);
+
+    void chain_pending_producer_block_id_(void *ptr, string& result);
+    void chain_get_pending_trx_receipts_(void *ptr, string& result);
+
+    void chain_active_producers_(void *ptr, string& result);
+    void chain_pending_producers_(void *ptr, string& result);
+    void chain_proposed_producers_(void *ptr, string& result);
+    uint32_t chain_last_irreversible_block_num_(void *ptr);
+    void chain_last_irreversible_block_id_(void *ptr, string& result);
+    void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
+    void chain_fetch_block_by_id_(void *ptr, string& params, string& raw_block );
+    void chain_fetch_block_state_by_number_(void *ptr, uint32_t block_num, string& raw_block_state );
+    void chain_fetch_block_state_by_id_(void *ptr, string& params, string& raw_block_state );
+    void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result );
+    void chain_calculate_integrity_hash_(void *ptr, string& result );
+    bool chain_sender_avoids_whitelist_blacklist_enforcement_(void *ptr, string& sender);
+
+    bool chain_check_actor_list_(void *ptr, string& param, string& err);
+    bool chain_check_contract_list_(void *ptr, string& param, string& err);
+
+    bool chain_check_action_list_(void *ptr, string& code, string& action, string& err);
+    bool chain_check_key_list_(void *ptr, string& param, string& err);
+    bool chain_is_building_block_(void *ptr);
+    bool chain_is_producing_block_(void *ptr);
+
+    bool chain_is_ram_billing_in_notify_allowed_(void *ptr);
+    void chain_add_resource_greylist_(void *ptr, string& param);
+    void chain_remove_resource_greylist_(void *ptr, string& param);
+    bool chain_is_resource_greylisted_(void *ptr, string& param);
+    void chain_get_resource_greylist_(void *ptr, string& result);
+    void chain_get_config_(void *ptr, string& result);
+    bool chain_validate_expiration_(void *ptr, string& param, string& err);
+    bool chain_validate_tapos_(void *ptr, string& param, string& err);
+    bool chain_validate_db_available_size_(void *ptr, string& err);
+    bool chain_validate_reversible_available_size_(void *ptr, string& err);
+    bool chain_is_protocol_feature_activated_(void *ptr, string& param);
+    bool chain_is_builtin_activated_(void *ptr, int feature);
+    bool chain_is_known_unexpired_transaction_(void *ptr, string& param);
+    int64_t chain_set_proposed_producers_(void *ptr, string& param);
+    bool chain_light_validation_allowed_(void *ptr, bool replay_opts_disabled_by_policy);
+    bool chain_skip_auth_check_(void *ptr);
+
+    bool chain_skip_db_sessions_(void *ptr);
+    bool chain_skip_trx_checks_(void *ptr);
+    bool chain_contracts_console_(void *ptr);
+
+    bool chain_is_uuos_mainnet_(void *ptr);
+    void chain_get_chain_id_(void *ptr, string& result);
+    int chain_get_read_mode_(void *ptr);
+    int chain_get_validation_mode_(void *ptr);
+    void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway);
+    void chain_set_greylist_limit_(void *ptr, uint32_t limit);
+    uint32_t chain_set_greylist_limit_(void *ptr);
+    void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
+    bool chain_all_subjective_mitigations_disabled_(void *ptr);
+
+
     int    chain_api_get_info_(void *chain_ptr, string& info)
     int    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
     int    chain_api_get_block_(void *ptr, string& params, string& result)
@@ -51,13 +140,6 @@ cdef extern from "native_object.hpp":
     int    chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block)
     int    chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir)
 
-    uint32_t    chain_fork_db_pending_head_block_num_(void *ptr)
-    uint32_t    chain_last_irreversible_block_num_(void *ptr)
-    void        chain_get_block_id_for_num_(void *ptr, uint32_t num, string& block_id)
-    void        chain_id_(void *ptr, string& chain_id)
-    void        chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block)
-    bool        chain_is_building_block_(void *ptr);
-    int         chain_abort_block_(void *ptr)
 
     void*       producer_new_(void *chain_ptr, string& config);
     void        producer_free_(void *ptr);
@@ -109,6 +191,294 @@ def chain_new(string& config, string& protocol_features_dir, string& snapshot_di
 
 def chain_free(unsigned long long  ptr):
     chain_free_(<void *>ptr);
+
+def chain_abort_block(uint64_t ptr):
+    return chain_abort_block_(<void *>ptr)
+
+def chain_get_global_properties(uint64_t ptr):
+    cdef string result
+    chain_get_global_properties_(<void *>ptr, result)
+    return result
+
+def chain_get_dynamic_global_properties(uint64_t ptr):
+    cdef string result
+    chain_get_dynamic_global_properties_(<void *>ptr, result)
+    return result
+
+def chain_get_actor_whitelist(uint64_t ptr):
+    cdef string result
+    chain_get_actor_whitelist_(<void *>ptr, result)
+    return result
+
+def chain_get_actor_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_actor_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_get_contract_whitelist(uint64_t ptr):
+    cdef string result
+    chain_get_contract_whitelist_(<void *>ptr, result)
+    return result
+
+def chain_get_contract_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_contract_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_get_action_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_action_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_get_key_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_key_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_set_actor_whitelist(uint64_t ptr, string& params):
+    chain_set_actor_whitelist_(<void *>ptr, params)
+
+def chain_set_actor_blacklist(uint64_t ptr, string& params):
+    chain_set_actor_blacklist_(<void *>ptr, params)
+
+def chain_set_contract_whitelist(uint64_t ptr, string& params):
+    chain_set_contract_whitelist_(<void *>ptr, params)
+
+def chain_set_action_blacklist(uint64_t ptr, string& params):
+    chain_set_action_blacklist_(<void *>ptr, params)
+
+def chain_set_key_blacklist(uint64_t ptr, string& params):
+    chain_set_key_blacklist_(<void *>ptr, params)
+
+def chain_head_block_num(uint64_t ptr):
+    return chain_head_block_num_(<void *>ptr)
+
+def chain_head_block_time(uint64_t ptr):
+    cdef string result
+    chain_head_block_time_(<void *>ptr, result)
+    return result
+
+def chain_head_block_id(uint64_t ptr):
+    cdef string result
+    chain_head_block_id_(<void *>ptr, result)
+    return result
+
+def chain_head_block_producer(uint64_t ptr):
+    cdef string result
+    chain_head_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_head_block_header(uint64_t ptr):
+    cdef string result
+    chain_head_block_header_(<void *>ptr, result)
+    return result
+
+def chain_head_block_state(uint64_t ptr):
+    cdef string result
+    chain_head_block_state_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_head_block_num(uint64_t ptr):
+    return chain_fork_db_head_block_num_(<void *>ptr)
+
+def chain_fork_db_head_block_id(uint64_t ptr):
+    cdef string result
+    chain_fork_db_head_block_id_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_head_block_time(uint64_t ptr):
+    cdef string result
+    chain_fork_db_head_block_time_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_head_block_producer(uint64_t ptr):
+    cdef string result
+    chain_fork_db_head_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_pending_head_block_num(uint64_t ptr):
+    return chain_fork_db_pending_head_block_num_(<void *>ptr)
+
+def chain_fork_db_pending_head_block_id(uint64_t ptr):
+    cdef string result
+    chain_fork_db_pending_head_block_id_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_pending_head_block_time(uint64_t ptr):
+    cdef string result
+    chain_fork_db_pending_head_block_time_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_pending_head_block_producer(uint64_t ptr):
+    cdef string result
+    chain_fork_db_pending_head_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_pending_block_time(uint64_t ptr):
+    cdef string result
+    chain_pending_block_time_(<void *>ptr, result)
+    return result
+
+def chain_pending_block_producer(uint64_t ptr):
+    cdef string result
+    chain_pending_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_pending_block_signing_key(uint64_t ptr):
+    cdef string result
+    chain_pending_block_signing_key_(<void *>ptr, result)
+    return result
+
+def chain_pending_producer_block_id(uint64_t ptr):
+    cdef string result
+    chain_pending_producer_block_id_(<void *>ptr, result)
+    return result
+
+def chain_get_pending_trx_receipts(uint64_t ptr):
+    cdef string result
+    chain_get_pending_trx_receipts_(<void *>ptr, result)
+    return result
+
+def chain_active_producers(uint64_t ptr):
+    cdef string result
+    chain_active_producers_(<void *>ptr, result)
+    return result
+
+def chain_active_producers(uint64_t ptr):
+    cdef string result
+    chain_active_producers_(<void *>ptr, result)
+    return result
+
+def chain_pending_producers(uint64_t ptr):
+    cdef string result
+    chain_pending_producers_(<void *>ptr, result)
+    return result
+
+def chain_proposed_producers(uint64_t ptr):
+    cdef string result
+    chain_proposed_producers_(<void *>ptr, result)
+    return result
+
+def chain_last_irreversible_block_num(uint64_t ptr):
+    return chain_last_irreversible_block_num_(<void *>ptr)
+
+def chain_last_irreversible_block_id(uint64_t ptr):
+    cdef string result
+    chain_last_irreversible_block_id_(<void *>ptr, result)
+    return result
+
+def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num):
+    cdef string raw_block
+    chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
+    return <bytes>raw_block
+
+def chain_fetch_block_by_id(uint64_t ptr, string& block_id):
+    cdef string raw_block
+    chain_fetch_block_by_id_(<void *>ptr, block_id, raw_block)
+    return <bytes>raw_block
+
+def chain_fetch_block_state_by_number(uint64_t ptr, uint32_t block_num):
+    cdef string raw_block_state
+    chain_fetch_block_state_by_number_(<void *>ptr, block_num, raw_block_state)
+    return <bytes>raw_block_state
+
+def chain_fetch_block_state_by_id(uint64_t ptr, string& block_id):
+    cdef string raw_block_state
+    chain_fetch_block_state_by_id_(<void *>ptr, block_id, raw_block_state)
+    return <bytes>raw_block_state
+
+def chain_get_block_id_for_num(uint64_t ptr, uint32_t block_num):
+    cdef string result
+    chain_get_block_id_for_num_(<void *>ptr, block_num, result)
+    return result
+
+def chain_calculate_integrity_hash(uint64_t ptr):
+    cdef string result
+    chain_calculate_integrity_hash_(<void *>ptr, result)
+    return result
+
+def chain_sender_avoids_whitelist_blacklist_enforcement(uint64_t ptr, string& sender):
+    cdef string result
+    return chain_sender_avoids_whitelist_blacklist_enforcement_(<void *>ptr, sender)
+
+def chain_check_actor_list(uint64_t ptr, string& param):
+    cdef string err
+    ret = chain_check_actor_list_(<void *>ptr, param, err)
+    return ret, err
+
+def chain_check_contract_list(uint64_t ptr, string& param):
+    cdef string err
+    ret = chain_check_contract_list_(<void *>ptr, param, err)
+    return ret, err
+
+def chain_check_action_list(uint64_t ptr, string& code, string& action):
+    cdef string err
+    ret = chain_check_action_list_(<void *>ptr, code, action, err)
+    return ret, err
+
+def chain_check_key_list(uint64_t ptr, string& param):
+    cdef string err
+    ret = chain_check_key_list_(<void *>ptr, param, err)
+    return ret, err
+
+def chain_is_building_block(uint64_t ptr):
+    return chain_is_building_block_(<void *>ptr)
+
+def chain_is_producing_block(uint64_t ptr):
+    return chain_is_producing_block_(<void *>ptr)
+
+    # bool chain_is_ram_billing_in_notify_allowed_(void *ptr);
+    # void chain_add_resource_greylist_(void *ptr, string& param);
+    # void chain_remove_resource_greylist_(void *ptr, string& param);
+    # bool chain_is_resource_greylisted_(void *ptr, string& param);
+    # void chain_get_resource_greylist_(void *ptr, string& result);
+    # void chain_get_config_(void *ptr, string& result);
+    # bool chain_validate_expiration_(void *ptr, string& param, string& err);
+    # bool chain_validate_tapos_(void *ptr, string& param, string& err);
+    # bool chain_validate_db_available_size_(void *ptr, string& err);
+    # bool chain_validate_reversible_available_size_(void *ptr, string& err);
+    # bool chain_is_protocol_feature_activated_(void *ptr, string& param);
+    # bool chain_is_builtin_activated_(void *ptr, int feature);
+    # bool chain_is_known_unexpired_transaction_(void *ptr, string& param);
+    # int64_t chain_set_proposed_producers_(void *ptr, string& param);
+    # bool chain_light_validation_allowed_(void *ptr, bool replay_opts_disabled_by_policy);
+    # bool chain_skip_auth_check_(void *ptr);
+
+    # bool chain_skip_db_sessions_(void *ptr);
+    # bool chain_skip_trx_checks_(void *ptr);
+    # bool chain_contracts_console_(void *ptr);
+
+    # bool chain_is_uuos_mainnet_(void *ptr);
+    # void chain_get_chain_id_(void *ptr, string& result);
+    # int chain_get_read_mode_(void *ptr);
+    # int chain_get_validation_mode_(void *ptr);
+    # void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway);
+    # void chain_set_greylist_limit_(void *ptr, uint32_t limit);
+    # uint32_t chain_set_greylist_limit_(void *ptr);
+    # void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
+    # bool chain_all_subjective_mitigations_disabled_(void *ptr);
+
+
+def chain_fork_db_pending_head_block_num(uint64_t ptr):
+    return chain_fork_db_pending_head_block_num_(<void *>ptr)
+
+def chain_last_irreversible_block_num(uint64_t ptr):
+    return chain_last_irreversible_block_num_(<void *>ptr)
+
+def chain_get_block_id_for_num(uint64_t ptr, uint32_t num):
+    cdef string block_id
+    chain_get_block_id_for_num_(<void *>ptr, num, block_id)
+    return block_id
+
+def chain_id(uint64_t ptr):
+    cdef string chain_id
+    chain_get_chain_id_(<void *>ptr, chain_id)
+    return chain_id
+
+def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
+    cdef string raw_block
+    chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
+    return <bytes>raw_block
 
 def chain_api_get_info(uint64_t chain_ptr):
     cdef string info
@@ -226,34 +596,6 @@ def chain_api_repair_log(string& blocks_dir, uint32_t truncate_at_block):
     cdef string backup_blocks_dir
     chain_api_repair_log_(blocks_dir, truncate_at_block, backup_blocks_dir)
     return backup_blocks_dir
-
-
-def chain_fork_db_pending_head_block_num(uint64_t ptr):
-    return chain_fork_db_pending_head_block_num_(<void *>ptr)
-
-def chain_last_irreversible_block_num(uint64_t ptr):
-    return chain_last_irreversible_block_num_(<void *>ptr)
-
-def chain_get_block_id_for_num(uint64_t ptr, uint32_t num):
-    cdef string block_id
-    chain_get_block_id_for_num_(<void *>ptr, num, block_id)
-    return block_id
-
-def chain_id(uint64_t ptr):
-    cdef string chain_id
-    chain_id_(<void *>ptr, chain_id)
-    return chain_id
-
-def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
-    cdef string raw_block
-    chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
-    return <bytes>raw_block
-
-def chain_is_building_block(uint64_t ptr):
-    return chain_is_building_block_(<void *>ptr);
-
-def chain_abort_block(uint64_t ptr):
-    return chain_abort_block_(<void *>ptr)
 
 def producer_new(uint64_t chain_ptr, string& config):
     return <uint64_t>producer_new_(<void *>chain_ptr, config)
