@@ -252,7 +252,7 @@ void chain_head_block_time_(void *ptr, string& result) {
 
 void chain_head_block_id_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.head_block_id());
+    result = chain.head_block_id().str();
 }
 
 void chain_head_block_producer_(void *ptr, string& result) {
@@ -277,7 +277,7 @@ uint32_t chain_fork_db_head_block_num_(void *ptr) {
 
 void chain_fork_db_head_block_id_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.fork_db_head_block_id());
+    result = chain.fork_db_head_block_id().str();
 }
 
 void chain_fork_db_head_block_time_(void *ptr, string& result) {
@@ -300,7 +300,7 @@ uint32_t chain_fork_db_pending_head_block_num_(void *ptr) {
 
 void chain_fork_db_pending_head_block_id_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.fork_db_pending_head_block_id());
+    result = chain.fork_db_pending_head_block_id().str();
 }
 
 void chain_fork_db_pending_head_block_time_(void *ptr, string& result) {
@@ -330,7 +330,10 @@ void chain_pending_block_signing_key_(void *ptr, string& result) {
 
 void chain_pending_producer_block_id_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.pending_producer_block_id());
+    auto id = chain.pending_producer_block_id();
+    if (id) {
+        result = id->str();
+    }
 }
 
 void chain_get_pending_trx_receipts_(void *ptr, string& result) {
@@ -363,7 +366,7 @@ uint32_t chain_last_irreversible_block_num_(void *ptr) {
 
 void chain_last_irreversible_block_id_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.last_irreversible_block_id());
+    result = chain.last_irreversible_block_id().str();
 }
 
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
@@ -420,7 +423,7 @@ void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result )
     try {
         auto& chain = chain_get_controller(ptr);
         auto id = chain.get_block_id_for_num(block_num);
-        result = fc::json::to_string(id);
+        result = id.str();
     } FC_LOG_AND_DROP();
 }
 
@@ -633,7 +636,7 @@ bool chain_is_uuos_mainnet_(void *ptr) {
 
 void chain_get_chain_id_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    fc::json::to_string(chain.get_chain_id());
+    result = chain.get_chain_id().str();
 }
 
 int chain_get_read_mode_(void *ptr) {
