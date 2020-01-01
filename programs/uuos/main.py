@@ -13,7 +13,8 @@ import signal
 
 from uuos.config import Config, default_config
 
-from uuos import chain, chain_api
+from uuos import chain_api
+from uuos.chain import Chain
 
 from uuos.connection import Connection
 from uuos.producer import Producer
@@ -103,10 +104,11 @@ class UUOSMain(application.Application):
 
     def __init__(self, config):
         super().__init__()
+        application.set_app(self)
         self.config = config
         self.tasks = []
         self.client_count = 0
-        self.chain_ptr = None
+        self.chain = None
         self.producer = None
         self.p2p_manager = P2pManager(config)
         UUOSMain.uuos = self
@@ -137,24 +139,17 @@ class UUOSMain(application.Application):
 
         chain_cfg = chain_cfg.dumps()
         logger.info(chain_cfg)
-        self.chain_ptr = chain.new(chain_cfg, config.config_dir, config.snapshot)
-        if not self.chain_ptr:
-            raise Exception('chain initialization failture!')
-        chain_api.chain_ptr = self.chain_ptr
-        chain.set_chain_ptr(self.chain_ptr)
+        self.chain = Chain(chain_cfg, config.config_dir, config.snapshot)
+        chain_api.chain_ptr = self.chain.ptr
         self.producer = Producer(self.config)
         # self.hub = Hub()
-
-        application.set_app(self)
-
     def get_p2p_manager(self):
         return self.p2p_manager
 
     async def shutdown(self, signal, loop):
-        logger.info(f'Shutdown uuos {signal} {self.chain_ptr}')
-        if self.chain_ptr:
-            chain.free(self.chain_ptr)
-            self.chain_ptr = None
+        logger.info(f'Shutdown uuos {signal} {self.chain.ptr}')
+        if self.chain:
+            self.chain.free()
         
         if self.producer:
             del self.producer
@@ -232,9 +227,8 @@ class UUOSMain(application.Application):
     @classmethod
     def finish(cls):
         self = cls.uuos
-        if self.chain_ptr:
-            chain_free(self.chain_ptr)
-            self.chain_ptr = None
+        if self.chain:
+            self.chain.free()
 
         if self.producer:
             del self.producer

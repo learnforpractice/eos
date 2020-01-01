@@ -166,7 +166,7 @@ class Producer(object):
         if config.signature_provider:
             g_producer_config['signature_providers'] = config.signature_provider
         cfg = json.dumps(g_producer_config)
-        self.ptr = _uuos.producer_new(chain.chain_ptr, cfg)
+        self.ptr = _uuos.producer_new(get_app().chain.ptr, cfg)
         self.config = config
 
         self.pending_trx = {}
@@ -175,6 +175,7 @@ class Producer(object):
         self.subs = Subscription(self.hub)
         self.trx_queue = self.subs.get_queue()
         self._paused = False
+        self.chain = get_app().chain
 
 #        self.task = asyncio.create_task(self.handle_message())
 
@@ -191,7 +192,7 @@ class Producer(object):
         return producer_get_runtime_options(self.ptr)
 
     def publish_message(self, msg):
-        if chain.is_building_block():
+        if self.chain.is_building_block():
             self.process_trx(msg)
         else:
             self.hub.publish(msg)
@@ -213,7 +214,7 @@ class Producer(object):
                         for c in get_app().get_p2p_manager().connections:
                             c.send_transaction(raw_packed_trx)
                     elif msg.type == Message.type_raw_transaction:
-                        if chain.is_building_block():
+                        if self.chain.is_building_block():
                             ret, result = self.process_raw_transaction(msg.data)
                             msg.notify(result)
                             if ret == 0:
@@ -238,7 +239,7 @@ class Producer(object):
                 for c in get_app().get_p2p_manager().connections:
                     c.send_transaction(raw_packed_trx)
             elif msg.type == Message.type_raw_transaction:
-                if chain.is_building_block():
+                if self.chain.is_building_block():
                     ret, result = self.process_raw_transaction(msg.data)
                     if not ret:
                         print(result)

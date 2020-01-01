@@ -82,6 +82,8 @@ class Connection(object):
         self.xmt=0
         self.dst=0
 
+        self.chain = get_app().chain
+
     def reset_time_counter(self):
         self.time_counter = max_time_interval
 
@@ -163,10 +165,10 @@ class Connection(object):
 
     def fork_check(self):
         return False
-        lib_num = chain.last_irreversible_block_num()
+        lib_num = self.chain.last_irreversible_block_num()
         msg = self.last_handshake
         if lib_num > msg.last_irreversible_block_num:
-            if chain.get_block_id_for_num(lib_num) != msg.last_irreversible_block_id:
+            if self.chain.get_block_id_for_num(lib_num) != msg.last_irreversible_block_id:
                 sha256_empty = '0000000000000000000000000000000000000000000000000000000000000000'
                 msg = dict(reason=GoAwayReason.forked, node_id=sha256_empty)
                 msg = GoAwayMessage(msg)
@@ -177,8 +179,8 @@ class Connection(object):
         return False
 
     def notify_last_irr_catch_up(self):
-        head_num = chain.fork_db_pending_head_block_num()
-        lib_num = chain.last_irreversible_block_num()
+        head_num = self.chain.fork_db_pending_head_block_num()
+        lib_num = self.chain.last_irreversible_block_num()
         msg = {
             "known_trx":{
                 "mode":2, #last_irr_catch_up
@@ -199,8 +201,8 @@ class Connection(object):
         self.writer.write(msg.pack())
 
     def notify_none(self):
-        head_num = chain.fork_db_pending_head_block_num()
-        lib_num = chain.last_irreversible_block_num()
+        head_num = self.chain.fork_db_pending_head_block_num()
+        lib_num = self.chain.last_irreversible_block_num()
         msg = {
             "known_trx":{
                 "mode":1,
@@ -241,7 +243,7 @@ class Connection(object):
     #request_message_type
 
     def send_block_by_num(self, num):
-        block = chain.fetch_block_by_number(num)
+        block = self.chain.fetch_block_by_number(num)
         if not block:
             return False
         self.send_block(block)
@@ -282,16 +284,16 @@ class Connection(object):
         self.handshake_count += 1
         msg = HandshakeMessage(default_handshake_msg)
         msg.network_version = 1206
-        msg.chain_id = chain.id()
-        num = chain.last_irreversible_block_num()
+        msg.chain_id = get_app().chain.id()
+        num = self.chain.last_irreversible_block_num()
         msg.last_irreversible_block_num = num
-        msg.last_irreversible_block_id = chain.get_block_id_for_num(num)
+        msg.last_irreversible_block_id = self.chain.get_block_id_for_num(num)
         if not msg.last_irreversible_block_id:
             msg.last_irreversible_block_id = (b'\x00'*32).hex()
             msg.last_irreversible_block_num = 0
-        num = chain.fork_db_pending_head_block_num()
+        num = self.chain.fork_db_pending_head_block_num()
         msg.head_num = num
-        msg.head_id = chain.get_block_id_for_num(num)
+        msg.head_id = self.chain.get_block_id_for_num(num)
         if not msg.head_id:
             msg.head_num = 0
             msg.head_id = (b'\x00'*32).hex()
@@ -357,14 +359,14 @@ class Connection(object):
         return False
 
     def start_sync(self):
-        # print("chain.last_irreversible_block_num():", chain.last_irreversible_block_num())
+        # print("self.chain.last_irreversible_block_num():", self.chain.last_irreversible_block_num())
         if self.last_notice:
             pending = self.last_notice.known_blocks['pending']
         else:
             pending = self.last_handshake.head_num
         
-        irr_block_num = chain.last_irreversible_block_num()
-        block_num = chain.fork_db_pending_head_block_num()
+        irr_block_num = self.chain.last_irreversible_block_num()
+        block_num = self.chain.fork_db_pending_head_block_num()
         logger.info(f'{irr_block_num}, {block_num}')
         # if self.start_sync_block_num == 0:
         #     self.start_sync_block_num = irr_block_num + 1
@@ -391,7 +393,7 @@ class Connection(object):
         self.write(self.sync_msg.pack())
 
     async def request_catch_up(self, msg):
-        head_num = chain.fork_db_pending_head_block_num()
+        head_num = self.chain.fork_db_pending_head_block_num()
         for num in (self.last_handshake.head_num, head_num):
             logger.info(f'+++send catch up block {num}')
             self.send_block_by_num(num)
@@ -425,10 +427,10 @@ class Connection(object):
                 self.close()
                 return
 
-            head_num = chain.fork_db_pending_head_block_num()
-#            print(self.last_handshake.head_num, head_num, chain.last_irreversible_block_num())
+            head_num = self.chain.fork_db_pending_head_block_num()
+#            print(self.last_handshake.head_num, head_num, self.chain.last_irreversible_block_num())
             logger.info(f'+++handle message:{self.last_handshake}')
-            if msg.head_num < chain.last_irreversible_block_num():
+            if msg.head_num < self.chain.last_irreversible_block_num():
 #                    self.target = msg.head_num
 #                    self.notify_none()
                 self.notify_last_irr_catch_up()
@@ -448,10 +450,10 @@ class Connection(object):
                         ]
                     }
                 }
-                block_id = chain.get_block_id_for_num(head_num)
+                block_id = self.chain.get_block_id_for_num(head_num)
                 notice_msg['known_blocks']['ids'].append(block_id)
                 # for num in range(msg.head_num+1, head_num+1):
-                #     block_id = chain.get_block_id_for_num(num)
+                #     block_id = self.chain.get_block_id_for_num(num)
                 #     notice_msg['known_blocks']['ids'].append(block_id)
                 self.send_notice_message(notice_msg)
             elif msg.head_num == head_num:
@@ -473,7 +475,7 @@ class Connection(object):
                 }
                 self.send_notice_message(notice_msg)
                 self.catch_up = True
-            else: #self.last_handshake.head_num > chain.fork_db_pending_head_block_num():
+            else: #self.last_handshake.head_num > self.chain.fork_db_pending_head_block_num():
                 self.target = self.last_handshake.head_num
 #                    self.start_sync()
         elif msg_type == 1: # chain_size_message_type
@@ -498,7 +500,7 @@ class Connection(object):
             msg = NoticeMessage.unpack(msg)
             pending = msg.known_blocks['pending']
             self.last_notice = msg
-            if pending > chain.fork_db_pending_head_block_num():
+            if pending > self.chain.fork_db_pending_head_block_num():
                 self.target = pending
                 logger.info(f'receive notice message: {msg}')
                 self.start_sync()
@@ -528,7 +530,7 @@ class Connection(object):
             #     },
             #     "known_blocks":{
             #         "mode":1,
-            #         "pending":chain.fork_db_pending_head_block_num(),
+            #         "pending":self.chain.fork_db_pending_head_block_num(),
             #         "ids":[]
             #     }
             # })
@@ -561,7 +563,7 @@ class Connection(object):
             if msg.start_block == 0:
                 return True
             self.last_sync_request = msg
-            if msg.start_block <= chain.fork_db_pending_head_block_num():
+            if msg.start_block <= self.chain.fork_db_pending_head_block_num():
                 if self.sync_task:
                     self.sync_task.cancel()
                     try:
