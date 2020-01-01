@@ -1,22 +1,36 @@
 #include <eosio/chain_plugin/chain_manager.hpp>
 #include <eosio/chain/global_property_object.hpp>
 
-#define CATCH_AND_CALL(NEXT)\
+#define CATCH_AND_LOG_EXCEPTION()\
    catch ( const fc::exception& err ) {\
-      NEXT(err.dynamic_copy_exception());\
+      uuos_on_error(err.dynamic_copy_exception());\
    } catch ( const std::exception& e ) {\
       fc::exception fce( \
          FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
          fc::std_exception_code,\
          BOOST_CORE_TYPEID(e).name(),\
          e.what() ) ;\
-      NEXT(fce.dynamic_copy_exception());\
+      uuos_on_error(fce.dynamic_copy_exception());\
    } catch( ... ) {\
       fc::unhandled_exception e(\
          FC_LOG_MESSAGE(warn, "rethrow"),\
          std::current_exception());\
-      NEXT(e.dynamic_copy_exception());\
+      uuos_on_error(e.dynamic_copy_exception());\
    }
+
+static string s_last_error;
+
+string& uuos_get_last_error() {
+    return s_last_error;
+}
+
+void uuos_set_last_error(string& error) {
+    s_last_error = error;
+}
+
+void uuos_on_error(const fc::exception_ptr& ex) {
+    s_last_error = ex->to_detail_string();
+};
 
 namespace eosio {
     protocol_feature_set initialize_protocol_features( const fc::path& p, bool populate_missing_builtins = true );
@@ -323,24 +337,11 @@ void chain_pending_block_producer_(void *ptr, string& result) {
     result = chain.pending_block_producer().to_string();
 }
 
-static string s_last_error;
-
-string& uuos_get_last_error() {
-    return s_last_error;
-}
-
-void uuos_set_last_error(string& error) {
-    s_last_error = error;
-}
-
 void chain_pending_block_signing_key_(void *ptr, string& result) {
-    auto next = [](const fc::exception_ptr& ex) {
-        s_last_error = ex->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         result = std::string(chain.pending_block_signing_key());
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_pending_producer_block_id_(void *ptr, string& result) {
@@ -352,13 +353,10 @@ void chain_pending_producer_block_id_(void *ptr, string& result) {
 }
 
 void chain_get_pending_trx_receipts_(void *ptr, string& result) {
-    auto next = [](const fc::exception_ptr& ex) {
-        s_last_error = ex->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         result = fc::json::to_string(chain.get_pending_trx_receipts());
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_active_producers_(void *ptr, string& result) {
@@ -380,13 +378,15 @@ uint32_t chain_last_irreversible_block_num_(void *ptr) {
     try {
         auto& chain = chain_get_controller(ptr);
         return chain.last_irreversible_block_num();
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION()
     return 0;
 }
 
 void chain_last_irreversible_block_id_(void *ptr, string& result) {
-    auto& chain = chain_get_controller(ptr);
-    result = chain.last_irreversible_block_id().str();
+    try {
+        auto& chain = chain_get_controller(ptr);
+        result = chain.last_irreversible_block_id().str();
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block ) {
@@ -398,7 +398,7 @@ void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_blo
         }
         auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
         raw_block = string(_raw_block.data(), _raw_block.size());
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_fetch_block_by_id_(void *ptr, string& params, string& raw_block ) {
@@ -411,7 +411,7 @@ void chain_fetch_block_by_id_(void *ptr, string& params, string& raw_block ) {
         }
         auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
         raw_block = string(_raw_block.data(), _raw_block.size());
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_fetch_block_state_by_number_(void *ptr, uint32_t block_num, string& raw_block_state ) {
@@ -423,7 +423,7 @@ void chain_fetch_block_state_by_number_(void *ptr, uint32_t block_num, string& r
         }
         auto _raw_block_state = fc::raw::pack<eosio::chain::block_state>(*block_ptr);
         raw_block_state = string(_raw_block_state.data(), _raw_block_state.size());
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_fetch_block_state_by_id_(void *ptr, string& params, string& raw_block_state ) {
@@ -436,7 +436,7 @@ void chain_fetch_block_state_by_id_(void *ptr, string& params, string& raw_block
         }
         auto _raw_block_state = fc::raw::pack<eosio::chain::block_state>(*block_ptr);
         raw_block_state = string(_raw_block_state.data(), _raw_block_state.size());
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result ) {
@@ -444,7 +444,7 @@ void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result )
         auto& chain = chain_get_controller(ptr);
         auto id = chain.get_block_id_for_num(block_num);
         result = id.str();
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_calculate_integrity_hash_(void *ptr, string& result ) {
@@ -463,53 +463,41 @@ bool chain_sender_avoids_whitelist_blacklist_enforcement_(void *ptr, string& sen
 }
 
 bool chain_check_actor_list_(void *ptr, string& param, string& err) {
-    auto next = [&err](const fc::exception_ptr& ex) {
-        err = ex->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         auto _param = fc::json::from_string(param).as<flat_set<account_name>>();
         chain.check_actor_list(_param);
         return true;
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
 bool chain_check_contract_list_(void *ptr, string& param, string& err) {
-    auto next = [&err](const fc::exception_ptr& ex) {
-        err = ex->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         auto _param = fc::json::from_string(param).as<account_name>();
         chain.check_contract_list(_param);
         return true;
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
 bool chain_check_action_list_(void *ptr, string& code, string& action, string& err) {
-    auto next = [&err](const fc::exception_ptr& ex) {
-        err = ex->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         chain.check_action_list(name(code), name(action));
         return true;
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
 bool chain_check_key_list_(void *ptr, string& param, string& err) {
-    auto next = [&err](const fc::exception_ptr& ex) {
-        err = ex->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         auto _param = fc::json::from_string(param).as<public_key_type>();
         chain.check_key_list(_param);
         return true;
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -554,50 +542,38 @@ void chain_get_config_(void *ptr, string& result) {
 }
 
 bool chain_validate_expiration_(void *ptr, string& param, string& err) {
-    auto next = [&err](const fc::exception_ptr& result) {
-        err = result->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         auto trx = fc::json::from_string(param).as<transaction>();
         chain.validate_expiration(trx);
         return true;
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
 bool chain_validate_tapos_(void *ptr, string& param, string& err) {
-    auto next = [&err](const fc::exception_ptr& result) {
-        err = result->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         auto trx = fc::json::from_string(param).as<transaction>();
         chain.validate_tapos(trx);
         return true;
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
 bool chain_validate_db_available_size_(void *ptr, string& err) {
-    auto next = [&err](const fc::exception_ptr& result) {
-        err = result->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         chain.validate_db_available_size();
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
 bool chain_validate_reversible_available_size_(void *ptr, string& err) {
-    auto next = [&err](const fc::exception_ptr& result) {
-        err = result->to_detail_string();
-    };
     try {
         auto& chain = chain_get_controller(ptr);
         chain.validate_reversible_available_size();
-    } CATCH_AND_CALL(next)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
