@@ -2323,3 +2323,10 @@ void producer_get_runtime_options_(void *ptr, string& result) {
    auto options = producer.get_runtime_options();
    result = fc::json::to_string(options);
 }
+
+void producer_update_runtime_options_(void *ptr, string& options) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto _options = fc::json::from_string(options).as<producer_plugin::runtime_options>();
+   producer.update_runtime_options(_options);
+}
+
