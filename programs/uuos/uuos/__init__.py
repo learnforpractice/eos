@@ -6,7 +6,7 @@ __all__ = [
     'connection',
     'nativeobject',
     'p2pmanager',
-    'rpc_server',
+    'rpcserver',
     'set_config',
     'recover_key',
     'current_time_nano',

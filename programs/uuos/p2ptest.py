@@ -9,7 +9,7 @@ import asyncio
 import argparse
 import signal
 
-from uuos.rpc_server import rpc_server
+from uuos.rpcserver import rpc_server
 
 from uuos.nativeobject import *
 

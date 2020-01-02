@@ -19,7 +19,7 @@ from uuos.chain import Chain
 from uuos.connection import Connection
 from uuos.producer import Producer
 
-from uuos.rpc_server import rpc_server
+from uuos.rpcserver import rpc_server
 from uuos.nativeobject import ControllerConfig
 from uuos import application
 from uuos.p2pmanager import P2pManager
