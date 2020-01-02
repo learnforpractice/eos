@@ -161,6 +161,8 @@ uint64_t    uuos_current_time_nano_();
 void        uuos_sign_digest_(string& _priv_key, string& _digest, string& out);
 void        uuos_set_log_level_(string& logger_name, int level);
 
+void        db_size_api_get_(void *ptr, string& result);
+
 enum {
     handshake_message_type,
     chain_size_message_type,

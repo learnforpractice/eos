@@ -72,3 +72,6 @@ def repair_log(blocks_dir, truncate_at_block=0):
 
 def get_table_rows(params):
     return _uuos.chain_api_get_table_rows(chain_ptr, params)
+
+def db_size_api_get():
+    return _uuos.db_size_api_get(chain_ptr)

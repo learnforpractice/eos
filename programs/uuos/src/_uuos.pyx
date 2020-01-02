@@ -172,6 +172,8 @@ cdef extern from "native_object.hpp":
     void        uuos_set_version()
     void        uuos_set_log_level_(string& logger_name, int level)
 
+    void db_size_api_get_(void *ptr, string& result)
+
 cpdef void hello(str strArg):
     "Prints back 'Hello <param>', for example example: hello.hello('you')"
     print("Hello, {}!)".format(strArg))
@@ -803,5 +805,10 @@ def uuos_sign_digest(string& _priv_key, string& _digest):
 
 def uuos_set_log_level(string& logger_name, int level):
     uuos_set_log_level_(logger_name, level)
+
+def db_size_api_get(uint64_t ptr):
+    cdef string result
+    db_size_api_get_(<void *>ptr, result)
+    return result
 
 uuos_set_version()

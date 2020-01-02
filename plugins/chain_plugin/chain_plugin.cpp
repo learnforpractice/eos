@@ -2505,3 +2505,37 @@ int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, stri
 void chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir) {
    backup_blocks_dir = block_log::repair_log( blocks_dir, truncate_at_block).string();
 }
+
+
+namespace eosio {
+   struct db_size_index_count {
+      string   index;
+      uint64_t row_count;
+   };
+
+   struct db_size_stats {
+      uint64_t                    free_bytes;
+      uint64_t                    used_bytes;
+      uint64_t                    size;
+      vector<db_size_index_count> indices;
+   };
+}
+
+FC_REFLECT( eosio::db_size_index_count, (index)(row_count) )
+FC_REFLECT( eosio::db_size_stats, (free_bytes)(used_bytes)(size)(indices) )
+
+
+void db_size_api_get_(void *ptr, string& result) {
+   auto& cc = chain_get_controller(ptr);
+   const chainbase::database& db = cc.db();
+   db_size_stats ret;
+
+   ret.free_bytes = db.get_segment_manager()->get_free_memory();
+   ret.size = db.get_segment_manager()->get_size();
+   ret.used_bytes = ret.size - ret.free_bytes;
+
+   chainbase::database::database_index_row_count_multiset indices = db.row_count_per_index();
+   for(const auto& i : indices)
+      ret.indices.emplace_back(db_size_index_count{i.second, i.first});
+   result = fc::json::to_string(ret);
+}

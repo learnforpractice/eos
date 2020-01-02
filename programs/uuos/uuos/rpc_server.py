@@ -297,8 +297,7 @@ async def producer_get_supported_protocol_features():
 
 #----------------db size api-------------------
 async def db_get_size():
-    data = await request.data
-
+    return chain_api.db_size_api_get()
 
 @app.websocket('/ws')
 async def ws():
@@ -369,7 +368,7 @@ async def rpc_server(producer, loop, http_server_address):
     ]
 
     db_size_api_routers = [
-        ("/v1/dbsize/get",                        post_method, db_get_size),
+        ("/v1/db_size/get",                        get_post_method, db_get_size),
     ]
 
     if 'eosio::chain_api_plugin' in producer.config.plugin:
@@ -394,6 +393,7 @@ async def rpc_server(producer, loop, http_server_address):
 
     if 'eosio::db_size_api_plugin' in producer.config.plugin:
         for route, method, view_func in db_size_api_routers:
+            logger.info(f'route {route}')
             app.route(route, methods=method)(view_func)
 
 
