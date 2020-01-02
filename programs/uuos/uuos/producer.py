@@ -8,12 +8,10 @@ __all__ = [
 
 import ujson as json
 import asyncio
+from .jsonobject import JsonObject
 from .application import get_app, get_logger
-from . import chain
 import _uuos
 import ujson as json
-from . import chain
-from .jsonobject import JsonObject
 
 logger = get_logger(__name__)
 

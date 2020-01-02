@@ -1,6 +1,7 @@
 from _uuos import set_accepted_block_callback
 
 import asyncio
+import ujson as json
 from .connection import Connection
 from .native_object import HandshakeMessage
 from . import application
@@ -57,6 +58,12 @@ class P2pManager(object):
                         self.connections.remove(c)
             except Exception as e:
                 logger.exception(e)
+
+    def get_connections(self):
+        ret = {}
+        for c in self.connections:
+            ret['peer'] = f'{c.host}:{c.port}'
+        return json.dumps(ret)
 
     def get_net_status(self, peer):
         try:

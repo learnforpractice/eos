@@ -15,9 +15,8 @@ from hypercorn.config import Config as HyperConfig
 from pyeoskit import eosapi
 
 from . import chain_api
-from . import application
 from . import producer
-from .application import get_app
+from .application import get_app, get_logger
 
 from typing import (
     Any,
@@ -75,7 +74,7 @@ class App(Quart):
         else:
             asyncio.run(serve(self, config), debug=config.debug)
 
-logger = application.get_logger(__name__)
+logger = get_logger(__name__)
 
 app = App(__name__)
 
@@ -218,7 +217,7 @@ async def net_disconnect():
     data = await request.data
 
 async def net_connections():
-    data = await request.data
+    return get_app().get_p2p_manager().get_connections()
 
 async def net_status():
     data = await request.data
@@ -228,15 +227,15 @@ async def net_status():
     return ret
 #------------producer api ---------------
 async def producer_pause():
-    application.get_app().producer.pause()
+    get_app().producer.pause()
     return 'true'
 
 async def producer_resume():
-    application.get_app().producer.resume()
+    get_app().producer.resume()
     return 'true'
 
 async def producer_paused():
-    ret = application.get_app().producer.paused()
+    ret = get_app().producer.paused()
     logger.info(f'+++++++++++++++producer_paused: {ret}')
     if ret:
         return 'true'
@@ -244,11 +243,11 @@ async def producer_paused():
         return 'false'
 
 async def producer_get_runtime_options():
-    return application.get_app().producer.get_runtime_options(json=False)
+    return get_app().producer.get_runtime_options(json=False)
 
 async def producer_update_runtime_options():
     data = await request.data
-    application.get_app().producer.update_runtime_options(data)
+    get_app().producer.update_runtime_options(data)
     return 'true'
 
 async def producer_get_greylist():
@@ -268,7 +267,7 @@ async def producer_set_whitelist_blacklist():
 
 async def producer_create_snapshot():
     logger.info('+++++producer_create_snapshot')
-    ret = application.get_app().producer.create_snapshot()
+    ret = get_app().producer.create_snapshot()
     logger.info(ret)
     return ret[1], http_return_code[ret[0]]
 
