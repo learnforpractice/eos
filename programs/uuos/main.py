@@ -118,6 +118,10 @@ class UUOSMain(application.Application):
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
         chain_cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(config.data_dir, 'state')
+
+        uuos.set_default_data_dir(config.data_dir)
+        uuos.set_default_config_dir(config.config_dir)
+
         if config.snapshot:
             shared_memory_file = os.path.join(chain_cfg.state_dir, 'shared_memory.bin')
             if os.path.exists(shared_memory_file):

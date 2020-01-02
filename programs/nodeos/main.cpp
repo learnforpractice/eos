@@ -97,6 +97,14 @@ void uuos_set_version() {
    app().set_version(eosio::nodeos::config::version);
 }
 
+void uuos_set_default_data_dir_(string& dir) {
+   app().set_default_data_dir(fc::path(dir));
+}
+
+void uuos_set_default_config_dir_(string& dir) {
+   app().set_default_config_dir(fc::path(dir));  
+}
+
 const char *g_argv[] = {"python"};
 int main(int argc, char** argv)
 {

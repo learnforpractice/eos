@@ -42,3 +42,9 @@ def pack_native_object(obj_type, obj):
 
 def unpack_native_object(obj_type, packed_message):
     return _uuos.unpack_native_object(obj_type, packed_message)
+
+def set_default_data_dir(dir):
+    _uuos.uuos_set_default_data_dir(dir)
+
+def set_default_config_dir(dir):
+    _uuos.uuos_set_default_config_dir(dir)

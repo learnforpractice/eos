@@ -172,6 +172,9 @@ cdef extern from "native_object.hpp":
     void        uuos_set_version()
     void        uuos_set_log_level_(string& logger_name, int level)
 
+    void        uuos_set_default_data_dir_(string& dir)
+    void        uuos_set_default_config_dir_(string& dir)
+
     void db_size_api_get_(void *ptr, string& result)
 
 cpdef void hello(str strArg):
@@ -805,6 +808,12 @@ def uuos_sign_digest(string& _priv_key, string& _digest):
 
 def uuos_set_log_level(string& logger_name, int level):
     uuos_set_log_level_(logger_name, level)
+
+def uuos_set_default_data_dir(string& dir):
+    return uuos_set_default_data_dir_(dir)
+
+def uuos_set_default_config_dir(string& dir):
+    return uuos_set_default_config_dir_(dir)
 
 def db_size_api_get(uint64_t ptr):
     cdef string result
