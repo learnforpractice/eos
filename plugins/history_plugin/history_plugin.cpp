@@ -435,7 +435,7 @@ namespace eosio {
    void history_plugin::plugin_initialize(chain::controller& chain, history_plugin_options& options)
     {
       try {
-         my->initialize(fc::path(options.db_dir), options.db_size);
+         my->initialize(fc::path(options.db_dir), options.db_size_mb*1024*1024);
          my->chain_plug.emplace(chain, *my->db);
          
          if( options.filter_on.size()) {
@@ -785,7 +785,41 @@ namespace eosio {
 
 using namespace eosio;
 
-void * history_plugin_new() {
-   return (void *)new history_plugin();
+void* history_new_(void *ptr, string& cfg) {
+   auto _cfg = fc::json::from_string(cfg).as<eosio::history_plugin_options>();
+   auto *history = new history_plugin();
+   auto& chain = *((eosio::chain::controller*)ptr);
+   history->plugin_initialize(chain, _cfg);
+   return (void *)history;
+}
+
+void history_get_actions_(void *ptr, const string& param, string& result) {
+   auto history = (eosio::history_plugin*)ptr;
+   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_actions_params>();
+   result = fc::json::to_string(history->get_read_only_api().get_actions(_param));
+}
+
+void history_get_transaction_(void *ptr, const string& param, string& result) {
+   auto history = (eosio::history_plugin*)ptr;
+   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_transaction_params>();
+   result = fc::json::to_string(history->get_read_only_api().get_transaction(_param));
+}
+
+void history_get_key_accounts_(void *ptr, const string& param, string& result) {
+   auto history = (eosio::history_plugin*)ptr;
+   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_params>();
+   result = fc::json::to_string(history->get_read_only_api().get_key_accounts(_param));
+}
+
+void history_get_key_accounts_ex_(void *ptr, const string& param, string& result) {
+   auto history = (eosio::history_plugin*)ptr;
+   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_ex_params>();
+   result = fc::json::to_string(history->get_read_only_api().get_key_accounts_ex(_param));
+}
+
+void history_get_controlled_accounts_(void *ptr, const string& param, string& result) {
+   auto history = (eosio::history_plugin*)ptr;
+   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_controlled_accounts_params>();
+   result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param));
 }
 

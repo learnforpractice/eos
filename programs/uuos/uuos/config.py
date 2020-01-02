@@ -122,6 +122,13 @@ class Config(object):
         parser.add_argument('-i', '--interact',    default=False, action="store_true", help='Enable interactive console.')
         parser.add_argument('--interact-server',   type=str,  default='', help='Enable interactive console server.')
 
+
+        #---------history plugin-------
+        parser.add_argument('--history-db-size-mb', type=int,  default=300, help='Maximum size (in MiB) of the history database')
+        parser.add_argument('--filter-on',          type=str, default=[], action='append', help='')
+        parser.add_argument('--filter-out',         type=str, default=[], action='append', help='')
+        parser.add_argument('--filter-transfer',    type=str2bool, default=False, action='append', help='')
+
         configs = []
         if not config_file:
             args = sys.argv[1:]

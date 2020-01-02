@@ -155,6 +155,15 @@ void        producer_pause_(void *ptr);
 void        producer_resume_(void *ptr);
 bool        producer_paused_(void *ptr);
 
+
+void*       history_new_(void *ptr, string& cfg);
+void        history_get_actions_(void *ptr, const string& param, string& result);
+void        history_get_transaction_(void *ptr, const string& param, string& result);
+void        history_get_key_accounts_(void *ptr, const string& param, string& result);
+void        history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
+void        history_get_controlled_accounts_(void *ptr, const string& param, string& result);
+
+
 void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);
 uint64_t    uuos_current_time_nano_();

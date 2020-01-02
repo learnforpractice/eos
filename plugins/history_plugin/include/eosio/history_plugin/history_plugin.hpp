@@ -118,10 +118,10 @@ class read_only {
 
 struct history_plugin_options {
    string db_dir;
-   uint64_t db_size;
+   uint64_t db_size_mb;
    vector<string> filter_on;
    vector<string> filter_out;
-   bool filter_transfer;
+   bool filter_transfer;   
 };
 
 /**
@@ -176,3 +176,5 @@ FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_ex_params, (public_k
 FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_ex_results, (account_names)(active_flags) )
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_params, (controlling_account) )
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_results, (controlled_accounts) )
+
+FC_REFLECT(eosio::history_plugin_options, (db_dir)(db_size_mb)(filter_on)(filter_out)(filter_transfer) )

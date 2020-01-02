@@ -15,7 +15,7 @@ from uuos.config import Config, default_config
 
 from uuos.chainapi import ChainApi
 from uuos.chain import Chain
-
+from uuos.historyapi import HistoryApi
 from uuos.connection import Connection
 from uuos.producer import Producer
 
@@ -147,6 +147,7 @@ class UUOSMain(application.Application):
 
         self._chain_api = ChainApi(self.chain.ptr)
         self.producer = Producer(self.config)
+        self._history_api = HistoryApi()
         # self.hub = Hub()
 
     @property
@@ -156,6 +157,10 @@ class UUOSMain(application.Application):
     @property
     def chain_api(self):
         return self._chain_api
+
+    @property
+    def history_api(self):
+        return self._history_api
 
     def get_p2p_manager(self):
         return self.p2p_manager

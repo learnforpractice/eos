@@ -198,15 +198,23 @@ async def chain_push_transaction():
 #---------------history api----------------
 async def history_get_actions():
     data = await request.data
+    return get_app().history_api.get_actions(data)
 
 async def history_get_transaction():
     data = await request.data
+    return get_app().history_api.get_transaction(data)
 
 async def history_get_key_accounts():
     data = await request.data
+    return get_app().history_api.get_key_accounts(data)
+
+async def history_get_key_accounts():
+    data = await request.data
+    return get_app().history_api.get_key_accounts(data)
 
 async def history_get_controlled_accounts():
     data = await request.data
+    return get_app().history_api.get_controlled_accounts(data)
 
 #------------------------net api---------------------
 async def net_connect():

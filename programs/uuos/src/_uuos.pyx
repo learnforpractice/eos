@@ -166,6 +166,13 @@ cdef extern from "native_object.hpp":
     void        producer_get_scheduled_protocol_feature_activations_(void *ptr, string& result)
     void        producer_get_supported_protocol_features_(void *ptr, string& params, string& result)
 
+    void*       history_new_(void *ptr, string& cfg)
+    void        history_get_actions_(void *ptr, const string& param, string& result);
+    void        history_get_transaction_(void *ptr, const string& param, string& result);
+    void        history_get_key_accounts_(void *ptr, const string& param, string& result);
+    void        history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
+    void        history_get_controlled_accounts_(void *ptr, const string& param, string& result);
+
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
     uint64_t    uuos_current_time_nano_()
     void        uuos_sign_digest_(string& _priv_key, string& _digest, string& out)
@@ -749,6 +756,35 @@ def producer_get_scheduled_protocol_feature_activations(uint64_t ptr):
 def producer_get_supported_protocol_features(uint64_t ptr, string& params):
     cdef string result
     producer_get_supported_protocol_features_(<void *>ptr, params, result)
+    return result
+
+def history_new(uint64_t ptr, string& cfg):
+    return <uint64_t>history_new_(<void *>ptr, cfg)
+
+def history_get_actions(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_actions_(<void *>ptr, param, result)
+    return result
+
+
+def history_get_transaction(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_transaction_(<void *>ptr, param, result)
+    return result
+
+def history_get_key_accounts(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_key_accounts_(<void *>ptr, param, result)
+    return result
+
+def history_get_key_accounts_ex(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_key_accounts_ex_(<void *>ptr, param, result)
+    return result
+
+def history_get_controlled_accounts(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_controlled_accounts_(<void *>ptr, param, result)
     return result
 
 g_accepted_block_cb = None
