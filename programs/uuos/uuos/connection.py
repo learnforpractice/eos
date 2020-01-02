@@ -84,6 +84,14 @@ class Connection(object):
 
         self.chain = get_app().chain
 
+    def status(self):
+        ret = dict(peer=f'{self.host}:{self.port}', 
+                    connecting=True,
+                    syncing=self.syncing,
+                    last_handshake = self.last_handshake._dict
+            )
+        return json.dumps(ret)
+
     def reset_time_counter(self):
         self.time_counter = max_time_interval
 

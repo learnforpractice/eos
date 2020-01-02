@@ -222,9 +222,10 @@ async def net_connections():
 
 async def net_status():
     data = await request.data
-
-
-
+    ret = get_app().get_p2p_manager().get_net_status(json.loads(data))
+    if not ret:
+        return 'null'
+    return ret
 #------------producer api ---------------
 async def producer_pause():
     application.get_app().producer.pause()

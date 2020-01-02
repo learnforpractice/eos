@@ -58,6 +58,16 @@ class P2pManager(object):
             except Exception as e:
                 logger.exception(e)
 
+    def get_net_status(self, peer):
+        try:
+            host, port = peer.split(':')
+            for c in self.connections:
+                if c.host == host and c.port == port:
+                    return c.status()
+        except Exception as e:
+            logger.exception(e)
+        return None
+
     def add(self, c):
         self.connections.add(c)
     
