@@ -14,7 +14,6 @@ from hypercorn.asyncio import serve
 from hypercorn.config import Config as HyperConfig
 from pyeoskit import eosapi
 
-from . import chain_api
 from . import producer
 from .application import get_app, get_logger
 
@@ -86,107 +85,107 @@ async def hello():
     return 'hello'
 
 async def chain_get_info():
-    ret = chain_api.get_info()
+    ret = get_app().chain_api.get_info()
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_activated_protocol_features():
     data = await request.data
-    ret = chain_api.get_activated_protocol_features(data)
+    ret = get_app().chain_api.get_activated_protocol_features(data)
     return ret[1], http_return_code[ret[0]]
     
 async def chain_get_block():
     data = await request.data
-    ret = chain_api.get_block(data)
+    ret = get_app().chain_api.get_block(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_block_header_state():
     data = await request.data
-    ret = chain_api.get_block_header_state(data)
+    ret = get_app().chain_api.get_block_header_state(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_account():
     data = await request.data
-    ret = chain_api.get_account(data)
+    ret = get_app().chain_api.get_account(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_code():
     data = await request.data
-    ret = chain_api.get_code(data)
+    ret = get_app().chain_api.get_code(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_code_hash():
     data = await request.data
-    ret = chain_api.get_code_hash(data)
+    ret = get_app().chain_api.get_code_hash(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_abi():
     data = await request.data
-    ret = chain_api.get_abi(data)
+    ret = get_app().chain_api.get_abi(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_raw_code_and_abi():
     data = await request.data
-    ret = chain_api.get_raw_code_and_abi(data)
+    ret = get_app().chain_api.get_raw_code_and_abi(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_raw_abi():
     data = await request.data
-    ret = chain_api.get_raw_abi(data)
+    ret = get_app().chain_api.get_raw_abi(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_table_rows():
     data = await request.data
-    ret = chain_api.get_table_rows(data)
+    ret = get_app().chain_api.get_table_rows(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_table_by_scope():
     data = await request.data
-    ret = chain_api.get_table_by_scope(data)
+    ret = get_app().chain_api.get_table_by_scope(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_currency_balance():
     data = await request.data
-    ret = chain_api.get_currency_balance(data)
+    ret = get_app().chain_api.get_currency_balance(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_currency_stats():
     data = await request.data
-    ret = chain_api.get_currency_stats(data)
+    ret = get_app().chain_api.get_currency_stats(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_producers():
     data = await request.data
-    ret = chain_api.get_producers(data)
+    ret = get_app().chain_api.get_producers(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_producer_schedule():
     data = await request.data
-    ret = chain_api.get_producer_schedule(data)
+    ret = get_app().chain_api.get_producer_schedule(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_scheduled_transactions():
     data = await request.data
-    ret = chain_api.get_scheduled_transactions(data)
+    ret = get_app().chain_api.get_scheduled_transactions(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_abi_json_to_bin():
     data = await request.data
-    ret = chain_api.abi_json_to_bin(data)
+    ret = get_app().chain_api.abi_json_to_bin(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_abi_bin_to_json():
     data = await request.data
-    ret = chain_api.abi_bin_to_json(data)
+    ret = get_app().chain_api.abi_bin_to_json(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_required_keys():
     data = await request.data
-    ret = chain_api.get_required_keys(data)
+    ret = get_app().chain_api.get_required_keys(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_get_transaction_id():
     data = await request.data
-    ret = chain_api.get_transaction_id(data)
+    ret = get_app().chain_api.get_transaction_id(data)
     return ret[1], http_return_code[ret[0]]
 
 async def chain_push_transaction():
@@ -297,7 +296,7 @@ async def producer_get_supported_protocol_features():
 
 #----------------db size api-------------------
 async def db_get_size():
-    return chain_api.db_size_api_get()
+    return get_app().chain_api.db_size_api_get()
 
 @app.websocket('/ws')
 async def ws():

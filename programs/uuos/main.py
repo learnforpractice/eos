@@ -13,7 +13,7 @@ import signal
 
 from uuos.config import Config, default_config
 
-from uuos import chain_api
+from uuos.chain_api import ChainApi
 from uuos.chain import Chain
 
 from uuos.connection import Connection
@@ -141,13 +141,17 @@ class UUOSMain(application.Application):
         logger.info(chain_cfg)
         self._chain = Chain(chain_cfg, config.config_dir, config.snapshot)
 
-        chain_api.chain_ptr = self.chain.ptr
+        self._chain_api = ChainApi(self.chain.ptr)
         self.producer = Producer(self.config)
         # self.hub = Hub()
 
     @property
     def chain(self):
         return self._chain
+
+    @property
+    def chain_api(self):
+        return self._chain_api
 
     def get_p2p_manager(self):
         return self.p2p_manager

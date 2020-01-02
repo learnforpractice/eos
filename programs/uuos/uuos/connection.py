@@ -12,7 +12,7 @@ import traceback
 from datetime import datetime
 
 from . import current_time_nano, sign_digest
-from . import chain, chain_api
+from . import chain
 from .native_object import (
     default_handshake_msg,
     HandshakeMessage,

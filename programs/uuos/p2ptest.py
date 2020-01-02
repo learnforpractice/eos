@@ -9,8 +9,6 @@ import asyncio
 import argparse
 import signal
 
-from uuos import chain, chain_api
-
 from uuos.rpc_server import rpc_server
 
 from uuos.native_object import *

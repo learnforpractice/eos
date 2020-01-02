@@ -6,6 +6,7 @@ import ujson
 import unittest
 import os
 import base64
+from uuos import chain_api
 
 from pyeoskit import eosapi, wallet
 eosapi.set_nodes(['http://127.0.0.1:8889'])
