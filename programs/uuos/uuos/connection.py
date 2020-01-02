@@ -11,10 +11,20 @@ import random
 import traceback
 from datetime import datetime
 
-from _uuos import uuos_current_time_nano, uuos_sign_digest
+from . import current_time_nano, sign_digest
 from . import chain, chain_api
-from .native_object import *
-from pyeoskit import wallet
+from .native_object import (
+    default_handshake_msg,
+    HandshakeMessage,
+    GoAwayMessage,
+    NoticeMessage,
+    TimeMessage,
+    SyncRequestMessage,
+    RequestMessage,
+    SignedBlockMessage,
+    PackedTransactionMessage
+)
+
 from .application import get_app, get_logger
 from .producer import RawTransactionMessage
 import uuos
@@ -234,7 +244,7 @@ class Connection(object):
         if msg:
             msg = TimeMessage(msg)
         else:
-            current_time = uuos_current_time_nano()
+            current_time = current_time_nano()
             self.org = current_time
             t = dict(org=self.org, rec=0, xmt=current_time, dst=0)
             msg = TimeMessage(msg)
@@ -331,7 +341,7 @@ class Connection(object):
             data = int.to_bytes(handshake_time, 8, 'little')
             h.update(data)
             msg.token = h.hexdigest()
-            msg.sig = uuos_sign_digest(peer_private_key, h.digest())
+            msg.sig = sign_digest(peer_private_key, h.digest())
         else:
             msg.token = '0000000000000000000000000000000000000000000000000000000000000000'
             msg.sig = 'SIG_K1_111111111111111111111111111111111111111111111111111111111111111116uk5ne'
@@ -499,7 +509,7 @@ class Connection(object):
             xmt = int(xmt)/1e9
             logger.info(msg)
             logger.info(time.localtime(xmt))
-            current_time = uuos_current_time_nano()
+            current_time = current_time_nano()
             if msg.org == 0:
                 t = dict(org=msg.xmt, rec=current_time, xmt=current_time, dst=0)
                 self.send_time_message(t)

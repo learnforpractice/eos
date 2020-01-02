@@ -3,7 +3,7 @@ import os
 import struct
 import ujson as json
 from .jsonobject import JsonObject
-from _uuos import unpack_native_object
+from . import unpack_native_object
 
 min_supported_version = 1
 max_supported_version = 2

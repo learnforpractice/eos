@@ -6,7 +6,15 @@ __all__ = [
     'connection',
     'native_object',
     'p2pmanager',
-    'rpc_server'
+    'rpc_server',
+    'set_config',
+    'recover_key',
+    'current_time_nano',
+    'sign_digest',
+    'set_log_level',
+    'set_default_log_level',
+    'pack_native_object',
+    'unpack_native_object',
 ]
 
 import _uuos
@@ -28,3 +36,9 @@ def set_log_level(logger_name='default', level=10):
 
 def set_default_log_level(level):
     return _uuos.uuos_set_log_level('default', level)
+
+def pack_native_object(obj_type, obj):
+    return _uuos.pack_native_object(obj_type, obj)
+
+def unpack_native_object(obj_type, packed_message):
+    return _uuos.unpack_native_object(obj_type, packed_message)

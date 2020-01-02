@@ -2,7 +2,7 @@ import ujson as json
 import struct
 
 from uuos.jsonobject import JsonObject
-from _uuos import pack_native_object, unpack_native_object
+from . import pack_native_object, unpack_native_object
 
 message_header_size = 4
 

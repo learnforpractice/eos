@@ -1,5 +1,5 @@
 import ujson as json
-from _uuos import pack_native_object, unpack_native_object
+from . import pack_native_object, unpack_native_object
 
 def custom_setattr(self, attr, value):
     if attr == '_dict':
