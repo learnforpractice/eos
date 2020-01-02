@@ -267,7 +267,7 @@ namespace eosio {
 
          void record_account_action( account_name n, const action_trace& act ) {
             auto& chain = chain_plug->chain();
-            chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+            chainbase::database& db = const_cast<chainbase::database&>( chain_plug->db() ); // Override read-only access to state DB (highly unrecommended practice!)
 
             const auto& idx = db.get_index<account_history_index, by_account_action_seq>();
             auto itr = idx.lower_bound( boost::make_tuple( name(n.value+1), 0 ) );
@@ -286,7 +286,7 @@ namespace eosio {
 
          void on_system_action( const action_trace& at ) {
             auto& chain = chain_plug->chain();
-            chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+            chainbase::database& db = const_cast<chainbase::database&>( chain_plug->db() ); // Override read-only access to state DB (highly unrecommended practice!)
             if( at.act.name == N(newaccount) )
             {
                const auto create = at.act.data_as<chain::newaccount>();
@@ -315,7 +315,7 @@ namespace eosio {
             if( filter( at ) ) {
                //idump((fc::json::to_pretty_string(at)));
                auto& chain = chain_plug->chain();
-               chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+               chainbase::database& db = const_cast<chainbase::database&>( chain_plug->db() ); // Override read-only access to state DB (highly unrecommended practice!)
 
                db.create<action_history_object>( [&]( auto& aho ) {
                   auto ps = fc::raw::pack_size( at );
@@ -418,7 +418,8 @@ namespace eosio {
          EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
          auto& chain = my->chain_plug->chain();
 
-         chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+         // chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+         chainbase::database& db = my->chain_plug->db();
          // TODO: Use separate chainbase database for managing the state of the history_plugin (or remove deprecated history_plugin entirely)
          db.add_index<account_history_index>();
          db.add_index<action_history_index>();
@@ -475,7 +476,8 @@ namespace eosio {
          EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
          auto& chain = my->chain_plug->chain();
 
-         chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+//         chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+         chainbase::database& db = my->chain_plug->db();
          // TODO: Use separate chainbase database for managing the state of the history_plugin (or remove deprecated history_plugin entirely)
          db.add_index<account_history_index>();
          db.add_index<action_history_index>();
@@ -495,7 +497,8 @@ namespace eosio {
       }
 //      auto& db = app().get_plugin<chain_plugin>().chain().db();
 //      auto& db = my->chain_plug->chain().db();
-      chainbase::database& db = const_cast<chainbase::database&>( my->chain_plug->chain().db() ); // Override read-only access to state DB (highly unrecommended practice!)
+
+      chainbase::database& db = const_cast<chainbase::database&>(my->chain_plug->chain().db());
       {
          const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
          auto itr = pub_key_idx.upper_bound(public_key_type());
@@ -512,7 +515,7 @@ namespace eosio {
          auto perm = permissions.lower_bound( boost::make_tuple( itr->name ) );
          while( perm != permissions.end() && perm->owner == itr->name ) {
             if (perm->auth.keys.size() != 0) {
-               add(db, perm->auth.keys, itr->name, perm->name);
+               add(my->chain_plug->db(), perm->auth.keys, itr->name, perm->name);
             }
             ++perm;
          }
@@ -790,6 +793,7 @@ void* history_new_(void *ptr, string& cfg) {
    auto *history = new history_plugin();
    auto& chain = *((eosio::chain::controller*)ptr);
    history->plugin_initialize(chain, _cfg);
+   history->plugin_startup();
    return (void *)history;
 }
 
