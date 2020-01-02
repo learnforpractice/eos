@@ -149,8 +149,10 @@ class UUOSMain(application.Application):
         self._chain = Chain(chain_cfg, config.config_dir, config.snapshot)
 
         self._chain_api = ChainApi(self.chain.ptr)
-        self.producer = Producer(self.config)
         self._history_api = HistoryApi()
+        self.chain.startup()
+        self.producer = Producer(self.config)
+
         # self.hub = Hub()
 
     @property
