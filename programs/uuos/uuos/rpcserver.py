@@ -372,27 +372,27 @@ async def rpc_server(producer, loop, http_server_address):
 
     if 'eosio::chain_api_plugin' in producer.config.plugin:
         for route, method, view_func in chain_api_routes:
-            logger.info(f'route {route}')
+            logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::history_api_plugin' in producer.config.plugin:
         for route, method, view_func in history_api_routes:
-            logger.info(f'route {route}')
+            logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::net_api_plugin' in producer.config.plugin:
         for route, method, view_func in net_api_routes:
-            logger.info(f'route {route}')
+            logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::producer_api_plugin' in producer.config.plugin:
         for route, method, view_func in producer_api_routes:
-            logger.info(f'route {route}')
+            logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::db_size_api_plugin' in producer.config.plugin:
         for route, method, view_func in db_size_api_routers:
-            logger.info(f'route {route}')
+            logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
 
