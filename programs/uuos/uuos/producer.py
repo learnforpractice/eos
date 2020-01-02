@@ -13,7 +13,7 @@ from . import chain
 import _uuos
 import ujson as json
 from . import chain
-
+from .jsonobject import JsonObject
 
 logger = get_logger(__name__)
 
@@ -188,8 +188,11 @@ class Producer(object):
     def resume(self):
         _uuos.producer_resume(self.ptr)
 
-    def get_runtime_options(self):
-        return producer_get_runtime_options(self.ptr)
+    def get_runtime_options(self, json=True):
+        ret = _uuos.producer_get_runtime_options(self.ptr)
+        if json:
+            ret = JsonObject(ret)
+        return ret            
 
     def publish_message(self, msg):
         if self.chain.is_building_block():

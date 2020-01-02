@@ -25,41 +25,59 @@ class Chain(object):
     def abort_block(self):
         return _uuos.chain_abort_block(self.ptr)
 
-    def get_global_properties(self):
+    def get_global_properties(self, json=True):
         ret = _uuos.chain_get_global_properties(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
-    def get_dynamic_global_properties(self):
+    def get_dynamic_global_properties(self, json=True):
         ret = _uuos.chain_get_dynamic_global_properties(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
-    def get_actor_whitelist(self):
+    def get_actor_whitelist(self, json=True):
         ret = _uuos.chain_get_actor_whitelist(self.ptr)
-        return json.loads(ret)
+        if ret:
+            return json.loads(ret)
+        return ret
 
-    def get_actor_blacklist(self):
+    def get_actor_blacklist(self, json=True):
         ret = _uuos.chain_get_actor_blacklist(self.ptr)
-        return json.loads(ret)
+        if json:
+            return json.loads(ret)
+        return ret
 
-    def get_contract_whitelist(self):
+    def get_contract_whitelist(self, json=True):
         ret = _uuos.chain_get_contract_whitelist(self.ptr)
-        return json.loads(ret)
+        if json:
+            return json.loads(ret)
+        return ret
 
-    def get_contract_blacklist(self):
+    def get_contract_blacklist(self, json=True):
         ret = _uuos.chain_get_contract_blacklist(self.ptr)
-        return json.loads(ret)
+        if json:
+            return json.loads(ret)
+        return ret
 
-    def get_action_blacklist(self):
+    def get_action_blacklist(self, json=True):
         ret = _uuos.chain_get_action_blacklist(self.ptr)
-        return json.loads(ret)
+        if json:
+            return json.loads(ret)
+        return ret
 
-    def get_key_blacklist(self):
+    def get_key_blacklist(self, json=True):
         ret = _uuos.chain_get_key_blacklist(self.ptr)
-        return json.loads(ret)
+        if json:
+            return json.loads(ret)
+        return ret
 
-    def chain_get_key_blacklist(self):
+    def chain_get_key_blacklist(self, json=True):
         ret = _uuos.chain_get_key_blacklist(self.ptr)
-        return json.loads(ret)
+        if json:
+            return json.loads(ret)
+        return ret
 
     def chain_set_actor_whitelist(self, whitelist):
         whitelist = json.dumps(whitelist)
@@ -93,13 +111,17 @@ class Chain(object):
     def head_block_producer(self):
         return _uuos.chain_head_block_producer(self.ptr)
 
-    def head_block_header(self):
+    def head_block_header(self, json=True):
         ret = _uuos.chain_head_block_header(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
-    def head_block_state(self):
+    def head_block_state(self, json=True):
         ret = _uuos.chain_head_block_state(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
     def fork_db_head_block_num(self):
         return _uuos.chain_fork_db_head_block_num(self.ptr)
@@ -137,21 +159,29 @@ class Chain(object):
     def pending_producer_block_id(self):
         return _uuos.chain_pending_producer_block_id(self.ptr)
 
-    def get_pending_trx_receipts(self):
+    def get_pending_trx_receipts(self, json=True):
         ret = _uuos.chain_get_pending_trx_receipts(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
-    def active_producers(self):
+    def active_producers(self, json=True):
         ret = _uuos.chain_active_producers(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
-    def pending_producers(self):
+    def pending_producers(self, json=True):
         ret = _uuos.chain_pending_producers(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
-    def proposed_producers(self):
+    def proposed_producers(self, json=True):
         ret = _uuos.chain_proposed_producers(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
     def last_irreversible_block_num(self):
         return _uuos.chain_last_irreversible_block_num(self.ptr)
@@ -213,9 +243,11 @@ class Chain(object):
     def get_resource_greylist(self):
         return _uuos.chain_get_resource_greylist(self.ptr)
 
-    def get_config(self):
+    def get_config(self, json=True):
         ret = _uuos.chain_get_config(self.ptr)
-        return JsonObject(ret)
+        if json:
+            return JsonObject(ret)
+        return ret
 
     def validate_expiration(self, trx):
         return _uuos.chain_validate_expiration(self.ptr, trx)
