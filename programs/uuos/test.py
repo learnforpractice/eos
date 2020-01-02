@@ -1,4 +1,4 @@
-from uuos.native_object import *
+from uuos.nativeobject import *
 from uuos import chainapi
 
 import ujson

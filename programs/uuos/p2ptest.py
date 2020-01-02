@@ -11,7 +11,7 @@ import signal
 
 from uuos.rpc_server import rpc_server
 
-from uuos.native_object import *
+from uuos.nativeobject import *
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')

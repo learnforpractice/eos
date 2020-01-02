@@ -4,7 +4,7 @@ __all__ = [
     'chainapi',
     'config',
     'connection',
-    'native_object',
+    'nativeobject',
     'p2pmanager',
     'rpc_server',
     'set_config',

@@ -3,7 +3,7 @@ from _uuos import set_accepted_block_callback
 import asyncio
 import ujson as json
 from .connection import Connection
-from .native_object import HandshakeMessage
+from .nativeobject import HandshakeMessage
 from . import application
 
 logger=application.get_logger(__name__)

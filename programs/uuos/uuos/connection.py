@@ -13,7 +13,7 @@ from datetime import datetime
 
 from . import current_time_nano, sign_digest
 from . import chain
-from .native_object import (
+from .nativeobject import (
     default_handshake_msg,
     HandshakeMessage,
     GoAwayMessage,
