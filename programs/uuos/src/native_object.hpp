@@ -148,6 +148,8 @@ int         producer_is_producer_key_(void *ptr, string& _public_key);
 int         producer_schedule_protocol_feature_activations_(void *ptr, string& _features, string& err);
 int         producer_get_runtime_options_(void *ptr, string& result);
 void        producer_update_runtime_options_(void *ptr, string& options);
+void        producer_get_supported_protocol_features_(void *ptr, string& params, string& result);
+void        producer_get_scheduled_protocol_feature_activations_(void *ptr, string& result);
 
 void        producer_pause_(void *ptr);
 void        producer_resume_(void *ptr);

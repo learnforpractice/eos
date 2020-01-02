@@ -163,7 +163,8 @@ cdef extern from "native_object.hpp":
     bool        producer_paused_(void *ptr)
     void        producer_get_runtime_options_(void *ptr, string& result)
     void        producer_update_runtime_options_(void *ptr, string& options)
-
+    void        producer_get_scheduled_protocol_feature_activations_(void *ptr, string& result)
+    void        producer_get_supported_protocol_features_(void *ptr, string& params, string& result)
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
     uint64_t    uuos_current_time_nano_()
@@ -734,6 +735,16 @@ def producer_get_runtime_options(uint64_t ptr):
 
 def producer_update_runtime_options(uint64_t ptr, string& options):
     producer_update_runtime_options_(<void *>ptr, options)
+
+def producer_get_scheduled_protocol_feature_activations(uint64_t ptr):
+    cdef string result
+    producer_get_scheduled_protocol_feature_activations_(<void *>ptr, result)
+    return result
+
+def producer_get_supported_protocol_features(uint64_t ptr, string& params):
+    cdef string result
+    producer_get_supported_protocol_features_(<void *>ptr, params, result)
+    return result
 
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):

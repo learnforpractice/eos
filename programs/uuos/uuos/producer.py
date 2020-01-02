@@ -197,6 +197,12 @@ class Producer(object):
     def update_runtime_options(self, options):
         _uuos.producer_update_runtime_options(self.ptr, options)
 
+    def get_scheduled_protocol_feature_activations(self):
+        return _uuos.producer_get_scheduled_protocol_feature_activations(self.ptr)
+
+    def get_supported_protocol_features(self, params):
+        return _uuos.producer_get_supported_protocol_features(self.ptr, params)
+
     def publish_message(self, msg):
         if self.chain.is_building_block():
             self.process_trx(msg)

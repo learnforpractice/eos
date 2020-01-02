@@ -51,9 +51,9 @@ class App(Quart):
     ) -> None:
 
         config = HyperConfig()
-        # config.access_log_format = "%(h)s %(r)s %(s)s %(b)s %(D)s"
-        # config.accesslog = create_serving_logger()
-        # config.errorlog = config.accesslog
+        config.access_log_format = "%(h)s %(r)s %(s)s %(b)s %(D)s"
+        config.accesslog = create_serving_logger()
+        config.errorlog = config.accesslog
         config.bind = [f"{host}:{port}"]
         config.ca_certs = ca_certs
         config.certfile = certfile
@@ -196,6 +196,7 @@ async def chain_push_transaction():
     result = await msg.wait()
     return result
 
+
 #---------------history api----------------
 async def history_get_actions():
     data = await request.data
@@ -281,17 +282,18 @@ async def producer_get_integrity_hash():
     )
     return json.dumps(body)
 
+async def producer_get_scheduled_protocol_feature_activations():
+    return get_app().producer.get_scheduled_protocol_feature_activations()
+
 async def producer_schedule_protocol_feature_activations():
     features = await request.data
-    ret = application.get_app().producer.schedule_protocol_feature_activations(features)
+    ret = get_app().producer.schedule_protocol_feature_activations(features)
     return ret[1], http_return_code[ret[0]]
 
-async def producer_get_activated_protocol_features():
-    pass
-
 async def producer_get_supported_protocol_features():
-    pass
-
+    params = await request.data
+    ret = get_app().producer.get_supported_protocol_features(params)
+    return ret
 
 #----------------db size api-------------------
 async def db_get_size():
@@ -361,8 +363,8 @@ async def rpc_server(producer, loop, http_server_address):
         ("/v1/producer/set_whitelist_blacklist",        post_method, producer_set_whitelist_blacklist),
         ("/v1/producer/create_snapshot",                post_method, producer_create_snapshot),
         ("/v1/producer/get_integrity_hash",             get_post_method, producer_get_integrity_hash),
+        ("/v1/producer/get_scheduled_protocol_feature_activations",  get_post_method, producer_get_scheduled_protocol_feature_activations),
         ("/v1/producer/schedule_protocol_feature_activations",  post_method, producer_schedule_protocol_feature_activations),
-        ("/v1/producer/get_activated_protocol_features",        post_method, producer_get_activated_protocol_features),
         ("/v1/producer/get_supported_protocol_features",        post_method, producer_get_supported_protocol_features),
     ]
 

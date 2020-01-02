@@ -2330,3 +2330,14 @@ void producer_update_runtime_options_(void *ptr, string& options) {
    producer.update_runtime_options(_options);
 }
 
+void producer_get_scheduled_protocol_feature_activations_(void *ptr, string& result) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto features = producer.get_scheduled_protocol_feature_activations();
+   result = fc::json::to_string(features);
+}
+
+void producer_get_supported_protocol_features_(void *ptr, string& params, string& result) {
+   auto& producer = *(producer_plugin*)ptr;
+   auto _params = fc::json::from_string(params).as<producer_plugin::get_supported_protocol_features_params>();
+   result = fc::json::to_string(producer.get_supported_protocol_features(_params));
+}
