@@ -82,6 +82,26 @@ CHAINBASE_SET_INDEX_TYPE(eosio::account_history_object, eosio::account_history_i
 CHAINBASE_SET_INDEX_TYPE(eosio::action_history_object, eosio::action_history_index)
 
 namespace eosio {
+   struct fake_chain_plugin {
+      fake_chain_plugin(eosio::chain::controller& ctrl, chainbase::database& db): _ctrl(ctrl), _db(db) {
+
+      }
+      
+      eosio::chain::controller& chain()const {
+         return _ctrl;
+      }
+
+      fc::microseconds get_abi_serializer_max_time() const {
+         return fc::microseconds(150000);
+      }
+
+      chainbase::database& db() {
+         return _db;
+      }
+
+      eosio::chain::controller& _ctrl;
+      chainbase::database& _db;
+   };
 
    template<typename MultiIndex, typename LookupType>
    static void remove(chainbase::database& db, const account_name& account_name, const permission_name& permission)
@@ -160,11 +180,17 @@ namespace eosio {
          std::set<filter_entry> filter_out;
          bool filter_transfer = false;
 
-         chain_plugin*          chain_plug = nullptr;
+         fc::optional<fake_chain_plugin>          chain_plug;
          fc::optional<scoped_connection> applied_transaction_connection;
          map<chain::public_key_type, vector<chain::account_name>> key_accounts_map;
+         fc::optional<database> db;
 
-          bool filter(const action_trace& act) {
+         void initialize(const fc::path& dir, uint64_t size)
+         {
+            db.emplace( dir, database::read_write, size, false, pinnable_mapped_file::map_mode::mapped, vector<string>() );
+         }
+
+         bool filter(const action_trace& act) {
             bool pass_on = false;
             if (bypass_filter) {
               pass_on = true;
@@ -216,7 +242,7 @@ namespace eosio {
             }
 
             return true;
-          }
+         }
 
          set<account_name> account_set( const action_trace& act ) {
             set<account_name> result;
@@ -344,6 +370,10 @@ namespace eosio {
          ("filter-transfer", bpo::bool_switch()->default_value(false),
           "filter eosio.token transfer action \n")
           ;
+      cfg.add_options()
+         ("history-db-size-mb", bpo::value<uint64_t>()->default_value(300),
+         "Maximum size (in MiB) of the history database")
+         ;
    }
 
    void history_plugin::plugin_initialize(const variables_map& options) {
@@ -380,8 +410,68 @@ namespace eosio {
 
          my->filter_transfer = options.at( "filter-transfer" ).as<bool>();
 
+         fc::create_directories(app().data_dir()/"history");
+         uint64_t history_db_size = options.at( "history-db-size-mb" ).as<uint64_t>() * 1024 * 1024;
+         my->initialize(app().data_dir()/"history", history_db_size);
+         
+         my->chain_plug.emplace(app().find_plugin<chain_plugin>()->chain(), *my->db);
+         EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
+         auto& chain = my->chain_plug->chain();
 
-         my->chain_plug = app().find_plugin<chain_plugin>();
+         chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+         // TODO: Use separate chainbase database for managing the state of the history_plugin (or remove deprecated history_plugin entirely)
+         db.add_index<account_history_index>();
+         db.add_index<action_history_index>();
+         db.add_index<account_control_history_multi_index>();
+         db.add_index<public_key_history_multi_index>();
+
+         my->applied_transaction_connection.emplace(
+               chain.applied_transaction.connect( [&]( std::tuple<const transaction_trace_ptr&, const signed_transaction&> t ) {
+                  my->on_applied_transaction( std::get<0>(t) );
+               } ));
+      } FC_LOG_AND_RETHROW()
+   }
+
+   void history_plugin::plugin_initialize(chain::controller& chain, history_plugin_options& options)
+    {
+      try {
+         my->initialize(fc::path(options.db_dir), options.db_size);
+         my->chain_plug.emplace(chain, *my->db);
+         
+         if( options.filter_on.size()) {
+            auto fo = options.filter_on;//options.at( "filter-on" ).as<vector<string>>();
+            for( auto& s : fo ) {
+               if( s == "*" || s == "\"*\"" ) {
+                  my->bypass_filter = true;
+                  wlog( "--filter-on * enabled. This can fill shared_mem, causing nodeos to stop." );
+                  break;
+               }
+               std::vector<std::string> v;
+               boost::split( v, s, boost::is_any_of( ":" ));
+               EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-on", ("s", s));
+               filter_entry fe{v[0], v[1], v[2]};
+               EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
+                           "Invalid value ${s} for --filter-on", ("s", s));
+               my->filter_on.insert( fe );
+            }
+         }
+         if( options.filter_out.size()) {
+            auto fo = options.filter_out;//options.at( "filter-out" ).as<vector<string>>();
+            for( auto& s : fo ) {
+               std::vector<std::string> v;
+               boost::split( v, s, boost::is_any_of( ":" ));
+               EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-out", ("s", s));
+               filter_entry fe{v[0], v[1], v[2]};
+               EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
+                           "Invalid value ${s} for --filter-out", ("s", s));
+               my->filter_out.insert( fe );
+            }
+         }
+
+         my->filter_transfer = options.filter_transfer;
+
+
+         my->chain_plug.emplace(chain, *my->db);
          EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
          auto& chain = my->chain_plug->chain();
 
@@ -692,3 +782,10 @@ namespace eosio {
 
 
 } /// namespace eosio
+
+using namespace eosio;
+
+void * history_plugin_new() {
+   return (void *)new history_plugin();
+}
+

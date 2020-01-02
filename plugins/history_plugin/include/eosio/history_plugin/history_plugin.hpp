@@ -116,6 +116,13 @@ class read_only {
 
 } // namespace history_apis
 
+struct history_plugin_options {
+   string db_dir;
+   uint64_t db_size;
+   vector<string> filter_on;
+   vector<string> filter_out;
+   bool filter_transfer;
+};
 
 /**
  *  This plugin tracks all actions and keys associated with a set of configured accounts. It enables
@@ -137,6 +144,8 @@ class history_plugin : public plugin<history_plugin> {
       virtual void set_program_options(options_description& cli, options_description& cfg) override;
 
       void plugin_initialize(const variables_map& options);
+      void plugin_initialize(chain::controller& chain, history_plugin_options& options);
+
       void plugin_startup();
       void plugin_shutdown();
 

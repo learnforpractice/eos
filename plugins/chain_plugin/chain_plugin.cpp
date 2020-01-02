@@ -274,6 +274,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 #ifdef __linux__
          ("database-hugepage-path", bpo::value<vector<string>>()->composing(), "Optional path for database hugepages when in \"locked\" mode (may specify multiple times)")
 #endif
+         ("interact-server", bpo::value<string>()->default_value(""), "run a interactive server.")
          ;
 
 // TODO: rate limiting
