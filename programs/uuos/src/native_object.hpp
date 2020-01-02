@@ -147,6 +147,7 @@ int         producer_create_snapshot_(void *ptr, string& out);
 int         producer_is_producer_key_(void *ptr, string& _public_key);
 int         producer_schedule_protocol_feature_activations_(void *ptr, string& _features, string& err);
 int         producer_get_runtime_options_(void *ptr, string& result);
+void        producer_update_runtime_options_(void *ptr, string& options);
 
 void        producer_pause_(void *ptr);
 void        producer_resume_(void *ptr);

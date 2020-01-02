@@ -162,6 +162,7 @@ cdef extern from "native_object.hpp":
     void        producer_resume_(void *ptr)
     bool        producer_paused_(void *ptr)
     void        producer_get_runtime_options_(void *ptr, string& result)
+    void        producer_update_runtime_options_(void *ptr, string& options)
 
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
@@ -730,6 +731,9 @@ def producer_get_runtime_options(uint64_t ptr):
     cdef string result
     producer_get_runtime_options_(<void *>ptr, result)
     return result
+
+def producer_update_runtime_options(uint64_t ptr, string& options):
+    producer_update_runtime_options_(<void *>ptr, options)
 
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):

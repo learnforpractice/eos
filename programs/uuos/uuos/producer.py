@@ -193,6 +193,9 @@ class Producer(object):
         if json:
             ret = JsonObject(ret)
         return ret            
+    
+    def update_runtime_options(self, string& options):
+        _uuos.producer_update_runtime_options(self.ptr, options)
 
     def publish_message(self, msg):
         if self.chain.is_building_block():
