@@ -1,12 +1,12 @@
 from uuos.native_object import *
-from uuos import chain_api
+from uuos import chainapi
 
 import ujson
 
 import unittest
 import os
 import base64
-from uuos import chain_api
+from uuos import chainapi
 
 from pyeoskit import eosapi, wallet
 eosapi.set_nodes(['http://127.0.0.1:8889'])
@@ -21,12 +21,12 @@ class Test(unittest.TestCase):
         b.b = 123
 
     def test_recovery(self):
-        backup_dir = chain_api.repair_log('dd/blocks', 0)
+        backup_dir = chainapi.repair_log('dd/blocks', 0)
         print(backup_dir)
         old_reversible = os.path.join(backup_dir, 'reversible')
         new_reversible = os.path.join('dd/blocks', 'reversible')
         if os.path.exists(old_reversible):
-            ret = chain_api.recover_reversible_blocks(old_reversible, new_reversible)
+            ret = chainapi.recover_reversible_blocks(old_reversible, new_reversible)
             if not ret:
                 import shutil
                 shutil.copytree(old_reversible, new_reversible)

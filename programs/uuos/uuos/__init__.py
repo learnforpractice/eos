@@ -1,7 +1,7 @@
 __all__ = [
     'application',
     'blocklog',
-    'chain_api',
+    'chainapi',
     'config',
     'connection',
     'native_object',

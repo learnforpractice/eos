@@ -13,7 +13,7 @@ import signal
 
 from uuos.config import Config, default_config
 
-from uuos.chain_api import ChainApi
+from uuos.chainapi import ChainApi
 from uuos.chain import Chain
 
 from uuos.connection import Connection
