@@ -20,6 +20,7 @@ class chain_manager {
 public:
     chain_manager();
     bool init(string& config, string& protocol_features_dir, string& snapshot_dir);
+    bool startup();
 
     void log_guard_exception(const chain::guard_exception&e );
     void on_accepted_transaction( const transaction_metadata_ptr& meta );
@@ -30,6 +31,7 @@ public:
 
     controller *cc = nullptr;
     controller::config cfg;
+    string snapshot_dir;
 };
 
 eosio::chain::controller& chain_get_controller(void *ptr);

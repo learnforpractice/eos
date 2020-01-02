@@ -69,9 +69,14 @@ void chain_manager::log_guard_exception(const chain::guard_exception&e ) {
 chain_manager::chain_manager() {
 }
 
-bool chain_manager::init(string& config, string& protocol_features_dir, string& snapshot_dir) {
-    auto shutdown = [](){ return false; };
+chain_manager::~chain_manager() {
+    if (cc) {
+        delete cc;
+    }
+}
 
+bool chain_manager::init(string& config, string& protocol_features_dir, string& snapshot_dir) {
+    this->snapshot_dir = snapshot_dir;
     try {
         evm_init();
         vm_api_init();
@@ -95,7 +100,19 @@ bool chain_manager::init(string& config, string& protocol_features_dir, string& 
     //     my->chain->accepted_transaction.connect([this]( const transaction_metadata_ptr& meta ) {
     //        my->accepted_transaction_channel.publish( priority::low, meta );
     //     } );
+        return true;
+    } catch (const database_guard_exception& e) {
+        log_guard_exception(e);
+        // make sure to properly close the db
+    } FC_LOG_AND_DROP();
+    delete cc;
+    cc = nullptr;
+    return false;
+}
 
+bool chain_manager::startup() {
+    auto shutdown = [](){ return false; };
+    try {
         if (snapshot_dir.size()) {
             auto infile = std::ifstream(snapshot_dir, (std::ios::in | std::ios::binary));
             auto reader = std::make_shared<istream_snapshot_reader>(infile);
@@ -110,6 +127,7 @@ bool chain_manager::init(string& config, string& protocol_features_dir, string& 
         // make sure to properly close the db
     } FC_LOG_AND_DROP();
     delete cc;
+    cc = nullptr;
     return false;
 }
 
@@ -137,10 +155,6 @@ controller::config& chain_manager::config() {
     return cfg;
 }
 
-chain_manager::~chain_manager() {
-    delete cc;
-}
-
 #include <map>
 static std::map<void *, chain_manager *> chain_map;
 
@@ -152,6 +166,14 @@ void *chain_new_(string& config, string& protocol_features_dir, string& snapshot
     }
     chain_map[manager->cc] = manager;
     return (void *)manager->cc;
+}
+
+bool chain_startup_(void* ptr) {
+    auto itr = chain_map.find(ptr);
+    if (itr == chain_map.end()) {
+        return false;
+    }
+    return ((chain_manager*)itr->second)->startup();
 }
 
 void chain_free_(void *ptr) {

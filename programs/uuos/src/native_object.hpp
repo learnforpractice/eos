@@ -10,6 +10,7 @@ void unpack_native_object_(int type, string& packed_message, string& msg);
 
 
 void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir);
+bool chain_startup_(void* ptr);
 void chain_free_(void *ptr);
 void chain_id_(void *ptr, string& chain_id);
 int chain_abort_block_(void *ptr);
@@ -163,7 +164,6 @@ void        history_get_transaction_(void *ptr, const string& param, string& res
 void        history_get_key_accounts_(void *ptr, const string& param, string& result);
 void        history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
 void        history_get_controlled_accounts_(void *ptr, const string& param, string& result);
-
 
 void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);

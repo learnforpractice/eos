@@ -26,6 +26,7 @@ cdef extern from "native_object.hpp":
     void unpack_native_object_(int _type, string& packed_message, string& msg)
 
     void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir);
+    bool chain_startup_(void* ptr);
     void chain_free_(void *ptr);
     int chain_abort_block_(void *ptr);
 
@@ -211,6 +212,9 @@ def unpack_native_object(int _type, string& packed_message):
 
 def chain_new(string& config, string& protocol_features_dir, string& snapshot_dir):
     return <unsigned long long>chain_new_(config, protocol_features_dir, snapshot_dir)
+
+def chain_startup(uint64_t ptr):
+    return chain_startup_(<void*> ptr);
 
 def chain_free(unsigned long long  ptr):
     chain_free_(<void *>ptr);

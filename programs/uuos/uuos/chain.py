@@ -11,6 +11,9 @@ class Chain(object):
         if not self.ptr:
             raise Exception('chain initialization failture!')
 
+    def startup(self):
+        return _uuos.chain_startup(self.ptr)
+
     def __del__(self):
         self.free()
 
