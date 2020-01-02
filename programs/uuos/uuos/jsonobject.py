@@ -22,7 +22,10 @@ class JsonObject(object):
             JsonObject.__setattr__ = custom_setattr
 
     def __getattr__(self, attr):
-        return self._dict[attr]
+        ret = self._dict[attr]
+        if isinstance(ret, dict):
+            return JsonObject(ret)
+        return ret
 
     def dumps(self):
         return json.dumps(self._dict)
