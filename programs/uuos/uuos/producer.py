@@ -194,7 +194,7 @@ class Producer(object):
             ret = JsonObject(ret)
         return ret            
     
-    def update_runtime_options(self, string& options):
+    def update_runtime_options(self, options):
         _uuos.producer_update_runtime_options(self.ptr, options)
 
     def publish_message(self, msg):

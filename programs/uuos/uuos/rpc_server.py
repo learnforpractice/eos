@@ -17,7 +17,7 @@ from pyeoskit import eosapi
 from . import chain_api
 from . import application
 from . import producer
-from . import application
+from .application import get_app
 
 from typing import (
     Any,
@@ -242,10 +242,12 @@ async def producer_paused():
         return 'false'
 
 async def producer_get_runtime_options():
-    return application.get_app().producer.get_runtime_options()
+    return application.get_app().producer.get_runtime_options(json=False)
 
 async def producer_update_runtime_options():
-    pass
+    data = await request.data
+    application.get_app().producer.update_runtime_options(data)
+    return 'true'
 
 async def producer_get_greylist():
     pass
@@ -269,7 +271,15 @@ async def producer_create_snapshot():
     return ret[1], http_return_code[ret[0]]
 
 async def producer_get_integrity_hash():
-    pass
+    chain = get_app().chain
+    if chain.is_building_block():
+        chain.abort_block()
+    head_block_id = chain.head_block_id()
+    integrity_hash = chain.calculate_integrity_hash()
+    body = dict(head_block_id=head_block_id,
+                integrity_hash=integrity_hash,
+    )
+    return json.dumps(body)
 
 async def producer_schedule_protocol_feature_activations():
     features = await request.data

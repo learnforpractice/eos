@@ -108,7 +108,7 @@ class UUOSMain(application.Application):
         self.config = config
         self.tasks = []
         self.client_count = 0
-        self.chain = None
+        self._chain = None
         self.producer = None
         self.p2p_manager = P2pManager(config)
         UUOSMain.uuos = self
@@ -139,10 +139,16 @@ class UUOSMain(application.Application):
 
         chain_cfg = chain_cfg.dumps()
         logger.info(chain_cfg)
-        self.chain = Chain(chain_cfg, config.config_dir, config.snapshot)
+        self._chain = Chain(chain_cfg, config.config_dir, config.snapshot)
+
         chain_api.chain_ptr = self.chain.ptr
         self.producer = Producer(self.config)
         # self.hub = Hub()
+
+    @property
+    def chain(self):
+        return self._chain
+
     def get_p2p_manager(self):
         return self.p2p_manager
 
