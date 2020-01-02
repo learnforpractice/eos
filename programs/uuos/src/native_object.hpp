@@ -156,7 +156,8 @@ void        producer_resume_(void *ptr);
 bool        producer_paused_(void *ptr);
 
 
-void*       history_new_(void *ptr, string& cfg);
+void*       history_new_(void *chain_ptr, string& cfg);
+void        history_free_(void *ptr);
 void        history_get_actions_(void *ptr, const string& param, string& result);
 void        history_get_transaction_(void *ptr, const string& param, string& result);
 void        history_get_key_accounts_(void *ptr, const string& param, string& result);

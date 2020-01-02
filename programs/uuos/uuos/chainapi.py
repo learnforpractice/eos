@@ -1,10 +1,11 @@
 import _uuos
 class ChainApi(object):
+
     def __init__(self, chain_ptr):
         self.ptr = chain_ptr
 
     def get_info(self):
-        return _uuos.chain_api_get_info(chain_ptr)
+        return _uuos.chain_api_get_info(self.ptr)
 
     def get_activated_protocol_features(self, params):
         return _uuos.chain_api_get_activated_protocol_features(self.ptr, params)

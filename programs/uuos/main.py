@@ -109,6 +109,9 @@ class UUOSMain(application.Application):
         self.tasks = []
         self.client_count = 0
         self._chain = None
+        self._chain_api = None
+        self._history_api = None
+
         self.producer = None
         self.p2p_manager = P2pManager(config)
         UUOSMain.uuos = self
@@ -169,7 +172,10 @@ class UUOSMain(application.Application):
         logger.info(f'Shutdown uuos {signal} {self.chain.ptr}')
         if self.chain:
             self.chain.free()
-        
+
+        if self.history_api:
+            self.history_api.free()
+
         if self.producer:
             del self.producer
         self.p2p_manager.close()
@@ -248,6 +254,9 @@ class UUOSMain(application.Application):
         self = cls.uuos
         if self.chain:
             self.chain.free()
+
+        if self.history_api:
+            self.history_api.free()
 
         if self.producer:
             del self.producer

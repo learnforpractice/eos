@@ -793,6 +793,12 @@ void* history_new_(void *ptr, string& cfg) {
    return (void *)history;
 }
 
+void history_free_(void *ptr) {
+   if (ptr) {
+      delete (history_plugin*)ptr;
+   }
+}
+
 void history_get_actions_(void *ptr, const string& param, string& result) {
    auto history = (eosio::history_plugin*)ptr;
    auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_actions_params>();
