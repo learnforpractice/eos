@@ -95,7 +95,7 @@ namespace eosio {
          return fc::microseconds(150000);
       }
 
-      chainbase::database& db() {
+      chainbase::database& db() const {
          return _db;
       }
 
@@ -497,16 +497,18 @@ namespace eosio {
       }
 //      auto& db = app().get_plugin<chain_plugin>().chain().db();
 //      auto& db = my->chain_plug->chain().db();
+            ilog("");
 
-      chainbase::database& db = const_cast<chainbase::database&>(my->chain_plug->chain().db());
       {
-         const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
+         const auto& pub_key_idx = my->chain_plug->db().get_index<public_key_history_multi_index, by_pub_key>();
          auto itr = pub_key_idx.upper_bound(public_key_type());
          if (itr != pub_key_idx.end()) {
             //already initialized
             return;
          }
       }
+
+      chainbase::database& db = const_cast<chainbase::database&>(my->chain_plug->chain().db());
       const auto& accounts = db.get_index<account_metadata_index, by_name>();
       auto itr = accounts.upper_bound(account_name(0));
       int counter = 0;
@@ -539,8 +541,7 @@ namespace eosio {
    namespace history_apis {
       read_only::get_actions_result read_only::get_actions( const read_only::get_actions_params& params )const {
          edump((params));
-        auto& chain = history->chain_plug->chain();
-        const auto& db = chain.db();
+        const auto& db = history->chain_plug->db();
         const auto abi_serializer_max_time = history->chain_plug->get_abi_serializer_max_time();
 
         const auto& idx = db.get_index<account_history_index, by_account_action_seq>();
@@ -583,7 +584,7 @@ namespace eosio {
         auto end_time = start_time;
 
         get_actions_result result;
-        result.last_irreversible_block = chain.last_irreversible_block_num();
+        result.last_irreversible_block = history->chain_plug->chain().last_irreversible_block_num();
         while( start_itr != end_itr ) {
            const auto& a = db.get<action_history_object, by_action_sequence_num>( start_itr->action_sequence_num );
            fc::datastream<const char*> ds( a.packed_action_trace.data(), a.packed_action_trace.size() );
@@ -593,7 +594,7 @@ namespace eosio {
                                  start_itr->action_sequence_num,
                                  start_itr->account_sequence_num,
                                  a.block_num, a.block_time,
-                                 chain.to_variant_with_abi(t, abi_serializer_max_time)
+                                 history->chain_plug->chain().to_variant_with_abi(t, abi_serializer_max_time)
                                  });
 
            end_time = fc::time_point::now();
@@ -630,7 +631,7 @@ namespace eosio {
             return (*(input_id.data() + input_id_size) & 0xF0) == (*(id.data() + input_id_size) & 0xF0);
          };
 
-         const auto& db = chain.db();
+         const auto& db = history->chain_plug->db();
          const auto& idx = db.get_index<action_history_index, by_trx_id>();
          auto itr = idx.lower_bound( boost::make_tuple( input_id ) );
 
@@ -772,7 +773,7 @@ namespace eosio {
 
       read_only::get_controlled_accounts_results read_only::get_controlled_accounts(const get_controlled_accounts_params& params) const {
          std::set<account_name> accounts;
-         const auto& db = history->chain_plug->chain().db();
+         const auto& db = history->chain_plug->db();
          const auto& account_control_idx = db.get_index<account_control_history_multi_index, by_controlling>();
          auto range = account_control_idx.equal_range( params.controlling_account );
          for (auto obj = range.first; obj != range.second; ++obj)
