@@ -361,7 +361,7 @@ class Connection(object):
     def start_sync(self):
         # print("self.chain.last_irreversible_block_num():", self.chain.last_irreversible_block_num())
         if self.last_notice:
-            pending = self.last_notice.known_blocks['pending']
+            pending = self.last_notice.known_blocks.pending
         else:
             pending = self.last_handshake.head_num
         
@@ -498,7 +498,7 @@ class Connection(object):
             self.time_message = msg
         elif msg_type == 4:
             msg = NoticeMessage.unpack(msg)
-            pending = msg.known_blocks['pending']
+            pending = msg.known_blocks.pending
             self.last_notice = msg
             if pending > self.chain.fork_db_pending_head_block_num():
                 self.target = pending
@@ -539,7 +539,7 @@ class Connection(object):
         elif msg_type == 5:#request_message_type
             msg = RequestMessage.unpack(msg)
             logger.info(msg)
-            if msg.req_blocks['mode'] == 1: # request catch_up message
+            if msg.req_blocks.mode == 1: # request catch_up message
                 asyncio.create_task(self.request_catch_up(msg))
             # {
             #     "req_trx":{
@@ -618,7 +618,7 @@ class Connection(object):
             if self.sync_msg and self.sync_msg.end_block == num:
                 # if self.last_handshake.head_num == num:
                 #     self.send_handshake()
-                if self.last_notice.known_blocks['pending'] == num:
+                if self.last_notice.known_blocks.pending == num:
                     self.send_handshake()
                 else:
                     self.start_sync()
