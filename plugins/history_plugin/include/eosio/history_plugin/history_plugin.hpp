@@ -116,6 +116,18 @@ class read_only {
 
 } // namespace history_apis
 
+struct db_size_index_count {
+   string   index;
+   uint64_t row_count;
+};
+
+struct db_size_stats {
+   uint64_t                    free_bytes;
+   uint64_t                    used_bytes;
+   uint64_t                    size;
+   vector<db_size_index_count> indices;
+};
+
 struct history_plugin_options {
    string db_dir;
    uint64_t db_size_mb;
@@ -148,6 +160,7 @@ class history_plugin : public plugin<history_plugin> {
 
       void plugin_startup();
       void plugin_shutdown();
+      db_size_stats get_db_size();
 
       history_apis::read_only  get_read_only_api()const { return history_apis::read_only(history_const_ptr(my)); }
 
@@ -178,3 +191,6 @@ FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_params, (cont
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_results, (controlled_accounts) )
 
 FC_REFLECT(eosio::history_plugin_options, (db_dir)(db_size_mb)(filter_on)(filter_out)(filter_transfer) )
+
+FC_REFLECT( eosio::db_size_index_count, (index)(row_count) )
+FC_REFLECT( eosio::db_size_stats, (free_bytes)(used_bytes)(size)(indices) )

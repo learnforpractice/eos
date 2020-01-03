@@ -535,8 +535,20 @@ namespace eosio {
       my->applied_transaction_connection.reset();
    }
 
+   db_size_stats history_plugin::get_db_size() {
+      const chainbase::database& db = my->chain_plug->db();
+      db_size_stats ret;
 
+      ret.free_bytes = db.get_segment_manager()->get_free_memory();
+      ret.size = db.get_segment_manager()->get_size();
+      ret.used_bytes = ret.size - ret.free_bytes;
 
+      chainbase::database::database_index_row_count_multiset indices = db.row_count_per_index();
+      for(const auto& i : indices)
+         ret.indices.emplace_back(db_size_index_count{i.second, i.first});
+
+      return ret;
+   }
 
    namespace history_apis {
       read_only::get_actions_result read_only::get_actions( const read_only::get_actions_params& params )const {
@@ -875,6 +887,13 @@ void history_get_controlled_accounts_(void *ptr, const string& param, string& re
       auto history = (eosio::history_plugin*)ptr;
       auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_controlled_accounts_params>();
       result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param));
+   } CATCH_AND_LOG_EXCEPTION()
+}
+
+void history_get_db_size_(void *ptr, string& result) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      result = fc::json::to_string(history->get_db_size());
    } CATCH_AND_LOG_EXCEPTION()
 }
 

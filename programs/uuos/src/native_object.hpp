@@ -165,6 +165,7 @@ void        history_get_transaction_(void *ptr, const string& param, string& res
 void        history_get_key_accounts_(void *ptr, const string& param, string& result);
 void        history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
 void        history_get_controlled_accounts_(void *ptr, const string& param, string& result);
+void        history_get_db_size_(void *ptr, string& result);
 
 void        uuos_set_version();
 void        uuos_recover_key_(string& _digest, string& _sig, string& _pub);

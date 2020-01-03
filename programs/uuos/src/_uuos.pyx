@@ -175,6 +175,7 @@ cdef extern from "native_object.hpp":
     void        history_get_key_accounts_(void *ptr, const string& param, string& result);
     void        history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
     void        history_get_controlled_accounts_(void *ptr, const string& param, string& result);
+    void        history_get_db_size_(void *ptr, string& result);
 
     void        uuos_recover_key_(string& _digest, string& _sig, string& _pub)
     uint64_t    uuos_current_time_nano_()
@@ -797,6 +798,11 @@ def history_get_key_accounts_ex(uint64_t ptr, const string& param):
 def history_get_controlled_accounts(uint64_t ptr, const string& param):
     cdef string result
     history_get_controlled_accounts_(<void *>ptr, param, result)
+    return result
+
+def history_get_db_size(uint64_t ptr):
+    cdef string result
+    history_get_db_size_(<void *>ptr, result)
     return result
 
 g_accepted_block_cb = None

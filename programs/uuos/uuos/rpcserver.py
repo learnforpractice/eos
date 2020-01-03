@@ -213,6 +213,9 @@ async def history_get_controlled_accounts():
     data = await request.data
     return get_app().history_api.get_controlled_accounts(data)
 
+async def history_get_db_size():
+    return get_app().history_api.get_db_size()
+
 #------------------------net api---------------------
 async def net_connect():
     data = await request.data
@@ -346,6 +349,7 @@ async def rpc_server(producer, loop, http_server_address):
         ('/v1/history/get_key_accounts',                post_method, history_get_key_accounts),
         ('/v1/history/get_key_accounts_ex',             post_method, history_get_key_accounts_ex),
         ('/v1/history/get_controlled_accounts',         post_method, history_get_controlled_accounts),
+        ('/v1/history/get_db_size',                     get_post_method, history_get_db_size),
     ]
 
     net_api_routes = [

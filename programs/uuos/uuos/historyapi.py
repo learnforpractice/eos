@@ -64,3 +64,6 @@ class HistoryApi(object):
 
     def get_controlled_accounts(self, param):
         return _uuos.history_get_controlled_accounts(self.ptr, param)
+
+    def get_db_size(self):
+        return _uuos.history_get_db_size(self.ptr)
