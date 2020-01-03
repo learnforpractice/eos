@@ -79,6 +79,7 @@ app = App(__name__)
 
 internal_server_error = 500
 http_return_code = (500, 200)
+supported_apis = []
 
 async def chain_get_info():
     ret = get_app().chain_api.get_info()
@@ -304,16 +305,13 @@ async def db_get_size():
 
 @app.route('/v1/node/get_supported_apis', ["GET", "POST"])
 async def get_supported_apis():
-    return json.dumps(app.view_functions)
-
-@app.websocket('/ws')
-async def ws():
-    while True:
-        await websocket.send('hello')
+    global supported_apis
+    return json.dumps(supported_apis)
 
 post_method = ["POST"]
 get_post_method = ["GET", "POST"]
 async def rpc_server(producer, loop, http_server_address):
+    global supported_apis
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
 
@@ -381,26 +379,31 @@ async def rpc_server(producer, loop, http_server_address):
 
     if 'eosio::chain_api_plugin' in producer.config.plugin:
         for route, method, view_func in chain_api_routes:
+            supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::history_api_plugin' in producer.config.plugin:
         for route, method, view_func in history_api_routes:
+            supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::net_api_plugin' in producer.config.plugin:
         for route, method, view_func in net_api_routes:
+            supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::producer_api_plugin' in producer.config.plugin:
         for route, method, view_func in producer_api_routes:
+            supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
     if 'eosio::db_size_api_plugin' in producer.config.plugin:
         for route, method, view_func in db_size_api_routers:
+            supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
