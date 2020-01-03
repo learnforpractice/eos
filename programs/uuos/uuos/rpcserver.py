@@ -80,10 +80,6 @@ app = App(__name__)
 internal_server_error = 500
 http_return_code = (500, 200)
 
-@app.route('/')
-async def hello():
-    return 'hello'
-
 async def chain_get_info():
     ret = get_app().chain_api.get_info()
     return ret[1], http_return_code[ret[0]]
@@ -305,6 +301,10 @@ async def producer_get_supported_protocol_features():
 #----------------db size api-------------------
 async def db_get_size():
     return get_app().chain_api.db_size_api_get()
+
+@app.route('/v1/node/get_supported_apis', ["GET", "POST"])
+async def get_supported_apis():
+    return json.dumps(app.view_functions)
 
 @app.websocket('/ws')
 async def ws():
