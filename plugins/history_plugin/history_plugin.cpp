@@ -343,7 +343,9 @@ namespace eosio {
                return;
             for( const auto& atrace : trace->action_traces ) {
                if( !atrace.receipt ) continue;
-               on_action_trace( atrace );
+               try {
+                  on_action_trace( atrace );
+               }FC_LOG_AND_DROP();
             }
          }
    };
