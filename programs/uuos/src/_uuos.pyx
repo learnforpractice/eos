@@ -168,6 +168,7 @@ cdef extern from "native_object.hpp":
     void        producer_get_supported_protocol_features_(void *ptr, string& params, string& result)
 
     void*       history_new_(void *ptr, string& cfg)
+    bool        history_startup_(void *ptr);
     void        history_free_(void *ptr)
     void        history_get_actions_(void *ptr, const string& param, string& result);
     void        history_get_transaction_(void *ptr, const string& param, string& result);
@@ -765,6 +766,9 @@ def producer_get_supported_protocol_features(uint64_t ptr, string& params):
 
 def history_new(uint64_t ptr, string& cfg):
     return <uint64_t>history_new_(<void *>ptr, cfg)
+
+def history_startup(uint64_t ptr):
+    return history_startup_(<void *>ptr);
 
 def history_free(uint64_t ptr):
     history_free_(<void *>ptr)

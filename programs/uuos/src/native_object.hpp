@@ -158,6 +158,7 @@ bool        producer_paused_(void *ptr);
 
 
 void*       history_new_(void *chain_ptr, string& cfg);
+bool        history_startup_(void *ptr);
 void        history_free_(void *ptr);
 void        history_get_actions_(void *ptr, const string& param, string& result);
 void        history_get_transaction_(void *ptr, const string& param, string& result);

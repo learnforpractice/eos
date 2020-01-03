@@ -40,6 +40,9 @@ class HistoryApi(object):
     def new(self, cfg):
         return _uuos.history_new(self.ptr, cfg)
 
+    def startup(self):
+        return _uuos.history_startup(self.ptr)
+
     def free(self):
         if self.ptr:
             print('free history begin')

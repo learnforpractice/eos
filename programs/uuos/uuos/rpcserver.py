@@ -208,9 +208,9 @@ async def history_get_key_accounts():
     data = await request.data
     return get_app().history_api.get_key_accounts(data)
 
-async def history_get_key_accounts():
+async def history_get_key_accounts_ex():
     data = await request.data
-    return get_app().history_api.get_key_accounts(data)
+    return get_app().history_api.get_key_accounts_ex(data)
 
 async def history_get_controlled_accounts():
     data = await request.data
@@ -346,6 +346,7 @@ async def rpc_server(producer, loop, http_server_address):
         ('/v1/history/get_actions',                     post_method, history_get_actions),
         ('/v1/history/get_transaction',                 post_method, history_get_transaction),
         ('/v1/history/get_key_accounts',                post_method, history_get_key_accounts),
+        ('/v1/history/get_key_accounts_ex',             post_method, history_get_key_accounts_ex),
         ('/v1/history/get_controlled_accounts',         post_method, history_get_controlled_accounts),
     ]
 
