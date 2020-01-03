@@ -497,8 +497,6 @@ namespace eosio {
       }
 //      auto& db = app().get_plugin<chain_plugin>().chain().db();
 //      auto& db = my->chain_plug->chain().db();
-            ilog("");
-
       {
          const auto& pub_key_idx = my->chain_plug->db().get_index<public_key_history_multi_index, by_pub_key>();
          auto itr = pub_key_idx.upper_bound(public_key_type());
@@ -726,7 +724,7 @@ namespace eosio {
 
       read_only::get_key_accounts_results read_only::get_key_accounts(const get_key_accounts_params& params) const {
          std::set<account_name> accounts;
-         const auto& db = history->chain_plug->chain().db();
+         const auto& db = history->chain_plug->db();
          const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
          auto range = pub_key_idx.equal_range( params.public_key );
          for (auto obj = range.first; obj != range.second; ++obj)
@@ -737,7 +735,7 @@ namespace eosio {
       read_only::get_key_accounts_ex_results read_only::get_key_accounts_ex(const get_key_accounts_ex_params& params) const {
          std::vector<account_name> accounts;
          std::vector<int> active_flags;
-         const auto& db = history->chain_plug->chain().db();
+         const auto& db = history->chain_plug->db();
          const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
          auto range = pub_key_idx.equal_range( params.public_key );
          int count = 0;
@@ -789,6 +787,25 @@ namespace eosio {
 
 using namespace eosio;
 
+#define CATCH_AND_LOG_EXCEPTION()\
+   catch ( const fc::exception& err ) {\
+      uuos_on_error(err.dynamic_copy_exception());\
+   } catch ( const std::exception& e ) {\
+      fc::exception fce( \
+         FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
+         fc::std_exception_code,\
+         BOOST_CORE_TYPEID(e).name(),\
+         e.what() ) ;\
+      uuos_on_error(fce.dynamic_copy_exception());\
+   } catch( ... ) {\
+      fc::unhandled_exception e(\
+         FC_LOG_MESSAGE(warn, "rethrow"),\
+         std::current_exception());\
+      uuos_on_error(e.dynamic_copy_exception());\
+   }
+
+void uuos_on_error(const fc::exception_ptr& ex);
+
 void* history_new_(void *ptr, string& cfg) {
    history_plugin* history = nullptr;
    try {
@@ -796,13 +813,21 @@ void* history_new_(void *ptr, string& cfg) {
       history = new history_plugin();
       auto& chain = *((eosio::chain::controller*)ptr);
       history->plugin_initialize(chain, _cfg);
-      history->plugin_startup();
       return (void *)history;
    }FC_LOG_AND_DROP();
    if (history) {
       delete history;
    }
    return (void *)0;
+}
+
+bool history_startup_(void *ptr) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      history->plugin_startup();
+      return true;
+   }FC_LOG_AND_DROP();
+   return false;
 }
 
 void history_free_(void *ptr) {
@@ -812,32 +837,42 @@ void history_free_(void *ptr) {
 }
 
 void history_get_actions_(void *ptr, const string& param, string& result) {
-   auto history = (eosio::history_plugin*)ptr;
-   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_actions_params>();
-   result = fc::json::to_string(history->get_read_only_api().get_actions(_param));
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_actions_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_actions(_param));
+   } CATCH_AND_LOG_EXCEPTION()
 }
 
 void history_get_transaction_(void *ptr, const string& param, string& result) {
-   auto history = (eosio::history_plugin*)ptr;
-   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_transaction_params>();
-   result = fc::json::to_string(history->get_read_only_api().get_transaction(_param));
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_transaction_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_transaction(_param));
+   } CATCH_AND_LOG_EXCEPTION()
 }
 
 void history_get_key_accounts_(void *ptr, const string& param, string& result) {
-   auto history = (eosio::history_plugin*)ptr;
-   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_params>();
-   result = fc::json::to_string(history->get_read_only_api().get_key_accounts(_param));
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_key_accounts(_param));
+   } CATCH_AND_LOG_EXCEPTION()
 }
 
 void history_get_key_accounts_ex_(void *ptr, const string& param, string& result) {
-   auto history = (eosio::history_plugin*)ptr;
-   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_ex_params>();
-   result = fc::json::to_string(history->get_read_only_api().get_key_accounts_ex(_param));
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_ex_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_key_accounts_ex(_param));
+   } CATCH_AND_LOG_EXCEPTION()
 }
 
 void history_get_controlled_accounts_(void *ptr, const string& param, string& result) {
-   auto history = (eosio::history_plugin*)ptr;
-   auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_controlled_accounts_params>();
-   result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param));
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_controlled_accounts_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param));
+   } CATCH_AND_LOG_EXCEPTION()
 }
 
