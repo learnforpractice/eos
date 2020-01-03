@@ -10,6 +10,7 @@ import asyncio
 import aioconsole
 import argparse
 import signal
+import shutil
 
 from uuos.config import Config, default_config
 
@@ -272,10 +273,14 @@ if __name__ == "__main__":
     
     if config.replay_blockchain:
         state_dir = os.path.join(config.data_dir, 'state')
-        import shutil
-        shutil.rmtree(state_dir)
+        if os.path.exists(state_dir):
+            shutil.rmtree(state_dir)
         reversible_dir = os.path.join(config.data_dir, 'blocks/reversible')
-        shutil.rmtree(reversible_dir)
+        if os.path.exists(reversible_dir):
+            shutil.rmtree(reversible_dir)
+        history_dir = os.path.join(config.data_dir, 'history')
+        if os.path.exists(history_dir):
+            shutil.rmtree(history_dir)
     # signal.signal(signal.SIGHUP, shutting_down)
     # signal.signal(signal.SIGTERM, shutting_down)
     # signal.signal(signal.SIGINT, shutting_down)
