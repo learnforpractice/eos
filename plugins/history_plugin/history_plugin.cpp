@@ -790,12 +790,19 @@ namespace eosio {
 using namespace eosio;
 
 void* history_new_(void *ptr, string& cfg) {
-   auto _cfg = fc::json::from_string(cfg).as<eosio::history_plugin_options>();
-   auto *history = new history_plugin();
-   auto& chain = *((eosio::chain::controller*)ptr);
-   history->plugin_initialize(chain, _cfg);
-   history->plugin_startup();
-   return (void *)history;
+   history_plugin* history = nullptr;
+   try {
+      auto _cfg = fc::json::from_string(cfg).as<eosio::history_plugin_options>();
+      history = new history_plugin();
+      auto& chain = *((eosio::chain::controller*)ptr);
+      history->plugin_initialize(chain, _cfg);
+      history->plugin_startup();
+      return (void *)history;
+   }FC_LOG_AND_DROP();
+   if (history) {
+      delete history;
+   }
+   return (void *)0;
 }
 
 void history_free_(void *ptr) {

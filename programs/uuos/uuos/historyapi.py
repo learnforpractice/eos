@@ -34,6 +34,8 @@ class HistoryApi(object):
         cfg['filter_transfer'] = config.filter_transfer
         cfg = json.dumps(cfg)
         self.ptr = _uuos.history_new(get_app().chain.ptr, cfg)
+        if not self.ptr:
+            raise Exception('initialize history api failed!')
 
     def new(self, cfg):
         return _uuos.history_new(self.ptr, cfg)
