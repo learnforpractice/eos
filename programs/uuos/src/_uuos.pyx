@@ -184,6 +184,7 @@ cdef extern from "native_object.hpp":
 
     void        uuos_set_default_data_dir_(string& dir)
     void        uuos_set_default_config_dir_(string& dir)
+    void        uuos_shutdown_()
 
     void db_size_api_get_(void *ptr, string& result)
 
@@ -801,10 +802,13 @@ def history_get_controlled_accounts(uint64_t ptr, const string& param):
 g_accepted_block_cb = None
 cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
     global g_accepted_block_cb
-    if g_accepted_block_cb:
-        block = PyBytes_FromStringAndSize(packed_block.c_str(), packed_block.size())
-        id = PyBytes_FromStringAndSize(block_id.c_str(), block_id.size())
-        g_accepted_block_cb(block, block_num, id)
+    try:
+        if g_accepted_block_cb:
+            block = PyBytes_FromStringAndSize(packed_block.c_str(), packed_block.size())
+            id = PyBytes_FromStringAndSize(block_id.c_str(), block_id.size())
+            g_accepted_block_cb(block, block_num, id)
+    except KeyboardInterrupt:
+        uuos_shutdown_()
     return 1
 
 def set_accepted_block_callback(cb):
@@ -861,6 +865,9 @@ def uuos_set_default_data_dir(string& dir):
 
 def uuos_set_default_config_dir(string& dir):
     return uuos_set_default_config_dir_(dir)
+
+def uuos_shutdown():
+    uuos_shutdown_()
 
 def db_size_api_get(uint64_t ptr):
     cdef string result

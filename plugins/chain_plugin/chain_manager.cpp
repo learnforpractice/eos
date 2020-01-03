@@ -19,6 +19,7 @@
    }
 
 static string s_last_error;
+static bool s_shutdown = false;
 
 string& uuos_get_last_error_() {
     return s_last_error;
@@ -111,7 +112,7 @@ bool chain_manager::init(string& config, string& protocol_features_dir, string& 
 }
 
 bool chain_manager::startup() {
-    auto shutdown = [](){ return false; };
+    auto shutdown = [](){ return s_shutdown; };
     try {
         if (snapshot_dir.size()) {
             auto infile = std::ifstream(snapshot_dir, (std::ios::in | std::ios::binary));
@@ -732,3 +733,6 @@ void uuos_set_log_level_(string& logger_name, int level) {
     fc::logger::get(logger_name).set_log_level(fc::log_level(level));
 }
 
+void uuos_shutdown_() {
+    s_shutdown = true;
+}
