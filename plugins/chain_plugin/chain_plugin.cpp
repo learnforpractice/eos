@@ -2466,9 +2466,11 @@ CHAIN_API_RO(abi_bin_to_json)
 CHAIN_API_RO(get_required_keys)
 CHAIN_API_RO(get_transaction_id)
 
+void uuos_on_error(const fc::exception_ptr& ex);
+
 int chain_api_push_transaction_(void *ptr, string& params, string& result) {
-   auto next = [&result](const fc::exception_ptr& ex) {
-      result = ex->to_detail_string();
+   auto next = [](const fc::exception_ptr& ex) {
+      uuos_on_error(ex);
    };
    try {
       auto& cc = chain_get_controller(ptr);

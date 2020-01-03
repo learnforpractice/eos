@@ -48,3 +48,6 @@ def set_default_data_dir(dir):
 
 def set_default_config_dir(dir):
     _uuos.uuos_set_default_config_dir(dir)
+
+def get_last_error():
+    return _uuos.uuos_get_last_error()

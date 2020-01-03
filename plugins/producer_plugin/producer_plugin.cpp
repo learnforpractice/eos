@@ -2059,14 +2059,14 @@ void producer_free_(void *ptr) {
    delete (producer_plugin*)ptr;
 }
 
-fc::variant handle_transaction_trace(eosio::chain::controller& db, const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
-   fc::variant output;
+int handle_transaction_trace(eosio::chain::controller& db, const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result, fc::variant& output) {
    auto next = [&output](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
       output = fc::json::to_string(result);
    };
    
    if (result.contains<fc::exception_ptr>()) {
-      return fc::variant(result.get<fc::exception_ptr>());
+      output = fc::variant(result.get<fc::exception_ptr>());
+      return 0;
    } else {
       auto trx_trace_ptr = result.get<transaction_trace_ptr>();
 
@@ -2127,17 +2127,22 @@ fc::variant handle_transaction_trace(eosio::chain::controller& db, const fc::sta
          const chain::transaction_id_type& id = trx_trace_ptr->id;
          mutable_variant_object o;
          o("transaction_id", id)("processed", output);
-         return fc::variant(o);
+         output = fc::variant(o);
+         return 1;
       } CATCH_AND_CALL(next);
-      return output;
+      return 0;
    }
 }
 
+void uuos_on_error(const fc::exception_ptr& ex);
+
 int producer_process_incomming_transaction_(void *ptr, string& packed_trx, string& raw_packed_trx, string& out) {
+   int ret = 1;
    auto& producer = *(producer_plugin*)ptr;
    auto& db = producer.my->chain_plug->chain();
-   auto next = [&out, &db](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
-      auto output = handle_transaction_trace(db, result);
+   auto next = [&out, &db, &ret](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
+      fc::variant output;
+      ret = handle_transaction_trace(db, result, output);
       out = fc::json::to_string(output);
    };
 
@@ -2155,7 +2160,7 @@ int producer_process_incomming_transaction_(void *ptr, string& packed_trx, strin
       raw_packed_trx = string(buffer_size, 0);
       fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), buffer_size );
       fc::raw::pack( ds, _packed_trx );
-      return 1;
+      return ret;
    } catch ( boost::interprocess::bad_alloc& ) {
       chain_plugin::handle_db_exhaustion();
    } catch ( const std::bad_alloc& ) {

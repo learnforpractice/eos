@@ -122,6 +122,7 @@ class Message(object):
         self.type = message_type
         self.data = data
         self.event = asyncio.Event()
+        self.ret = 1
         self.result = None
         self.connection = None
 
@@ -242,6 +243,7 @@ class Producer(object):
             if msg.type == Message.type_transaction:
                 ret, result, raw_packed_trx = self.process_incomming_transaction(msg.data.decode('utf8'))
                 #TODO: check failure of process transaction
+                msg.ret = ret
                 msg.notify(result)
                 # continue
                 if ret == 0:

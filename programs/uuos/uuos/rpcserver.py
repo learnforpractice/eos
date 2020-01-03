@@ -189,8 +189,9 @@ async def chain_push_transaction():
     data = await request.data
     msg = producer.TransactionMessage(data)
     result = await msg.wait()
+    if not msg.ret:
+        return result, 500
     return result
-
 
 #---------------history api----------------
 async def history_get_actions():
