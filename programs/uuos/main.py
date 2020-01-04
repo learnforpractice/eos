@@ -120,6 +120,7 @@ class UUOSMain(application.Application):
         chain_cfg = ControllerConfig(default_config)
         # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
         # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
+        chain_cfg.contracts_console = config.contracts_console
         chain_cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(config.data_dir, 'state')
 

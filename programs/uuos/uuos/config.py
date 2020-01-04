@@ -102,7 +102,7 @@ class Config(object):
         parser.add_argument('--snapshot',               type=str,      default='',               help='File to read Snapshot State from')
         parser.add_argument('--snapshots-dir',          type=str,      default='snapshots',      help='the location of the snapshots directory (absolute path or relative to application data dir)')
         parser.add_argument('--chain-state-db-size-mb', type=int,      default=300,              help='the location of the snapshots directory (absolute path or relative to application data dir)')
-
+        parser.add_argument('--contracts-console',  default=False, action="store_true",      help='')
 
         #producer
         parser.add_argument('-p', '--producer-name',    type=str, default=[], action='append',   help='ID of producer controlled by this node (e.g. inita; may specify multiple times)')
