@@ -1,5 +1,3 @@
-import tempfile
-# tempfile.mkdtemp()
 import os
 import io
 import gc
@@ -7,28 +5,28 @@ import time
 import sys
 import ujson as json
 import struct
-import logging
 import asyncio
-import aioconsole
-import argparse
+import shutil
+import tempfile
+import unittest
+from datetime import datetime, timedelta
 
+test_dir = os.path.dirname(__file__)
+sys.path.append(os.path.join(test_dir, '..'))
+
+from uuos.jsonobject import JsonObject
 from uuos.config import Config, default_config
 
-from uuos.chainapi import ChainApi
 from uuos.chain import Chain
-from uuos.historyapi import HistoryApi
-from uuos.connection import Connection
-from uuos.producer import Producer
 
-from uuos.rpcserver import rpc_server
 from uuos.nativeobject import ControllerConfig
 from uuos import application
-from uuos.p2pmanager import P2pManager
 import uuos
 
 gc.set_debug(gc.DEBUG_STATS)
 
 logger = application.get_logger(__name__)
+
 
 genesis_uuos = {
   "initial_timestamp": "2019-10-24T00:00:00.888",
@@ -78,64 +76,46 @@ genesis_eos = {
     }
 }
 
-class Hub():
+class Object():
+    pass
+
+class ChainTest(object):
 
     def __init__(self):
-        self.subscriptions = set()
+        logger.info('+++++++++init+++++++++++')
+        config = Object()
+        config.data_dir = tempfile.mkdtemp()
+        config.config_dir = tempfile.mkdtemp()
 
-    def publish(self, message):
-        for queue in self.subscriptions:
-            queue.put_nowait(message)
+        print(config.data_dir, config.config_dir)
 
+        config.chain_state_db_size_mb = 50
+        config.contracts_console = True
+        config.uuos_mainnet = False
+        config.network = 'test'
+        config.snapshot = ''
 
-class Subscription():
-
-    def __init__(self, hub):
-        self.hub = hub
-        self.queue = asyncio.Queue()
-
-    def __enter__(self):
-        hub.subscriptions.add(self.queue)
-        return self.queue
-
-    def __exit__(self, type, value, traceback):
-        hub.subscriptions.remove(self.queue)
-
-class UUOSMain(application.Application):
-
-    def __init__(self, config):
-        super().__init__()
-        application.set_app(self)
-        self.config = config
-        self.tasks = []
-        self.client_count = 0
         self._chain = None
-        self._chain_api = None
-        self._history_api = None
-
-        self.producer = None
-        self.p2p_manager = P2pManager(config)
-        UUOSMain.uuos = self
 
         chain_cfg = ControllerConfig(default_config)
-        # "blocks_dir": "/Users/newworld/dev/uuos2/build/programs/dd/blocks",
-        # "state_dir": "/Users/newworld/dev/uuos2/build/programs/dd/state",
         chain_cfg.contracts_console = config.contracts_console
         chain_cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(config.data_dir, 'state')
+#
+        chain_cfg.state_guard_size = 5*1024*1024
+        chain_cfg.reversible_cache_size = 50*1024*1024
+        chain_cfg.reversible_guard_size = 5*1024*1024
+
 
         uuos.set_default_data_dir(config.data_dir)
         uuos.set_default_config_dir(config.config_dir)
-
-        if config.snapshot:
-            shared_memory_file = os.path.join(chain_cfg.state_dir, 'shared_memory.bin')
-            if os.path.exists(shared_memory_file):
-                raise Exception("Snapshot can only be used to initialize an empty database.")
 
         chain_cfg.state_size = config.chain_state_db_size_mb * 1024 * 1024
 
         print('config.uuos_mainnet', config.uuos_mainnet)
         chain_cfg.uuos_mainnet = False
+
+        self.config = config
         if self.config.network == 'uuos':
             chain_cfg.uuos_mainnet = True
             chain_cfg.genesis = genesis_uuos
@@ -150,8 +130,83 @@ class UUOSMain(application.Application):
         logger.info(chain_cfg)
         self._chain = Chain(chain_cfg, config.config_dir, config.snapshot)
 
-        self._chain_api = ChainApi(self.chain.ptr)
-        self._history_api = HistoryApi()
+        self.init()
+
+    def init(self):
         self.chain.startup()
-        self.history_api.startup()
-        self.producer = Producer(self.config)
+        uuos.set_accepted_block_callback(self.on_accepted_block)
+
+    @property
+    def chain(self):
+        return self._chain
+
+    def on_accepted_block(self, block, num, block_id):
+        pass
+
+    def start_block(self):
+        self.chain.abort_block()
+        self.chain.start_block(datetime.utcnow().isoformat())
+
+    def producer_block(self, skip_time):
+        if isinstance(skip_time, int):
+            skip_time = timedelta(microseconds=skip_time)
+        head_time = self.chain.head_block_time()
+        next_time = head_time + skip_time
+        self.chain.is_building_block()
+        return
+        if self.chain.is_building_block() or self.chain.pending_block_time() != next_time:
+            self.start_block( next_time )
+
+    def test1(self):
+        logger.info('++++++++++++++test1+++++++++++++++')
+        # datetime.strptime('2020-01-08T12:07:18.669513', "%Y-%m-%dT%H:%M:%S.%f")
+        # t = datetime.strptime("2018-06-01T12:00:00.000", "%Y-%m-%dT%H:%M:%S.%f")
+        # print('+++datetime:', t)
+        # t += timedelta(milliseconds=500)
+        # print(os.getpid())
+        # # input('>>>')
+        # print('++++t:', t.isoformat())
+        # print('++++self._chain', self.chain)
+        # print('head_block_num:', self.chain.head_block_num())
+        # print('++++head_block_time:', self.chain.head_block_time())
+        skip_time = timedelta(microseconds=500)
+        head_time = self.chain.head_block_time()
+        next_time = head_time + skip_time
+        producer = self.chain.get_scheduled_producer(next_time)
+        print(producer)
+        self.start_block()
+        # self.producer_block(skip_time)
+
+    def free(self):
+        self.chain.free()
+        shutil.rmtree(self.config.config_dir)
+        shutil.rmtree(self.config.data_dir)
+
+class UUOSTester(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        super(UUOSTester, self).__init__(testName)
+        self.extra_args = extra_args
+        self.chain = ChainTest()
+        UUOSTester.chain = self.chain
+
+    def test1(self):
+        self.chain.test1()
+        # datetime.datetime.utcnow().isoformat()
+
+    @classmethod
+    def setUpClass(cls):
+        print('+++setup')
+
+    @staticmethod
+    def disconnect():
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        print('+++teardown')
+        if UUOSTester.chain:
+            UUOSTester.chain.free()
+            UUOSTester.chain = None
+
+if __name__ == '__main__':
+    unittest.main()
