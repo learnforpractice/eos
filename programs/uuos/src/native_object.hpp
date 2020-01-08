@@ -109,7 +109,7 @@ void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, strin
 void chain_commit_block_(void *ptr);
 void chain_pop_block_(void *ptr);
 void chain_get_account_(void *ptr, uint64_t account, string& result);
-
+void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
 
 int     chain_api_get_info_(void *chain_ptr, string& info);
 

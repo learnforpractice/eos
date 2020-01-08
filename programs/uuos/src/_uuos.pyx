@@ -124,6 +124,7 @@ cdef extern from "native_object.hpp":
     void chain_commit_block_(void *ptr);
     void chain_pop_block_(void *ptr);
     void chain_get_account_(void *ptr, uint64_t account, string& result);
+    void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
 
     int    chain_api_get_info_(void *chain_ptr, string& info)
     int    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
@@ -606,6 +607,13 @@ def chain_pop_block(uint64_t ptr):
 def chain_get_account(uint64_t ptr, uint64_t account):
     cdef string result
     return chain_get_account_(<void *>ptr, account, result)
+
+def chain_get_scheduled_producer(uint64_t ptr, string& block_time):
+    cdef string result
+    chain_get_scheduled_producer_(<void *>ptr, block_time, result)
+    return result
+
+#------------chain api----------------
 
 def chain_api_get_info(uint64_t chain_ptr):
     cdef string info

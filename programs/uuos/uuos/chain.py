@@ -1,5 +1,6 @@
 import _uuos
 import ujson as json
+from datetime import datetime
 from .jsonobject import JsonObject
 
 class Chain(object):
@@ -15,7 +16,7 @@ class Chain(object):
         return _uuos.chain_startup(self.ptr)
 
     def __del__(self):
-        self.free()
+        pass
 
     def free(self):
         if self.ptr:
@@ -24,6 +25,9 @@ class Chain(object):
 
     def id(self):
         return _uuos.chain_id(self.ptr)
+
+    def start_block(self, _time, confirm_block_count=0):
+        _uuos.chain_start_block(self.ptr, _time, confirm_block_count)
 
     def abort_block(self):
         return _uuos.chain_abort_block(self.ptr)
@@ -106,7 +110,8 @@ class Chain(object):
         return _uuos.chain_head_block_num(self.ptr)
 
     def head_block_time(self):
-        return _uuos.chain_head_block_time(self.ptr)
+        iso_time = _uuos.chain_head_block_time(self.ptr)
+        return datetime.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.%f")
 
     def head_block_id(self):
         return _uuos.chain_head_block_id(self.ptr)
@@ -151,7 +156,8 @@ class Chain(object):
         return _uuos.chain_fork_db_pending_head_block_producer(self.ptr)
 
     def pending_block_time(self):
-        return _uuos.chain_pending_block_time(self.ptr)
+        iso_time = _uuos.chain_pending_block_time(self.ptr)
+        return datetime.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.%f")
 
     def pending_block_producer(self):
         return _uuos.chain_pending_block_producer(self.ptr)
@@ -329,3 +335,8 @@ class Chain(object):
 
     def is_building_block(self):
         return _uuos.chain_is_building_block(self.ptr)
+
+    def get_scheduled_producer(self, block_time):
+        if isinstance(block_time, datetime):
+            block_time = block_time.isoformat()
+        return _uuos.chain_get_scheduled_producer(self.ptr, block_time)

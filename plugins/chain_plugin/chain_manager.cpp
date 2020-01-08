@@ -196,10 +196,10 @@ void chain_id_(void *ptr, string& chain_id) {
     } FC_LOG_AND_DROP();
 }
 
-void chain_start_block_(void *ptr, string& time, uint16_t confirm_block_count) {
+void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count) {
     auto& chain = chain_get_controller(ptr);
-    auto _time = fc::json::from_string(time).as<block_timestamp_type>();
-    chain.start_block(_time, confirm_block_count);
+    auto time = fc::time_point::from_iso_string(_time);
+    chain.start_block(block_timestamp_type(time), confirm_block_count);
 }
 
 int chain_abort_block_(void *ptr) {
@@ -748,8 +748,16 @@ void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes
 
 bool chain_all_subjective_mitigations_disabled_(void *ptr) {
     auto& chain = chain_get_controller(ptr);
-    chain.all_subjective_mitigations_disabled();
+    return chain.all_subjective_mitigations_disabled();
 }
+
+void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    auto block_time = fc::time_point::from_iso_string(_block_time);
+    auto producer = chain.head_block_state()->get_scheduled_producer(block_time);
+    result = fc::json::to_string(producer);
+}
+
 /*
          bool skip_db_sessions( block_status bs )const;
 */
