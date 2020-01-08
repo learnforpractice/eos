@@ -1,14 +1,10 @@
 import os
-import io
 import gc
-import time
 import sys
 import ujson as json
 import struct
-import logging
 import asyncio
 import aioconsole
-import argparse
 import signal
 import shutil
 
@@ -192,8 +188,8 @@ class UUOSMain(application.Application):
     def handle_exception(self, loop, context):
         # context["message"] will always be there; but context["exception"] may not
         msg = context.get("exception", context["message"])
-        logging.error(f"Caught exception: {msg}")
-        logging.info("Shutting down...")
+        logger.error(f"Caught exception: {msg}")
+        logger.info("Shutting down...")
 #        asyncio.create_task(self.shutdown(0, loop))
 
     async def interactive_console(self):
