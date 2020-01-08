@@ -196,6 +196,12 @@ void chain_id_(void *ptr, string& chain_id) {
     } FC_LOG_AND_DROP();
 }
 
+void chain_start_block_(void *ptr, string& time, uint16_t confirm_block_count) {
+    auto& chain = chain_get_controller(ptr);
+    auto _time = fc::json::from_string(time).as<block_timestamp_type>();
+    chain.start_block(_time, confirm_block_count);
+}
+
 int chain_abort_block_(void *ptr) {
    try {
         auto& chain = chain_get_controller(ptr);
@@ -203,6 +209,58 @@ int chain_abort_block_(void *ptr) {
         return 1;
    } FC_LOG_AND_DROP();
    return 0;
+}
+
+void chain_get_unapplied_transactions_(void *ptr, string& result) {
+    vector<transaction_id_type> values;
+    auto& chain = chain_get_controller(ptr);
+    auto & trxs = chain.get_unapplied_transactions();
+    for (auto& item : trxs) {
+        values.push_back(item.second->id);
+    }
+    result = fc::json::to_string(fc::variant(values));
+}
+
+//fc::time_point deadline, uint32_t billed_cpu_time_us = 0
+void chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    auto ptrx = std::make_shared<packed_transaction>();
+    *ptrx = fc::json::from_string(packed_trx).as<packed_transaction>();
+    auto ptrx_meta = std::make_shared<transaction_metadata>( ptrx );
+    auto _deadline = fc::time_point::from_iso_string(deadline);
+    auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us);
+    result = fc::json::to_string(ret);
+}
+
+void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    auto id = transaction_id_type(scheduled_tx_id);
+    auto _deadline = fc::time_point::from_iso_string(deadline);
+    auto ret = chain.push_scheduled_transaction(id, _deadline, billed_cpu_time_us);
+    result = fc::json::to_string(ret);
+}
+
+// void chain_finalize_block_(void *ptr) {
+//     auto& chain = chain_get_controller(ptr);
+//     chain.finalize_block();
+// }
+
+void chain_commit_block_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    chain.commit_block();
+}
+
+//void sign_block( const std::function<signature_type( const digest_type& )>& signer_callback );
+
+void chain_pop_block_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    chain.pop_block();
+}
+
+void chain_get_account_(void *ptr, uint64_t account, string& result) {
+    auto& chain = chain_get_controller(ptr);
+    auto ret = chain.get_account(account_name(account));
+    result = fc::json::to_string(ret);
 }
 
 void chain_get_global_properties_(void *ptr, string& result) {

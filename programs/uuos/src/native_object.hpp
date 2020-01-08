@@ -102,6 +102,15 @@ void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes
 bool chain_all_subjective_mitigations_disabled_(void *ptr);
 
 
+void chain_start_block_(void *ptr, string& time, uint16_t confirm_block_count);
+void chain_get_unapplied_transactions_(void *ptr, string& result);
+void chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
+void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
+void chain_commit_block_(void *ptr);
+void chain_pop_block_(void *ptr);
+void chain_get_account_(void *ptr, uint64_t account, string& result);
+
+
 int     chain_api_get_info_(void *chain_ptr, string& info);
 
 #define DEF_CHAIN_API_RO(api_name) \

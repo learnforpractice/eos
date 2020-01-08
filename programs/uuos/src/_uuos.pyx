@@ -10,6 +10,7 @@ cdef extern from * :
     ctypedef long long int64_t
     ctypedef unsigned long long uint64_t
     ctypedef unsigned int uint32_t
+    ctypedef unsigned short uint16_t
 
 cdef extern from "Python.h":
     object PyBytes_FromStringAndSize(const char* str, int size)
@@ -116,6 +117,13 @@ cdef extern from "native_object.hpp":
     void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
     bool chain_all_subjective_mitigations_disabled_(void *ptr);
 
+    void chain_start_block_(void *ptr, string& time, uint16_t confirm_block_count);
+    void chain_get_unapplied_transactions_(void *ptr, string& result);
+    void chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
+    void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
+    void chain_commit_block_(void *ptr);
+    void chain_pop_block_(void *ptr);
+    void chain_get_account_(void *ptr, uint64_t account, string& result);
 
     int    chain_api_get_info_(void *chain_ptr, string& info)
     int    chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result)
@@ -570,6 +578,34 @@ def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
     cdef string raw_block
     chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
     return <bytes>raw_block
+
+def chain_start_block(uint64_t ptr, string& time, uint16_t confirm_block_count):
+    chain_start_block_(<void *>ptr, time, confirm_block_count)
+
+def chain_get_unapplied_transactions(uint64_t ptr):
+    cdef string result
+    chain_get_unapplied_transactions_(<void *>ptr, result)
+    return result
+
+def chain_push_transaction(uint64_t ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us):
+    cdef string result
+    chain_push_transaction_(<void *>ptr, packed_trx, deadline, billed_cpu_time_us, result)
+    return result
+
+def chain_push_scheduled_transaction(uint64_t ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us):
+    cdef string result
+    chain_push_scheduled_transaction_(<void *>ptr, scheduled_tx_id, deadline, billed_cpu_time_us, result)
+    return result
+
+def chain_commit_block(uint64_t ptr):
+    return chain_commit_block_(<void *>ptr)
+
+def chain_pop_block(uint64_t ptr):
+    chain_pop_block_(<void *>ptr)
+
+def chain_get_account(uint64_t ptr, uint64_t account):
+    cdef string result
+    return chain_get_account_(<void *>ptr, account, result)
 
 def chain_api_get_info(uint64_t chain_ptr):
     cdef string info
