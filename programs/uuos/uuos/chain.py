@@ -367,7 +367,11 @@ class Chain(object):
         _uuos.chain_finalize_block(self.ptr, priv_key)
 
     def pack_action_args(self, name, action, args):
+        if isinstance(args, dict):
+            args = json.dumps(args)
         return _uuos.chain_pack_action_args(self.ptr, name, action, args)
 
     def gen_transaction(self, _actions, expiration, reference_block_id, _chain_id, compress, _private_key):
+        if isinstance(_actions, dict):
+            _actions = json.dumps(_actions)
         return _uuos.chain_gen_transaction(_actions, expiration, reference_block_id, _chain_id, compress, _private_key)

@@ -222,7 +222,7 @@ void chain_get_unapplied_transactions_(void *ptr, string& result) {
     result = fc::json::to_string(fc::variant(values));
 }
 
-bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector<char> result) {
+bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _args, vector<char>& result) {
     try {
         auto& chain = chain_get_controller(ptr);
         const auto& accnt = chain.db().get<account_object, by_name>( account_name(name) );
@@ -233,9 +233,12 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& ar
         auto serializer = abi_serializer( abi, fc::microseconds(150000) );
         auto action_type = serializer.get_action_type(action);
         EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
+
+        fc::variant args = fc::json::from_string(_args);
         result = serializer.variant_to_binary(action_type, args, fc::microseconds(150000));
+        return true;
     } FC_LOG_AND_DROP();
-    return true;
+    return false;
 }
 
 void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result) {
@@ -267,7 +270,7 @@ void chain_gen_transaction_(string& _actions, string& expiration, string& refere
     } FC_LOG_AND_DROP();
 }
 
-void chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
+bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
     auto& chain = chain_get_controller(ptr);
     auto ptrx = std::make_shared<packed_transaction>();
     vector<char> packed_trx(_packed_trx.c_str(), _packed_trx.c_str()+_packed_trx.size());
@@ -276,6 +279,10 @@ void chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, u
     auto _deadline = fc::time_point::from_iso_string(deadline);
     auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us);
     result = fc::json::to_string(ret);
+    if (ret->except) {
+        return false;
+    }
+    return true;
 }
 
 void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result) {
@@ -311,10 +318,12 @@ void chain_pop_block_(void *ptr) {
     chain.pop_block();
 }
 
-void chain_get_account_(void *ptr, uint64_t account, string& result) {
-    auto& chain = chain_get_controller(ptr);
-    auto ret = chain.get_account(account_name(account));
-    result = fc::json::to_string(ret);
+void chain_get_account_(void *ptr, string& account, string& result) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        auto ret = chain.get_account(account_name(account));
+        result = fc::json::to_string(ret);
+    } FC_LOG_AND_DROP();
 }
 
 void chain_get_global_properties_(void *ptr, string& result) {

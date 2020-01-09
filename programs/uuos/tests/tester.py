@@ -9,6 +9,7 @@ import asyncio
 import shutil
 import tempfile
 import unittest
+import platform
 
 test_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(test_dir, '..'))
@@ -20,6 +21,7 @@ from uuos.nativeobject import SignedBlockMessage, PackedTransactionMessage
 from uuos import config
 
 from uuos.chain import Chain
+from uuos.chainapi import ChainApi
 
 from uuos.nativeobject import ControllerConfig
 from uuos import application
@@ -137,34 +139,56 @@ class ChainTest(object):
         self._chain = Chain(chain_cfg, options.config_dir, options.snapshot)
 
         self.init()
+        
+        self.chain_api = ChainApi(self.chain.ptr)
 
     def init(self):
         self.chain.startup()
         uuos.set_accepted_block_callback(self.on_accepted_block)
+        self.start_block()
+        key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
+        systemAccounts = [
+                'eosio.bpay',
+                'eosio.msig',
+                'eosio.names',
+                'eosio.ram',
+                'eosio.ramfee',
+                'eosio.saving',
+                'eosio.stake',
+                'eosio.token',
+                'eosio.vpay',
+                'eosio.rex',
+
+                'eosio.jit',
+                'eosio.jitfee',
+                'uuos',
+                'hello',
+                'helloworld12',
+                'helloworld11'
+        ]
+        for a in systemAccounts:
+            self.create_account('eosio', a, key, key)
 
     @property
     def chain(self):
         return self._chain
 
     def on_accepted_block(self, block, num, block_id):
-        msg = SignedBlockMessage.unpack(block)
-        print(msg)
+        pass
+        # msg = SignedBlockMessage.unpack(block)
+        # print(msg)
 
     def calc_pending_block_time(self):
 #        self.chain.abort_block()
         now = datetime.utcnow()
         base = self.chain.head_block_time()
-        print(isoformat(base), isoformat(now))
         if base < now:
             base = now
         min_time_to_next_block = config.block_interval_us - int(base.timestamp()*1e6) % config.block_interval_us
         print('min_time_to_next_block:', min_time_to_next_block)
-        logger.info(f"+++++++++base: {isoformat(base)}")
         block_time = base + timedelta(microseconds=min_time_to_next_block)
-        logger.info(f"+++block_time: {isoformat(block_time)}")
         if block_time - now < timedelta(microseconds=config.block_interval_us/10):
             block_time += timedelta(microseconds=config.block_interval_us)        
-        logger.info(f"+++block_time: {isoformat(block_time)}")
         return block_time
 
     #   permission_level
@@ -176,31 +200,141 @@ class ChainTest(object):
     #   vector<permission_level>   authorization;
     #   bytes                      data;
 
+    def push_actions(self, actions):
+        chain_id = self.chain.id()
+        ref_block_id = self.chain.last_irreversible_block_id()
+        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
+        actions = json.dumps(actions)
+        expiration = datetime.utcnow() + timedelta(seconds=60)
+        expiration = isoformat(expiration)
+        raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
+#        print(PackedTransactionMessage.unpack(raw_signed_trx))
+        deadline = datetime.utcnow() + timedelta(microseconds=30000)
+        billed_cpu_time_us = 2000
+        ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
+#        print(ret, result)
+        if not ret:
+            result = json.loads(result)
+            raise Exception(result['except'])
 
-    def start_block(self):
+    def create_account(self, creator, account, owner_key, active_key):
+        actions = []
+        logger.info(f'{creator} {account}')
+        args = {
+            'creator': creator,
+            'name': account,
+            'owner': {'threshold': 1,
+                    'keys': [{'key': owner_key, 'weight': 1}],
+                    'accounts': [],
+                    'waits': []
+                    },
+            'active': {'threshold': 1,
+                        'keys': [{'key': active_key, 'weight': 1}],
+                        'accounts': [],
+                        'waits': []
+                    }
+        }
+        newaccount_args = self.chain.pack_action_args('eosio', 'newaccount', args)
+        if not newaccount_args:
+            raise Exception('bad args')
+        newaccount_action = {
+            'account': 'eosio',
+            'name': 'newaccount',
+            'data': newaccount_args.hex(),
+            'authorization':[{'actor':'eosio', 'permission':'active'}]
+        }
+        actions.append(newaccount_action)
+        return self.push_actions(actions)
+
+    def deploy_contract(self, account, code, abi):
+        actions = []
+        setcode = {"account": account,
+                   "vmtype": 0,
+                   "vmversion": 0,
+                   "code": code.hex()
+        }
+
+        setcode_args = self.chain.pack_action_args(account, 'setcode', setcode)
+        actions = []
+        setcode_action = {
+            'account': 'eosio',
+            'name': 'setcode',
+            'data': setcode_args.hex(),
+            'authorization':[{'actor': account, 'permission':'active'}]
+        }
+        actions.append(setcode)
+
+        setabi_args = self.chain.pack_action_args('eosio', 'setabi', {'account':account, 'abi':abi.hex()})
+        setabi_action = {
+            'account': 'eosio',
+            'name': 'setabi',
+            'data': setabi_args.hex(),
+            'authorization':[{'actor': account, 'permission':'active'}]
+        }
+        actions.append(setabi_action)
+        self.push_actions(actions)
+
+    def deploy_eosio_token(self):
+        contract_path = '/Users/newworld/dev/eos/build/contracts'
+        if platform.system() == 'Linux':
+            contract_path = '/home/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
+        else:
+            contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
+
+        code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
+        abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
+        with open(code_path, 'rb') as f:
+            code = f.read()
+        with open(abi_path, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('eosio.token', code, abi)
+
+    def gen_trx(self):
+        chain_id = self.chain.id()
+        ref_block_id = self.chain.last_irreversible_block_id()
+        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
+        actions = []
+        action = {
+            'account':'eosio',
+            'name':'sayhello',
+            'data':'aabbcc',
+            'authorization':[{'actor':'eosio', 'permission':'active'}]
+        }
+        actions.append(action)
+        actions = json.dumps(actions)
+        expiration = datetime.utcnow() + timedelta(seconds=60)
+        expiration = isoformat(expiration)
+        r = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
+#        print(r)
+        return r
+
+        print(r)
+        r = PackedTransactionMessage.unpack(r)
+        print(r)
+
+    def start_block_test(self):
         for i in range(10):
             self.chain.abort_block()
             self.chain.start_block(isoformat(self.calc_pending_block_time()))
             trx = self.gen_trx()
             deadline = datetime.utcnow() + timedelta(microseconds=30000)
             billed_cpu_time_us = 2000
-            ret = self.chain.push_transaction(trx, isoformat(deadline), billed_cpu_time_us)
-            print(ret)
+            ret, result = self.chain.push_transaction(trx, isoformat(deadline), billed_cpu_time_us)
+            print(ret, result)
             trxs = self.chain.get_unapplied_transactions()
             print(trxs)
             self.chain.finalize_block('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
             self.chain.commit_block()
             print('head_block_num:', self.chain.head_block_num())
 
-    def producer_block(self, skip_time):
-        if isinstance(skip_time, int):
-            skip_time = timedelta(microseconds=skip_time)
-        head_time = self.chain.head_block_time()
-        next_time = head_time + skip_time
-        self.chain.is_building_block()
-        return
-        if self.chain.is_building_block() or self.chain.pending_block_time() != next_time:
-            self.start_block( next_time )
+    def start_block(self):
+        self.chain.abort_block()
+        self.chain.start_block(isoformat(self.calc_pending_block_time()))
+
+    def produce_block(self):
+        self.chain.finalize_block('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
+        self.chain.commit_block()
+        self.start_block()
 
     def test1(self):
         logger.info('++++++++++++++test1+++++++++++++++')
@@ -225,28 +359,19 @@ class ChainTest(object):
     def test2(self):
         self.calc_pending_block_time()
 
-    def gen_trx(self):
-        chain_id = self.chain.id()
-        ref_block_id = self.chain.last_irreversible_block_id()
-        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
-        actions = []
-        action = {
-            'account':'eosio',
-            'name':'sayhello',
-            'data':'aabbcc',
-            'authorization':[{'actor':'eosio', 'permission':'active'}]
-        }
-        actions.append(action)
-        actions = json.dumps(actions)
-        expiration = datetime.utcnow() + timedelta(seconds=60)
-        expiration = isoformat(expiration)
-        r = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
-        print(r)
-        return r
+    def test3(self):
+        self.deploy_eosio_token()
+        self.produce_block()
 
-        print(r)
-        r = PackedTransactionMessage.unpack(r)
-        print(r)
+    def test4(self):
+        # key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
+        # a = 'eosio.token'
+        # r = self.create_account('eosio', a, key, key)
+        self.produce_block()
+        arg = {'account_name':'eosio.token'}
+        arg = json.dumps(arg)
+        a = self.chain_api.get_account(arg)
+        print('++++get_account:', a)
 
     def free(self):
         self.chain.free()
@@ -269,10 +394,13 @@ class UUOSTester(unittest.TestCase):
 
     def test3(self):
         self.chain.test3()
+    
+    def test4(self):
+        self.chain.test4()
 
     @classmethod
     def setUpClass(cls):
-        print('+++setup')
+        pass
 
     @staticmethod
     def disconnect():
@@ -280,7 +408,6 @@ class UUOSTester(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print('+++teardown')
         if UUOSTester.chain:
             UUOSTester.chain.free()
             UUOSTester.chain = None

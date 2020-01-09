@@ -119,14 +119,14 @@ cdef extern from "native_object.hpp":
 
     void chain_start_block_(void *ptr, string& time, uint16_t confirm_block_count);
     void chain_get_unapplied_transactions_(void *ptr, string& result);
-    void chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
+    bool chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
     void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
     void chain_commit_block_(void *ptr);
     void chain_pop_block_(void *ptr);
-    void chain_get_account_(void *ptr, uint64_t account, string& result);
+    void chain_get_account_(void *ptr, string& account, string& result);
     void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
     void chain_finalize_block_(void *ptr, string& _priv_key);
-    bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector[char] result);
+    bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector[char]& result);
     void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key, vector[char]& result);
 
     int    chain_api_get_info_(void *chain_ptr, string& info)
@@ -593,8 +593,8 @@ def chain_get_unapplied_transactions(uint64_t ptr):
 
 def chain_push_transaction(uint64_t ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us):
     cdef string result
-    chain_push_transaction_(<void *>ptr, packed_trx, deadline, billed_cpu_time_us, result)
-    return result
+    ret = chain_push_transaction_(<void *>ptr, packed_trx, deadline, billed_cpu_time_us, result)
+    return ret, result
 
 def chain_push_scheduled_transaction(uint64_t ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us):
     cdef string result
@@ -607,9 +607,10 @@ def chain_commit_block(uint64_t ptr):
 def chain_pop_block(uint64_t ptr):
     chain_pop_block_(<void *>ptr)
 
-def chain_get_account(uint64_t ptr, uint64_t account):
+def chain_get_account(uint64_t ptr, string& account):
     cdef string result
-    return chain_get_account_(<void *>ptr, account, result)
+    chain_get_account_(<void *>ptr, account, result)
+    return result
 
 def chain_get_scheduled_producer(uint64_t ptr, string& block_time):
     cdef string result
@@ -623,8 +624,6 @@ def chain_pack_action_args(uint64_t ptr, string& name, string& action, string& a
     cdef vector[char] result
     cdef bool ret
     ret = chain_pack_action_args_(<void *>ptr, name, action, args, result)
-    if not ret:
-        return None
     return PyBytes_FromStringAndSize(result.data(), result.size())
 
 def chain_gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key):
