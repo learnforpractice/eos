@@ -215,7 +215,7 @@ class ChainTest(object):
         if not isinstance(args, bytes):
             logger.info(f'{account}, {action}, {args}')
             args = self.chain.pack_action_args(account, action, args)
-            logger.error(f'++++{args}')
+            # logger.error(f'++++{args}')
         action = {
             'account': account,
             'name': action,
@@ -394,16 +394,11 @@ class ChainTest(object):
 
         logger.info('issue system token...')
 
-        args = {"issuer":"eosio","maximum_supply":f"11000000000.0000 {main_token}"}
-        args = self.chain.pack_action_args('eosio.token', 'create', args)
-        logger.info(args)
-        return
-
-        args = {"issuer":"eosio","maximum_supply":f"11000000000.0000 {main_token}"}
-        r = self.push_action('eosio.token', 'create', args, {'eosio.token':'active'})
+        args = {"issuer":"eosio", "maximum_supply":f"11000000000.0000 {main_token}"}
+        r = self.push_action('eosio.token', 'create', args, 'eosio.token', 'active')
 
         args = {"to":"eosio","quantity":f"1000000000.0000 {main_token}", "memo":""}
-        r = self.push_action('eosio.token','issue', args, {'eosio':'active'})
+        r = self.push_action('eosio.token','issue', args, 'eosio', 'active')
         self.produce_block()
 
     def test4(self):
