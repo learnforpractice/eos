@@ -139,8 +139,9 @@ class ChainTest(object):
         self._chain = Chain(chain_cfg, options.config_dir, options.snapshot)
 
         self.init()
-        
+
         self.chain_api = ChainApi(self.chain.ptr)
+
 
     def init(self):
         self.chain.startup()
@@ -215,7 +216,7 @@ class ChainTest(object):
         if not isinstance(args, bytes):
             logger.info(f'{account}, {action}, {args}')
             args = self.chain.pack_action_args(account, action, args)
-            # logger.error(f'++++{args}')
+            logger.error(f'++++{args}')
         action = {
             'account': account,
             'name': action,
@@ -279,7 +280,7 @@ class ChainTest(object):
                    "code": code.hex()
         }
 
-        setcode_args = self.chain.pack_action_args(account, 'setcode', setcode)
+        setcode_args = self.chain.pack_action_args('eosio', 'setcode', setcode)
         actions = []
         setcode_action = {
             'account': 'eosio',
@@ -287,7 +288,7 @@ class ChainTest(object):
             'data': setcode_args.hex(),
             'authorization':[{'actor': account, 'permission':'active'}]
         }
-        actions.append(setcode)
+        actions.append(setcode_action)
 
         abi = nativeobject.pack_native_object(nativeobject.abi_def_type, abi)
         setabi_args = self.chain.pack_action_args('eosio', 'setabi', {'account':account, 'abi':abi.hex()})
@@ -298,7 +299,10 @@ class ChainTest(object):
             'authorization':[{'actor': account, 'permission':'active'}]
         }
         actions.append(setabi_action)
-        self.push_actions(actions)
+        # logger.info(actions)
+        ret = self.push_actions(actions)
+        # logger.info(ret)
+        return ret
 
     def deploy_eosio_token(self):
         contract_path = '/Users/newworld/dev/eos/build/contracts'
@@ -392,6 +396,11 @@ class ChainTest(object):
         self.deploy_eosio_token()
         self.produce_block()
 
+        params = {'account_name':'eosio.token'}
+        params = json.dumps(params)
+        ret = self.chain_api.get_code_hash(params)
+        print('++++code_hash', ret)
+
         logger.info('issue system token...')
 
         args = {"issuer":"eosio", "maximum_supply":f"11000000000.0000 {main_token}"}
@@ -399,7 +408,29 @@ class ChainTest(object):
 
         args = {"to":"eosio","quantity":f"1000000000.0000 {main_token}", "memo":""}
         r = self.push_action('eosio.token','issue', args, 'eosio', 'active')
+        # print(r)
         self.produce_block()
+
+        ret = self.chain.get_account('eosio.token')
+        print(ret)
+
+        r = self.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1.0000 {main_token}","memo":""}, 'eosio', 'active')
+        print(r)
+
+
+    # struct get_currency_balance_params {
+    #   name             code;
+    #   name             account;
+    #   optional<string> symbol;
+    # };
+        params = {
+            'code': 'eosio.token', 
+            'account': 'eosio',
+            'symbol': 'UUOS'
+        }
+        params = json.dumps(params)
+        ret = self.chain_api.get_currency_balance(params)
+        print(ret)
 
     def test4(self):
         # key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
