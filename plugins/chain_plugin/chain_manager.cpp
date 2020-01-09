@@ -243,9 +243,9 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _a
 
 void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result) {
     packed_transaction::compression_type compression = packed_transaction::none;
-    auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
     try {
         signed_transaction trx;
+        auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
         trx.actions = std::move(actions);
         trx.expiration = fc::time_point::from_iso_string(expiration);
         chain::block_id_type id(reference_block_id);
