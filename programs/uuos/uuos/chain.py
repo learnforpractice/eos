@@ -336,7 +336,38 @@ class Chain(object):
     def is_building_block(self):
         return _uuos.chain_is_building_block(self.ptr)
 
+
+    def get_unapplied_transactions(self):
+        return _uuos.chain_get_unapplied_transactions(self.ptr)
+ 
+    def push_transaction(self, packed_trx, deadline, billed_cpu_time_us):
+        return _uuos.chain_push_transaction(self.ptr, packed_trx, deadline, billed_cpu_time_us)
+
+    def push_scheduled_transaction(self, scheduled_tx_id, deadline, billed_cpu_time_us):
+        return _uuos.chain_push_scheduled_transaction(self.ptr, scheduled_tx_id, deadline, billed_cpu_time_us)
+
+    def commit_block(self):
+        return _uuos.chain_commit_block(self.ptr)
+
+    def pop_block(self):
+        return _uuos.chain_pop_block(self.ptr)
+
+    def get_account(self, account):
+        return _uuos.chain_get_account(self.ptr, account)
+
     def get_scheduled_producer(self, block_time):
-        if isinstance(block_time, datetime):
-            block_time = block_time.isoformat()
         return _uuos.chain_get_scheduled_producer(self.ptr, block_time)
+
+    def get_scheduled_producer(self, block_time):
+        if not isinstance(block_time, str):
+            block_time = block_time.isoformat(timespec='milliseconds')
+        return _uuos.chain_get_scheduled_producer(self.ptr, block_time)
+
+    def finalize_block(self, priv_key):
+        _uuos.chain_finalize_block(self.ptr, priv_key)
+
+    def pack_action_args(self, name, action, args):
+        return _uuos.chain_pack_action_args(self.ptr, name, action, args)
+
+    def gen_transaction(self, _actions, expiration, reference_block_id, _chain_id, compress, _private_key):
+        return _uuos.chain_gen_transaction(_actions, expiration, reference_block_id, _chain_id, compress, _private_key)

@@ -110,6 +110,10 @@ void chain_commit_block_(void *ptr);
 void chain_pop_block_(void *ptr);
 void chain_get_account_(void *ptr, uint64_t account, string& result);
 void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
+void chain_finalize_block_(void *ptr, string& _priv_key);
+
+bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector<char> result);
+void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result);
 
 int     chain_api_get_info_(void *chain_ptr, string& info);
 

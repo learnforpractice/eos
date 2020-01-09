@@ -199,6 +199,7 @@ void chain_id_(void *ptr, string& chain_id) {
 void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count) {
     auto& chain = chain_get_controller(ptr);
     auto time = fc::time_point::from_iso_string(_time);
+    ilog("+++++++++${t1}  ${t2}", ("t1", _time)("t2", time));
     chain.start_block(block_timestamp_type(time), confirm_block_count);
 }
 
@@ -221,11 +222,56 @@ void chain_get_unapplied_transactions_(void *ptr, string& result) {
     result = fc::json::to_string(fc::variant(values));
 }
 
-//fc::time_point deadline, uint32_t billed_cpu_time_us = 0
-void chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
+bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector<char> result) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        const auto& accnt = chain.db().get<account_object, by_name>( account_name(name) );
+        abi_def abi;
+        if( !abi_serializer::to_abi( accnt.abi, abi )) {
+            return false;
+        }
+        auto serializer = abi_serializer( abi, fc::microseconds(150000) );
+        auto action_type = serializer.get_action_type(action);
+        EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
+        result = serializer.variant_to_binary(action_type, args, fc::microseconds(150000));
+    } FC_LOG_AND_DROP();
+    return true;
+}
+
+void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result) {
+    packed_transaction::compression_type compression = packed_transaction::none;
+    auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
+    try {
+        signed_transaction trx;
+        trx.actions = std::move(actions);
+        trx.expiration = fc::time_point::from_iso_string(expiration);
+        chain::block_id_type id(reference_block_id);
+        trx.set_reference_block(id);
+        trx.max_net_usage_words = 0;
+
+        auto priv_key = private_key_type(_private_key);
+
+        chain::chain_id_type chain_id(_chain_id);
+        trx.sign(priv_key, chain_id);
+
+        packed_transaction::compression_type type;
+        if (compress) {
+            type = packed_transaction::compression_type::zlib;
+        } else {
+            type = packed_transaction::compression_type::none;
+        }
+
+        auto packed_trx = packed_transaction(trx, type);
+        auto v = fc::raw::pack(packed_trx);
+        result = std::move(v);
+    } FC_LOG_AND_DROP();
+}
+
+void chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
     auto& chain = chain_get_controller(ptr);
     auto ptrx = std::make_shared<packed_transaction>();
-    *ptrx = fc::json::from_string(packed_trx).as<packed_transaction>();
+    vector<char> packed_trx(_packed_trx.c_str(), _packed_trx.c_str()+_packed_trx.size());
+    *ptrx = fc::raw::unpack<packed_transaction>(packed_trx);
     auto ptrx_meta = std::make_shared<transaction_metadata>( ptrx );
     auto _deadline = fc::time_point::from_iso_string(deadline);
     auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us);
@@ -248,6 +294,14 @@ void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, strin
 void chain_commit_block_(void *ptr) {
     auto& chain = chain_get_controller(ptr);
     chain.commit_block();
+}
+
+void chain_finalize_block_(void *ptr, string& _priv_key) {
+    auto& chain = chain_get_controller(ptr);
+    auto priv_key = private_key_type(_priv_key);
+    chain.finalize_block( [&]( digest_type d ) {
+        return priv_key.sign(d);
+    } );
 }
 
 //void sign_block( const std::function<signature_type( const digest_type& )>& signer_callback );
