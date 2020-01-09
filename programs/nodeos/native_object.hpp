@@ -18,4 +18,5 @@ enum {
     controller_config_type,
     producer_params_type,
     genesis_state_type,
+    abi_def_type,
 };

@@ -67,6 +67,7 @@ void pack_native_object_(int type, string& msg, string& packed_message) {
         PACK_CPP_OBJECT(controller_config)
         PACK_CPP_OBJECT(producer_params)
         PACK_CPP_OBJECT(genesis_state)
+        PACK_CPP_OBJECT(abi_def)
     }
 }
 
@@ -84,6 +85,7 @@ void unpack_native_object_(int type, string& packed_message, string& msg) {
         UNPACK_CPP_OBJECT(controller_config)
         UNPACK_CPP_OBJECT(producer_params)
         UNPACK_CPP_OBJECT(genesis_state)
+        UNPACK_CPP_OBJECT(abi_def)
     }
 }
 

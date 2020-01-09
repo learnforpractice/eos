@@ -23,7 +23,7 @@ from uuos import config
 from uuos.chain import Chain
 from uuos.chainapi import ChainApi
 
-from uuos.nativeobject import ControllerConfig
+from uuos import nativeobject
 from uuos import application
 import uuos
 
@@ -105,7 +105,7 @@ class ChainTest(object):
 
         self._chain = None
 
-        chain_cfg = ControllerConfig(config.default_config)
+        chain_cfg = nativeobject.ControllerConfig(config.default_config)
         chain_cfg.contracts_console = options.contracts_console
         chain_cfg.blocks_dir = os.path.join(options.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(options.data_dir, 'state')
@@ -200,6 +200,30 @@ class ChainTest(object):
     #   vector<permission_level>   authorization;
     #   bytes                      data;
 
+    def gen_action(self, account, action, args, actor, perm='active'):
+        if isinstance(args, dict):
+            args = self.chain.pack_action_args('eosio', 'newaccount', args)
+        assert type(args) is bytes
+        return {
+            'account': accunt,
+            'name': action,
+            'data': args.hex(),
+            'authorization':[{'actor': actor, 'permission': perm}]
+        }
+
+    def push_action(self, account, action, args, actor, perm='active'):
+        if not isinstance(args, bytes):
+            logger.info(f'{account}, {action}, {args}')
+            args = self.chain.pack_action_args(account, action, args)
+            logger.error(f'++++{args}')
+        action = {
+            'account': account,
+            'name': action,
+            'data': args.hex(),
+            'authorization':[{'actor': actor, 'permission': perm}]
+        }
+        return self.push_actions([action])
+
     def push_actions(self, actions):
         chain_id = self.chain.id()
         ref_block_id = self.chain.last_irreversible_block_id()
@@ -216,6 +240,7 @@ class ChainTest(object):
         if not ret:
             result = json.loads(result)
             raise Exception(result['except'])
+        return result
 
     def create_account(self, creator, account, owner_key, active_key):
         actions = []
@@ -264,6 +289,7 @@ class ChainTest(object):
         }
         actions.append(setcode)
 
+        abi = nativeobject.pack_native_object(nativeobject.abi_def_type, abi)
         setabi_args = self.chain.pack_action_args('eosio', 'setabi', {'account':account, 'abi':abi.hex()})
         setabi_action = {
             'account': 'eosio',
@@ -360,7 +386,24 @@ class ChainTest(object):
         self.calc_pending_block_time()
 
     def test3(self):
+        main_token = 'UUOS'
+
+        logger.info('deploy eosio.token')
         self.deploy_eosio_token()
+        self.produce_block()
+
+        logger.info('issue system token...')
+
+        args = {"issuer":"eosio","maximum_supply":f"11000000000.0000 {main_token}"}
+        args = self.chain.pack_action_args('eosio.token', 'create', args)
+        logger.info(args)
+        return
+
+        args = {"issuer":"eosio","maximum_supply":f"11000000000.0000 {main_token}"}
+        r = self.push_action('eosio.token', 'create', args, {'eosio.token':'active'})
+
+        args = {"to":"eosio","quantity":f"1000000000.0000 {main_token}", "memo":""}
+        r = self.push_action('eosio.token','issue', args, {'eosio':'active'})
         self.produce_block()
 
     def test4(self):

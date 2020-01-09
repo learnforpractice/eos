@@ -17,6 +17,9 @@ signed_block_message_type = 7
 packed_transaction_message_type = 8
 controller_config_type = 9
 producer_params_type = 10
+genesis_state_type = 11
+abi_def_type = 12
+
 
 class GoAwayReason:
     reason = {
