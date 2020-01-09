@@ -190,6 +190,22 @@ class ChainTest(object):
         self.push_action('eosio', 'init', args, 'eosio', 'active')
         self.produce_block()
 
+        feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
+                    'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99',#REPLACE_DEFERRED
+                    '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#NO_DUPLICATE_DEFERRED_ID
+                    '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
+                    '737102c41d3bce173c009a310ec0d23ae26a4bbe6b621fa1b90846b2115b296e', #PYTHONVM
+                    'f16d7d240355ca947ec591e82f876cad5fef30b8914935691af00c92d169b8b2', #ETHEREUMVM
+        ]
+
+        for digest in feature_digests: 
+            try:
+                args = {'feature_digest': digest}
+                self.push_action('eosio', 'activate', args, 'eosio', 'active')
+            except Exception as e:
+                print(e)
+        self.produce_block()
+
     @property
     def chain(self):
         return self._chain
