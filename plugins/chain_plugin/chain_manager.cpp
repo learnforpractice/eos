@@ -196,11 +196,16 @@ void chain_id_(void *ptr, string& chain_id) {
     } FC_LOG_AND_DROP();
 }
 
-void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count) {
+void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features) {
     auto& chain = chain_get_controller(ptr);
     auto time = fc::time_point::from_iso_string(_time);
     ilog("+++++++++${t1}  ${t2}", ("t1", _time)("t2", time));
-    chain.start_block(block_timestamp_type(time), confirm_block_count);
+    if (_new_features.size()) {
+        auto new_features = fc::json::from_string(_new_features).as<vector<digest_type>>();
+        chain.start_block(block_timestamp_type(time), confirm_block_count, new_features);
+    } else {
+        chain.start_block(block_timestamp_type(time), confirm_block_count);
+    }
 }
 
 int chain_abort_block_(void *ptr) {
@@ -282,6 +287,7 @@ bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, u
     if (ret->except) {
         return false;
     }
+
     return true;
 }
 

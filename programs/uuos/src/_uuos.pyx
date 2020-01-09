@@ -117,7 +117,7 @@ cdef extern from "native_object.hpp":
     void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
     bool chain_all_subjective_mitigations_disabled_(void *ptr);
 
-    void chain_start_block_(void *ptr, string& time, uint16_t confirm_block_count);
+    void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features);
     void chain_get_unapplied_transactions_(void *ptr, string& result);
     bool chain_push_transaction_(void *ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
     void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
@@ -583,8 +583,8 @@ def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
     chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
     return <bytes>raw_block
 
-def chain_start_block(uint64_t ptr, string& time, uint16_t confirm_block_count):
-    chain_start_block_(<void *>ptr, time, confirm_block_count)
+def chain_start_block(uint64_t ptr, string& time, uint16_t confirm_block_count, string& new_features):
+    chain_start_block_(<void *>ptr, time, confirm_block_count, new_features)
 
 def chain_get_unapplied_transactions(uint64_t ptr):
     cdef string result

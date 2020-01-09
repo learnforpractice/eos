@@ -26,8 +26,13 @@ class Chain(object):
     def id(self):
         return _uuos.chain_id(self.ptr)
 
-    def start_block(self, _time, confirm_block_count=0):
-        _uuos.chain_start_block(self.ptr, _time, confirm_block_count)
+    def start_block(self, _time, confirm_block_count=0, features=None):
+        if features:
+            if isinstance(features, list):
+                features = json.dumps(features)
+        else:
+            features = ''
+        _uuos.chain_start_block(self.ptr, _time, confirm_block_count, features)
 
     def abort_block(self):
         return _uuos.chain_abort_block(self.ptr)
