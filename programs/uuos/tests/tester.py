@@ -92,6 +92,8 @@ class ChainTest(object):
     def __init__(self):
         logger.info('+++++++++init+++++++++++')
         self.feature_activated = False
+        self.main_token = 'UUOS'
+
         options = Object()
         options.data_dir = tempfile.mkdtemp()
         options.config_dir = tempfile.mkdtemp()
@@ -173,7 +175,20 @@ class ChainTest(object):
 
         logger.info('deploy eosio.token')
         self.deploy_eosio_token()
+
+        logger.info('issue system token...')
         self.deploy_eosio_system()
+        self.produce_block()
+
+        args = {"issuer":"eosio", "maximum_supply":f"11000000000.0000 {self.main_token}"}
+        r = self.push_action('eosio.token', 'create', args, 'eosio.token', 'active')
+
+        args = {"to":"eosio","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
+        r = self.push_action('eosio.token','issue', args, 'eosio', 'active')
+
+        args = {'version':0, 'core':'4,UUOS'}
+        self.push_action('eosio', 'init', args, 'eosio', 'active')
+        self.produce_block()
 
     @property
     def chain(self):
@@ -415,26 +430,15 @@ class ChainTest(object):
         self.calc_pending_block_time()
 
     def test3(self):
-        main_token = 'UUOS'
         params = {'account_name':'eosio.token'}
         params = json.dumps(params)
         ret = self.chain_api.get_code_hash(params)
         print('++++code_hash', ret)
 
-        logger.info('issue system token...')
-
-        args = {"issuer":"eosio", "maximum_supply":f"11000000000.0000 {main_token}"}
-        r = self.push_action('eosio.token', 'create', args, 'eosio.token', 'active')
-
-        args = {"to":"eosio","quantity":f"1000000000.0000 {main_token}", "memo":""}
-        r = self.push_action('eosio.token','issue', args, 'eosio', 'active')
-        # print(r)
-        self.produce_block()
-
         # ret = self.chain.get_account('eosio.token')
         # print(ret)
 
-        r = self.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1.0000 {main_token}","memo":""}, 'eosio', 'active')
+        r = self.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1.0000 {self.main_token}","memo":""}, 'eosio', 'active')
         # print(r)
 
     # struct get_currency_balance_params {

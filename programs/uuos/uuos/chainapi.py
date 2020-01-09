@@ -41,6 +41,11 @@ class ChainApi(object):
         return _uuos.chain_api_get_table_by_scope(self.ptr, params)
 
     def get_currency_balance(self, params):
+    # struct get_currency_balance_params {
+    #   name             code;
+    #   name             account;
+    #   optional<string> symbol;
+    # };
         return _uuos.chain_api_get_currency_balance(self.ptr, params)
 
     def get_currency_stats(self, params):
