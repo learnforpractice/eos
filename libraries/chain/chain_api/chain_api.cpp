@@ -19,7 +19,6 @@ extern "C" int pythonvm_wasm_size;
 extern "C" char pythonvm_wasm_hash[];
 
 static controller *s_ctrl = nullptr;
-static controller::config s_cfg;
 static chain_api_cpp s_api = {};
 
 //vm_api.cpp
@@ -42,8 +41,8 @@ static inline controller& ctrl() {
    return *s_ctrl;
 }
 
-static inline controller::config& cfg() {
-   return s_cfg;
+static inline const controller::config& cfg() {
+   return s_ctrl->get_config();
 }
 
 bool is_account(uint64_t account) {
@@ -342,11 +341,11 @@ extern "C" void chain_api_init() {
     register_chain_api(&s_api);
 }
 
-void chain_api_set_controller(controller *_ctrl, controller::config _cfg) {
+void chain_api_set_controller(controller *_ctrl) {
    s_ctrl = _ctrl;
-   s_cfg = _cfg;
 }
 
 controller& chain_api_get_controller() {
+   get_vm_api()->eosio_assert(s_ctrl != nullptr, "controller not set");
    return *s_ctrl;
 }
