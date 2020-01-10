@@ -114,7 +114,7 @@ class Object():
 
 class ChainTest(object):
 
-    def __init__(self):
+    def __init__(self, uuos_network=False):
         self.feature_activated = False
         self.main_token = 'UUOS'
 
@@ -123,10 +123,13 @@ class ChainTest(object):
         options.config_dir = tempfile.mkdtemp()
 
         print(options.data_dir, options.config_dir)
+        if uuos_network:
+            options.chain_state_db_size_mb = 350
+        else:
+            options.chain_state_db_size_mb = 50
 
-        options.chain_state_db_size_mb = 50
         options.contracts_console = True
-        options.uuos_mainnet = False
+        options.uuos_mainnet = uuos_network
         options.network = 'test'
         options.snapshot = ''
 
@@ -148,7 +151,7 @@ class ChainTest(object):
         chain_cfg.state_size = options.chain_state_db_size_mb * 1024 * 1024
 
         print('config.uuos_mainnet', options.uuos_mainnet)
-        chain_cfg.uuos_mainnet = False
+        chain_cfg.uuos_mainnet = options.uuos_mainnet
 
         self.options = options
         if self.options.network == 'uuos':
@@ -252,7 +255,7 @@ class ChainTest(object):
         if base < now:
             base = now
         min_time_to_next_block = config.block_interval_us - int(base.timestamp()*1e6) % config.block_interval_us
-        print('min_time_to_next_block:', min_time_to_next_block)
+        # print('min_time_to_next_block:', min_time_to_next_block)
         block_time = base + timedelta(microseconds=min_time_to_next_block)
         if block_time - now < timedelta(microseconds=config.block_interval_us/10):
             block_time += timedelta(microseconds=config.block_interval_us)        
@@ -269,10 +272,10 @@ class ChainTest(object):
 
     def gen_action(self, account, action, args, actor, perm='active'):
         if isinstance(args, dict):
-            args = self.chain.pack_action_args('eosio', 'newaccount', args)
+            args = self.pack_args(account, action, args)
         assert type(args) is bytes
         return {
-            'account': accunt,
+            'account': account,
             'name': action,
             'data': args.hex(),
             'authorization':[{'actor': actor, 'permission': perm}]
@@ -281,8 +284,8 @@ class ChainTest(object):
     def push_action(self, account, action, args, actor=None, perm='active'):
         if not actor:
             actor = account
+        logger.info(f'{account}, {action}, {args}')
         if not isinstance(args, bytes):
-            logger.info(f'{account}, {action}, {args}')
             args = self.chain.pack_action_args(account, action, args)
             # logger.error(f'++++{args}')
         action = {
@@ -312,7 +315,10 @@ class ChainTest(object):
         result = JsonObject(result)
         return result
 
-    def create_account(self, creator, account, owner_key, active_key):
+    def pack_args(self, account, action , args):
+        return self.chain.pack_action_args(account, action, args)
+
+    def create_account(self, creator, account, owner_key, active_key, ram_bytes=0, stake_net=0.0, stake_cpu=0.0):
         actions = []
         logger.info(f'{creator} {account}')
         args = {
@@ -329,7 +335,7 @@ class ChainTest(object):
                         'waits': []
                     }
         }
-        newaccount_args = self.chain.pack_action_args('eosio', 'newaccount', args)
+        newaccount_args = self.pack_args('eosio', 'newaccount', args)
         if not newaccount_args:
             raise Exception('bad args')
         newaccount_action = {
@@ -339,6 +345,23 @@ class ChainTest(object):
             'authorization':[{'actor':'eosio', 'permission':'active'}]
         }
         actions.append(newaccount_action)
+
+        if ram_bytes:
+            args = {'payer':creator, 'receiver':account, 'bytes':ram_bytes}
+            act = self.gen_action('eosio', 'buyrambytes', args, creator, perm='active')
+            actions.append(act)
+
+        if stake_net or stake_cpu:
+            args = {
+                'from': creator,
+                'receiver': account,
+                'stake_net_quantity': '%0.4f %s'%(stake_net, self.main_token),
+                'stake_cpu_quantity': '%0.4f %s'%(stake_cpu, self.main_token),
+                'transfer': 1
+            }
+            act = self.gen_action('eosio', 'delegatebw', args, creator, perm='active')
+            actions.append(act)
+
         return self.push_actions(actions)
 
     def deploy_contract(self, account, code, abi, vmtype=0):
@@ -454,6 +477,11 @@ class ChainTest(object):
         self.chain.finalize_block('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
         self.chain.commit_block()
         self.start_block()
+
+    def test_create_account(self):
+        # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        self.create_account('eosio', 'testtesttest1', key, key, 10*1024, 1, 10)
 
     def test1(self):
         logger.info('++++++++++++++test1+++++++++++++++')
@@ -646,6 +674,8 @@ class UUOSTester(unittest.TestCase):
         super(UUOSTester, self).__init__(testName)
         self.extra_args = extra_args
 #        UUOSTester.chain = self.chain
+    def test_create_account(self):
+        UUOSTester.chain.test_create_account()
 
     def test1(self):
         UUOSTester.chain.test1()
@@ -672,6 +702,26 @@ class UUOSTester(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.chain = ChainTest()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+
+class UUOSTester2(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++UUOSTester++++++++++++++++')
+        super(UUOSTester2, self).__init__(testName)
+        self.extra_args = extra_args
+#        UUOSTester.chain = self.chain
+    def test_create_account(self):
+        UUOSTester2.chain.test_create_account()
+
+    @classmethod
+    def setUpClass(cls):
+        cls.chain = ChainTest(True)
 
     @classmethod
     def tearDownClass(cls):
@@ -732,8 +782,6 @@ class DBTester2(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-
 
 class DBTester3(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):
