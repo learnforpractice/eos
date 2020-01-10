@@ -10,6 +10,7 @@ import shutil
 import tempfile
 import unittest
 import platform
+import marshal
 
 test_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(test_dir, '..'))
@@ -90,7 +91,6 @@ class Object():
 class ChainTest(object):
 
     def __init__(self):
-        logger.info('+++++++++init+++++++++++')
         self.feature_activated = False
         self.main_token = 'UUOS'
 
@@ -144,7 +144,7 @@ class ChainTest(object):
         self.init()
 
         self.chain_api = ChainApi(self.chain.ptr)
-
+        uuos.set_default_log_level(0)
 
     def init(self):
         self.chain.startup()
@@ -204,6 +204,10 @@ class ChainTest(object):
                 self.push_action('eosio', 'activate', args, 'eosio', 'active')
             except Exception as e:
                 print(e)
+
+        args = {'vmtype': 1, 'vmversion':0} #activate vm python
+        self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
+
         self.produce_block()
 
     @property
@@ -248,7 +252,9 @@ class ChainTest(object):
             'authorization':[{'actor': actor, 'permission': perm}]
         }
 
-    def push_action(self, account, action, args, actor, perm='active'):
+    def push_action(self, account, action, args, actor=None, perm='active'):
+        if not actor:
+            actor = account
         if not isinstance(args, bytes):
             logger.info(f'{account}, {action}, {args}')
             args = self.chain.pack_action_args(account, action, args)
@@ -308,10 +314,10 @@ class ChainTest(object):
         actions.append(newaccount_action)
         return self.push_actions(actions)
 
-    def deploy_contract(self, account, code, abi):
+    def deploy_contract(self, account, code, abi, vmtype=0):
         actions = []
         setcode = {"account": account,
-                   "vmtype": 0,
+                   "vmtype": vmtype,
                    "vmversion": 0,
                    "code": code.hex()
         }
@@ -325,8 +331,8 @@ class ChainTest(object):
             'authorization':[{'actor': account, 'permission':'active'}]
         }
         actions.append(setcode)
-
-        abi = nativeobject.pack_native_object(nativeobject.abi_def_type, abi)
+        if abi:
+            abi = nativeobject.pack_native_object(nativeobject.abi_def_type, abi)
         setabi = self.chain.pack_action_args('eosio', 'setabi', {'account':account, 'abi':abi.hex()})
         setabi = {
             'account': 'eosio',
@@ -456,7 +462,6 @@ class ChainTest(object):
 
         r = self.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1.0000 {self.main_token}","memo":""}, 'eosio', 'active')
         # print(r)
-
     # struct get_currency_balance_params {
     #   name             code;
     #   name             account;
@@ -480,6 +485,22 @@ class ChainTest(object):
         arg = json.dumps(arg)
         a = self.chain_api.get_account(arg)
         print('++++get_account:', a)
+
+
+    def test5(self):
+        code = '''
+def apply(receiver, first_receiver, action):
+    for i in range(10):
+        print('hello,world')
+        '''
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        self.deploy_contract('helloworld11', code, b'', 1)
+        r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+        print(r)
+        r = self.push_action('helloworld11', 'sayhello', b'1122', 'helloworld11')
+        print(r)
+        self.produce_block()
 
     def free(self):
         self.chain.free()
@@ -505,6 +526,9 @@ class UUOSTester(unittest.TestCase):
     
     def test4(self):
         self.chain.test4()
+
+    def test5(self):
+        self.chain.test5()
 
     @classmethod
     def setUpClass(cls):
