@@ -306,9 +306,10 @@ class ChainTest(object):
         billed_cpu_time_us = 2000
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
 #        print(ret, result)
+        result = json.loads(result)
         if not ret:
-            result = json.loads(result)
             raise Exception(result['except'])
+        result = JsonObject(result)
         return result
 
     def create_account(self, creator, account, owner_key, active_key):
@@ -582,8 +583,8 @@ def apply(receiver, code, action):
                 r = self.push_action('alice', 'sayhello', args)
             self.produce_block()
 
-    def test8(self):
-        logger.info('+++++++++++++++test8++++++++++++++')
+    def db_test1(self):
+        logger.info('+++++++++++++++db_test1++++++++++++++')
         db_test = os.path.join(test_dir, 'test_contracts/db_test.py')
         with open(db_test, 'r') as f:
             code = f.read()
@@ -595,7 +596,8 @@ def apply(receiver, code, action):
 #        print(r)
         self.produce_block()
 
-    def test9(self):
+
+    def db_test2(self):
         code = '''
 import struct
 import db
@@ -683,7 +685,104 @@ def apply(receiver, code, action):
         r = JsonObject(r)
 
         r = self.push_action('helloworld11', 'update', b'')
+        print(r)
         r = self.push_action('helloworld11', 'update', b'1')
+        print(r)
+
+#        print(r)
+        self.produce_block()
+
+    def db_test3(self):
+        code = '''
+import struct
+import db
+
+class MyData(object):
+    def __init__(self, a: int, b: int, c: int, d: float):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+
+    def pack(self):
+        b = int.to_bytes(self.b, 16, 'little')
+        c = int.to_bytes(self.c, 32, 'little')
+        return struct.pack('Q16s32sd', self.a, b, c, self.d)
+
+    @classmethod
+    def unpack(cls, data):
+        a, b, c, d = struct.unpack('Q16s32sd', data)
+        b = int.from_bytes(b, 'little')
+        c = int.from_bytes(c, 'little')
+        return MyData(a, b, c, d)
+
+    @property
+    def primary_key(self):
+        return self.a
+
+    # @x.setter
+    # def primary_key(self, a):
+    #     pass
+
+    def get_primary_key(self):
+        return self.a
+
+    def get_secondary_values(self):
+        return ()
+
+    def set_secondary_value(self, idx):
+        if idx == 0:
+            pass
+        elif idx == 1:
+            pass
+        elif idx == 2:
+            pass
+        elif idx == 3:
+            pass
+
+    @classmethod
+    def get_secondary_indexes(self):
+        return ()
+
+code = N('helloworld11')
+scope = N('scopee')
+table = N('tableee')
+mi = db.MultiIndex(code, scope, table, MyData)
+
+def apply(receiver, code, action):
+    payer = receiver
+    if action == N('store'):
+        primary_key = 112
+        d = MyData(primary_key, 2, 3, 5.0)
+        d.payer = receiver
+        mi.store(d)
+    elif action == N('get'):
+        itr = mi.find(112)
+#        print(itr)
+        data = mi.get(itr)
+#        print(data.a, data.b, data.c, data.d)
+    elif action == N('update'):
+        itr = mi.find(112)
+        print(itr)
+        data = mi.get(itr)
+        print('+++b:', data.b)
+        data.payer = payer
+        data.b += 1
+        mi.store(data)
+'''
+
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        self.deploy_contract('helloworld11', code, b'', 1)
+        r = self.push_action('helloworld11', 'store', b'')
+        print('++++store: elapsed:', r.elapsed)
+        r = self.push_action('helloworld11', 'get', b'')
+        print('++++get: elapsed:', r.elapsed)
+
+        r = self.push_action('helloworld11', 'update', b'')
+        print('++++update: elapsed:', r.elapsed)
+        r = self.push_action('helloworld11', 'update', b'1')
+        print('++++update: elapsed:', r.elapsed)
 
 #        print(r)
         self.produce_block()
@@ -722,12 +821,6 @@ class UUOSTester(unittest.TestCase):
     def test7(self):
         UUOSTester.chain.test7()
 
-    def test8(self):
-        UUOSTester.chain.test8()
-
-    def test9(self):
-        UUOSTester.chain.test9()
-
     @classmethod
     def setUpClass(cls):
         cls.chain = ChainTest()
@@ -738,23 +831,16 @@ class UUOSTester(unittest.TestCase):
             cls.chain.free()
             cls.chain = None
 
-#     def setUp(self):
-#         pass
-
-#     def tearDown(self):
-#         logger.info('++++++++++++++++teardown+++++++++++++++')
-# #        self.chain.free()
-
-class UUOSTester2(unittest.TestCase):
+class DBTester1(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++UUOSTester2++++++++++++++++')
-        super(UUOSTester2, self).__init__(testName)
+        logger.info('+++++++++++++++++++++DBTester1++++++++++++++++')
+        super(DBTester1, self).__init__(testName)
         self.extra_args = extra_args
 #        UUOSTester.chain = self.chain
 
-    def test6(self):
-        logger.info('+++++++++++++test6+++++++++++++++')
-        UUOSTester2.chain.test6()
+    def test_db1(self):
+        logger.info('+++++++++++++db_test1+++++++++++++++')
+        DBTester1.chain.db_test1()
 
     @classmethod
     def setUpClass(cls):
@@ -770,7 +856,63 @@ class UUOSTester2(unittest.TestCase):
         pass
 
     def tearDown(self):
-        logger.info('++++++++++++++++teardown+++++++++++++++')
+        pass
+
+class DBTester2(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++DBTester2++++++++++++++++')
+        super(DBTester2, self).__init__(testName)
+        self.extra_args = extra_args
+#        UUOSTester.chain = self.chain
+
+    def test_db_2(self):
+        logger.info('+++++++++++++db_test2+++++++++++++++')
+        DBTester2.chain.db_test2()
+
+    @classmethod
+    def setUpClass(cls):
+        cls.chain = ChainTest()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+
+
+class DBTester3(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++DBTester3++++++++++++++++')
+        super(DBTester3, self).__init__(testName)
+        self.extra_args = extra_args
+#        UUOSTester.chain = self.chain
+
+    def test_db_3(self):
+        logger.info('+++++++++++++db_test3+++++++++++++++')
+        DBTester3.chain.db_test2()
+
+    @classmethod
+    def setUpClass(cls):
+        cls.chain = ChainTest()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
 
 
 if __name__ == '__main__':
