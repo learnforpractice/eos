@@ -73,6 +73,7 @@ chain_manager::chain_manager() {
 chain_manager::~chain_manager() {
     if (cc) {
         delete cc;
+        cc = nullptr;
     }
 }
 
@@ -199,7 +200,6 @@ void chain_id_(void *ptr, string& chain_id) {
 void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features) {
     auto& chain = chain_get_controller(ptr);
     auto time = fc::time_point::from_iso_string(_time);
-    ilog("+++++++++${t1}  ${t2}", ("t1", _time)("t2", time));
     if (_new_features.size()) {
         auto new_features = fc::json::from_string(_new_features).as<vector<digest_type>>();
         chain.start_block(block_timestamp_type(time), confirm_block_count, new_features);

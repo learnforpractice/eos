@@ -33,7 +33,7 @@
 
 #include "db_interface.hpp"
 
-void chain_api_set_controller(eosio::chain::controller *_ctrl, eosio::chain::controller::config _cfg);
+void chain_api_set_controller(eosio::chain::controller *_ctrl);
 
 namespace eosio { namespace chain {
 
@@ -2315,13 +2315,13 @@ const protocol_feature_manager& controller::get_protocol_feature_manager()const
 controller::controller( const controller::config& cfg )
 :my( new controller_impl( cfg, *this, protocol_feature_set{} ) )
 {
-   chain_api_set_controller(this, cfg);
+   chain_api_set_controller(this);
 }
 
 controller::controller( const config& cfg, protocol_feature_set&& pfs )
 :my( new controller_impl( cfg, *this, std::move(pfs) ) )
 {
-   chain_api_set_controller(this, cfg);
+   chain_api_set_controller(this);
 }
 
 controller::~controller() {

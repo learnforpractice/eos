@@ -138,7 +138,7 @@ class ChainTest(object):
             raise Exception('unknown network')
 
         chain_cfg = chain_cfg.dumps()
-        logger.info(chain_cfg)
+#        logger.info(chain_cfg)
         self._chain = Chain(chain_cfg, options.config_dir, options.snapshot)
 
         self.init()
@@ -168,7 +168,9 @@ class ChainTest(object):
                 'uuos',
                 'hello',
                 'helloworld12',
-                'helloworld11'
+                'helloworld11',
+                'alice',
+                'bob'
         ]
         for a in systemAccounts:
             self.create_account('eosio', a, key, key)
@@ -430,6 +432,7 @@ class ChainTest(object):
 
     def test1(self):
         logger.info('++++++++++++++test1+++++++++++++++')
+        return
         # datetime.strptime('2020-01-08T12:07:18.669513', "%Y-%m-%dT%H:%M:%S.%f")
         # t = datetime.strptime("2018-06-01T12:00:00.000", "%Y-%m-%dT%H:%M:%S.%f")
         # print('+++datetime:', t)
@@ -477,6 +480,7 @@ class ChainTest(object):
         print(ret)
 
     def test4(self):
+        logger.info('++++++++++++++++test4+++++++++++++')
         # key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         # a = 'eosio.token'
         # r = self.create_account('eosio', a, key, key)
@@ -486,8 +490,23 @@ class ChainTest(object):
         a = self.chain_api.get_account(arg)
         print('++++get_account:', a)
 
+        params = {'account_name':'helloworld11'}
+        params = json.dumps(params)
+        ret = self.chain_api.get_code_hash(params)
+        print('++++code_hash', ret)
+
+        params = {'account_name':'helloworld11'}
+        params = json.dumps(params)
+        ret = self.chain_api.get_raw_code_and_abi(params)
+        print('++++code', ret)
+        try:
+            r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+        except Exception as e:
+            print(e)
+        self.produce_block()
 
     def test5(self):
+        logger.info('+++++++++++++++test5++++++++++++++')
         code = '''
 def apply(receiver, first_receiver, action):
     for i in range(10):
@@ -497,9 +516,30 @@ def apply(receiver, first_receiver, action):
         code = marshal.dumps(code)
         self.deploy_contract('helloworld11', code, b'', 1)
         r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
-        print(r)
         r = self.push_action('helloworld11', 'sayhello', b'1122', 'helloworld11')
-        print(r)
+        self.produce_block()
+
+    def test6(self):
+        code = '''
+def apply(receiver, code, action):
+    print(read_action_data())
+    require_recipient('bob')
+    print('done!')
+        '''
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        self.deploy_contract('alice', code, b'', 1)
+
+        code = '''
+def apply(receiver, code, action):
+    print(n2s(receiver), n2s(code), n2s(action))
+    print(read_action_data())
+        '''
+
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        self.deploy_contract('bob', code, b'', 1)
+        r = self.push_action('alice', 'sayhello', b'1122')
         self.produce_block()
 
     def free(self):
@@ -509,40 +549,74 @@ def apply(receiver, first_receiver, action):
 
 class UUOSTester(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++UUOSTester++++++++++++++++')
         super(UUOSTester, self).__init__(testName)
         self.extra_args = extra_args
-        self.chain = ChainTest()
-        UUOSTester.chain = self.chain
+#        UUOSTester.chain = self.chain
 
     def test1(self):
-        self.chain.test1()
-        # datetime.datetime.utcnow().isoformat()
+        UUOSTester.chain.test1()
 
     def test2(self):
-        self.chain.test2()
+        UUOSTester.chain.test2()
 
     def test3(self):
-        self.chain.test3()
+        UUOSTester.chain.test3()
     
     def test4(self):
-        self.chain.test4()
+        UUOSTester.chain.test4()
 
     def test5(self):
-        self.chain.test5()
+        UUOSTester.chain.test5()
+
+    def test6(self):
+        logger.info('+++++++++++++test6+++++++++++++++')
+        UUOSTester.chain.test6()
 
     @classmethod
     def setUpClass(cls):
-        pass
-
-    @staticmethod
-    def disconnect():
-        pass
+        cls.chain = ChainTest()
 
     @classmethod
     def tearDownClass(cls):
-        if UUOSTester.chain:
-            UUOSTester.chain.free()
-            UUOSTester.chain = None
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+#     def setUp(self):
+#         pass
+
+#     def tearDown(self):
+#         logger.info('++++++++++++++++teardown+++++++++++++++')
+# #        self.chain.free()
+
+class UUOSTester2(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++UUOSTester2++++++++++++++++')
+        super(UUOSTester2, self).__init__(testName)
+        self.extra_args = extra_args
+#        UUOSTester.chain = self.chain
+
+    def test6(self):
+        logger.info('+++++++++++++test6+++++++++++++++')
+        UUOSTester2.chain.test6()
+
+    @classmethod
+    def setUpClass(cls):
+        cls.chain = ChainTest()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        logger.info('++++++++++++++++teardown+++++++++++++++')
+
 
 if __name__ == '__main__':
     unittest.main()
