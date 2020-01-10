@@ -542,6 +542,14 @@ def apply(receiver, code, action):
         r = self.push_action('alice', 'sayhello', b'1122')
         self.produce_block()
 
+    def test7(self):
+        for i in range(10):
+            for j in range(40):
+                args = int.to_bytes(j, 4, 'little')
+                r = self.push_action('helloworld11', 'sayhello', args, 'helloworld11')
+                r = self.push_action('alice', 'sayhello', args)
+            self.produce_block()
+
     def free(self):
         self.chain.free()
         shutil.rmtree(self.options.config_dir)
@@ -572,6 +580,9 @@ class UUOSTester(unittest.TestCase):
     def test6(self):
         logger.info('+++++++++++++test6+++++++++++++++')
         UUOSTester.chain.test6()
+    
+    def test7(self):
+        UUOSTester.chain.test7()
 
     @classmethod
     def setUpClass(cls):
