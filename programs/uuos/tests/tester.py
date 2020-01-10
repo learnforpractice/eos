@@ -674,8 +674,6 @@ class UUOSTester(unittest.TestCase):
         super(UUOSTester, self).__init__(testName)
         self.extra_args = extra_args
 #        UUOSTester.chain = self.chain
-    def test_create_account(self):
-        UUOSTester.chain.test_create_account()
 
     def test1(self):
         UUOSTester.chain.test1()
