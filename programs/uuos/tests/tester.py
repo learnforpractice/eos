@@ -37,6 +37,30 @@ def isoformat(dt):
 
 #logger = LogWrapper(logger)
 
+genesis_test = {
+  "initial_timestamp": "2019-10-24T00:00:00.888",
+  "initial_key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+  "initial_configuration": {
+    "max_block_net_usage": 1048576,
+    "target_block_net_usage_pct": 1000,
+    "max_transaction_net_usage": 524288,
+    "base_per_transaction_net_usage": 12,
+    "net_usage_leeway": 500,
+    "context_free_discount_net_usage_num": 20,
+    "context_free_discount_net_usage_den": 100,
+    "max_block_cpu_usage": 200000,
+    "target_block_cpu_usage_pct": 1000,
+    "max_transaction_cpu_usage": 150000,
+    "min_transaction_cpu_usage": 100,
+    "max_transaction_lifetime": 3600,
+    "deferred_trx_expiration_window": 600,
+    "max_transaction_delay": 3888000,
+    "max_inline_action_size": 4096,
+    "max_inline_action_depth": 4,
+    "max_authority_depth": 6
+  }
+}
+
 genesis_uuos = {
   "initial_timestamp": "2019-10-24T00:00:00.888",
   "initial_key": "EOS7rqzK4qFGTSbgQqr5ynNWKqsZTdJxgKUUELkbFXNcjn4JwUuoS",
@@ -133,7 +157,7 @@ class ChainTest(object):
         elif self.options.network == 'eos':
             chain_cfg.genesis = genesis_eos
         elif self.options.network == 'test':
-            pass
+            chain_cfg.genesis = genesis_test
         else:
             raise Exception('unknown network')
 
@@ -278,7 +302,7 @@ class ChainTest(object):
         expiration = isoformat(expiration)
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
 #        print(PackedTransactionMessage.unpack(raw_signed_trx))
-        deadline = datetime.utcnow() + timedelta(microseconds=30000)
+        deadline = datetime.utcnow() + timedelta(microseconds=100000)
         billed_cpu_time_us = 2000
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
 #        print(ret, result)
@@ -510,13 +534,21 @@ class ChainTest(object):
         code = '''
 def apply(receiver, first_receiver, action):
     for i in range(10):
-        print('hello,world')
+        pass
+        #print('hello,world')
         '''
+        code += '\n'
+        for i in range(2000):
+            code += f'    a{i} = dict(abc={i})\n'
         code = compile(code, "contract", 'exec')
         code = marshal.dumps(code)
         self.deploy_contract('helloworld11', code, b'', 1)
         r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+        r = JsonObject(r)
+        print(r)
         r = self.push_action('helloworld11', 'sayhello', b'1122', 'helloworld11')
+        r = JsonObject(r)
+        print(r)
         self.produce_block()
 
     def test6(self):
