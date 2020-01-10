@@ -582,6 +582,19 @@ def apply(receiver, code, action):
                 r = self.push_action('alice', 'sayhello', args)
             self.produce_block()
 
+    def test8(self):
+        logger.info('+++++++++++++++test8++++++++++++++')
+        db_test = os.path.join(test_dir, 'test_contracts/db_test.py')
+        with open(db_test, 'r') as f:
+            code = f.read()
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        self.deploy_contract('helloworld11', code, b'', 1)
+        r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+        r = JsonObject(r)
+#        print(r)
+        self.produce_block()
+
     def free(self):
         self.chain.free()
         shutil.rmtree(self.options.config_dir)
@@ -615,6 +628,9 @@ class UUOSTester(unittest.TestCase):
     
     def test7(self):
         UUOSTester.chain.test7()
+
+    def test8(self):
+        UUOSTester.chain.test8()
 
     @classmethod
     def setUpClass(cls):
