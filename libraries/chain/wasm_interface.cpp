@@ -1052,6 +1052,10 @@ class action_api : public context_aware_api {
          return context.get_receiver();
       }
 
+      void set_action_return_value( array_ptr<char> packed_blob, size_t datalen ) {
+         context.action_return_value.assign( packed_blob.value, packed_blob.value + datalen );
+      }
+
       int evm_execute(array_ptr<unsigned char> trx, size_t size) {
          return ::evm_execute(trx.value, size);
       }
@@ -2046,10 +2050,11 @@ REGISTER_INTRINSICS(context_free_system_api,
 );
 
 REGISTER_INTRINSICS(action_api,
-   (read_action_data,       int(int, int)  )
-   (action_data_size,       int()          )
-   (current_receiver,   int64_t()          )
-   (evm_execute,        int(int, int)      )
+   (read_action_data,         int(int, int)  )
+   (action_data_size,         int()          )
+   (current_receiver,         int64_t()      )
+   (set_action_return_value,  void(int, int) )
+   (evm_execute,              int(int, int)  )
 );
 
 REGISTER_INTRINSICS(authorization_api,

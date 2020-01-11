@@ -83,6 +83,7 @@ void apply_context::exec_one()
    const account_metadata_object* receiver_account = nullptr;
    try {
       try {
+         action_return_value.clear();
          receiver_account = &db.get<account_metadata_object,by_name>( receiver );
          privileged = receiver_account->is_privileged();
          auto native = control.find_apply_handler( receiver, act->account, act->name );
@@ -192,6 +193,12 @@ void apply_context::exec_one()
    trace.receipt = r;
 
    trx_context.executed.emplace_back( std::move(r) );
+
+   uint32_t version = 0;
+   if( control.is_builtin_activated( builtin_protocol_feature_t::action_return_value ) ) {
+      version = set_field( version, builtin_protocol_feature_t::action_return_value, true );
+      r.return_value.emplace( std::move( action_return_value ) );
+   }
 
    finalize_trace( trace, start );
 
