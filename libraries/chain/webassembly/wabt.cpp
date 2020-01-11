@@ -1,6 +1,7 @@
 #include <eosio/chain/webassembly/wabt.hpp>
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
+#include <eosio/chain/wasm_eosio_injection.hpp>
 
 //wabt includes
 #include <src/interp.h>
@@ -10,7 +11,7 @@
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {
 
-//yep
+//yep 🤮
 static wabt_apply_instance_vars* static_wabt_vars;
 
 using namespace wabt;
@@ -34,12 +35,12 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
             _initial_memory_configuration = _env->GetMemory(0)->page_limits;
       }
 
-      void apply() override {
+      void apply(apply_context& context) override {
          //reset mutable globals
          for(const auto& mg : _initial_globals)
             mg.first->typed_value = mg.second;
 
-         wabt_apply_instance_vars this_run_vars{nullptr};
+         wabt_apply_instance_vars this_run_vars{nullptr, context};
          static_wabt_vars = &this_run_vars;
 
          //reset memory to inital size & copy back in initial data
@@ -47,19 +48,13 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
             Memory* memory = this_run_vars.memory = _env->GetMemory(0);
             memory->page_limits = _initial_memory_configuration;
             memory->data.resize(_initial_memory_configuration.initial * WABT_PAGE_SIZE);
-            memset(memory->data.data(), 0, memory->data.size());
             memcpy(memory->data.data(), _initial_memory.data(), _initial_memory.size());
+            memset(memory->data.data() + _initial_memory.size(), 0, memory->data.size() - _initial_memory.size());
          }
 
-         uint64_t account = 0;
-         uint64_t act_name = 0;
-         uint64_t receiver = get_vm_api()->current_receiver();
-         get_vm_api()->get_action_info(&account, &act_name);
-
-         _params[0].set_i64(receiver);
-         _params[1].set_i64(account);
-         _params[2].set_i64(act_name);
-
+         _params[0].set_i64(context.get_receiver().to_uint64_t());
+         _params[1].set_i64(context.get_action().account.to_uint64_t());
+         _params[2].set_i64(context.get_action().name.to_uint64_t());
 
          ExecResult res = _executor.RunStartFunction(_instatiated_module);
          EOS_ASSERT( res.result == interp::Result::Ok, wasm_execution_error, "wabt start function failure (${s})", ("s", ResultToString(res.result)) );
@@ -68,12 +63,12 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
          EOS_ASSERT( res.result == interp::Result::Ok, wasm_execution_error, "wabt execution failure (${s})", ("s", ResultToString(res.result)) );
       }
 
-      void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) override {
+      void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) override {
          //reset mutable globals
          for(const auto& mg : _initial_globals)
             mg.first->typed_value = mg.second;
 
-         wabt_apply_instance_vars this_run_vars{nullptr};
+         wabt_apply_instance_vars this_run_vars{nullptr, context};
          static_wabt_vars = &this_run_vars;
 
          //reset memory to inital size & copy back in initial data
@@ -108,7 +103,14 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
 
 wabt_runtime::wabt_runtime() {}
 
-std::unique_ptr<wasm_instantiated_module_interface> wabt_runtime::instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory) {
+bool wabt_runtime::inject_module(IR::Module& module) {
+   wasm_injections::wasm_binary_injection<true> injector(module);
+   injector.inject();
+   return true;
+}
+
+std::unique_ptr<wasm_instantiated_module_interface> wabt_runtime::instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory,
+                                                                                     const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) {
    std::unique_ptr<interp::Environment> env = std::make_unique<interp::Environment>();
    for(auto it = intrinsic_registrator::get_map().begin() ; it != intrinsic_registrator::get_map().end(); ++it) {
       interp::HostModule* host_module = env->AppendHostModule(it->first);

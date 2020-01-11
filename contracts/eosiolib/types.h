@@ -63,7 +63,7 @@ typedef uint64_t action_name;
 
 typedef uint16_t weight_type;
 
-#ifndef __WASM
+#if 1 //ndef __WASM
 typedef __int128 int128_t ;
 typedef unsigned __int128 uint128_t;
 #endif

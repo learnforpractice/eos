@@ -164,21 +164,10 @@ void apply_eosio_setcode(apply_context& context) {
    int64_t code_size = (int64_t)act.code.size();
 
    if( code_size > 0 ) {
-      code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
+     code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
       if (act.vmtype == 0) {
          wasm_interface::validate(context.control, act.code);
       }
-#if 0
-      string file_name = "contracts/" + act.account.to_string();
-      file_name += "-";
-      file_name += code_hash.str();
-      file_name += "-";
-      file_name += std::to_string(context.control.head_block_num());
-      file_name += ".wasm";
-      fstream file(file_name, ios::out | ios::binary);
-      file.write(act.code.data(), act.code.size());
-      file.close();
-#endif
    }
 
    bool existing_code = (account.code_hash != digest_type());

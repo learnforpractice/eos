@@ -76,33 +76,27 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
          detail::the_wavm_live_modules.remove_live_module(_module_ref);
       }
 
-      void apply() override {
-         uint64_t account = 0;
-         uint64_t act_name = 0;
-         uint64_t receiver = get_vm_api()->current_receiver();
-         get_vm_api()->get_action_info(&account, &act_name);
+      void apply(apply_context& context) override {
+         vector<Value> args = {Value(context.get_receiver().to_uint64_t()),
+	                            Value(context.get_action().account.to_uint64_t()),
+                               Value(context.get_action().name.to_uint64_t())};
 
-         vector<Value> args = {Value(uint64_t(receiver)),
-	                            Value(uint64_t(account)),
-                               Value(uint64_t(act_name))};
-
-         call("apply", args);
+         call("apply", args, context);
       }
 
-      void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) override {
+      void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) override {
          vector<Value> args = {
             Value(uint64_t(func_name)),
             Value(uint64_t(arg1)),
             Value(uint64_t(arg2)),
             Value(uint64_t(arg3))
          };
-         string str_func_name;
-         get_chain_api()->n2str(func_name, str_func_name);
-         call(str_func_name, args);
+
+         call("call", args, context);
       }
 
    private:
-      void call(const string &entry_point, const vector <Value> &args) {
+      void call(const string &entry_point, const vector <Value> &args, apply_context &context) {
          try {
             FunctionInstance* call = asFunctionNullable(getInstanceExport(_instance,entry_point));
             if( !call )
@@ -123,14 +117,14 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
             }
 
             the_running_instance_context.memory = default_mem;
-//            the_running_instance_context.apply_ctx = &context;
+            the_running_instance_context.apply_ctx = &context;
 
             resetGlobalInstances(_instance);
             runInstanceStartFunc(_instance);
             Runtime::invokeFunction(call,args);
          } catch( const wasm_exit& e ) {
          } catch( const Runtime::Exception& e ) {
-             EOS_THROW(wasm_execution_error,
+             FC_THROW_EXCEPTION(wasm_execution_error,
                          "cause: ${cause}\n${callstack}",
                          ("cause", string(describeExceptionCause(e.cause)))
                          ("callstack", e.callStack));
@@ -153,7 +147,14 @@ wavm_runtime::wavm_runtime() {
 wavm_runtime::~wavm_runtime() {
 }
 
-std::unique_ptr<wasm_instantiated_module_interface> wavm_runtime::instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory) {
+bool wavm_runtime::inject_module(IR::Module& module) {
+   wasm_injections::wasm_binary_injection<true> injector(module);
+   injector.inject();
+   return true;
+}
+
+std::unique_ptr<wasm_instantiated_module_interface> wavm_runtime::instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory,
+                                                                                     const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) {
    std::unique_ptr<Module> module = std::make_unique<Module>();
    try {
       Serialization::MemoryInputStream stream((const U8*)code_bytes, code_size);
@@ -164,12 +165,17 @@ std::unique_ptr<wasm_instantiated_module_interface> wavm_runtime::instantiate_mo
       EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
    }
 
-   eosio::chain::webassembly::common::root_resolver resolver;
-   LinkResult link_result = linkModule(*module, resolver);
-   ModuleInstance *instance = instantiateModule(*module, std::move(link_result.resolvedImports));
-   EOS_ASSERT(instance != nullptr, wasm_exception, "Fail to Instantiate WAVM Module");
+   try {
+      eosio::chain::webassembly::common::root_resolver resolver;
+      LinkResult link_result = linkModule(*module, resolver);
+      ModuleInstance *instance = instantiateModule(*module, std::move(link_result.resolvedImports));
+      EOS_ASSERT(instance != nullptr, wasm_exception, "Fail to Instantiate WAVM Module");
 
-   return std::make_unique<wavm_instantiated_module>(instance, std::move(module), initial_memory);
+      return std::make_unique<wavm_instantiated_module>(instance, std::move(module), initial_memory);
+   }
+   catch(const Runtime::Exception& e) {
+      EOS_THROW(wasm_execution_error, "Failed to stand up WAVM instance: ${m}", ("m", describeExceptionCause(e.cause)));
+   }
 }
 
 void wavm_runtime::immediately_exit_currently_running_module() {

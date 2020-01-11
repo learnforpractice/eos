@@ -34,13 +34,11 @@ else()
   list( APPEND PLATFORM_SPECIFIC_LIBS util )
 endif()
 
-find_package(LLVM 4.0 REQUIRED CONFIG)
-
-link_directories(${LLVM_LIBRARY_DIR})
-
 add_subdirectory(contracts)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/contracts.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/contracts.hpp ESCAPE_QUOTES)
+
+add_subdirectory(snapshots)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/snapshots.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/snapshots.hpp ESCAPE_QUOTES)
 
 ### BUILD UNIT TEST EXECUTABLE ###
 file(GLOB UNIT_TESTS "*.cpp") # find all unit test suites
@@ -48,19 +46,15 @@ add_executable( unit_test
   abi_tests.cpp
   bootseq_tests.cpp
   eosio.token_tests.v2.cpp
-  message_buffer_tests.cpp
   protocol_feature_tests.cpp
   special_accounts_tests.cpp
   api_tests.cpp
   currency_tests.cpp
-  eth_account_tests.cpp
   misc_tests.cpp
-  pythonvm_tests.cpp
-  uuos_mainnet_tests.cpp
+
   auth_tests.cpp
   database_tests.cpp
   fork_test_utilities.cpp
-  native_contract_test.cpp
   ram_tests.cpp
   wasm_tests.cpp
   block_tests.cpp
@@ -72,8 +66,14 @@ add_executable( unit_test
   block_timestamp_tests.cpp
   eosio.token_tests.cpp
   main.cpp
-  producer_schedule_tests.cpp	snapshot_tests.cpp
+  producer_schedule_tests.cpp
+  snapshot_tests.cpp
 
+  pythonvm_tests.cpp
+  uuos_mainnet_tests.cpp
+  eth_account_tests.cpp
+  native_contract_test.cpp
+  mi_tests.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp
@@ -115,17 +115,25 @@ foreach(TEST_SUITE ${UNIT_TESTS}) # create an independent target for each test s
   if (NOT "" STREQUAL "${SUITE_NAME}") # ignore empty lines
     execute_process(COMMAND bash -c "echo ${SUITE_NAME} | sed -e 's/s$//' | sed -e 's/_test$//'" OUTPUT_VARIABLE TRIMMED_SUITE_NAME OUTPUT_STRIP_TRAILING_WHITESPACE) # trim "_test" or "_tests" from the end of ${SUITE_NAME}
     # to run unit_test with all log from blockchain displayed, put "--verbose" after "--", i.e. "unit_test -- --verbose"
-    add_test(NAME ${TRIMMED_SUITE_NAME}_unit_test_wavm COMMAND unit_test --run_test=${SUITE_NAME} --report_level=detailed --color_output --catch_system_errors=no -- --wavm)
-    add_test(NAME ${TRIMMED_SUITE_NAME}_unit_test_wabt COMMAND unit_test --run_test=${SUITE_NAME} --report_level=detailed --color_output -- --wabt)
-    # build list of tests to run during coverage testing
-    if(NOT "" STREQUAL "${ctest_tests}")
-      set(ctest_tests "${ctest_tests}|${TRIMMED_SUITE_NAME}_unit_test_wavm|${TRIMMED_SUITE_NAME}_unit_test_wabt")
-    else()
-      set(ctest_tests "${TRIMMED_SUITE_NAME}_unit_test_wavm|${TRIMMED_SUITE_NAME}_unit_test_wabt")
-    endif()
+    foreach(RUNTIME ${EOSIO_WASM_RUNTIMES})
+      add_test(NAME ${TRIMMED_SUITE_NAME}_unit_test_${RUNTIME} COMMAND unit_test --run_test=${SUITE_NAME} --report_level=detailed --color_output --catch_system_errors=no -- --${RUNTIME})
+      # build list of tests to run during coverage testing
+      if(ctest_tests)
+         string(APPEND ctest_tests "|")
+      endif()
+      string(APPEND ctest_tests ${TRIMMED_SUITE_NAME}_unit_test_$RUNTIME)
+    endforeach()
   endif()
 endforeach(TEST_SUITE)
 set(ctest_tests "'${ctest_tests}' -j8") # surround test list string in apostrophies
+
+# The following tests are known to take the longest, bump up their cost (priority) so that they'll run first
+# even on fresh first time test runs before ctest auto-detects costs
+foreach(RUNTIME ${EOSIO_WASM_RUNTIMES})
+   set_tests_properties(api_unit_test_${RUNTIME} PROPERTIES COST 5000)
+   set_tests_properties(wasm_unit_test_${RUNTIME} PROPERTIES COST 4000)
+   set_tests_properties(delay_unit_test_${RUNTIME} PROPERTIES COST 3000)
+endforeach()
 
 ### COVERAGE TESTING ###
 if(ENABLE_COVERAGE_TESTING)

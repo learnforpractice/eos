@@ -40,6 +40,11 @@ struct debug_contract_params {
    string path;
 };
 
+struct set_logger_level_params {
+   string logger;
+   string level;
+};
+
 class debug_api_plugin : public plugin<debug_api_plugin> {
 public:
    APPBASE_PLUGIN_REQUIRES((http_plugin) (chain_plugin))
@@ -62,6 +67,7 @@ public:
 
    bool add_debug_contract(debug_contract_params& params);
    bool clear_debug_contract(string& contract_name);
+   bool set_logger_level(set_logger_level_params& params);
 
 private:
 };
@@ -73,4 +79,4 @@ FC_REFLECT( eosio::db_size_stats, (free_bytes)(used_bytes)(size)(indices) )
 FC_REFLECT( eosio::enable_debug, (enabled) )
 FC_REFLECT( eosio::is_debug_enabled, (enabled) )
 FC_REFLECT( eosio::debug_contract_params, (name)(path) )
-
+FC_REFLECT( eosio::set_logger_level_params, (logger)(level) )

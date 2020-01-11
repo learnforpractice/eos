@@ -1,8 +1,3 @@
-/**
- *  @file
- *  @copyright defined in eos/LICENSE
- */
-
 #include <eosio/chain/genesis_intrinsics.hpp>
 
 namespace eosio { namespace chain {
@@ -200,8 +195,6 @@ const std::vector<const char*> genesis_intrinsics = {
    "call_contract_get_results",
    "to_base58",
    "from_base58",
-//   "is_feature_activated",
-//   "preactivate_feature"
 };
 
 } } // namespace eosio::chain

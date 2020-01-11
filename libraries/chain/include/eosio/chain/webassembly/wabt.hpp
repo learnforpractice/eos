@@ -10,7 +10,6 @@
 #include <src/binary-reader.h>
 #include <src/common.h>
 #include <src/interp.h>
-#include <chain_api.hpp>
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {
 
@@ -21,7 +20,7 @@ using namespace eosio::chain::webassembly::common;
 
 struct wabt_apply_instance_vars {
    Memory* memory;
-//   apply_context& ctx;
+   apply_context& ctx;
 
    char* get_validated_pointer(uint32_t offset, uint32_t size) {
       EOS_ASSERT(memory, wasm_execution_error, "access violation");
@@ -36,7 +35,7 @@ struct intrinsic_registrator {
    struct intrinsic_func_info {
       FuncSignature sig;
       intrinsic_fn func;
-   }; 
+   };
 
    static auto& get_map(){
       static map<string, map<string, intrinsic_func_info>> _map;
@@ -51,7 +50,9 @@ struct intrinsic_registrator {
 class wabt_runtime : public eosio::chain::wasm_runtime_interface {
    public:
       wabt_runtime();
-      std::unique_ptr<wasm_instantiated_module_interface> instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory) override;
+      bool inject_module(IR::Module&) override;
+      std::unique_ptr<wasm_instantiated_module_interface> instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory,
+                                                                             const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) override;
 
       void immediately_exit_currently_running_module() override;
 
@@ -85,7 +86,7 @@ inline null_terminated_ptr null_terminated_ptr_impl(wabt_apply_instance_vars& va
       if(*p++ == '\0')
          return null_terminated_ptr(value);
 
-   EOS_THROW(wasm_execution_error, "unterminated string");
+   FC_THROW_EXCEPTION(wasm_execution_error, "unterminated string");
 }
 
 
@@ -189,7 +190,7 @@ inline auto convert_native_to_literal(const wabt_apply_instance_vars&, const dou
 
 inline auto convert_native_to_literal(const wabt_apply_instance_vars&, const name &val) {
    TypedValue tv(Type::I64);
-   tv.set_i64(val.value);
+   tv.set_i64(val.to_uint64_t());
    return tv;
 }
 
@@ -363,9 +364,9 @@ struct intrinsic_invoker_impl<Ret, std::tuple<Input, Inputs...>> {
  * @tparam Inputs - the remaining native parameters to transcribe
  */
 template<typename T, typename Ret, typename... Inputs>
-struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, size_t, Inputs...>> {
+struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, uint32_t, Inputs...>> {
    using next_step = intrinsic_invoker_impl<Ret, std::tuple<Inputs...>>;
-   using then_type = Ret(*)(wabt_apply_instance_vars&, array_ptr<T>, size_t, Inputs..., const TypedValues&, int);
+   using then_type = Ret(*)(wabt_apply_instance_vars&, array_ptr<T>, uint32_t, Inputs..., const TypedValues&, int);
 
    template<then_type Then, typename U=T>
    static auto translate_one(wabt_apply_instance_vars& vars, Inputs... rest, const TypedValues& args, int offset) -> std::enable_if_t<std::is_const<U>::value, Ret> {
@@ -374,7 +375,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, size_t, Inputs...>> 
       size_t length = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, length);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.control.contracts_console())
             wlog( "misaligned array of const values" );
          std::vector<std::remove_const_t<T> > copy(length > 0 ? length : 1);
          T* copy_ptr = &copy[0];
@@ -391,18 +392,18 @@ struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, size_t, Inputs...>> 
       size_t length = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, length);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.control.contracts_console())
             wlog( "misaligned array of values" );
          std::vector<std::remove_const_t<T> > copy(length > 0 ? length : 1);
          T* copy_ptr = &copy[0];
          memcpy( (void*)copy_ptr, (void*)base, length * sizeof(T) );
-         Ret ret = Then(vars, static_cast<array_ptr<T>>(copy_ptr), length, rest..., args, (uint32_t)offset - 2);  
+         Ret ret = Then(vars, static_cast<array_ptr<T>>(copy_ptr), length, rest..., args, (uint32_t)offset - 2);
          memcpy( (void*)base, (void*)copy_ptr, length * sizeof(T) );
          return ret;
       }
       return Then(vars, static_cast<array_ptr<T>>(base), length, rest..., args, (uint32_t)offset - 2);
    };
-   
+
    template<then_type Then>
    static const auto fn() {
       return next_step::template fn<translate_one<Then>>();
@@ -443,9 +444,9 @@ struct intrinsic_invoker_impl<Ret, std::tuple<null_terminated_ptr, Inputs...>> {
  * @tparam Inputs - the remaining native parameters to transcribe
  */
 template<typename T, typename U, typename Ret, typename... Inputs>
-struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, array_ptr<U>, size_t, Inputs...>> {
+struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, array_ptr<U>, uint32_t, Inputs...>> {
    using next_step = intrinsic_invoker_impl<Ret, std::tuple<Inputs...>>;
-   using then_type = Ret(*)(wabt_apply_instance_vars&, array_ptr<T>, array_ptr<U>, size_t, Inputs..., const TypedValues&, int);
+   using then_type = Ret(*)(wabt_apply_instance_vars&, array_ptr<T>, array_ptr<U>, uint32_t, Inputs..., const TypedValues&, int);
 
    template<then_type Then>
    static Ret translate_one(wabt_apply_instance_vars& vars, Inputs... rest, const TypedValues& args, int offset) {
@@ -469,9 +470,9 @@ struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, array_ptr<U>, size_t
  * @tparam Inputs - the remaining native parameters to transcribe
  */
 template<typename Ret>
-struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<char>, int, size_t>> {
+struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<char>, int, uint32_t>> {
    using next_step = intrinsic_invoker_impl<Ret, std::tuple<>>;
-   using then_type = Ret(*)(wabt_apply_instance_vars&, array_ptr<char>, int, size_t, const TypedValues&, int);
+   using then_type = Ret(*)(wabt_apply_instance_vars&, array_ptr<char>, int, uint32_t, const TypedValues&, int);
 
    template<then_type Then>
    static Ret translate_one(wabt_apply_instance_vars& vars, const TypedValues& args, int offset) {
@@ -505,7 +506,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T *, Inputs...>> {
       uint32_t ptr = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.control.contracts_console())
             wlog( "misaligned const pointer" );
          std::remove_const_t<T> copy;
          T* copy_ptr = &copy;
@@ -520,13 +521,13 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T *, Inputs...>> {
       uint32_t ptr = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.control.contracts_console())
             wlog( "misaligned pointer" );
          T copy;
          memcpy( (void*)&copy, (void*)base, sizeof(T) );
          Ret ret = Then(vars, &copy, rest..., args, (uint32_t)offset - 1);
          memcpy( (void*)base, (void*)&copy, sizeof(T) );
-         return ret; 
+         return ret;
       }
       return Then(vars, base, rest..., args, (uint32_t)offset - 1);
    };
@@ -610,7 +611,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T &, Inputs...>> {
       EOS_ASSERT(ptr != 0, binaryen_exception, "references cannot be created for null pointers");
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.control.contracts_console())
             wlog( "misaligned const reference" );
          std::remove_const_t<T> copy;
          T* copy_ptr = &copy;
@@ -627,13 +628,13 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T &, Inputs...>> {
       EOS_ASSERT(ptr != 0, binaryen_exception, "references cannot be created for null pointers");
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.control.contracts_console())
             wlog( "misaligned reference" );
          T copy;
          memcpy( (void*)&copy, (void*)base, sizeof(T) );
          Ret ret = Then(vars, copy, rest..., args, (uint32_t)offset - 1);
          memcpy( (void*)base, (void*)&copy, sizeof(T) );
-         return ret; 
+         return ret;
       }
       return Then(vars, *base, rest..., args, (uint32_t)offset - 1);
    }
@@ -656,8 +657,8 @@ struct intrinsic_function_invoker {
 
    template<MethodSig Method>
    static Ret wrapper(wabt_apply_instance_vars& vars, Params... params, const TypedValues&, int) {
-      class_from_wasm<Cls>::value().checktime();
-      return (class_from_wasm<Cls>::value().*Method)(params...);
+      class_from_wasm<Cls>::value(vars.ctx).checktime();
+      return (class_from_wasm<Cls>::value(vars.ctx).*Method)(params...);
    }
 
    template<MethodSig Method>
@@ -672,8 +673,8 @@ struct intrinsic_function_invoker<void, MethodSig, Cls, Params...> {
 
    template<MethodSig Method>
    static void_type wrapper(wabt_apply_instance_vars& vars, Params... params, const TypedValues& args, int offset) {
-      class_from_wasm<Cls>::value().checktime();
-      (class_from_wasm<Cls>::value().*Method)(params...);
+      class_from_wasm<Cls>::value(vars.ctx).checktime();
+      (class_from_wasm<Cls>::value(vars.ctx).*Method)(params...);
       return void_type();
    }
 
@@ -687,23 +688,48 @@ struct intrinsic_function_invoker<void, MethodSig, Cls, Params...> {
 template<typename>
 struct intrinsic_function_invoker_wrapper;
 
+template<typename T>
+struct void_ret_wrapper {
+   using type = T;
+};
+
+template<>
+struct void_ret_wrapper<void> {
+   using type = char;
+};
+
+template<typename T>
+using void_ret_wrapper_t = typename void_ret_wrapper<T>::type;
+
 template<typename Cls, typename Ret, typename... Params>
 struct intrinsic_function_invoker_wrapper<Ret (Cls::*)(Params...)> {
+   static_assert( !(std::is_pointer_v<Ret> && alignof(std::remove_pointer_t<void_ret_wrapper_t<Ret>>) != 1) &&
+                  !(std::is_lvalue_reference_v<Ret> && alignof(std::remove_reference_t<void_ret_wrapper_t<Ret>>) != 1), 
+                  "intrinsics should only return a reference or pointer with single byte alignment");
    using type = intrinsic_function_invoker<Ret, Ret (Cls::*)(Params...), Cls, Params...>;
 };
 
 template<typename Cls, typename Ret, typename... Params>
 struct intrinsic_function_invoker_wrapper<Ret (Cls::*)(Params...) const> {
+   static_assert( !(std::is_pointer_v<Ret> && alignof(std::remove_pointer_t<void_ret_wrapper_t<Ret>>) != 1) &&
+                  !(std::is_lvalue_reference_v<Ret> && alignof(std::remove_reference_t<void_ret_wrapper_t<Ret>>) != 1), 
+                  "intrinsics should only return a reference or pointer with single byte alignment");
    using type = intrinsic_function_invoker<Ret, Ret (Cls::*)(Params...) const, Cls, Params...>;
 };
 
 template<typename Cls, typename Ret, typename... Params>
 struct intrinsic_function_invoker_wrapper<Ret (Cls::*)(Params...) volatile> {
+   static_assert( !(std::is_pointer_v<Ret> && alignof(std::remove_pointer_t<void_ret_wrapper_t<Ret>>) != 1) &&
+                  !(std::is_lvalue_reference_v<Ret> && alignof(std::remove_reference_t<void_ret_wrapper_t<Ret>>) != 1), 
+                  "intrinsics should only return a reference or pointer with single byte alignment");
    using type = intrinsic_function_invoker<Ret, Ret (Cls::*)(Params...) volatile, Cls, Params...>;
 };
 
 template<typename Cls, typename Ret, typename... Params>
 struct intrinsic_function_invoker_wrapper<Ret (Cls::*)(Params...) const volatile> {
+   static_assert( !(std::is_pointer_v<Ret> && alignof(std::remove_pointer_t<void_ret_wrapper_t<Ret>>) != 1) &&
+                  !(std::is_lvalue_reference_v<Ret> && alignof(std::remove_reference_t<void_ret_wrapper_t<Ret>>) != 1),
+                  "intrinsics should only return a reference or pointer with single byte alignment");
    using type = intrinsic_function_invoker<Ret, Ret (Cls::*)(Params...) const volatile, Cls, Params...>;
 };
 
