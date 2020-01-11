@@ -1,3 +1,5 @@
+__attribute__((eosio_wasm_import))
+void set_action_return_value(const char *packed_blob, size_t size);
 
 //uint32_t read_action_data( void* msg, uint32_t len );
 static PyObject *py_read_action_data(PyObject *self, PyObject *args)
@@ -260,6 +262,20 @@ static PyObject *py_current_receiver(PyObject *self, PyObject *args)
     uint64_t n = current_receiver();
     return PyLong_FromUnsignedLongLong(n);
 }
+
+//void send_context_free_inline(char *serialized_action, size_t size);
+static PyObject *py_set_action_return_value(PyObject *self, PyObject *args)
+{
+    char *data;
+    Py_ssize_t len;
+    if (!PyArg_ParseTuple(args, "s#", &data, &len)) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments");
+        return NULL;
+    }
+    set_action_return_value(data, len);
+    Py_RETURN_NONE;
+}
+
 
 static PyObject *py_string_to_name(PyObject *self, PyObject *args)
 {
@@ -608,6 +624,7 @@ static PyObject *py_call_contract(PyObject *self, PyObject *args)
     {"send_context_free_inline",(PyCFunction)py_send_context_free_inline, METH_VARARGS, NULL}, \
     {"publication_time",        (PyCFunction)py_publication_time, METH_VARARGS, NULL}, \
     {"current_receiver",        (PyCFunction)py_current_receiver, METH_VARARGS, NULL}, \
+    {"set_action_return_value", (PyCFunction)py_set_action_return_value, METH_VARARGS, NULL}, \
     {"N",                       (PyCFunction)py_string_to_name, METH_VARARGS, NULL}, \
     {"s2n",                     (PyCFunction)py_string_to_name, METH_VARARGS, NULL}, \
     {"n2s",                     (PyCFunction)py_name_to_string, METH_VARARGS, NULL}, \
