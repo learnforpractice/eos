@@ -389,7 +389,6 @@ FC_REFLECT(eosio::chain::controller::config,
                                     (disable_all_subjective_mitigations)
                                     (uuos_mainnet)
                                     (genesis_accounts_file)
-                                    (genesis)
                                     (wasm_runtime)
                                     (read_mode)
                                     (block_validation_mode)
