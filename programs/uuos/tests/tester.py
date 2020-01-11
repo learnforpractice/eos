@@ -225,6 +225,7 @@ class ChainTest(object):
                     '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
                     '737102c41d3bce173c009a310ec0d23ae26a4bbe6b621fa1b90846b2115b296e', #PYTHONVM
                     'f16d7d240355ca947ec591e82f876cad5fef30b8914935691af00c92d169b8b2', #ETHEREUMVM
+                    '8e66379ab121fabc3d5309dc48d2654c7148958281eb86ae2273bda8f542d76a', #ACTION_RETURN_VALUE
         ]
 
         for digest in feature_digests: 
@@ -482,6 +483,11 @@ class ChainTest(object):
         # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         self.create_account('eosio', 'testtesttest1', key, key, 10*1024, 1, 10)
+        params = {'account_name':'testtesttest1'}
+        params = json.dumps(params)
+        ret, result = self.chain_api.get_account(params)
+        result = JsonObject(result)
+        logger.info(result)
 
     def test1(self):
         logger.info('++++++++++++++test1+++++++++++++++')
@@ -663,6 +669,17 @@ def apply(receiver, code, action):
 #        print(r)
         self.produce_block()
 
+    def test_set_action_return_value(self):
+        code = '''
+def apply(receiver, code, action):
+    set_action_return_value(b'hello,world')
+        '''
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        self.deploy_contract('helloworld11', code, b'', 1)
+        r = self.push_action('helloworld11', 'test', b'')
+        print(r)
+
     def free(self):
         self.chain.free()
         shutil.rmtree(self.options.config_dir)
@@ -674,6 +691,9 @@ class UUOSTester(unittest.TestCase):
         super(UUOSTester, self).__init__(testName)
         self.extra_args = extra_args
 #        UUOSTester.chain = self.chain
+
+    def test_set_action_return_value(self):
+        UUOSTester.chain.test_set_action_return_value()
 
     def test1(self):
         UUOSTester.chain.test1()
