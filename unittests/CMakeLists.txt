@@ -107,6 +107,7 @@ target_include_directories( unit_test PUBLIC
 
 add_dependencies(unit_test test_contracts_project)
 add_dependencies(unit_test wasm_injector)
+add_dependencies(unit_test wabt)
 
 ### MARK TEST SUITES FOR EXECUTION ###
 foreach(TEST_SUITE ${UNIT_TESTS}) # create an independent target for each test suite
