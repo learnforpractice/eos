@@ -48,3 +48,8 @@ static u64 current_receiver() {
    return get_vm_api()->current_receiver();
 }
 
+static void set_action_return_value(u32 packed_blob_offset, u32 size) {
+   char *packed_blob;
+   packed_blob = (char *)offset_to_ptr(packed_blob_offset, size);
+   get_vm_api()->set_action_return_value(packed_blob, size);
+}

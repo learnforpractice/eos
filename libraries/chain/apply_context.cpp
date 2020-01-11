@@ -189,16 +189,16 @@ void apply_context::exec_one()
       r.auth_sequence[auth.actor] = next_auth_sequence( auth.actor );
    }
 
-   action_trace& trace = trx_context.get_action_trace( action_ordinal );
-   trace.receipt = r;
-
-   trx_context.executed.emplace_back( std::move(r) );
-
    uint32_t version = 0;
    if( control.is_builtin_activated( builtin_protocol_feature_t::action_return_value ) ) {
       version = set_field( version, builtin_protocol_feature_t::action_return_value, true );
       r.return_value.emplace( std::move( action_return_value ) );
    }
+
+   action_trace& trace = trx_context.get_action_trace( action_ordinal );
+   trace.receipt = r;
+
+   trx_context.executed.emplace_back( std::move(r) );
 
    finalize_trace( trace, start );
 

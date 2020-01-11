@@ -145,6 +145,8 @@ extern void (*Z_envZ_send_context_free_inlineZ_vii)(u32, u32);
 extern u64 (*Z_envZ_publication_timeZ_jv)(void);
 /* import: 'env' 'current_receiver' */
 extern u64 (*Z_envZ_current_receiverZ_jv)(void);
+/* import: 'env' 'set_action_return_value' */
+extern void (*Z_envZ_set_action_return_valueZ_vii)(u32, u32);
 /* import: 'env' 's2n' */
 extern u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'n2s' */

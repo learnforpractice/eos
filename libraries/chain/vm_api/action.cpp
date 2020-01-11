@@ -27,6 +27,10 @@ uint64_t current_receiver() {
    return ctx().get_receiver();
 }
 
+void set_action_return_value( const char* packed_blob, size_t datalen ) {
+   ctx().action_return_value.assign( packed_blob, packed_blob + datalen );
+}
+
 void require_recipient( uint64_t account ) {
    ctx().require_recipient(name(account));
 }

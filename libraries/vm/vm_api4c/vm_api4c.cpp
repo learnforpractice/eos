@@ -150,6 +150,7 @@ void (*Z_envZ_send_inlineZ_vii)(u32, u32);
 void (*Z_envZ_send_context_free_inlineZ_vii)(u32, u32);
 u64 (*Z_envZ_publication_timeZ_jv)(void);
 u64 (*Z_envZ_current_receiverZ_jv)(void);
+void (*Z_envZ_set_action_return_valueZ_vii)(u32, u32);
 
 /* import: 'env' 'get_active_producers' */
 u32 (*Z_envZ_get_active_producersZ_iii)(u32, u32);
@@ -278,6 +279,7 @@ void init_vm_api4c() {
     Z_envZ_send_context_free_inlineZ_vii = send_context_free_inline;
     Z_envZ_publication_timeZ_jv = publication_time;
     Z_envZ_current_receiverZ_jv = current_receiver;
+    Z_envZ_set_action_return_valueZ_vii = set_action_return_value;
 
 //chain.cpp
     Z_envZ_get_active_producersZ_iii = get_active_producers;
