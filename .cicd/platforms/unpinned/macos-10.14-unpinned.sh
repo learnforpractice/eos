@@ -2,7 +2,11 @@
 set -eo pipefail
 VERSION=1
 brew update
+<<<<<<< HEAD
 brew install git cmake python@2 python libtool libusb graphviz automake wget gmp pkgconfig doxygen openssl jq boost || :
+=======
+brew install git cmake python@2 python libtool libusb graphviz automake wget gmp llvm@7 pkgconfig doxygen openssl@1.1 jq boost || :
+>>>>>>> eosio/master
 # install mongoDB
 cd ~
 curl -OL https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-3.6.3.tgz
@@ -30,4 +34,8 @@ cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=
 make -j $(getconf _NPROCESSORS_ONLN) VERBOSE=1
 sudo make install
 cd ../..
+<<<<<<< HEAD
 rm -f mongo-cxx-driver-r3.4.0.tar.gz
+=======
+rm -f mongo-cxx-driver-r3.4.0.tar.gz 
+>>>>>>> eosio/master

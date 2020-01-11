@@ -16,7 +16,6 @@ if [[ ! -z "$(pgrep mongod)" ]]; then
     echo "+++ $([[ "$BUILDKITE" == 'true' ]] && echo ':leaves: ')Killing old MongoDB"
     $(pgrep mongod | xargs kill -9) || :
 fi
-# do not start mongod if it does not exist
 if [[ -x $(command -v mongod) ]]; then
     echo "+++ $([[ "$BUILDKITE" == 'true' ]] && echo ':leaves: ')Starting new MongoDB"
     [[ ! -d ~/data/mongodb && ! -d mongodata ]] && mkdir mongodata

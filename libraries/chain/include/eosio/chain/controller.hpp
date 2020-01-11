@@ -60,7 +60,6 @@ namespace eosio { namespace chain {
 
    class controller {
       public:
-
          struct config {
             flat_set<account_name>   sender_bypass_whiteblacklist;
             flat_set<account_name>   actor_whitelist;
@@ -291,6 +290,7 @@ namespace eosio { namespace chain {
          bool in_immutable_mode()const;
 
          void set_subjective_cpu_leeway(fc::microseconds leeway);
+         fc::optional<fc::microseconds> get_subjective_cpu_leeway() const;
          void set_greylist_limit( uint32_t limit );
          uint32_t get_greylist_limit()const;
 

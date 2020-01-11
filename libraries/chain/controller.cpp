@@ -36,6 +36,7 @@
 #include "db_interface.hpp"
 
 void chain_api_set_controller(eosio::chain::controller *_ctrl, eosio::chain::controller::config _cfg);
+#include <new>
 
 namespace eosio { namespace chain {
 
@@ -223,6 +224,14 @@ struct pending_state {
 };
 
 struct controller_impl {
+
+   // LLVM sets the new handler, we need to reset this to throw a bad_alloc exception so we can possibly exit cleanly
+   // and not just abort.
+   struct reset_new_handler {
+      reset_new_handler() { std::set_new_handler([](){ throw std::bad_alloc(); }); }
+   };
+
+   reset_new_handler              rnh; // placed here to allow for this to be set before constructing the other fields
    controller&                    self;
    chainbase::database            db;
    chainbase::database            ro_db;
@@ -298,7 +307,8 @@ struct controller_impl {
    }
 
    controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
-   :self(s),
+   :rnh(),
+    self(s),
     db( cfg.state_dir,
         cfg.read_only ? database::read_only : database::read_write,
         cfg.state_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
@@ -377,16 +387,18 @@ struct controller_impl {
       try {
          s( std::forward<Arg>( a ));
       } catch (std::bad_alloc& e) {
-         wlog( "std::bad_alloc" );
+         wlog( "std::bad_alloc: ${w}", ("w", e.what()) );
          throw e;
       } catch (boost::interprocess::bad_alloc& e) {
-         wlog( "bad alloc" );
+         wlog( "boost::interprocess::bad alloc: ${w}", ("w", e.what()) );
          throw e;
       } catch ( controller_emit_signal_exception& e ) {
-         wlog( "${details}", ("details", e.to_detail_string()) );
+         wlog( "controller_emit_signal_exception: ${details}", ("details", e.to_detail_string()) );
          throw e;
       } catch ( fc::exception& e ) {
-         wlog( "${details}", ("details", e.to_detail_string()) );
+         wlog( "fc::exception: ${details}", ("details", e.to_detail_string()) );
+      } catch ( std::exception& e ) {
+         wlog( "std::exception: ${details}", ("details", e.what()) );
       } catch ( ... ) {
          wlog( "signal handler threw exception" );
       }
@@ -3217,6 +3229,10 @@ bool controller::is_known_unexpired_transaction( const transaction_id_type& id) 
 
 void controller::set_subjective_cpu_leeway(fc::microseconds leeway) {
    my->subjective_cpu_leeway = leeway;
+}
+
+fc::optional<fc::microseconds> controller::get_subjective_cpu_leeway() const {
+    return my->subjective_cpu_leeway;
 }
 
 void controller::set_greylist_limit( uint32_t limit ) {
