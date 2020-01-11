@@ -27,6 +27,10 @@
 
 #include <vm_api/vm_api.h>
 
+extern "C" {
+   int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
+}
+
 #if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
 #include <eosio/vm/allocator.hpp>
 #endif
@@ -128,14 +132,6 @@ namespace eosio { namespace chain {
       }
 #endif
       my->get_instantiated_module(code_hash, vm_type, vm_version, context.trx_context)->call(func_name, arg1, arg2, arg3, context);
-   }
-
-   void wasm_interface::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3 ) {
-      digest_type code_hash;
-      uint8_t vm_type = 0;
-      uint8_t vm_version = 0;
-      get_chain_api()->get_account_info(contract, code_hash, vm_type, vm_version);
-      my->get_instantiated_module(code_hash, vm_type, vm_version)->call(func_name, arg1, arg2, arg3);
    }
 
    void wasm_interface::exit() {

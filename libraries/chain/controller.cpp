@@ -795,7 +795,6 @@ struct controller_impl {
       authorization.add_indices();
       resource_limits.add_indices();
 
-
       controller_index_set::add_indices(ro_db);
       contract_database_index_set::add_indices(ro_db);
       if (conf.uuos_mainnet) {
@@ -803,15 +802,7 @@ struct controller_impl {
       }
       authorization.add_indices(ro_db);
       resource_limits.add_indices(ro_db);
-   }
 
-      controller_index_set::add_indices(ro_db);
-      contract_database_index_set::add_indices(ro_db);
-      if (conf.uuos_mainnet) {
-         ro_db.add_index<key256_value_index>();
-      }
-      authorization.add_indices(ro_db);
-      resource_limits.add_indices(ro_db);
    }
    void clear_all_undo() {
       // Rewind the database to the last irreversible block

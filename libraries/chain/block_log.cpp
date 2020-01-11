@@ -422,18 +422,22 @@ namespace eosio { namespace chain {
    void block_log::read_raw_block_by_num(uint32_t block_num, vector<char>& raw_block)const {
       try {
          signed_block_ptr b;
+         size_t read_size = raw_block.size();
          uint64_t pos = get_block_pos(block_num);
          if (pos == npos) {
             return;
          }
          uint64_t end_pos = get_block_pos(block_num+1);
          if (end_pos == npos) {
-            return;
+            auto block_ptr = read_block(pos);
+            raw_block = fc::raw::pack(block_ptr);
+         } else {
+            uint64_t size = end_pos - pos;
+            raw_block.resize(size);
+            my->block_file.seek(pos);
+            my->block_file.read(raw_block.data(), raw_block.size());
          }
-         uint64_t size = end_pos - pos;
-         raw_block.resize(size);
-         my->block_stream.seekg(pos);
-         my->block_stream.read(raw_block.data(), raw_block.size());
+      } FC_LOG_AND_RETHROW()
    }
 
    block_id_type block_log::read_block_id_by_num(uint32_t block_num)const {

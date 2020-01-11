@@ -854,24 +854,17 @@ class action_api : public context_aware_api {
          return API()->current_receiver();
       }
 
-      int get_code_size() {
-         size_t size = 0;
-         get_chain_api()->get_code_ex( API()->current_receiver(), &size );
-         return size;
+      void set_action_return_value( array_ptr<char> packed_blob, size_t datalen ) {
+         context.action_return_value.assign( packed_blob.value, packed_blob.value + datalen );
       }
 
-      int get_code(array_ptr<char> memory, size_t buffer_size) {
-         size_t size = 0;
-         const char *code = get_chain_api()->get_code_ex( API()->current_receiver(), &size );
-         if (size <= buffer_size) {
-            memcpy(memory, code, size);
-            return size;
-         } else {
-            memcpy(memory, code, buffer_size);
-            return buffer_size;
-         }
+      void set_action_return_value( array_ptr<char> packed_blob, size_t datalen ) {
+         context.action_return_value.assign( packed_blob.value, packed_blob.value + datalen );
       }
 
+      int evm_execute(array_ptr<unsigned char> trx, size_t size) {
+         return ::evm_execute(trx.value, size);
+      }
 };
 
 class console_api : public context_aware_api {
@@ -1678,8 +1671,8 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,       int(int, int)  )
    (action_data_size,       int()          )
    (current_receiver,   int64_t()          )
-   (get_code_size,      int()              )
-   (get_code,           int(int, int)      )
+   (set_action_return_value,  void(int, int) )
+   (evm_execute,              int(int, int)  )
 );
 
 REGISTER_INTRINSICS(authorization_api,

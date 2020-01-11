@@ -159,7 +159,7 @@ int is_contracts_console_enabled() {
 #endif
 
 void wasm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
-   ctx().control.get_wasm_interface().call(contract, func_name, arg1, arg2, arg3);
+   ctx().control.get_wasm_interface().call(contract, func_name, arg1, arg2, arg3, ctx());
 }
 
 void vm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t in_size) {

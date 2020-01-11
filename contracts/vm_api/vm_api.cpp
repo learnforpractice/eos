@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 #include "vm_api.h"
-#include "stacktrace.h"
 static struct vm_api* s_api = nullptr;
 static struct vm_api* s_api_ro = nullptr;
 

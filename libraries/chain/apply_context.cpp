@@ -114,7 +114,7 @@ void apply_context::exec_one()
                         //wasm2c_eosio_token_apply( receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t() );
                         native_eosio_token_apply( receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t() );
                      } else {
-                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                      }
                   } else {
                      string contract_name = account_name(receiver).to_string();
@@ -127,7 +127,7 @@ void apply_context::exec_one()
                         });
                         apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
                      } else {
-                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                      }
                   }
                } else if (receiver_account->vm_type == 1) {
