@@ -25,8 +25,6 @@ enum class builtin_protocol_feature_t : uint32_t {
    ethereum_vm,
    webauthn_key,
    wtmsig_block_signatures,
-   code_version,
-   native_eosio_system,
 };
 
 struct protocol_feature_subjective_restrictions {

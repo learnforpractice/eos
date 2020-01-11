@@ -46,7 +46,6 @@ add_executable( unit_test
   abi_tests.cpp
   bootseq_tests.cpp
   eosio.token_tests.v2.cpp
-  message_buffer_tests.cpp
   protocol_feature_tests.cpp
   special_accounts_tests.cpp
   api_tests.cpp
@@ -67,7 +66,8 @@ add_executable( unit_test
   block_timestamp_tests.cpp
   eosio.token_tests.cpp
   main.cpp
-  producer_schedule_tests.cpp	snapshot_tests.cpp
+  producer_schedule_tests.cpp
+  snapshot_tests.cpp
 
   pythonvm_tests.cpp
   uuos_mainnet_tests.cpp
@@ -107,6 +107,7 @@ target_include_directories( unit_test PUBLIC
 
 add_dependencies(unit_test test_contracts_project)
 add_dependencies(unit_test wasm_injector)
+add_dependencies(unit_test wabt)
 
 ### MARK TEST SUITES FOR EXECUTION ###
 foreach(TEST_SUITE ${UNIT_TESTS}) # create an independent target for each test suite

@@ -51,8 +51,6 @@ namespace eosio { namespace chain {
       IRREVERSIBLE
    };
 
-   inline bool db_mode_is_immutable(db_read_mode m) {return db_read_mode::READ_ONLY == m || db_read_mode::IRREVERSIBLE ==m;}
-
    enum class validation_mode {
       FULL,
       LIGHT
@@ -142,7 +140,7 @@ namespace eosio { namespace chain {
          /**
           * @return transactions applied in aborted block
           */
-         deque<transaction_metadata_ptr> abort_block();
+         vector<transaction_metadata_ptr> abort_block();
 
          /**
           *
@@ -221,7 +219,7 @@ namespace eosio { namespace chain {
          const block_signing_authority& pending_block_signing_authority()const;
          optional<block_id_type>        pending_producer_block_id()const;
 
-         const deque<transaction_receipt>& get_pending_trx_receipts()const;
+         const vector<transaction_receipt>& get_pending_trx_receipts()const;
 
          const producer_authority_schedule&    active_producers()const;
          const producer_authority_schedule&    pending_producers()const;
@@ -287,7 +285,6 @@ namespace eosio { namespace chain {
 
          db_read_mode get_read_mode()const;
          validation_mode get_validation_mode()const;
-         bool in_immutable_mode()const;
 
          void set_subjective_cpu_leeway(fc::microseconds leeway);
          fc::optional<fc::microseconds> get_subjective_cpu_leeway() const;

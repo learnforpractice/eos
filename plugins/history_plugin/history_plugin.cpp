@@ -1,8 +1,6 @@
 #include <eosio/history_plugin/history_plugin.hpp>
 #include <eosio/history_plugin/account_control_history_object.hpp>
 #include <eosio/history_plugin/public_key_history_object.hpp>
-#include <eosio/chain/permission_object.hpp>
-
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/trace.hpp>
 #include <eosio/chain_plugin/chain_plugin.hpp>
@@ -109,19 +107,6 @@ namespace eosio {
             obj.name = name;
             obj.permission = permission;
          });
-      }
-   }
-
-   static void add(chainbase::database& db, const shared_vector<shared_key_weight>& keys, const account_name& name, const permission_name& permission)
-   {
-      for (auto pub_key_weight : keys ) {
-         try {
-            db.create<public_key_history_object>([&](public_key_history_object& obj) {
-               obj.public_key = pub_key_weight.key;
-               obj.name = name;
-               obj.permission = permission;
-            });
-         } FC_LOG_AND_DROP((name))
       }
    }
 
@@ -252,7 +237,7 @@ namespace eosio {
             else if( at.act.name == N(updateauth) )
             {
                const auto update = at.act.data_as<chain::updateauth>();
-               remove<public_key_history_multi_index, eosio::by_account_permission>(db, update.account, update.permission);
+               remove<public_key_history_multi_index, by_account_permission>(db, update.account, update.permission);
                remove<account_control_history_multi_index, by_controlled_authority>(db, update.account, update.permission);
                add(db, update.auth.keys, update.account, update.permission);
                add(db, update.auth.accounts, update.account, update.permission);
@@ -260,7 +245,7 @@ namespace eosio {
             else if( at.act.name == N(deleteauth) )
             {
                const auto del = at.act.data_as<chain::deleteauth>();
-               remove<public_key_history_multi_index, eosio::by_account_permission>(db, del.account, del.permission);
+               remove<public_key_history_multi_index, by_account_permission>(db, del.account, del.permission);
                remove<account_control_history_multi_index, by_controlled_authority>(db, del.account, del.permission);
             }
          }
@@ -273,10 +258,9 @@ namespace eosio {
 
                db.create<action_history_object>( [&]( auto& aho ) {
                   auto ps = fc::raw::pack_size( at );
-                  aho.packed_action_trace.resize_and_fill(ps, [&at](char* data, std::size_t size) {
-                     fc::datastream<char*> ds( data, size );
-                     fc::raw::pack( ds, at );
-                  });
+                  aho.packed_action_trace.resize(ps);
+                  datastream<char*> ds( aho.packed_action_trace.data(), ps );
+                  fc::raw::pack( ds, at );
                   aho.action_sequence_num = at.receipt->global_sequence;
                   aho.block_num = chain.head_block_num() + 1;
                   aho.block_time = chain.pending_block_time();
@@ -374,35 +358,6 @@ namespace eosio {
    }
 
    void history_plugin::plugin_startup() {
-      chainbase::database& db = const_cast<chainbase::database&>( my->chain_plug->chain().db() ); // Override read-only access to state DB (highly unrecommended practice!)
-      {
-         const auto& pub_key_idx = db.get_index<public_key_history_multi_index, by_pub_key>();
-         auto itr = pub_key_idx.upper_bound(public_key_type());
-         if (itr != pub_key_idx.end()) {
-            //already initialized
-            return;
-         }
-      }
-      const auto& accounts = db.get_index<account_metadata_index, by_name>();
-      auto itr = accounts.upper_bound(account_name(0));
-      int counter = 0;
-      while (itr != accounts.end()) {
-         const auto& permissions = db.get_index<permission_index,by_owner>();
-         auto perm = permissions.lower_bound( boost::make_tuple( itr->name ) );
-         while( perm != permissions.end() && perm->owner == itr->name ) {
-            if (perm->auth.keys.size() != 0) {
-               add(db, perm->auth.keys, itr->name, perm->name);
-            }
-            ++perm;
-         }
-         counter += 1;
-         if (counter % 100000 == 0) {
-            ilog("++++++++init history_plugin:${n}", ("n",counter));
-         }
-         itr++;
-      }
-      ilog("++++++++init history_plugin:${n}", ("n",counter));
-      ilog("++++++++++++++++history_plugin initialized");
    }
 
    void history_plugin::plugin_shutdown() {
@@ -536,7 +491,7 @@ namespace eosio {
 
             auto blk = chain.fetch_block_by_number( result.block_num );
             if( blk || chain.is_building_block() ) {
-               const auto& receipts = blk ? blk->transactions : chain.get_pending_trx_receipts();
+               const vector<transaction_receipt>& receipts = blk ? blk->transactions : chain.get_pending_trx_receipts();
                for (const auto &receipt: receipts) {
                     if (receipt.trx.contains<packed_transaction>()) {
                         auto &pt = receipt.trx.get<packed_transaction>();

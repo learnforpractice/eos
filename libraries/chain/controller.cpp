@@ -67,7 +67,6 @@ using contract_database_index_set = index_set<
    index256_index,
    index_double_index,
    index_long_double_index
-//   key256_value_index
 >;
 
 class maybe_session {
@@ -128,16 +127,15 @@ struct building_block {
    optional<producer_authority_schedule> _new_pending_producer_schedule;
    vector<digest_type>                   _new_protocol_feature_activations;
    size_t                                _num_new_protocol_features_that_have_activated = 0;
-   deque<transaction_metadata_ptr>       _pending_trx_metas;
-   deque<transaction_receipt>            _pending_trx_receipts; // boost deque in 1.71 with 1024 elements performs better
-   deque<digest_type>                    _pending_trx_receipt_digests;
-   deque<digest_type>                    _action_receipt_digests;
+   vector<transaction_metadata_ptr>      _pending_trx_metas;
+   vector<transaction_receipt>           _pending_trx_receipts;
+   vector<action_receipt>                _actions;
 };
 
 struct assembled_block {
    block_id_type                     _id;
    pending_block_header_state        _pending_block_header_state;
-   deque<transaction_metadata_ptr>   _trx_metas;
+   vector<transaction_metadata_ptr>  _trx_metas;
    signed_block_ptr                  _unsigned_block;
 
    // if the _unsigned_block pre-dates block-signing authorities this may be present.
@@ -172,7 +170,7 @@ struct pending_state {
       return _block_stage.get<assembled_block>()._pending_block_header_state;
    }
 
-   const deque<transaction_receipt>& get_trx_receipts()const {
+   const vector<transaction_receipt>& get_trx_receipts()const {
       if( _block_stage.contains<building_block>() )
          return _block_stage.get<building_block>()._pending_trx_receipts;
 
@@ -182,7 +180,7 @@ struct pending_state {
       return _block_stage.get<completed_block>()._block_state->block->transactions;
    }
 
-   deque<transaction_metadata_ptr> extract_trx_metas() {
+   vector<transaction_metadata_ptr> extract_trx_metas() {
       if( _block_stage.contains<building_block>() )
          return std::move( _block_stage.get<building_block>()._pending_trx_metas );
 
@@ -341,10 +339,8 @@ struct controller_impl {
       set_activation_handler<builtin_protocol_feature_t::get_sender>();
       set_activation_handler<builtin_protocol_feature_t::webauthn_key>();
       set_activation_handler<builtin_protocol_feature_t::wtmsig_block_signatures>();
-      set_activation_handler<builtin_protocol_feature_t::code_version>();
       set_activation_handler<builtin_protocol_feature_t::pythonvm>();
       set_activation_handler<builtin_protocol_feature_t::ethereum_vm>();
-      set_activation_handler<builtin_protocol_feature_t::native_eosio_system>();
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
@@ -370,7 +366,6 @@ struct controller_impl {
 */
 
    SET_APP_HANDLER( eosio, eosio, canceldelay );
-//   SET_APP_HANDLER( eosio, eosio, addaccounts );
    }
 
    /**
@@ -1035,7 +1030,8 @@ struct controller_impl {
          if( name == config::system_account_name ) {
             // The initial eosio ABI value affects consensus; see  https://github.com/EOSIO/eos/issues/7794
             // TODO: This doesn't charge RAM; a fix requires a consensus upgrade.
-            a.abi.assign(eosio_abi_bin, sizeof(eosio_abi_bin));
+            a.abi.resize(sizeof(eosio_abi_bin));
+            memcpy(a.abi.data(), eosio_abi_bin, sizeof(eosio_abi_bin));
          }
       });
       db.create<account_metadata_object>([&](auto & a) {
@@ -1126,22 +1122,19 @@ struct controller_impl {
    // The returned scoped_exit should not exceed the lifetime of the pending which existed when make_block_restore_point was called.
    fc::scoped_exit<std::function<void()>> make_block_restore_point() {
       auto& bb = pending->_block_stage.get<building_block>();
-      auto orig_trx_receipts_size           = bb._pending_trx_receipts.size();
-      auto orig_trx_metas_size              = bb._pending_trx_metas.size();
-      auto orig_trx_receipt_digests_size    = bb._pending_trx_receipt_digests.size();
-      auto orig_action_receipt_digests_size = bb._action_receipt_digests.size();
+      auto orig_block_transactions_size = bb._pending_trx_receipts.size();
+      auto orig_state_transactions_size = bb._pending_trx_metas.size();
+      auto orig_state_actions_size      = bb._actions.size();
 
       std::function<void()> callback = [this,
-            orig_trx_receipts_size,
-            orig_trx_metas_size,
-            orig_trx_receipt_digests_size,
-            orig_action_receipt_digests_size]()
+                                        orig_block_transactions_size,
+                                        orig_state_transactions_size,
+                                        orig_state_actions_size]()
       {
          auto& bb = pending->_block_stage.get<building_block>();
-         bb._pending_trx_receipts.resize(orig_trx_receipts_size);
-         bb._pending_trx_metas.resize(orig_trx_metas_size);
-         bb._pending_trx_receipt_digests.resize(orig_trx_receipt_digests_size);
-         bb._action_receipt_digests.resize(orig_action_receipt_digests_size);
+         bb._pending_trx_receipts.resize(orig_block_transactions_size);
+         bb._pending_trx_metas.resize(orig_state_transactions_size);
+         bb._actions.resize(orig_state_actions_size);
       };
 
       return fc::make_scoped_exit( std::move(callback) );
@@ -1185,8 +1178,7 @@ struct controller_impl {
          auto restore = make_block_restore_point();
          trace->receipt = push_receipt( gtrx.trx_id, transaction_receipt::soft_fail,
                                         trx_context.billed_cpu_time_us, trace->net_usage );
-         fc::move_append( pending->_block_stage.get<building_block>()._action_receipt_digests,
-                          std::move(trx_context.executed_action_receipt_digests) );
+         fc::move_append( pending->_block_stage.get<building_block>()._actions, move(trx_context.executed) );
 
          trx_context.squash();
          restore.cancel();
@@ -1324,8 +1316,7 @@ struct controller_impl {
                                         trx_context.billed_cpu_time_us,
                                         trace->net_usage );
 
-         fc::move_append( pending->_block_stage.get<building_block>()._action_receipt_digests,
-                          std::move(trx_context.executed_action_receipt_digests) );
+         fc::move_append( pending->_block_stage.get<building_block>()._actions, move(trx_context.executed) );
 
          trace->account_ram_delta = account_delta( gtrx.payer, trx_removal_ram_delta );
 
@@ -1428,7 +1419,6 @@ struct controller_impl {
       r.cpu_usage_us         = cpu_usage_us;
       r.net_usage_words      = net_usage_words;
       r.status               = status;
-      pending->_block_stage.get<building_block>()._pending_trx_receipt_digests.emplace_back( r.digest() );
       return r;
    }
 
@@ -1512,8 +1502,7 @@ struct controller_impl {
                trace->receipt = r;
             }
 
-            fc::move_append( pending->_block_stage.get<building_block>()._action_receipt_digests,
-                             std::move(trx_context.executed_action_receipt_digests) );
+            fc::move_append(pending->_block_stage.get<building_block>()._actions, move(trx_context.executed));
 
             // call the accept signal but only once for this transaction
             if (!trx->accepted) {
@@ -1620,6 +1609,7 @@ struct controller_impl {
       auto& bb = pending->_block_stage.get<building_block>();
       const auto& pbhs = bb._pending_block_header_state;
 
+      // modify state of speculative block only if we are in speculative read mode (otherwise we need clean state for head or read-only modes)
       if ( read_mode == db_read_mode::SPECULATIVE || pending->_block_status != controller::block_status::incomplete )
       {
          const auto& pso = db.get<protocol_state_object>();
@@ -1688,7 +1678,7 @@ struct controller_impl {
             });
          }
 
-         const auto& gpo = self.get_global_properties();
+         const auto& gpo = db.get<global_property_object>();
 
          if( gpo.proposed_schedule_block_num.valid() && // if there is a proposed schedule that was proposed in a block ...
              ( *gpo.proposed_schedule_block_num <= pbhs.dpos_irreversible_blocknum ) && // ... that has now become irreversible ...
@@ -1721,7 +1711,7 @@ struct controller_impl {
                   in_trx_requiring_checks = old_value;
                });
             in_trx_requiring_checks = true;
-            push_transaction( onbtrx, fc::time_point::maximum(), gpo.configuration.min_transaction_cpu_usage, true );
+            push_transaction( onbtrx, fc::time_point::maximum(), self.get_global_properties().configuration.min_transaction_cpu_usage, true );
          } catch( const std::bad_alloc& e ) {
             elog( "on block transaction failed due to a std::bad_alloc" );
             throw;
@@ -1765,8 +1755,8 @@ struct controller_impl {
 
       // Create (unsigned) block:
       auto block_ptr = std::make_shared<signed_block>( pbhs.make_block_header(
-         merkle( std::move( pending->_block_stage.get<building_block>()._pending_trx_receipt_digests ) ),
-         merkle( std::move( pending->_block_stage.get<building_block>()._action_receipt_digests ) ),
+         calculate_trx_merkle(),
+         calculate_action_merkle(),
          bb._new_pending_producer_schedule,
          std::move( bb._new_protocol_feature_activations ),
          protocol_features.get_protocol_feature_set()
@@ -1949,8 +1939,8 @@ struct controller_impl {
          transaction_trace_ptr trace;
 
          size_t packed_idx = 0;
-         const auto& trx_receipts = pending->_block_stage.get<building_block>()._pending_trx_receipts;
          for( const auto& receipt : b->transactions ) {
+            const auto& trx_receipts = pending->_block_stage.get<building_block>()._pending_trx_receipts;
             auto num_pending_receipts = trx_receipts.size();
             if( receipt.trx.contains<packed_transaction>() ) {
                const auto& trx_meta = ( use_bsp_cached ? bsp->trxs_metas().at( packed_idx )
@@ -2194,14 +2184,34 @@ struct controller_impl {
 
    } /// push_block
 
-   deque<transaction_metadata_ptr> abort_block() {
-      deque<transaction_metadata_ptr> applied_trxs;
+   vector<transaction_metadata_ptr> abort_block() {
+      vector<transaction_metadata_ptr> applied_trxs;
       if( pending ) {
          applied_trxs = pending->extract_trx_metas();
          pending.reset();
          protocol_features.popped_blocks_to( head->block_num );
       }
       return applied_trxs;
+   }
+
+   checksum256_type calculate_action_merkle() {
+      vector<digest_type> action_digests;
+      const auto& actions = pending->_block_stage.get<building_block>()._actions;
+      action_digests.reserve( actions.size() );
+      for( const auto& a : actions )
+         action_digests.emplace_back( a.digest() );
+
+      return merkle( move(action_digests) );
+   }
+
+   checksum256_type calculate_trx_merkle() {
+      vector<digest_type> trx_digests;
+      const auto& trxs = pending->_block_stage.get<building_block>()._pending_trx_receipts;
+      trx_digests.reserve( trxs.size() );
+      for( const auto& a : trxs )
+         trx_digests.emplace_back( a.digest() );
+
+      return merkle( move(trx_digests) );
    }
 
    void update_producers_authority() {
@@ -2695,7 +2705,7 @@ void controller::commit_block() {
    my->commit_block(true);
 }
 
-deque<transaction_metadata_ptr> controller::abort_block() {
+vector<transaction_metadata_ptr> controller::abort_block() {
    return my->abort_block();
 }
 
@@ -2715,20 +2725,15 @@ void controller::push_block( std::future<block_state_ptr>& block_state_future,
    my->push_block( block_state_future, forked_branch_cb, trx_lookup );
 }
 
-bool controller::in_immutable_mode()const{
-   return (db_mode_is_immutable(get_read_mode()));
-}
-
 transaction_trace_ptr controller::push_transaction( const transaction_metadata_ptr& trx, fc::time_point deadline, uint32_t billed_cpu_time_us ) {
    validate_db_available_size();
-   EOS_ASSERT( !in_immutable_mode(), transaction_type_exception, "push transaction not allowed in read-only mode" );
+   EOS_ASSERT( get_read_mode() != chain::db_read_mode::READ_ONLY, transaction_type_exception, "push transaction not allowed in read-only mode" );
    EOS_ASSERT( trx && !trx->implicit && !trx->scheduled, transaction_type_exception, "Implicit/Scheduled transaction not allowed" );
    return my->push_transaction(trx, deadline, billed_cpu_time_us, billed_cpu_time_us > 0 );
 }
 
 transaction_trace_ptr controller::push_scheduled_transaction( const transaction_id_type& trxid, fc::time_point deadline, uint32_t billed_cpu_time_us )
 {
-   EOS_ASSERT( !in_immutable_mode(), transaction_type_exception, "push scheduled transaction not allowed in read-only mode" );
    validate_db_available_size();
    return my->push_scheduled_transaction( trxid, deadline, billed_cpu_time_us, billed_cpu_time_us > 0 );
 }
@@ -2858,7 +2863,7 @@ optional<block_id_type> controller::pending_producer_block_id()const {
    return my->pending->_producer_block_id;
 }
 
-const deque<transaction_receipt>& controller::get_pending_trx_receipts()const {
+const vector<transaction_receipt>& controller::get_pending_trx_receipts()const {
    EOS_ASSERT( my->pending, block_validate_exception, "no pending block" );
    return my->pending->get_trx_receipts();
 }
@@ -3397,12 +3402,6 @@ void controller_impl::on_activation<builtin_protocol_feature_t::wtmsig_block_sig
 }
 
 template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::code_version>() {
-   db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "get_code_version" );
-   } );
-}
-template<>
 void controller_impl::on_activation<builtin_protocol_feature_t::pythonvm>() {
 #if 0
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
@@ -3416,10 +3415,6 @@ void controller_impl::on_activation<builtin_protocol_feature_t::ethereum_vm>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
       add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "evm_execute" );
    } );
-}
-
-template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::native_eosio_system>() {
 }
 
 /// End of protocol feature activation handlers

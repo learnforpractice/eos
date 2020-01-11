@@ -2,11 +2,7 @@
 set -eo pipefail
 . ./.cicd/helpers/general.sh
 mkdir -p $BUILD_DIR
-<<<<<<< HEAD
-CMAKE_EXTRAS="-DCMAKE_BUILD_TYPE='Release'"
-=======
 CMAKE_EXTRAS="-DCMAKE_BUILD_TYPE='Release' -DENABLE_MULTIVERSION_PROTOCOL_TEST=true"
->>>>>>> eosio/master
 if [[ "$(uname)" == 'Darwin' ]]; then
     # You can't use chained commands in execute
     if [[ "$TRAVIS" == 'true' ]]; then
@@ -30,15 +26,9 @@ else # Linux
     # PRE_COMMANDS: Executed pre-cmake
     # CMAKE_EXTRAS: Executed within and right before the cmake path (cmake CMAKE_EXTRAS ..)
     [[ ! "$IMAGE_TAG" =~ 'unpinned' ]] && CMAKE_EXTRAS="$CMAKE_EXTRAS -DCMAKE_TOOLCHAIN_FILE=$MOUNTED_DIR/.cicd/helpers/clang.make -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
-<<<<<<< HEAD
-    if [[ $IMAGE_TAG == 'amazon_linux-2-pinned' ]]; then
-        PRE_COMMANDS="$PRE_COMMANDS && export PATH=/usr/lib64/ccache:\\\$PATH"
-    elif [[ "$IMAGE_TAG" == 'centos-7.6-pinned' ]]; then
-=======
     if [[ "$IMAGE_TAG" == 'amazon_linux-2-pinned' ]]; then
         PRE_COMMANDS="$PRE_COMMANDS && export PATH=/usr/lib64/ccache:\\\$PATH"
     elif [[ "$IMAGE_TAG" == 'centos-7.7-pinned' ]]; then
->>>>>>> eosio/master
         PRE_COMMANDS="$PRE_COMMANDS && export PATH=/usr/lib64/ccache:\\\$PATH"
     elif [[ "$IMAGE_TAG" == 'ubuntu-16.04-pinned' ]]; then
         PRE_COMMANDS="$PRE_COMMANDS && export PATH=/usr/lib/ccache:\\\$PATH"

@@ -1180,11 +1180,6 @@ namespace eosio {
                peer_ilog( c, "enqueue sync, unable to fetch block ${num}", ("num", num) );
                c->send_handshake();
             });
-         } else {
-            c->strand.post( [c, num]() {
-               peer_ilog( c, "enqueue sync, unable to fetch block ${num}, sending go away: benign_other", ("num", num) );
-               c->enqueue( go_away_message( benign_other ) );
-            });
          }
       });
 
@@ -2854,7 +2849,7 @@ namespace eosio {
    }
 
    void connection::handle_message( packed_transaction_ptr trx ) {
-      if( db_mode_is_immutable(my_impl->db_read_mode) ) {
+      if( my_impl->db_read_mode == eosio::db_read_mode::READ_ONLY ) {
          fc_dlog( logger, "got a txn in read-only mode - dropping" );
          return;
       }
@@ -3399,7 +3394,7 @@ namespace eosio {
 
       chain::controller&cc = my->chain_plug->chain();
       my->db_read_mode = cc.get_read_mode();
-      if( cc.in_immutable_mode() && my->p2p_address.size() ) {
+      if( my->db_read_mode == chain::db_read_mode::READ_ONLY && my->p2p_address.size() ) {
          my->p2p_address.clear();
          fc_wlog( logger, "node in read-only mode disabling incoming p2p connections" );
       }

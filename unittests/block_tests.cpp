@@ -64,8 +64,9 @@ std::pair<signed_block_ptr, signed_block_ptr> corrupt_trx_in_block(validating_te
    copy_b->transactions.back().trx = invalid_packed_tx;
 
    // Re-calculate the transaction merkle
-   deque<digest_type> trx_digests;
+   vector<digest_type> trx_digests;
    const auto& trxs = copy_b->transactions;
+   trx_digests.reserve( trxs.size() );
    for( const auto& a : trxs )
       trx_digests.emplace_back( a.digest() );
    copy_b->transaction_mroot = merkle( move(trx_digests) );
@@ -216,7 +217,7 @@ BOOST_FIXTURE_TEST_CASE( abort_block_transactions, validating_tester) { try {
 
       control->get_account( a ); // throws if it does not exist
 
-      auto unapplied_trxs = control->abort_block();
+      vector<transaction_metadata_ptr> unapplied_trxs = control->abort_block();
 
       // verify transaction returned from abort_block()
       BOOST_REQUIRE_EQUAL( 1,  unapplied_trxs.size() );
@@ -267,7 +268,7 @@ BOOST_FIXTURE_TEST_CASE( abort_block_transactions_tester, validating_tester) { t
 
       control->get_account( a ); // throws if it does not exist
 
-      auto unapplied_trxs = control->abort_block(); // should be empty now
+      vector<transaction_metadata_ptr> unapplied_trxs = control->abort_block(); // should be empty now
 
       BOOST_REQUIRE_EQUAL( 0,  unapplied_trxs.size() );
 

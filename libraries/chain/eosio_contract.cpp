@@ -22,10 +22,6 @@
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/resource_limits.hpp>
 
-#include <iostream>
-#include <fstream>
-using namespace std;
-
 namespace eosio { namespace chain {
 
 
@@ -141,6 +137,7 @@ void apply_eosio_setcode(apply_context& context) {
    auto  act = context.get_action().data_as<setcode>();
    context.require_authorization(act.account);
 
+   EOS_ASSERT( act.vmtype == 0, invalid_contract_vm_type, "code should be 0" );
    EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1, invalid_contract_vm_type, "code should be 0" );
    if (act.vmtype == 1) {
       EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
@@ -153,21 +150,10 @@ void apply_eosio_setcode(apply_context& context) {
    int64_t code_size = (int64_t)act.code.size();
 
    if( code_size > 0 ) {
-      code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
+     code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
       if (act.vmtype == 0) {
          wasm_interface::validate(context.control, act.code);
       }
-#if 0
-      string file_name = "contracts/" + act.account.to_string();
-      file_name += "-";
-      file_name += code_hash.str();
-      file_name += "-";
-      file_name += std::to_string(context.control.head_block_num());
-      file_name += ".wasm";
-      fstream file(file_name, ios::out | ios::binary);
-      file.write(act.code.data(), act.code.size());
-      file.close();
-#endif
    }
 
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
@@ -243,7 +229,11 @@ void apply_eosio_setabi(apply_context& context) {
    int64_t new_size = abi_size;
 
    db.modify( account, [&]( auto& a ) {
-      a.abi.assign(act.abi.data(), abi_size);
+      if (abi_size > 0) {
+         a.abi.assign(act.abi.data(), abi_size);
+      } else {
+         a.abi.resize(0);
+      }
    });
 
    const auto& account_metadata = db.get<account_metadata_object, by_name>(act.account);
