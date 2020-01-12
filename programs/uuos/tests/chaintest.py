@@ -125,7 +125,7 @@ class ChainTest(object):
         options.data_dir = tempfile.mkdtemp()
         options.config_dir = tempfile.mkdtemp()
 
-        print(options.data_dir, options.config_dir)
+        logger.info(f'{options.data_dir}, {options.config_dir}')
         if uuos_network:
             options.chain_state_db_size_mb = 350
         else:
@@ -177,16 +177,17 @@ class ChainTest(object):
         chain_cfg = chain_cfg.dumps()
 #        logger.info(chain_cfg)
         genesis = json.dumps(genesis)
-        print(genesis)
+        logger.info(genesis)
+        uuos.set_default_log_level(10)
         self._chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
 
         self.init()
 
         self.chain_api = ChainApi(self.chain.ptr)
-        uuos.set_default_log_level(0)
 
     def init(self):
         self.chain.startup(True)
+        uuos.set_default_log_level(0)
         uuos.set_accepted_block_callback(self.on_accepted_block)
         self.start_block()
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
@@ -245,7 +246,7 @@ class ChainTest(object):
                 args = {'feature_digest': digest}
                 self.push_action('eosio', 'activate', args, 'eosio', 'active')
             except Exception as e:
-                print(e)
+                logger.info(e)
 
         args = {'vmtype': 1, 'vmversion':0} #activate vm python
         self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
@@ -259,7 +260,7 @@ class ChainTest(object):
     def on_accepted_block(self, block, num, block_id):
         pass
         # msg = SignedBlockMessage.unpack(block)
-        # print(msg)
+        # logger.info(msg)
 
     def calc_pending_block_time(self):
 #        self.chain.abort_block()
@@ -318,9 +319,9 @@ class ChainTest(object):
         expiration = isoformat(expiration)
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
         signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
-        # print(signed_trx)
+        # logger.info(signed_trx)
         # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
-        # print(r)
+        # logger.info(r)
 
         deadline = datetime.utcnow() + timedelta(microseconds=100000)
         billed_cpu_time_us = 2000
@@ -449,12 +450,12 @@ class ChainTest(object):
         expiration = datetime.utcnow() + timedelta(seconds=60)
         expiration = isoformat(expiration)
         r = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
-#        print(r)
+#        logger.info(r)
         return r
 
-        print(r)
+        logger.info(r)
         r = PackedTransactionMessage.unpack(r)
-        print(r)
+        logger.info(r)
 
     def start_block_test(self):
         for i in range(10):
@@ -586,10 +587,10 @@ def apply(receiver, first_receiver, action):
         self.deploy_contract('helloworld11', code, b'', 1)
         r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
         r = JsonObject(r)
-        print(r)
+        logger.info(r)
         r = self.push_action('helloworld11', 'sayhello', b'1122', 'helloworld11')
         r = JsonObject(r)
-        print(r)
+        logger.info(r)
         self.produce_block()
 
     def test6(self):
@@ -649,9 +650,9 @@ def apply(receiver, code, action):
         r = JsonObject(r)
 
         r = self.push_action('helloworld11', 'update', b'')
-        print(r)
+        logger.info(r)
         r = self.push_action('helloworld11', 'update', b'1')
-        print(r)
+        logger.info(r)
 
 #        print(r)
         self.produce_block()
@@ -703,10 +704,10 @@ def apply(receiver, code, action):
         self.produce_block()
 
         r = self.push_action('helloworld11', 'sayhello', b'1')
-        logger.info(r)
+        logger.info(r.elapsed)
 
         r = self.push_action('helloworld11', 'sayhello', b'2')
-        logger.info(r)
+        logger.info(r.elapsed)
 
         ret_value = r.action_traces[0]['receipt']['return_value']
         ret_value = bytes.fromhex(ret_value)
