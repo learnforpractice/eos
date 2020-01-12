@@ -4,11 +4,11 @@ from datetime import datetime
 from .jsonobject import JsonObject
 
 class Chain(object):
-    def __init__(self, config, protocol_features_dir, snapshot_dir):
-        self.new(config, protocol_features_dir, snapshot_dir)
+    def __init__(self, config, genesis, protocol_features_dir, snapshot_dir):
+        self.new(config, genesis, protocol_features_dir, snapshot_dir)
 
-    def new(self, config, protocol_features_dir, snapshot_dir):
-        self.ptr = _uuos.chain_new(config, protocol_features_dir, snapshot_dir)
+    def new(self, config, genesis, protocol_features_dir, snapshot_dir):
+        self.ptr = _uuos.chain_new(config, genesis, protocol_features_dir, snapshot_dir)
         if not self.ptr:
             raise Exception('chain initialization failture!')
 

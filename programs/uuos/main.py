@@ -74,6 +74,30 @@ genesis_eos = {
     }
 }
 
+genesis_default = {
+    "initial_timestamp": "2018-06-08T08:08:08.888",
+    "initial_key": "EOS7EarnUhcyYqmdnPon8rm7mBCTnBoot6o7fE2WzjvEX2TdggbL3",
+    "initial_configuration": {
+        "max_block_net_usage": 1048576,
+        "target_block_net_usage_pct": 1000,
+        "max_transaction_net_usage": 524288,
+        "base_per_transaction_net_usage": 12,
+        "net_usage_leeway": 500,
+        "context_free_discount_net_usage_num": 20,
+        "context_free_discount_net_usage_den": 100,
+        "max_block_cpu_usage": 200000,
+        "target_block_cpu_usage_pct": 1000,
+        "max_transaction_cpu_usage": 150000,
+        "min_transaction_cpu_usage": 100,
+        "max_transaction_lifetime": 3600,
+        "deferred_trx_expiration_window": 600,
+        "max_transaction_delay": 3888000,
+        "max_inline_action_size": 4096,
+        "max_inline_action_depth": 4,
+        "max_authority_depth": 6
+    }
+}
+
 class Hub():
 
     def __init__(self):
@@ -134,17 +158,18 @@ class UUOSMain(application.Application):
         chain_cfg.uuos_mainnet = False
         if self.config.network == 'uuos':
             chain_cfg.uuos_mainnet = True
-            chain_cfg.genesis = genesis_uuos
+            genesis = genesis_uuos
         elif self.config.network == 'eos':
-            chain_cfg.genesis = genesis_eos
+            genesis = genesis_eos
         elif self.config.network == 'test':
-            pass
+            genesis = genesis_default
         else:
             raise Exception('unknown network')
 
         chain_cfg = chain_cfg.dumps()
         logger.info(chain_cfg)
-        self._chain = Chain(chain_cfg, config.config_dir, config.snapshot)
+        genesis = json.dumps(genesis)
+        self._chain = Chain(chain_cfg, genesis, config.config_dir, config.snapshot)
 
         self._chain_api = ChainApi(self.chain.ptr)
         self._history_api = HistoryApi()

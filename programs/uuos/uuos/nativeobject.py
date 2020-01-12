@@ -19,7 +19,8 @@ controller_config_type = 9
 producer_params_type = 10
 genesis_state_type = 11
 abi_def_type = 12
-
+transaction_type = 13
+signed_transaction_type = 14
 
 class GoAwayReason:
     reason = {

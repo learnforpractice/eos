@@ -117,6 +117,9 @@ class ChainTest(object):
     def __init__(self, uuos_network=False):
         self.feature_activated = False
         self.main_token = 'UUOS'
+        print(os.getpid())
+        # input()
+        uuos.set_default_log_level(0)
 
         options = Object()
         options.data_dir = tempfile.mkdtemp()
@@ -156,17 +159,20 @@ class ChainTest(object):
         self.options = options
         if self.options.network == 'uuos':
             chain_cfg.uuos_mainnet = True
-            chain_cfg.genesis = genesis_uuos
+            genesis = genesis_uuos
         elif self.options.network == 'eos':
-            chain_cfg.genesis = genesis_eos
+            genesis = genesis_eos
         elif self.options.network == 'test':
-            chain_cfg.genesis = genesis_test
+            genesis = genesis_test
         else:
             raise Exception('unknown network')
 
+        # logger.info(chain_cfg)
         chain_cfg = chain_cfg.dumps()
 #        logger.info(chain_cfg)
-        self._chain = Chain(chain_cfg, options.config_dir, options.snapshot)
+        genesis = json.dumps(genesis)
+        print(genesis)
+        self._chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
 
         self.init()
 
@@ -305,7 +311,11 @@ class ChainTest(object):
         expiration = datetime.utcnow() + timedelta(seconds=60)
         expiration = isoformat(expiration)
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
-#        print(PackedTransactionMessage.unpack(raw_signed_trx))
+        signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
+        print(signed_trx)
+        # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
+        # print(r)
+
         deadline = datetime.utcnow() + timedelta(microseconds=100000)
         billed_cpu_time_us = 2000
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
