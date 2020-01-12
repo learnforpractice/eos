@@ -36,7 +36,7 @@ static void unpack_cpp_object(string& packed_message, string& msg) {
 //        auto _msg = fc::raw::unpack<T>(_packed_message);
         auto v = fc::variant(_msg);
 //        return;
-        msg = fc::json::to_string(v);
+        msg = fc::json::to_string(v, fc::time_point::maximum());
     }FC_LOG_AND_DROP();
 }
 
@@ -68,6 +68,8 @@ void pack_native_object_(int type, string& msg, string& packed_message) {
         PACK_CPP_OBJECT(producer_params)
         PACK_CPP_OBJECT(genesis_state)
         PACK_CPP_OBJECT(abi_def)
+        PACK_CPP_OBJECT(transaction)
+        PACK_CPP_OBJECT(signed_transaction)
     }
 }
 
@@ -86,6 +88,8 @@ void unpack_native_object_(int type, string& packed_message, string& msg) {
         UNPACK_CPP_OBJECT(producer_params)
         UNPACK_CPP_OBJECT(genesis_state)
         UNPACK_CPP_OBJECT(abi_def)
+        UNPACK_CPP_OBJECT(transaction)
+        UNPACK_CPP_OBJECT(signed_transaction)
     }
 }
 

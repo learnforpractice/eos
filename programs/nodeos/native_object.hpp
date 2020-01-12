@@ -19,4 +19,6 @@ enum {
     producer_params_type,
     genesis_state_type,
     abi_def_type,
+    transaction_type,
+    signed_transaction_type,
 };

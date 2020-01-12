@@ -9,7 +9,7 @@ void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
 
 
-void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir);
+void *chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
 bool chain_startup_(void* ptr);
 void chain_free_(void *ptr);
 void chain_id_(void *ptr, string& chain_id);
@@ -205,6 +205,9 @@ enum {
     controller_config_type, //9
     producer_params_type, //10
     genesis_state_type, //11
+    abi_def_type,
+    transaction_type,
+    signed_transaction_type,
 };
 
 
