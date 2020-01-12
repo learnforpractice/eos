@@ -241,7 +241,7 @@ class Producer(object):
 #        logger.info(f'process message {msg}')
         try:
             if msg.type == Message.type_transaction:
-                ret, result, raw_packed_trx = self.process_incomming_transaction(msg.data.decode('utf8'))
+                ret, result, raw_packed_trx = self.process_incomming_transaction(msg.data)
                 #TODO: check failure of process transaction
                 msg.ret = ret
                 msg.notify(result)

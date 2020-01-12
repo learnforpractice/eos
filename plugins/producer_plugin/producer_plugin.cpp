@@ -2202,14 +2202,17 @@ int producer_process_incomming_transaction_(void *ptr, string& packed_trx, strin
    };
 
    try {
-      const auto _packed_trx = fc::json::from_string(packed_trx).as<packed_transaction>();
-      auto ptrx_meta = transaction_metadata::create_no_recover_keys( _packed_trx, transaction_metadata::trx_type::input );
+      auto ptrx = std::make_shared<packed_transaction>();
+      *ptrx = fc::json::from_string(packed_trx).as<packed_transaction>();
+      auto chain_id = producer.my->chain_plug->chain().get_chain_id();
+      auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain_id);
+
       producer.my->process_incoming_transaction_async(ptrx_meta, false, next);
 
-      auto buffer_size = fc::raw::pack_size( _packed_trx );
+      auto buffer_size = fc::raw::pack_size( *ptrx );
       raw_packed_trx = string(buffer_size, 0);
       fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), buffer_size );
-      fc::raw::pack( ds, _packed_trx );
+      fc::raw::pack( ds, *ptrx );
       return ret;
    } catch ( boost::interprocess::bad_alloc& ) {
       chain_plugin::handle_db_exhaustion();
