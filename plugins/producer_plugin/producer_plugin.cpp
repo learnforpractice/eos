@@ -6,6 +6,7 @@
 #include <eosio/chain/transaction_object.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/unapplied_transaction_queue.hpp>
+#include <eosio/http_plugin/http_plugin.hpp>
 
 #include <fc/io/json.hpp>
 #include <fc/log/logger_config.hpp>
@@ -2120,7 +2121,8 @@ int handle_transaction_trace(eosio::chain::controller& db, const fc::static_vari
    };
    
    if (result.contains<fc::exception_ptr>()) {
-      output = fc::variant(result.get<fc::exception_ptr>());
+      error_results results{500, "Internal Service Error", error_results::error_info( *result.get<fc::exception_ptr>(), true )};
+      output = fc::variant(results);
       return 0;
    } else {
       auto trx_trace_ptr = result.get<transaction_trace_ptr>();
