@@ -148,6 +148,19 @@ namespace eosio {
       }
    }
 
+   static void add(chainbase::database& db, const shared_vector<shared_key_weight>& keys, const account_name& name, const permission_name& permission)
+   {
+      for (auto pub_key_weight : keys ) {
+         try {
+            db.create<public_key_history_object>([&](public_key_history_object& obj) {
+               obj.public_key = pub_key_weight.key;
+               obj.name = name;
+               obj.permission = permission;
+            });
+         } FC_LOG_AND_DROP((name))
+      }
+   }
+
    static void add(chainbase::database& db, const vector<permission_level_weight>& controlling_accounts, const account_name& account_name, const permission_name& permission)
    {
       for (auto controlling_account : controlling_accounts ) {
@@ -204,16 +217,16 @@ namespace eosio {
                   }
                }
 
-               if (filter_on.find({ act.receiver, 0, 0 }) != filter_on.end()) {
+               if (filter_on.find({ act.receiver, {}, {} }) != filter_on.end()) {
                   pass_on = true;
                   break;
-               } else if (filter_on.find({ act.receiver, act.act.name, 0 }) != filter_on.end()) {
+               } else if (filter_on.find({ act.receiver, act.act.name, {} }) != filter_on.end()) {
                   pass_on = true;
                   break;
                }
                
                for (const auto& a : act.act.authorization) {
-                  if (filter_on.find({ act.receiver, 0, a.actor }) != filter_on.end()) {
+                  if (filter_on.find({ act.receiver, {}, a.actor }) != filter_on.end()) {
                      pass_on = true;
                      break;
                   }
@@ -452,7 +465,7 @@ namespace eosio {
                std::vector<std::string> v;
                boost::split( v, s, boost::is_any_of( ":" ));
                EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-on", ("s", s));
-               filter_entry fe{v[0], v[1], v[2]};
+               filter_entry fe{eosio::chain::name(v[0]), eosio::chain::name(v[1]), eosio::chain::name(v[2])};
                EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
                            "Invalid value ${s} for --filter-on", ("s", s));
                my->filter_on.insert( fe );
@@ -464,7 +477,7 @@ namespace eosio {
                std::vector<std::string> v;
                boost::split( v, s, boost::is_any_of( ":" ));
                EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-out", ("s", s));
-               filter_entry fe{v[0], v[1], v[2]};
+               filter_entry fe{eosio::chain::name(v[0]), eosio::chain::name(v[1]), eosio::chain::name(v[2])};
                EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
                            "Invalid value ${s} for --filter-out", ("s", s));
                my->filter_out.insert( fe );
@@ -854,7 +867,7 @@ void history_get_actions_(void *ptr, const string& param, string& result) {
    try {
       auto history = (eosio::history_plugin*)ptr;
       auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_actions_params>();
-      result = fc::json::to_string(history->get_read_only_api().get_actions(_param));
+      result = fc::json::to_string(history->get_read_only_api().get_actions(_param), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 
@@ -862,7 +875,7 @@ void history_get_transaction_(void *ptr, const string& param, string& result) {
    try {
       auto history = (eosio::history_plugin*)ptr;
       auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_transaction_params>();
-      result = fc::json::to_string(history->get_read_only_api().get_transaction(_param));
+      result = fc::json::to_string(history->get_read_only_api().get_transaction(_param), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 
@@ -870,7 +883,7 @@ void history_get_key_accounts_(void *ptr, const string& param, string& result) {
    try {
       auto history = (eosio::history_plugin*)ptr;
       auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_params>();
-      result = fc::json::to_string(history->get_read_only_api().get_key_accounts(_param));
+      result = fc::json::to_string(history->get_read_only_api().get_key_accounts(_param), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 
@@ -878,7 +891,7 @@ void history_get_key_accounts_ex_(void *ptr, const string& param, string& result
    try {
       auto history = (eosio::history_plugin*)ptr;
       auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_ex_params>();
-      result = fc::json::to_string(history->get_read_only_api().get_key_accounts_ex(_param));
+      result = fc::json::to_string(history->get_read_only_api().get_key_accounts_ex(_param), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 
@@ -886,14 +899,14 @@ void history_get_controlled_accounts_(void *ptr, const string& param, string& re
    try {
       auto history = (eosio::history_plugin*)ptr;
       auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_controlled_accounts_params>();
-      result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param));
+      result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 
 void history_get_db_size_(void *ptr, string& result) {
    try {
       auto history = (eosio::history_plugin*)ptr;
-      result = fc::json::to_string(history->get_db_size());
+      result = fc::json::to_string(history->get_db_size(), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 

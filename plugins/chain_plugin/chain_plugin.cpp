@@ -939,22 +939,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                        ("genesis", genesis_file.generic_string()));
 
             provided_genesis = fc::json::from_file( genesis_file ).as<genesis_state>();
-         } else if ( options.count( "network" ) ) {
-            string network = options.at( "network" ).as<string>();
-            if (network == "eos") {
-               string genesis = string((char *)gGenesisEosData, gGenesisEosSize);
-               provided_genesis = fc::json::from_string(genesis).as<genesis_state>();
-               my->chain_config->uuos_mainnet = false;
-            } else if (network == "uuos") {
-               string genesis = string((char *)gGenesisUUOSData, gGenesisUUOSSize);
-               provided_genesis = fc::json::from_string(genesis).as<genesis_state>();
-               my->chain_config->uuos_mainnet = true;
-            } else if (network == "uuostest") {
-               my->chain_config->uuos_mainnet = true;
-            } else {
-               my->chain_config->uuos_mainnet = false;
-            }
-         }
 
             if( options.count( "genesis-timestamp" ) ) {
                provided_genesis.initial_timestamp = calculate_genesis_timestamp( options.at( "genesis-timestamp" ).as<string>() );
@@ -996,6 +980,21 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                   ilog( "Starting fresh blockchain state using provided genesis state." );
                   my->genesis = std::move(provided_genesis);
                }
+            }
+         } else if ( options.count( "network" ) ) {
+            string network = options.at( "network" ).as<string>();
+            if (network == "eos") {
+               string genesis = string((char *)gGenesisEosData, gGenesisEosSize);
+               provided_genesis = fc::json::from_string(genesis).as<genesis_state>();
+               my->chain_config->uuos_mainnet = false;
+            } else if (network == "uuos") {
+               string genesis = string((char *)gGenesisUUOSData, gGenesisUUOSSize);
+               provided_genesis = fc::json::from_string(genesis).as<genesis_state>();
+               my->chain_config->uuos_mainnet = true;
+            } else if (network == "uuostest") {
+               my->chain_config->uuos_mainnet = true;
+            } else {
+               my->chain_config->uuos_mainnet = false;
             }
          } else {
             EOS_ASSERT( options.count( "genesis-timestamp" ) == 0,
@@ -1049,7 +1048,7 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
          my->chain_config->db_hugepage_paths = options.at("database-hugepage-path").as<std::vector<std::string>>();
 #endif
 //      elog("config ${cfg}", ("cfg", fc::raw::pack<eosio::chain::controller::config>(*my->chain_config)));
-      elog("config ${cfg}", ("cfg", fc::json::to_string(variant(*my->chain_config))));
+      elog("config ${cfg}", ("cfg", fc::json::to_string(variant(*my->chain_config), fc::time_point::maximum())));
 
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
       if( options.count("eos-vm-oc-cache-size-mb") )
@@ -2611,7 +2610,7 @@ int chain_api_get_info_(void *ptr, string& result) {
       auto& cc = chain_get_controller(ptr);
 
       results = read_only(cc, fc::microseconds(max_abi_time)).get_info(params);
-      result = fc::json::to_string(fc::variant(results));
+      result = fc::json::to_string(fc::variant(results), fc::time_point::maximum());
       return 1;
     } CATCH_AND_CALL(next);
     return 0;
@@ -2626,7 +2625,7 @@ int chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
       auto& cc = chain_get_controller(ptr); \
       auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
       auto _result = read_only(cc, fc::microseconds(max_abi_time)).api_name(_params); \
-      result = fc::json::to_string(fc::variant(_result)); \
+      result = fc::json::to_string(fc::variant(_result), fc::time_point::maximum()); \
       return 1;\
    } CATCH_AND_CALL(next); \
    return 0; \
@@ -2668,12 +2667,12 @@ int chain_api_push_transaction_(void *ptr, string& params, string& result) {
          [&result](const fc::static_variant<fc::exception_ptr, chain_apis::read_write::push_transaction_results>& results){
             if (results.contains<fc::exception_ptr>()) {
                try {
-                  result = fc::json::to_string(fc::variant(results.get<fc::exception_ptr>()));
+                  result = fc::json::to_string(fc::variant(results.get<fc::exception_ptr>()), fc::time_point::maximum());
                } catch (...) {
 //                  http_plugin::handle_exception(#api_name, #call_name, body, cb);
                }
             } else {
-               result = fc::json::to_string(fc::variant(results.get<read_write::push_transaction_results>())); 
+               result = fc::json::to_string(fc::variant(results.get<read_write::push_transaction_results>()), fc::time_point::maximum()); 
 //               cb(http_response_code, result.visit(async_result_visitor()));
             }
          }
@@ -2729,5 +2728,5 @@ void db_size_api_get_(void *ptr, string& result) {
    chainbase::database::database_index_row_count_multiset indices = db.row_count_per_index();
    for(const auto& i : indices)
       ret.indices.emplace_back(db_size_index_count{i.second, i.first});
-   result = fc::json::to_string(ret);
+   result = fc::json::to_string(ret, fc::time_point::maximum());
 }

@@ -755,7 +755,9 @@ void producer_plugin::plugin_initialize(chain::controller& chain, const producer
    my->chain_plug.emplace(chain);
    my->_production_enabled = options.production_enabled;
 
-   std::copy(options.producers.begin(), options.producers.end(), std::inserter(my->_producers, my->_producers.end()));
+   for (auto& producer: options.producers) {
+      my->_producers.emplace(producer);
+   }
 
    const std::vector<std::string> key_spec_pairs = options.signature_providers;
    for (const auto& key_spec_pair : key_spec_pairs) {
@@ -823,7 +825,8 @@ void producer_plugin::plugin_initialize(chain::controller& chain, const producer
       } LOG_AND_DROP();
    });
 
-   my->_incoming_transaction_subscription = app().get_channel<incoming::channels::transaction>().subscribe([this](const transaction_metadata_ptr& trx){
+   my->_incoming_transaction_subscription = app().get_channel<incoming::channels::transaction>().subscribe(
+         [this](const packed_transaction_ptr& trx) {
       try {
          my->on_incoming_transaction_async(trx, false, [](const auto&){});
       } LOG_AND_DROP();
@@ -833,7 +836,8 @@ void producer_plugin::plugin_initialize(chain::controller& chain, const producer
       my->on_incoming_block(block);
    });
 
-   my->_incoming_transaction_async_provider = app().get_method<incoming::methods::transaction_async>().register_provider([this](const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next) -> void {
+   my->_incoming_transaction_async_provider = app().get_method<incoming::methods::transaction_async>().register_provider(
+         [this](const packed_transaction_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next) -> void {
       return my->on_incoming_transaction_async(trx, persist_until_expired, next );
    });
 
@@ -2091,7 +2095,7 @@ using namespace eosio;
 eosio::chain::controller& chain_get_controller(void *ptr);
 
 void print_producer_params(producer_plugin::producer_params &imp) {
-   auto msg = fc::json::to_string(fc::variant(imp));
+   auto msg = fc::json::to_string(fc::variant(imp), fc::time_point::maximum());
    elog("++++msg ${msg}", ("msg", msg));
 }
 
@@ -2112,7 +2116,7 @@ void producer_free_(void *ptr) {
 
 int handle_transaction_trace(eosio::chain::controller& db, const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result, fc::variant& output) {
    auto next = [&output](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
-      output = fc::json::to_string(result);
+      output = fc::json::to_string(result, fc::time_point::maximum());
    };
    
    if (result.contains<fc::exception_ptr>()) {
@@ -2194,18 +2198,13 @@ int producer_process_incomming_transaction_(void *ptr, string& packed_trx, strin
    auto next = [&out, &db, &ret](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr>& result) {
       fc::variant output;
       ret = handle_transaction_trace(db, result, output);
-      out = fc::json::to_string(output);
+      out = fc::json::to_string(output, fc::time_point::maximum());
    };
 
    try {
       const auto _packed_trx = fc::json::from_string(packed_trx).as<packed_transaction>();
-      const auto _signed_trx = _packed_trx.get_signed_transaction();
-
-//      elog("++++++++++_signed_trx: ${n}", ("n", _signed_trx));
-      auto ptrx = std::make_shared<transaction_metadata>(_signed_trx);
-//   rw->push_transaction(params->at(index), wrapped_next);
-      bool persist_until_expired = false;
-      producer.my->process_incoming_transaction_async(ptrx, false, next);
+      auto ptrx_meta = transaction_metadata::create_no_recover_keys( _packed_trx, transaction_metadata::trx_type::input );
+      producer.my->process_incoming_transaction_async(ptrx_meta, false, next);
 
       auto buffer_size = fc::raw::pack_size( _packed_trx );
       raw_packed_trx = string(buffer_size, 0);
@@ -2228,7 +2227,7 @@ int producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string&
          out = e->to_detail_string();
       } else {
          const auto& r = result.get<transaction_trace_ptr>();
-         out = fc::json::to_string(fc::variant(r));
+         out = fc::json::to_string(fc::variant(r), fc::time_point::maximum());
       }
    };
 
@@ -2237,13 +2236,8 @@ int producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string&
       fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), raw_packed_trx.size() );
       fc::raw::unpack( ds, _packed_trx );
 
-      const auto _signed_trx = _packed_trx.get_signed_transaction();
-
-//      elog("++++++++++_signed_trx: ${n}", ("n", _signed_trx));
-      auto ptrx = std::make_shared<transaction_metadata>(_signed_trx);
-//   rw->push_transaction(params->at(index), wrapped_next);
-      bool persist_until_expired = false;
-      producer.my->process_incoming_transaction_async(ptrx, false, next);
+      auto ptrx_meta = transaction_metadata::create_no_recover_keys( _packed_trx, transaction_metadata::trx_type::input );
+      producer.my->process_incoming_transaction_async(ptrx_meta, false, next);
       return 1;
    }
    catch ( boost::interprocess::bad_alloc& ) {
@@ -2262,7 +2256,7 @@ void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_
       fc::raw::unpack( ds, *block );
       producer.my->on_incoming_block(block, false);
       num = block->block_num();
-      id = fc::json::to_string<block_id_type>(block->id());
+      id = fc::json::to_string<block_id_type>(block->id(), fc::time_point::maximum());
    } LOG_AND_DROP();
 }
 
@@ -2377,7 +2371,7 @@ int producer_schedule_protocol_feature_activations_(void *ptr, string& _features
 void producer_get_runtime_options_(void *ptr, string& result) {
    auto& producer = *(producer_plugin*)ptr;
    auto options = producer.get_runtime_options();
-   result = fc::json::to_string(options);
+   result = fc::json::to_string(options, fc::time_point::maximum());
 }
 
 void producer_update_runtime_options_(void *ptr, string& options) {
@@ -2389,11 +2383,11 @@ void producer_update_runtime_options_(void *ptr, string& options) {
 void producer_get_scheduled_protocol_feature_activations_(void *ptr, string& result) {
    auto& producer = *(producer_plugin*)ptr;
    auto features = producer.get_scheduled_protocol_feature_activations();
-   result = fc::json::to_string(features);
+   result = fc::json::to_string(features, fc::time_point::maximum());
 }
 
 void producer_get_supported_protocol_features_(void *ptr, string& params, string& result) {
    auto& producer = *(producer_plugin*)ptr;
    auto _params = fc::json::from_string(params).as<producer_plugin::get_supported_protocol_features_params>();
-   result = fc::json::to_string(producer.get_supported_protocol_features(_params));
+   result = fc::json::to_string(producer.get_supported_protocol_features(_params), fc::time_point::maximum());
 }

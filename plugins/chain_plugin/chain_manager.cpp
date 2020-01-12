@@ -1,6 +1,8 @@
 #include <eosio/chain_plugin/chain_manager.hpp>
 #include <eosio/chain/global_property_object.hpp>
 
+using namespace eosio::chain;
+
 #define CATCH_AND_LOG_EXCEPTION()\
    catch ( const fc::exception& err ) {\
       uuos_on_error(err.dynamic_copy_exception());\
@@ -77,7 +79,8 @@ chain_manager::~chain_manager() {
     }
 }
 
-bool chain_manager::init(string& config, string& protocol_features_dir, string& snapshot_dir) {
+//string& genesis,
+bool chain_manager::init(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
     this->snapshot_dir = snapshot_dir;
     try {
         evm_init();
@@ -85,7 +88,7 @@ bool chain_manager::init(string& config, string& protocol_features_dir, string& 
         vm_api_ro_init();
         chain_api_init();
         sandboxed_contracts_init();
-
+        genesis = fc::json::from_string(_genesis).as<genesis_state>();
     //    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
         fc::logger::get("producer_plugin").set_log_level(fc::log_level::debug);
         fc::logger::get("transaction_tracing").set_log_level(fc::log_level::debug);
@@ -93,8 +96,10 @@ bool chain_manager::init(string& config, string& protocol_features_dir, string& 
         auto pfs = eosio::initialize_protocol_features( bfs::path(protocol_features_dir) );
         cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
         ilog("${cfg}", ("cfg", cfg));
+        
+        chain_id_type chain_id = genesis.compute_chain_id();
 
-        cc = new eosio::chain::controller(cfg, std::move(pfs));
+        cc = new eosio::chain::controller(cfg, std::move(pfs), chain_id);
         cc->add_indices();
         cc->accepted_block.connect(boost::bind(&chain_manager::on_accepted_block, this, _1));
         cc->accepted_transaction.connect(boost::bind(&chain_manager::on_accepted_transaction, this, _1));
@@ -106,7 +111,7 @@ bool chain_manager::init(string& config, string& protocol_features_dir, string& 
     } catch (const database_guard_exception& e) {
         log_guard_exception(e);
         // make sure to properly close the db
-    } FC_LOG_AND_DROP();
+    }// FC_LOG_AND_DROP();
     delete cc;
     cc = nullptr;
     return false;
@@ -121,7 +126,7 @@ bool chain_manager::startup() {
             cc->startup(shutdown, reader);
             infile.close();
         } else {
-            cc->startup(shutdown);
+            cc->startup(shutdown, genesis);
         }
         return true;
     } catch (const database_guard_exception& e) {
@@ -160,9 +165,9 @@ controller::config& chain_manager::config() {
 #include <map>
 static std::map<void *, chain_manager *> chain_map;
 
-void *chain_new_(string& config, string& protocol_features_dir, string& snapshot_dir) {
+void *chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
     chain_manager *manager = new chain_manager();
-    if (!manager->init(config, protocol_features_dir, snapshot_dir)) {
+    if (!manager->init(config, _genesis, protocol_features_dir, snapshot_dir)) {
         delete manager;
         return (void *)0;
     }
@@ -218,13 +223,13 @@ int chain_abort_block_(void *ptr) {
 }
 
 void chain_get_unapplied_transactions_(void *ptr, string& result) {
-    vector<transaction_id_type> values;
-    auto& chain = chain_get_controller(ptr);
-    auto & trxs = chain.get_unapplied_transactions();
-    for (auto& item : trxs) {
-        values.push_back(item.second->id);
-    }
-    result = fc::json::to_string(fc::variant(values));
+    // vector<transaction_id_type> values;
+    // auto& chain = chain_get_controller(ptr);
+    // auto & trxs = chain.get_unapplied_transactions();
+    // for (auto& item : trxs) {
+    //     values.push_back(item.second->id);
+    // }
+    // result = fc::json::to_string(fc::variant(values), fc::time_point::maximum());
 }
 
 bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _args, vector<char>& result) {
@@ -236,7 +241,7 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _a
             return false;
         }
         auto serializer = abi_serializer( abi, fc::microseconds(150000) );
-        auto action_type = serializer.get_action_type(action);
+        auto action_type = serializer.get_action_type(action_name(action));
         EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
 
         fc::variant args = fc::json::from_string(_args);
@@ -247,7 +252,6 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _a
 }
 
 void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result) {
-    packed_transaction::compression_type compression = packed_transaction::none;
     try {
         signed_transaction trx;
         auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
@@ -275,19 +279,22 @@ void chain_gen_transaction_(string& _actions, string& expiration, string& refere
     } FC_LOG_AND_DROP();
 }
 
+
+
 bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
     auto& chain = chain_get_controller(ptr);
-    auto ptrx = std::make_shared<packed_transaction>();
     vector<char> packed_trx(_packed_trx.c_str(), _packed_trx.c_str()+_packed_trx.size());
-    *ptrx = fc::raw::unpack<packed_transaction>(packed_trx);
-    auto ptrx_meta = std::make_shared<transaction_metadata>( ptrx );
+    auto ptrx = std::make_shared<packed_transaction>();
+    fc::datastream<const char*> ds( _packed_trx.c_str(), _packed_trx.size() );
+    fc::raw::unpack(ds, *ptrx);
+    auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain.get_chain_id());
+//    auto ptrx_meta = transaction_metadata::create_no_recover_keys( trx, transaction_metadata::trx_type::input );
     auto _deadline = fc::time_point::from_iso_string(deadline);
     auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us);
-    result = fc::json::to_string(ret);
+    result = fc::json::to_string(ret, fc::time_point::maximum());
     if (ret->except) {
         return false;
     }
-
     return true;
 }
 
@@ -296,7 +303,7 @@ void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, strin
     auto id = transaction_id_type(scheduled_tx_id);
     auto _deadline = fc::time_point::from_iso_string(deadline);
     auto ret = chain.push_scheduled_transaction(id, _deadline, billed_cpu_time_us);
-    result = fc::json::to_string(ret);
+    result = fc::json::to_string(ret, fc::time_point::maximum());
 }
 
 // void chain_finalize_block_(void *ptr) {
@@ -312,8 +319,10 @@ void chain_commit_block_(void *ptr) {
 void chain_finalize_block_(void *ptr, string& _priv_key) {
     auto& chain = chain_get_controller(ptr);
     auto priv_key = private_key_type(_priv_key);
-    chain.finalize_block( [&]( digest_type d ) {
-        return priv_key.sign(d);
+    chain.finalize_block( [&]( const digest_type d ) {
+        vector<signature_type> sigs;
+        sigs.emplace_back(priv_key.sign(d));
+        return sigs;
     } );
 }
 
@@ -321,57 +330,57 @@ void chain_finalize_block_(void *ptr, string& _priv_key) {
 
 void chain_pop_block_(void *ptr) {
     auto& chain = chain_get_controller(ptr);
-    chain.pop_block();
+//    chain.pop_block();
 }
 
 void chain_get_account_(void *ptr, string& account, string& result) {
     try {
         auto& chain = chain_get_controller(ptr);
         auto ret = chain.get_account(account_name(account));
-        result = fc::json::to_string(ret);
+        result = fc::json::to_string(ret, fc::time_point::maximum());
     } FC_LOG_AND_DROP();
 }
 
 void chain_get_global_properties_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
     auto& obj = chain.get_global_properties();
-    result = fc::json::to_string(obj);
+    result = fc::json::to_string(obj, fc::time_point::maximum());
 }
 
 void chain_get_dynamic_global_properties_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
     auto& obj = chain.get_dynamic_global_properties();
-    result = fc::json::to_string(obj);
+    result = fc::json::to_string(obj, fc::time_point::maximum());
 }
 
 void chain_get_actor_whitelist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_actor_whitelist());
+    result = fc::json::to_string(chain.get_actor_whitelist(), fc::time_point::maximum());
 }
 
 void chain_get_actor_blacklist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_actor_blacklist());
+    result = fc::json::to_string(chain.get_actor_blacklist(), fc::time_point::maximum());
 }
 
 void chain_get_contract_whitelist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_contract_whitelist());
+    result = fc::json::to_string(chain.get_contract_whitelist(), fc::time_point::maximum());
 }
 
 void chain_get_contract_blacklist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_contract_blacklist());
+    result = fc::json::to_string(chain.get_contract_blacklist(), fc::time_point::maximum());
 }
 
 void chain_get_action_blacklist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_action_blacklist());
+    result = fc::json::to_string(chain.get_action_blacklist(), fc::time_point::maximum());
 }
 
 void chain_get_key_blacklist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.get_key_blacklist());
+    result = fc::json::to_string(chain.get_key_blacklist(), fc::time_point::maximum());
 }
 
 void chain_set_actor_whitelist_(void *ptr, string& params) {
@@ -426,12 +435,12 @@ void chain_head_block_producer_(void *ptr, string& result) {
 
 void chain_head_block_header_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.head_block_header());
+    result = fc::json::to_string(chain.head_block_header(), fc::time_point::maximum());
 }
 
 void chain_head_block_state_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.head_block_state());
+    result = fc::json::to_string(chain.head_block_state(), fc::time_point::maximum());
 }
 
 uint32_t chain_fork_db_head_block_num_(void *ptr) {
@@ -490,7 +499,7 @@ void chain_pending_block_producer_(void *ptr, string& result) {
 void chain_pending_block_signing_key_(void *ptr, string& result) {
     try {
         auto& chain = chain_get_controller(ptr);
-        result = std::string(chain.pending_block_signing_key());
+//        result = std::string(chain.pending_block_signing_key());
     } CATCH_AND_LOG_EXCEPTION()
 }
 
@@ -505,23 +514,23 @@ void chain_pending_producer_block_id_(void *ptr, string& result) {
 void chain_get_pending_trx_receipts_(void *ptr, string& result) {
     try {
         auto& chain = chain_get_controller(ptr);
-        result = fc::json::to_string(chain.get_pending_trx_receipts());
+        result = fc::json::to_string(chain.get_pending_trx_receipts(), fc::time_point::maximum());
     } CATCH_AND_LOG_EXCEPTION()
 }
 
 void chain_active_producers_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.active_producers());
+    result = fc::json::to_string(chain.active_producers(), fc::time_point::maximum());
 }
 
 void chain_pending_producers_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.pending_producers());
+    result = fc::json::to_string(chain.pending_producers(), fc::time_point::maximum());
 }
 
 void chain_proposed_producers_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result = fc::json::to_string(chain.proposed_producers());
+    result = fc::json::to_string(chain.proposed_producers(), fc::time_point::maximum());
 }
 
 uint32_t chain_last_irreversible_block_num_(void *ptr) {
@@ -683,12 +692,12 @@ bool chain_is_resource_greylisted_(void *ptr, string& param) {
 
 void chain_get_resource_greylist_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result =fc::json::to_string(chain.get_resource_greylist());
+    result =fc::json::to_string(chain.get_resource_greylist(), fc::time_point::maximum());
 }
 
 void chain_get_config_(void *ptr, string& result) {
     auto& chain = chain_get_controller(ptr);
-    result =fc::json::to_string(chain.get_config());
+    result =fc::json::to_string(chain.get_config(), fc::time_point::maximum());
 }
 
 bool chain_validate_expiration_(void *ptr, string& param, string& err) {
@@ -746,7 +755,7 @@ bool chain_is_known_unexpired_transaction_(void *ptr, string& param) {
 
 int64_t chain_set_proposed_producers_(void *ptr, string& param) {
     auto& chain = chain_get_controller(ptr);
-    auto id = fc::json::from_string(param).as<vector<producer_key>>();
+    auto id = fc::json::from_string(param).as<vector<producer_authority>>();
     return chain.set_proposed_producers(id);
 }
 
@@ -812,7 +821,7 @@ uint32_t chain_get_greylist_limit_(void *ptr) {
 
 void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes) {
     auto& chain = chain_get_controller(ptr);
-    chain.add_to_ram_correction(account, ram_bytes);
+    chain.add_to_ram_correction(account_name(account), ram_bytes);
 }
 
 bool chain_all_subjective_mitigations_disabled_(void *ptr) {
@@ -824,7 +833,7 @@ void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& resul
     auto& chain = chain_get_controller(ptr);
     auto block_time = fc::time_point::from_iso_string(_block_time);
     auto producer = chain.head_block_state()->get_scheduled_producer(block_time);
-    result = fc::json::to_string(producer);
+    result = fc::json::to_string(producer, fc::time_point::maximum());
 }
 
 /*
