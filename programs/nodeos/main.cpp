@@ -68,6 +68,14 @@ void initialize_logging()
    app().set_sighup_callback(logging_conf_handler);
 }
 
+void uuos_initialize_logging_(string& _config_path)
+{
+   auto config_path = fc::path(_config_path);
+   if(fc::exists(config_path))
+     fc::configure_logging(config_path); // intentionally allowing exceptions to escape
+   fc::log_config::initialize_appenders( app().get_io_service() );
+}
+
 enum return_codes {
    OTHER_FAIL        = -2,
    INITIALIZE_FAIL   = -1,

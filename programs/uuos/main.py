@@ -133,6 +133,11 @@ class UUOSMain(application.Application):
         self._chain_api = None
         self._history_api = None
 
+        if os.path.exists(config.logconf):
+            uuos.initialize_logging(config.logconf)
+        else:
+            logger.error(f'log config file not foud: {config.logconf}')
+
         self.producer = None
         self.p2p_manager = P2pManager(config)
         UUOSMain.uuos = self

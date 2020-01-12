@@ -54,3 +54,6 @@ def get_last_error():
 
 def set_accepted_block_callback(cb):
     _uuos.set_accepted_block_callback(cb)
+
+def initialize_logging(config_path):
+    _uuos.uuos_initialize_logging(config_path)
