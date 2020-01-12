@@ -312,7 +312,7 @@ class ChainTest(object):
         expiration = isoformat(expiration)
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
         signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
-        print(signed_trx)
+        # print(signed_trx)
         # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
         # print(r)
 
@@ -688,7 +688,10 @@ def apply(receiver, code, action):
         code = marshal.dumps(code)
         self.deploy_contract('helloworld11', code, b'', 1)
         r = self.push_action('helloworld11', 'test', b'')
-        print(r)
+        return_value = r.action_traces[0]['receipt']['return_value']
+        logger.info(f'+++return_value: {return_value}')
+        assert return_value == b'hello,world'.hex()
+#        print(r)
 
     def free(self):
         self.chain.free()
