@@ -1,0 +1,11 @@
+if( EOSIO_COMPILE_TEST_CONTRACTS )
+   add_contract( test_uuos test_uuos test_uuos.cpp )
+
+   target_include_directories(test_uuos PRIVATE 
+      PRIVATE ${CMAKE_SOURCE_DIR}/../../contracts/native/eth_account
+   )
+
+else()
+   # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/noop.wasm ${CMAKE_CURRENT_BINARY_DIR}/noop.wasm COPYONLY )
+   # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/noop.abi  ${CMAKE_CURRENT_BINARY_DIR}/noop.abi  COPYONLY )
+endif()
