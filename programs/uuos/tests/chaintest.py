@@ -114,7 +114,7 @@ class Object():
 
 class ChainTest(object):
 
-    def __init__(self, uuos_network=False):
+    def __init__(self, uuos_network=False, jit=False):
         self.feature_activated = False
         self.main_token = 'UUOS'
         print(os.getpid())
@@ -147,6 +147,12 @@ class ChainTest(object):
         chain_cfg.reversible_cache_size = 50*1024*1024
         chain_cfg.reversible_guard_size = 5*1024*1024
 
+        if jit:
+            chain_cfg.wasm_runtime = 'eos_vm_jit'
+        else:
+            chain_cfg.wasm_runtime = 'wabt'
+
+        logger.info(f'+++++++++++++++++++++wasm_runtime: {chain_cfg.wasm_runtime}')
 
         uuos.set_default_data_dir(options.data_dir)
         uuos.set_default_config_dir(options.config_dir)
@@ -180,7 +186,7 @@ class ChainTest(object):
         uuos.set_default_log_level(0)
 
     def init(self):
-        self.chain.startup()
+        self.chain.startup(True)
         uuos.set_accepted_block_callback(self.on_accepted_block)
         self.start_block()
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
@@ -696,7 +702,12 @@ def apply(receiver, code, action):
         self.deploy_contract('helloworld11', code, abi)
         self.produce_block()
 
-        r = self.push_action('helloworld11', 'sayhello', b'')
+        r = self.push_action('helloworld11', 'sayhello', b'1')
+        logger.info(r)
+
+        r = self.push_action('helloworld11', 'sayhello', b'2')
+        logger.info(r)
+
         ret_value = r.action_traces[0]['receipt']['return_value']
         ret_value = bytes.fromhex(ret_value)
         logger.info(ret_value)

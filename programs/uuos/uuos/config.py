@@ -133,6 +133,8 @@ class Config(object):
         parser.add_argument('--filter-out',         type=str, default=[], action='append', help='')
         parser.add_argument('--filter-transfer',    type=str2bool, default=False, action='append', help='')
 
+        parser.add_argument('--wasm-runtime',       type=str,  default='wabt', help='Override default WASM runtime (wabt/eos_vm/eos_vm_jit/eos_vm_oc)')
+
         configs = []
         if not config_file:
             args = sys.argv[1:]
