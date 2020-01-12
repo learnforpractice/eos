@@ -144,7 +144,7 @@ class UUOSMain(application.Application):
         chain_cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(config.data_dir, 'state')
 
-        chain_cfg.wasm_runtime = config.wasm_runtime
+        chain_cfg.wasm_runtime = config.wasm_runtime.replace('-', '_')
 
         uuos.set_default_data_dir(config.data_dir)
         uuos.set_default_config_dir(config.config_dir)
