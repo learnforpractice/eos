@@ -408,12 +408,7 @@ class ChainTest(object):
         return ret
 
     def deploy_eosio_token(self):
-        contract_path = '/Users/newworld/dev/eos/build/contracts'
-        if platform.system() == 'Linux':
-            contract_path = '/home/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
-        else:
-            contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
-
+        contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
         code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
         abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
         with open(code_path, 'rb') as f:
@@ -423,12 +418,7 @@ class ChainTest(object):
         self.deploy_contract('eosio.token', code, abi)
 
     def deploy_eosio_system(self):
-        contract_path = '/Users/newworld/dev/eos/build/contracts'
-        if platform.system() == 'Linux':
-            contract_path = '/home/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
-        else:
-            contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
-
+        contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
         code_path = os.path.join(contract_path, 'eosio.system/eosio.system.wasm')
         abi_path = os.path.join(contract_path, 'eosio.system/eosio.system.abi')
         with open(code_path, 'rb') as f:
@@ -693,154 +683,26 @@ def apply(receiver, code, action):
         assert return_value == b'hello,world'.hex()
 #        print(r)
 
+    def test_jit(self):
+        wasm_file = os.path.join(test_dir, '../../../', 'build/unittests/test-contracts/test_uuos')
+        wasm_file = os.path.join(wasm_file, 'test_uuos.wasm')
+        abi_file = os.path.join(test_dir, '../../../', 'unittests/test-contracts/test_uuos')
+        abi_file = os.path.join(abi_file, 'test_uuos.abi')
+
+        with open(wasm_file, 'rb') as f:
+            code = f.read()
+        with open(abi_file, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('helloworld11', code, abi)
+        self.produce_block()
+
+        r = self.push_action('helloworld11', 'sayhello', b'')
+        ret_value = r.action_traces[0]['receipt']['return_value']
+        ret_value = bytes.fromhex(ret_value)
+        logger.info(ret_value)
+        self.produce_block()
+
     def free(self):
         self.chain.free()
         shutil.rmtree(self.options.config_dir)
         shutil.rmtree(self.options.data_dir)
-
-class UUOSTester(unittest.TestCase):
-    def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++UUOSTester++++++++++++++++')
-        super(UUOSTester, self).__init__(testName)
-        self.extra_args = extra_args
-#        UUOSTester.chain = self.chain
-
-    def test_set_action_return_value(self):
-        UUOSTester.chain.test_set_action_return_value()
-
-    def test1(self):
-        UUOSTester.chain.test1()
-
-    def test2(self):
-        UUOSTester.chain.test2()
-
-    def test3(self):
-        UUOSTester.chain.test3()
-    
-    def test4(self):
-        UUOSTester.chain.test4()
-
-    def test5(self):
-        UUOSTester.chain.test5()
-
-    def test6(self):
-        logger.info('+++++++++++++test6+++++++++++++++')
-        UUOSTester.chain.test6()
-    
-    def test7(self):
-        UUOSTester.chain.test7()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.chain = ChainTest()
-
-    @classmethod
-    def tearDownClass(cls):
-        if cls.chain:
-            cls.chain.free()
-            cls.chain = None
-
-
-class UUOSTester2(unittest.TestCase):
-    def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++UUOSTester++++++++++++++++')
-        super(UUOSTester2, self).__init__(testName)
-        self.extra_args = extra_args
-#        UUOSTester.chain = self.chain
-    def test_create_account(self):
-        UUOSTester2.chain.test_create_account()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.chain = ChainTest(True)
-
-    @classmethod
-    def tearDownClass(cls):
-        if cls.chain:
-            cls.chain.free()
-            cls.chain = None
-
-class DBTester1(unittest.TestCase):
-    def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++DBTester1++++++++++++++++')
-        super(DBTester1, self).__init__(testName)
-        self.extra_args = extra_args
-#        UUOSTester.chain = self.chain
-
-    def test_db1(self):
-        logger.info('+++++++++++++db_test1+++++++++++++++')
-        DBTester1.chain.db_test1()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.chain = ChainTest()
-
-    @classmethod
-    def tearDownClass(cls):
-        if cls.chain:
-            cls.chain.free()
-            cls.chain = None
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-class DBTester2(unittest.TestCase):
-    def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++DBTester2++++++++++++++++')
-        super(DBTester2, self).__init__(testName)
-        self.extra_args = extra_args
-#        UUOSTester.chain = self.chain
-
-    def test_db_2(self):
-        logger.info('+++++++++++++db_test2+++++++++++++++')
-        DBTester2.chain.db_test2()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.chain = ChainTest()
-
-    @classmethod
-    def tearDownClass(cls):
-        if cls.chain:
-            cls.chain.free()
-            cls.chain = None
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-class DBTester3(unittest.TestCase):
-    def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++DBTester3++++++++++++++++')
-        super(DBTester3, self).__init__(testName)
-        self.extra_args = extra_args
-#        UUOSTester.chain = self.chain
-
-    def test_db_3(self):
-        logger.info('+++++++++++++db_test3+++++++++++++++')
-        DBTester3.chain.db_test2()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.chain = ChainTest()
-
-    @classmethod
-    def tearDownClass(cls):
-        if cls.chain:
-            cls.chain.free()
-            cls.chain = None
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-
-if __name__ == '__main__':
-    unittest.main()
