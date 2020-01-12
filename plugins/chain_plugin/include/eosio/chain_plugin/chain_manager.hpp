@@ -20,7 +20,7 @@ class chain_manager {
 public:
     chain_manager();
     bool init(string& config, string& genesis, string& protocol_features_dir, string& snapshot_dir);
-    bool startup();
+    bool startup(bool init_db);
 
     void log_guard_exception(const chain::guard_exception&e );
     void on_accepted_transaction( const transaction_metadata_ptr& meta );

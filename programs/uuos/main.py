@@ -76,7 +76,7 @@ genesis_eos = {
 
 genesis_default = {
     "initial_timestamp": "2018-06-08T08:08:08.888",
-    "initial_key": "EOS7EarnUhcyYqmdnPon8rm7mBCTnBoot6o7fE2WzjvEX2TdggbL3",
+    "initial_key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
     "initial_configuration": {
         "max_block_net_usage": 1048576,
         "target_block_net_usage_pct": 1000,
@@ -144,6 +144,8 @@ class UUOSMain(application.Application):
         chain_cfg.blocks_dir = os.path.join(config.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(config.data_dir, 'state')
 
+        chain_cfg.wasm_runtime = config.wasm_runtime
+
         uuos.set_default_data_dir(config.data_dir)
         uuos.set_default_config_dir(config.config_dir)
 
@@ -166,14 +168,17 @@ class UUOSMain(application.Application):
         else:
             raise Exception('unknown network')
 
-        chain_cfg = chain_cfg.dumps()
-        logger.info(chain_cfg)
+        initdb = not os.path.exists(os.path.join(chain_cfg.state_dir, 'shared_memory.bin'))
+
+        # logger.info(chain_cfg)
         genesis = json.dumps(genesis)
-        self._chain = Chain(chain_cfg, genesis, config.config_dir, config.snapshot)
+        self._chain = Chain(chain_cfg.dumps(), genesis, config.config_dir, config.snapshot)
 
         self._chain_api = ChainApi(self.chain.ptr)
         self._history_api = HistoryApi()
-        self.chain.startup()
+
+        self.chain.startup(initdb)
+
         self.history_api.startup()
         self.producer = Producer(self.config)
 

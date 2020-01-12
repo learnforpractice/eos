@@ -88,7 +88,9 @@ bool chain_manager::init(string& config, string& _genesis, string& protocol_feat
         vm_api_ro_init();
         chain_api_init();
         sandboxed_contracts_init();
-        genesis = fc::json::from_string(_genesis).as<genesis_state>();
+        if (_genesis.size()) {
+            genesis = fc::json::from_string(_genesis).as<genesis_state>();
+        }
     //    fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
         fc::logger::get("producer_plugin").set_log_level(fc::log_level::debug);
         fc::logger::get("transaction_tracing").set_log_level(fc::log_level::debug);
@@ -117,7 +119,7 @@ bool chain_manager::init(string& config, string& _genesis, string& protocol_feat
     return false;
 }
 
-bool chain_manager::startup() {
+bool chain_manager::startup(bool init_db) {
     auto shutdown = [](){ return s_shutdown; };
     try {
         if (snapshot_dir.size()) {
@@ -125,8 +127,10 @@ bool chain_manager::startup() {
             auto reader = std::make_shared<istream_snapshot_reader>(infile);
             cc->startup(shutdown, reader);
             infile.close();
-        } else {
+        } else if (init_db) {
             cc->startup(shutdown, genesis);
+        } else {
+            cc->startup(shutdown);
         }
         return true;
     } catch (const database_guard_exception& e) {
@@ -175,12 +179,12 @@ void *chain_new_(string& config, string& _genesis, string& protocol_features_dir
     return (void *)manager->cc;
 }
 
-bool chain_startup_(void* ptr) {
+bool chain_startup_(void* ptr, bool initdb) {
     auto itr = chain_map.find(ptr);
     if (itr == chain_map.end()) {
         return false;
     }
-    return ((chain_manager*)itr->second)->startup();
+    return ((chain_manager*)itr->second)->startup(initdb);
 }
 
 void chain_free_(void *ptr) {
