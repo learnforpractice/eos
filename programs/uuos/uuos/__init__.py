@@ -19,6 +19,22 @@ __all__ = [
 
 import _uuos
 
+class LogLevel:
+    all = 0
+    debug = 1
+    info = 2
+    warn = 3
+    error = 4
+    off  = 5
+
+log_names = (
+    'default',
+    'net_plugin_impl',
+    'http_plugin',
+    'producer_plugin',
+    'transaction_tracing'
+)
+
 def set_config(config):
     return _uuos.uuos_set_config(config)
 
