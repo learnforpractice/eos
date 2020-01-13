@@ -3,6 +3,7 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/resource_limits.hpp>
 #include <fc/io/json.hpp>
+#include <fc/crypto/hex.hpp>
 
 #include <dlfcn.h>
 
@@ -295,9 +296,13 @@ static bool is_builtin_activated(uint32_t feature) {
 static string call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {
    auto trace = ctrl().call_contract(contract, action, binargs);
    if (trace->action_traces.size() > 0) {
-      return trace->action_traces[0].console;
+      auto& t = trace->action_traces[0];
+      if (t.receipt) {
+         if (t.receipt->return_value) {
+            return fc::to_hex(*t.receipt->return_value);
+         }
+      }
    }
-//      return fc::json::to_string(trace);
    return "";
 }
 
