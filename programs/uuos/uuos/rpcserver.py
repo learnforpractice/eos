@@ -16,6 +16,7 @@ from pyeoskit import eosapi
 
 from . import producer
 from .application import get_app, get_logger
+from . import call_contract_off_chain
 
 from typing import (
     Any,
@@ -314,6 +315,10 @@ async def get_supported_apis():
     global supported_apis
     return json.dumps(supported_apis)
 
+async def call_contract():
+    params = await request.data
+    return call_contract_off_chain(params)
+
 post_method = ["POST"]
 get_post_method = ["GET", "POST"]
 async def rpc_server(producer, loop, http_server_address):
@@ -380,6 +385,10 @@ async def rpc_server(producer, loop, http_server_address):
         ("/v1/producer/get_supported_protocol_features",        post_method, producer_get_supported_protocol_features),
     ]
 
+    contract_api_routes = [
+        ("/v1/contract/call_contract", post_method, call_contract),
+    ]
+
     db_size_api_routers = [
         ("/v1/db_size/get",                        get_post_method, db_get_size),
     ]
@@ -414,6 +423,11 @@ async def rpc_server(producer, loop, http_server_address):
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
+    if 'eosio::contract_api_plugin' in producer.config.plugin:
+        for route, method, view_func in contract_api_routes:
+            supported_apis.append(route)
+            logger.info(f'add api url {route}')
+            app.route(route, methods=method)(view_func)
 
     app.producer = producer
     try:

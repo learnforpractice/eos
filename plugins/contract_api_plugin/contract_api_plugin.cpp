@@ -62,3 +62,25 @@ call_contract_results contract_api_plugin::call_contract( const call_contract_pa
 #undef CALL_R_R
 
 }
+
+void uuos_call_contract_off_chain_(string& _params, string& result) {
+   string s;
+   fc::variant v;
+   try {
+      auto params = fc::json::from_string(_params).as<eosio::call_contract_params>();
+      s = vm_manager::get().call_contract_off_chain(params.code.value, params.action.value, params.binargs);
+      v = fc::mutable_variant_object("output", s);
+      result = fc::json::to_string(v, fc::time_point::maximum());
+      return;
+   } catch( const boost::interprocess::bad_alloc& ) {
+      throw;
+   } catch( fc::exception& e ) {
+      v = fc::mutable_variant_object("name", e.name())("code", e.code())("what", e.to_string());
+   } catch( const std::exception& e ) {
+      v = fc::mutable_variant_object("name", BOOST_CORE_TYPEID(e).name())("code", (int64_t)fc::std_exception_code)("what", e.what());
+   } catch( ... ) {
+      fc::unhandled_exception e(FC_LOG_MESSAGE( warn, "unknow error"), std::current_exception() );
+      v = fc::mutable_variant_object("name", BOOST_CORE_TYPEID(e).name())("code", (int64_t)fc::std_exception_code)("what", e.what());
+   }
+   result = fc::json::to_string(fc::mutable_variant_object("error", v), fc::time_point::maximum());
+}

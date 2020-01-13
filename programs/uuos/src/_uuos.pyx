@@ -199,6 +199,7 @@ cdef extern from "native_object.hpp":
     void        uuos_set_default_config_dir_(string& dir)
     void        uuos_shutdown_()
     void        uuos_initialize_logging_(string& _config_path)
+    void        uuos_call_contract_off_chain_(string& _params, string& result)
 
     void db_size_api_get_(void *ptr, string& result)
 
@@ -940,6 +941,11 @@ def uuos_shutdown():
 
 def uuos_initialize_logging(string& _config_path):
     uuos_initialize_logging_(_config_path)
+
+def uuos_call_contract_off_chain(string& params):
+    cdef string result
+    uuos_call_contract_off_chain_(params, result)
+    return result
 
 def db_size_api_get(uint64_t ptr):
     cdef string result
