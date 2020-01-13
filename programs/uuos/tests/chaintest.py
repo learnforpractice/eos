@@ -624,7 +624,7 @@ def apply(receiver, code, action):
                 r = self.push_action('alice', 'sayhello', args)
             self.produce_block()
 
-    def read_code(self, code_file):
+    def compile_py_code_from_file(self, code_file):
         db_test = os.path.join(test_dir, 'test_contracts', code_file)
         with open(db_test, 'r') as f:
             code = f.read()
@@ -632,9 +632,14 @@ def apply(receiver, code, action):
         code = marshal.dumps(code)
         return code
 
+    def compile_py_code(self, code):
+        code = compile(code, "contract", 'exec')
+        code = marshal.dumps(code)
+        return code
+
     def db_test1(self):
         logger.info('+++++++++++++++db_test1++++++++++++++')
-        code = self.read_code('db_test.py')
+        code = self.compile_py_code_from_file('db_test.py')
         self.deploy_contract('helloworld11', code, b'', 1)
         r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
         r = JsonObject(r)
@@ -642,7 +647,7 @@ def apply(receiver, code, action):
         self.produce_block()
 
     def db_test2(self):
-        code = self.read_code('db_test2.py')
+        code = self.compile_py_code_from_file('db_test2.py')
         self.deploy_contract('helloworld11', code, b'', 1)
         r = self.push_action('helloworld11', 'store', b'')
         r = JsonObject(r)
@@ -658,7 +663,7 @@ def apply(receiver, code, action):
         self.produce_block()
 
     def db_test3(self):
-        code = self.read_code('db_test3.py')
+        code = self.compile_py_code_from_file('db_test3.py')
 
         code = compile(code, "contract", 'exec')
         code = marshal.dumps(code)
