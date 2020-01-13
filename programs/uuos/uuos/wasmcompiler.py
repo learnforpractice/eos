@@ -123,7 +123,7 @@ def compile_cpp_src(account_name, code, includes = [], entry='apply', opt='O3', 
 
     with open(src_file, 'w') as f:
         f.write(code)
-    wasm_code =  compile_cpp_file(src_file, includes, entry, opt=opt)
+    wasm_code = compile_cpp_file(src_file, includes, entry, opt=opt)
 
     for ext in ('.cpp', '.obj', '.wasm'):
         file_name = temp_dir + ext

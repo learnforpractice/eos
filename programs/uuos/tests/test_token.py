@@ -32,17 +32,18 @@ class TokenTest(ChainTest):
 
         args = {"to": contract_name, "quantity":f"1000000000.0000 {self.main_token}", "memo":""}
         r = self.push_action(contract_name,'issue', args, contract_name, 'active')
-        print(r)
-        self.produce_block()
 
-        params = {
-            'code': contract_name, 
-            'account': contract_name,
-            'symbol': 'UUOS'
-        }
-        params = json.dumps(params)
-        ret = self.chain_api.get_currency_balance(params)
-        print(ret)
+        a1 = self.get_balance(contract_name, token_account=contract_name)
+        a2 = self.get_balance('helloworld12', token_account=contract_name)
+
+        args = {"from": contract_name, 'to': 'helloworld12', "quantity":f"100.0000 {self.main_token}", "memo":""}
+        r = self.push_action(contract_name,'transfer', args, contract_name, 'active')
+
+        b1 = self.get_balance(contract_name, token_account=contract_name)
+        b2 = self.get_balance('helloworld12', token_account=contract_name)
+        assert a1 - 100.0 == b1
+        assert a2 + 100.0 == b2
+        self.produce_block()
 
 class TokenTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):

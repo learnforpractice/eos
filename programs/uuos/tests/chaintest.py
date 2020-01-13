@@ -262,6 +262,20 @@ class ChainTest(object):
         # msg = SignedBlockMessage.unpack(block)
         # logger.info(msg)
 
+    def get_balance(self, account, token_account='eosio.token', token_name='UUOS'):
+        params = {
+            'code': token_account,
+            'account': account,
+            'symbol': token_name
+        }
+        params = json.dumps(params)
+        ret, result = self.chain_api.get_currency_balance(params)
+        if ret:
+            result = json.loads(result)
+            if result:
+                return float(result[0].split(' ')[0])
+        return 0.0
+
     def calc_pending_block_time(self):
 #        self.chain.abort_block()
         now = datetime.utcnow()
