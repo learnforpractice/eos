@@ -219,6 +219,12 @@ extern void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
 extern void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'token_transfer' */
 extern void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+extern void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+extern void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+extern void (*Z_envZ_token_closeZ_vjj)(u64, u64);
 /* import: 'env' 'read_transaction' */
 extern u32 (*Z_envZ_read_transactionZ_iii)(u32, u32);
 /* import: 'env' 'transaction_size' */

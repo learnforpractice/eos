@@ -347,8 +347,17 @@ class ChainTest(object):
         result = JsonObject(result)
         return result
 
+    def transfer(self, _from, _to, _amount, _memo='', token_account='eosio.token', token_name='', permission='active'):
+        if not token_name:
+            token_name = self.main_token
+        args = {"from":_from, "to":_to, "quantity":'%.4f %s'%(_amount,token_name), "memo":_memo}
+        return self.push_action(token_account, 'transfer', args, _from, permission)
+
     def pack_args(self, account, action , args):
-        return self.chain.pack_action_args(account, action, args)
+        ret = self.chain.pack_action_args(account, action, args)
+        if not ret:
+            raise Exception('pack error')
+        return ret
 
     def create_account(self, creator, account, owner_key, active_key, ram_bytes=0, stake_net=0.0, stake_cpu=0.0):
         actions = []

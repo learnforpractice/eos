@@ -248,6 +248,6 @@ static PyObject *py_token_close(PyObject *self, PyObject *args)
     {"token_create",   (PyCFunction)py_token_create, METH_VARARGS, NULL}, \
     {"token_issue",    (PyCFunction)py_token_issue, METH_VARARGS, NULL}, \
     {"token_transfer", (PyCFunction)py_token_transfer, METH_VARARGS, NULL}, \
-    {"token_open", (PyCFunction)py_token_transfer, METH_VARARGS, NULL}, \
-    {"token_retire", (PyCFunction)py_token_transfer, METH_VARARGS, NULL}, \
-    {"token_close", (PyCFunction)py_token_transfer, METH_VARARGS, NULL},
+    {"token_open", (PyCFunction)py_token_open, METH_VARARGS, NULL}, \
+    {"token_retire", (PyCFunction)py_token_retire, METH_VARARGS, NULL}, \
+    {"token_close", (PyCFunction)py_token_close, METH_VARARGS, NULL},

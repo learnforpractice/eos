@@ -238,6 +238,13 @@ void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
 void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'token_transfer' */
 void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+void (*Z_envZ_token_closeZ_vjj)(u64, u64);
+
 #include "token.cpp"
 
 
@@ -334,6 +341,10 @@ void init_vm_api4c() {
     Z_envZ_token_createZ_vjjj = token_create;
     Z_envZ_token_issueZ_vjjjii = token_issue;
     Z_envZ_token_transferZ_vjjjjii = token_transfer;
+
+    Z_envZ_token_openZ_vjjj = token_open;
+    Z_envZ_token_retireZ_vjjii = token_retire;
+    Z_envZ_token_closeZ_vjj = token_close;
 
 
     Z_envZ_abortZ_vv = _abort;
