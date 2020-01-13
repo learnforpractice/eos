@@ -5,6 +5,7 @@ import random
 import hashlib
 import traceback
 import platform
+import logging
 
 from pyeoskit import wallet
 from pyeoskit import eosapi
@@ -14,6 +15,13 @@ from pyeoskit import util
 
 from pyeoskit.exceptions import HttpAPIError
 import sys
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
+# formatter = logging.Formatter('%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
+# handler = logging.StreamHandler()
+# handler.setFormatter(formatter)
+
+logger=logging.getLogger(__name__)
 
 config.main_token = 'UUOS'
 db.reset()
@@ -146,7 +154,7 @@ try:
     eosapi.schedule_protocol_feature_activations(['0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd']) #PREACTIVATE_FEATURE
     time.sleep(2.0)
 except Exception as e:
-    print(e)
+    logger.exception(e)
 
 code_path = os.path.join(contract_path, 'eosio.system/eosio.system.wasm')
 abi_path = os.path.join(contract_path, 'eosio.system/eosio.system.abi')
