@@ -17,10 +17,10 @@ gc.set_debug(gc.DEBUG_STATS)
 logger = application.get_logger(__name__)
 
 
-class TokenTest(ChainTest):
+class CallContractTest(ChainTest):
 
     def __init__(self, uuos_network=False, jit=False):
-        super(TokenTest, self).__init__(uuos_network, jit)
+        super(CallContractTest, self).__init__(uuos_network, jit)
 
     def test_call(self):
         code = r'''
@@ -69,19 +69,45 @@ def apply(receiver, code, action):
         self.push_action(contract_name, 'sayhello', b'')
         self.produce_block()
 
-class TokenTestCase(unittest.TestCase):
+class CallContractTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):
-        logger.info('+++++++++++++++++++++TokenTestCase++++++++++++++++')
-        super(TokenTestCase, self).__init__(testName)
+        logger.info('+++++++++++++++++++++CallContractTestCase++++++++++++++++')
+        super(CallContractTestCase, self).__init__(testName)
         self.extra_args = extra_args
 #        UUOSTester.chain = self.chain
 
     def test_call(self):
-        TokenTestCase.chain.test_call()
+        CallContractTestCase.chain.test_call()
 
     @classmethod
     def setUpClass(cls):
-        cls.chain = TokenTest(uuos_network=False, jit=False)
+        cls.chain = CallContractTest(uuos_network=False, jit=False)
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+class CallContractTestCaseJIT(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++CallContractTestCaseJIT++++++++++++++++')
+        super(CallContractTestCaseJIT, self).__init__(testName)
+        self.extra_args = extra_args
+#        UUOSTester.chain = self.chain
+
+    def test_call(self):
+        CallContractTestCaseJIT.chain.test_call()
+
+    @classmethod
+    def setUpClass(cls):
+        cls.chain = CallContractTest(uuos_network=False, jit=True)
 
     @classmethod
     def tearDownClass(cls):
