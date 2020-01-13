@@ -4,6 +4,7 @@ import shutil
 import hashlib
 import marshal
 import subprocess
+import tempfile
 
 def find_eosio_cdt_path():
     eosio_cpp = shutil.which('eosio-cpp')
@@ -117,21 +118,16 @@ def compile_cpp_file(src_path, includes=[], entry='apply', opt='O3'):
     return compiler.compile_cpp_file(opt)
 
 def compile_cpp_src(account_name, code, includes = [], entry='apply', opt='O3', force=False):
-    if not os.path.exists('.tmp'):
-        os.mkdir('.tmp')
-    src_path = os.path.join('.tmp', account_name+'.cpp')
+    temp_dir = tempfile.mktemp()
+    src_file = temp_dir + '.cpp'
 
-    if not force:
-        if os.path.exists(src_path):
-            with open(src_path) as f:
-                old_code = f.read()
-            if old_code == code:
-                tmp_path = src_path[:-4]
-                wasm_file = f'{tmp_path}.wasm'
-                if os.path.exists(f'{tmp_path}.cpp') and os.path.exists(wasm_file):
-                    if os.path.getmtime(f'{tmp_path}.cpp') <= os.path.getmtime(wasm_file):
-                        with open(wasm_file, 'rb') as f:
-                            return f.read()
-    with open(src_path, 'w') as f:
+    with open(src_file, 'w') as f:
         f.write(code)
-    return compile_cpp_file(src_path, includes, entry, opt=opt)
+    wasm_code =  compile_cpp_file(src_file, includes, entry, opt=opt)
+
+    for ext in ('.cpp', '.obj', '.wasm'):
+        file_name = temp_dir + ext
+        if os.path.exists(file_name):
+            os.remove(file_name)
+
+    return wasm_code
