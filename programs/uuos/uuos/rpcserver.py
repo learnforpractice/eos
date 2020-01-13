@@ -295,8 +295,10 @@ async def producer_get_scheduled_protocol_feature_activations():
 
 async def producer_schedule_protocol_feature_activations():
     features = await request.data
-    ret = get_app().producer.schedule_protocol_feature_activations(features)
-    return ret[1], http_return_code[ret[0]]
+    ret, error = get_app().producer.schedule_protocol_feature_activations(features)
+    if not ret:
+        return error, 500
+    return "{}"
 
 async def producer_get_supported_protocol_features():
     params = await request.data
