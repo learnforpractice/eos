@@ -200,6 +200,12 @@ class Producer(object):
         return _uuos.producer_get_scheduled_protocol_feature_activations(self.ptr)
 
     def get_supported_protocol_features(self, params):
+        '''
+        struct get_supported_protocol_features_params {
+            bool exclude_disabled = false;
+            bool exclude_unactivatable = false;
+        };
+        '''
         return _uuos.producer_get_supported_protocol_features(self.ptr, params)
 
     def publish_message(self, msg):

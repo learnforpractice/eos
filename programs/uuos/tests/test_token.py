@@ -33,16 +33,18 @@ class TokenTest(ChainTest):
         args = {"to": contract_name, "quantity":f"1000000000.0000 {self.main_token}", "memo":""}
         r = self.push_action(contract_name,'issue', args, contract_name, 'active')
 
-        a1 = self.get_balance(contract_name, token_account=contract_name)
-        a2 = self.get_balance('helloworld12', token_account=contract_name)
+        for i in range(5):
+            a1 = self.get_balance(contract_name, token_account=contract_name)
+            a2 = self.get_balance('helloworld12', token_account=contract_name)
 
-        args = {"from": contract_name, 'to': 'helloworld12', "quantity":f"100.0000 {self.main_token}", "memo":""}
-        r = self.push_action(contract_name,'transfer', args, contract_name, 'active')
+            args = {"from": contract_name, 'to': 'helloworld12', "quantity":f"100.0000 {self.main_token}", "memo":str(i)}
+            r = self.push_action(contract_name,'transfer', args, contract_name, 'active')
+            logger.info(f'++++r.elapsed: {r.elapsed}')
 
-        b1 = self.get_balance(contract_name, token_account=contract_name)
-        b2 = self.get_balance('helloworld12', token_account=contract_name)
-        assert a1 - 100.0 == b1
-        assert a2 + 100.0 == b2
+            b1 = self.get_balance(contract_name, token_account=contract_name)
+            b2 = self.get_balance('helloworld12', token_account=contract_name)
+            assert a1 - 100.0 == b1
+            assert a2 + 100.0 == b2
         self.produce_block()
 
 class TokenTestCase(unittest.TestCase):
