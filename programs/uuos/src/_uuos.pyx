@@ -596,8 +596,10 @@ def chain_get_unapplied_transactions(uint64_t ptr):
     return result
 
 def chain_push_transaction(uint64_t ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us):
-    cdef string result
-    ret = chain_push_transaction_(<void *>ptr, packed_trx, deadline, billed_cpu_time_us, result)
+    cdef string _result
+    ret = chain_push_transaction_(<void *>ptr, packed_trx, deadline, billed_cpu_time_us, _result)
+    result = <bytes>_result
+    result = result.decode('utf8')
     return ret, result
 
 def chain_push_scheduled_transaction(uint64_t ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us):
