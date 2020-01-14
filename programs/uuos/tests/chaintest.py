@@ -359,6 +359,12 @@ class ChainTest(object):
             raise Exception('pack error')
         return ret
 
+    def unpack_args(self, account, action, raw_args):
+        ret = self.chain.unpack_action_args(account, action, raw_args)
+        if not ret:
+            raise Exception('unpack error')
+        return ret
+
     def create_account(self, creator, account, owner_key, active_key, ram_bytes=0, stake_net=0.0, stake_cpu=0.0):
         actions = []
         logger.info(f'{creator} {account}')
