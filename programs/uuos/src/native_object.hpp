@@ -8,6 +8,8 @@ extern "C" PyObject* PyInit__db(void);
 typedef void* (*fn_run_py_func)(void *func);
 void* run_py_function_(fn_run_py_func run_py_func, void *py_func);
 
+typedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id);
+void register_on_accepted_block(fn_on_accepted_block cb);
 
 string& uuos_get_last_error_();
 void uuos_set_last_error_(string& error);

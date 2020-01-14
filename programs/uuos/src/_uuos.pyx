@@ -17,10 +17,14 @@ cdef extern from "Python.h":
     object PyBytes_FromStringAndSize(const char* str, int size)
 
 cdef extern from "uuos.hpp":
-    void register_on_accepted_block_cb_()
+    pass
+#   void register_on_accepted_block_cb_()
 
 cdef extern from "native_object.hpp":
     object PyInit__db();
+
+    ctypedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id)
+    void register_on_accepted_block(fn_on_accepted_block cb)
 
     ctypedef void* (*fn_run_py_func)(void *func)
     void* run_py_function_(fn_run_py_func run_py_func, void *py_func)
@@ -896,7 +900,7 @@ def history_get_db_size(uint64_t ptr):
     return result
 
 g_accepted_block_cb = None
-cdef extern int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
+cdef int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
     global g_accepted_block_cb
     try:
         if g_accepted_block_cb:
@@ -988,6 +992,7 @@ def run_py_func_safe(func):
         return None
     return <object>ret
 
-register_on_accepted_block_cb_()
+register_on_accepted_block(on_accepted_block)
+
 uuos_set_version()
 _db = <object>PyInit__db()
