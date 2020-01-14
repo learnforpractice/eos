@@ -41,21 +41,21 @@ int parse_db_args5(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg
     return *arg1 && *arg2 && *arg3 && *arg4 && *arg5;
 }
 
-int parse_db_data(PyObject *arg, const char **data, int *len) {
+int parse_db_data(PyObject *arg, const char **data, Py_ssize_t *len) {
     if (!PyBytes_Check(arg)) {
         PyErr_SetString(PyExc_ValueError, "bad data type.");
         return 0;
     }
-    return PyBytes_AsStringAndSize(arg, data, len) != -1;
+    return PyBytes_AsStringAndSize(arg, (char **)data, len) != -1;
 }
 
 int long_as_byte_array(PyObject *args, int index, char *array, int length) {
     PyObject *o = PyTuple_GetItem(args, index);
-    return _PyLong_AsByteArray(o, array, length, 1, 0);
+    return _PyLong_AsByteArray((PyLongObject*)o, (unsigned char*)array, length, 1, 0);
 }
 
 PyObject *long_from_byte_array(const char *array, int length) {
-    return _PyLong_FromByteArray(array, length, 1, 0);
+    return _PyLong_FromByteArray((const unsigned char *)array, length, 1, 0);
 }
 
 //int32_t db_store_i64(account_name scope, table_name table, account_name payer, uint64_t id,  const void* data, uint32_t len);
@@ -206,6 +206,7 @@ static PyObject *py_db_previous_i64(PyObject *self, PyObject *args)
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
     PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
+    return ret;
 }
 
 //int32_t db_lowerbound_i64(account_name code, account_name scope, table_name table, uint64_t id);
@@ -518,7 +519,7 @@ static PyObject *py_db_idx128_store(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    if (-1 == long_as_byte_array(args, 4, &secondary, 16)) {
+    if (-1 == long_as_byte_array(args, 4, secondary, 16)) {
         return NULL;
     }
 
@@ -650,12 +651,12 @@ static PyObject *py_db_idx128_find_secondary(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    if (-1 == long_as_byte_array(args, 3, (char *)secondary, 16)) {
+    if (-1 == long_as_byte_array(args, 3, (char *)&secondary, 16)) {
         PyErr_SetString(PyExc_ValueError, "secondary should be an int type.");
         return NULL;
     }
 
-    iterator = db_idx128_find_secondary(code, scope, table, secondary, &primary);
+    iterator = db_idx128_find_secondary(code, scope, table, &secondary, &primary);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
     PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
@@ -769,7 +770,7 @@ static PyObject *py_db_idx256_store(PyObject *self, PyObject *args)
     }
 
     PyObject *o = PyTuple_GetItem(args, 4);
-    int ret = _PyLong_AsByteArray(o, (char *)&secondary, 32, 1, 1);
+    int ret = _PyLong_AsByteArray((PyLongObject*)o, (unsigned char *)&secondary, 32, 1, 1);
     if (ret == -1) {
         return NULL;
     }
@@ -804,7 +805,7 @@ static PyObject *py_db_idx256_update(PyObject *self, PyObject *args)
     }
 
     o = PyTuple_GetItem(args, 2);
-    int ret = _PyLong_AsByteArray(o, (char *)&secondary, 32, 1, 1);
+    int ret = _PyLong_AsByteArray((PyLongObject*)o, (unsigned char *)&secondary, 32, 1, 1);
     if (ret == -1) {
         PyErr_SetString(PyExc_ValueError, "wrong 3th argument");
         return NULL;
@@ -883,7 +884,7 @@ static PyObject *py_db_idx256_find_primary(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    iterator = db_idx256_find_primary(code, scope, table, &secondary, 2, primary);
+    iterator = db_idx256_find_primary(code, scope, table, secondary, 2, primary);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
 
@@ -908,7 +909,7 @@ static PyObject *py_db_idx256_find_secondary(PyObject *self, PyObject *args)
     }
 
     PyObject *o = PyTuple_GetItem(args, 3);
-    if (_PyLong_AsByteArray(o, (char *)secondary, 32, 1, 1) == -1) {
+    if (_PyLong_AsByteArray((PyLongObject *)o, (unsigned char *)secondary, 32, 1, 1) == -1) {
         PyErr_SetString(PyExc_ValueError, "wrong 4th argument");
         return NULL;
     }
@@ -1218,7 +1219,7 @@ static PyObject *py_db_idx_long_double_store(PyObject *self, PyObject *args)
     uint64_t table;
     uint64_t payer;
     uint64_t id;
-    const char *secondary;
+    long double *secondary;
     Py_ssize_t secondary_len;
 
     if (!parse_db_args4(args, &scope, &table, &payer, &id)) {
@@ -1226,7 +1227,7 @@ static PyObject *py_db_idx_long_double_store(PyObject *self, PyObject *args)
     }
 
     PyObject *o = PyTuple_GetItem(args, 4);
-    if (!parse_db_data(o, &secondary, &secondary_len)) {
+    if (!parse_db_data(o, (const char **)&secondary, &secondary_len)) {
         return NULL;
     }
 
@@ -1235,7 +1236,7 @@ static PyObject *py_db_idx_long_double_store(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    int32_t iterator = db_idx_long_double_store(scope, table, payer, id, &secondary);
+    int32_t iterator = db_idx_long_double_store(scope, table, payer, id, secondary);
     return PyLong_FromLong(iterator);
 }
 
@@ -1324,7 +1325,7 @@ static PyObject *py_db_idx_long_double_find_primary(PyObject *self, PyObject *ar
     iterator = db_idx_long_double_find_primary(code, scope, table, &secondary, primary);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
-    PyTuple_SetItem(ret, 1, PyBytes_FromStringAndSize(&secondary, sizeof(secondary)));
+    PyTuple_SetItem(ret, 1, PyBytes_FromStringAndSize((char *)&secondary, sizeof(secondary)));
     return ret;
 }
 
@@ -1334,8 +1335,8 @@ static PyObject *py_db_idx_long_double_find_secondary(PyObject *self, PyObject *
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-//    long double *secondary;
-    const char *secondary;
+    long double *secondary;
+//    const char *secondary;
     Py_ssize_t secondary_len;
     uint64_t primary = 0;
     int32_t iterator;
@@ -1345,7 +1346,7 @@ static PyObject *py_db_idx_long_double_find_secondary(PyObject *self, PyObject *
     }
 
     PyObject *o = PyTuple_GetItem(args, 3);
-    if (!parse_db_data(o, &secondary, &secondary_len)) {
+    if (!parse_db_data(o, (const char **)&secondary, &secondary_len)) {
         return NULL;
     }
 
@@ -1378,7 +1379,7 @@ static PyObject *py_db_idx_long_double_lowerbound(PyObject *self, PyObject *args
     PyObject *ret = PyTuple_New(3);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
     PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
-    PyTuple_SetItem(ret, 2, PyBytes_FromStringAndSize(&secondary, sizeof(secondary)));
+    PyTuple_SetItem(ret, 2, PyBytes_FromStringAndSize((char *)&secondary, sizeof(secondary)));
     return ret;
 }
 
