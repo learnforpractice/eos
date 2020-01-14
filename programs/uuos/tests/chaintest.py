@@ -28,7 +28,7 @@ from uuos import nativeobject
 from uuos import application
 import uuos
 
-gc.set_debug(gc.DEBUG_STATS)
+# gc.set_debug(gc.DEBUG_STATS)
 
 logger = application.get_logger(__name__)
 
@@ -125,7 +125,7 @@ class ChainTest(object):
         options.data_dir = tempfile.mkdtemp()
         options.config_dir = tempfile.mkdtemp()
 
-        logger.info(f'{options.data_dir}, {options.config_dir}')
+        logger.debug(f'{options.data_dir}, {options.config_dir}')
         if uuos_network:
             options.chain_state_db_size_mb = 350
         else:
@@ -177,7 +177,7 @@ class ChainTest(object):
         chain_cfg = chain_cfg.dumps()
 #        logger.info(chain_cfg)
         genesis = json.dumps(genesis)
-        logger.info(genesis)
+        logger.debug(genesis)
         uuos.set_default_log_level(10)
         self._chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
 
@@ -312,7 +312,7 @@ class ChainTest(object):
     def push_action(self, account, action, args, actor=None, perm='active'):
         if not actor:
             actor = account
-        logger.info(f'{account}, {action}, {args}')
+        logger.debug(f'{account}, {action}, {args}')
         if not isinstance(args, bytes):
             _args = self.chain.pack_action_args(account, action, args)
             if not _args:
@@ -370,7 +370,7 @@ class ChainTest(object):
 
     def create_account(self, creator, account, owner_key, active_key, ram_bytes=0, stake_net=0.0, stake_cpu=0.0):
         actions = []
-        logger.info(f'{creator} {account}')
+        logger.debug(f'{creator} {account}')
         args = {
             'creator': creator,
             'name': account,
