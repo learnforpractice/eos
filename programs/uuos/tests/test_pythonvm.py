@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import gc
+import struct
 import unittest
 
 test_dir = os.path.dirname(__file__)
@@ -40,7 +41,15 @@ class PythonVMTest(ChainTest):
         except Exception as e:
             assert e.args[0]['code'] == 3050003 #eosio_assert_message_exception
             assert e.args[0]['stack'][0]['data']['s'] == 'no free vm memory left!'
-#            print(e)
+
+        start = 0
+        for i in range(10):
+            end = start + 10 * 1024
+            args = struct.pack('III', 3*1024*1024, start, end)
+            r = self.push_action(contract_name, 'test51', args)
+            if i % 50 == 0:
+                self.produce_block()
+            start += 10*1024
 
 class PythonVMTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):
