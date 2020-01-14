@@ -193,6 +193,7 @@ feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac0
             '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#NO_DUPLICATE_DEFERRED_ID
             '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
             '737102c41d3bce173c009a310ec0d23ae26a4bbe6b621fa1b90846b2115b296e', #PYTHONVM
+            '8e66379ab121fabc3d5309dc48d2654c7148958281eb86ae2273bda8f542d76a', #ACTION_RETURN_VALUE
 ]
 
 for digest in feature_digests: 
@@ -233,16 +234,16 @@ while True:
         except Exception as e:
             traceback.print_exc()
             print('exception:', e)
-        account_name = 'helloworld11'
-        try:
-            r = eosapi.push_action(account_name, 'sayhello', str(i), {account_name:'active'})
-            print(r['processed']['action_traces'][0]['console'])
-            print(r['processed']['elapsed'])
-        except Exception as e:
-            response = json.loads(e.response)
-            for detail in response['error']['details']:
-        #        print(detail)
-                print(detail['message'])
+        # account_name = 'helloworld11'
+        # try:
+        #     r = eosapi.push_action(account_name, 'sayhello', str(i), {account_name:'active'})
+        #     print(r['processed']['action_traces'][0]['console'])
+        #     print(r['processed']['elapsed'])
+        # except Exception as e:
+        #     response = json.loads(e.response)
+        #     for detail in response['error']['details']:
+        # #        print(detail)
+        #         print(detail['message'])
 
     print('avg', elapsed/10)
     print(eosapi.get_balance('uuos'))
