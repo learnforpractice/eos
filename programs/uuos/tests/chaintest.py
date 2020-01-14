@@ -314,7 +314,10 @@ class ChainTest(object):
             actor = account
         logger.info(f'{account}, {action}, {args}')
         if not isinstance(args, bytes):
-            args = self.chain.pack_action_args(account, action, args)
+            _args = self.chain.pack_action_args(account, action, args)
+            if not _args:
+                raise Exception(f'pack error for {args}')
+            args = _args
             # logger.error(f'++++{args}')
         action = {
             'account': account,
