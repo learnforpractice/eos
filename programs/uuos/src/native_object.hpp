@@ -113,6 +113,8 @@ void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& resul
 void chain_finalize_block_(void *ptr, string& _priv_key);
 
 bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector<char>& result);
+bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& _binargs, string& result);
+
 void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result);
 
 int     chain_api_get_info_(void *chain_ptr, string& info);

@@ -255,6 +255,26 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _a
     return false;
 }
 
+bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& _binargs, string& result) {
+    try {
+        auto& chain = chain_get_controller(ptr);
+        const auto& accnt = chain.db().get<account_object, by_name>( account_name(name) );
+        abi_def abi;
+        if( !abi_serializer::to_abi( accnt.abi, abi )) {
+            return false;
+        }
+        auto serializer = abi_serializer( abi, fc::microseconds(150000) );
+        auto action_type = serializer.get_action_type(action_name(action));
+        EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
+
+        bytes binargs = bytes(_binargs.data(), _binargs.data() + _binargs.size());
+        auto v = serializer.binary_to_variant(action_type, binargs, fc::microseconds(150000));
+        result = fc::json::to_string(v, fc::time_point::maximum());
+        return true;
+    } FC_LOG_AND_DROP();
+    return false;
+}
+
 void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result) {
     try {
         signed_transaction trx;

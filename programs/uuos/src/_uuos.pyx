@@ -127,6 +127,8 @@ cdef extern from "native_object.hpp":
     void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
     void chain_finalize_block_(void *ptr, string& _priv_key);
     bool chain_pack_action_args_(void *ptr, string& name, string& action, string& args, vector[char]& result);
+    bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& _binargs, string& result);
+    
     void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key, vector[char]& result);
 
     int    chain_api_get_info_(void *chain_ptr, string& info)
@@ -627,6 +629,12 @@ def chain_pack_action_args(uint64_t ptr, string& name, string& action, string& a
     cdef bool ret
     ret = chain_pack_action_args_(<void *>ptr, name, action, args, result)
     return PyBytes_FromStringAndSize(result.data(), result.size())
+
+def chain_unpack_action_args(uint64_t ptr, string& name, string& action, string& binargs):
+    cdef string result
+    cdef bool ret
+    ret = chain_unpack_action_args_(<void *>ptr, name, action, binargs, result)
+    return result
 
 def chain_gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key):
     cdef vector[char] result

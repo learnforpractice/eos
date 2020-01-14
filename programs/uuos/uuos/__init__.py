@@ -18,6 +18,7 @@ __all__ = [
 ]
 
 import _uuos
+import ujson as json
 
 class LogLevel:
     all = 0
@@ -75,4 +76,5 @@ def initialize_logging(config_path):
     _uuos.uuos_initialize_logging(config_path)
 
 def call_contract_off_chain(params):
-    return _uuos.uuos_call_contract_off_chain(params)
+    r = _uuos.uuos_call_contract_off_chain(params)
+    return json.loads(r)

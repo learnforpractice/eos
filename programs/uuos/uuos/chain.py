@@ -376,6 +376,9 @@ class Chain(object):
             args = json.dumps(args)
         return _uuos.chain_pack_action_args(self.ptr, name, action, args)
 
+    def unpack_action_args(self, name, action, raw_args):
+        return _uuos.chain_unpack_action_args(self.ptr, name, action, raw_args)
+
     def gen_transaction(self, _actions, expiration, reference_block_id, _chain_id, compress, _private_key):
         if isinstance(_actions, dict):
             _actions = json.dumps(_actions)
