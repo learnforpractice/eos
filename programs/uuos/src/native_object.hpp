@@ -1,6 +1,13 @@
 #pragma once
 #include <string>
+#include <Python.h>
 using namespace std;
+
+extern "C" PyObject* PyInit__db(void);
+
+typedef void* (*fn_run_py_func)(void *func);
+void* run_py_function_(fn_run_py_func run_py_func, void *py_func);
+
 
 string& uuos_get_last_error_();
 void uuos_set_last_error_(string& error);
@@ -8,10 +15,14 @@ void uuos_set_last_error_(string& error);
 void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
 
+uint64_t s2n_(string& s);
+int n2s_(uint64_t n, string& s);
 
 void *chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
 bool chain_startup_(void* ptr, bool initdb);
 void chain_free_(void *ptr);
+void chain_set_apply_context_(void *ptr);
+
 void chain_id_(void *ptr, string& chain_id);
 int chain_abort_block_(void *ptr);
 void chain_get_global_properties_(void *ptr, string& result);

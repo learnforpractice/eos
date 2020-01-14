@@ -6,6 +6,7 @@
 #include <eosio/chain/generated_transaction_object.hpp>
 #include <eosio/chain/transaction_object.hpp>
 #include <eosio/chain/global_property_object.hpp>
+#include <eosio/chain/platform_timer.hpp>
 
 #pragma push_macro("N")
 #undef N
@@ -61,7 +62,9 @@ namespace eosio { namespace chain {
    ,read_only(read_only)
    {
       if (!c.skip_db_sessions()) {
-         undo_session = c.mutable_db().start_undo_session(true);
+         if (!read_only) {
+            undo_session = c.mutable_db().start_undo_session(true);
+         }
       }
       trace->id = id;
       trace->block_num = c.head_block_num() + 1;
@@ -577,6 +580,12 @@ namespace eosio { namespace chain {
       acontext.exec();
    }
 
+   apply_context& transaction_context::get_apply_context() {
+      if (!ctx.get()) {
+         ctx = std::make_shared<apply_context>( control, *this, 1, 4, true );
+      }
+      return *ctx;
+   }
 
    void transaction_context::schedule_transaction() {
       // Charge ahead of time for the additional net usage needed to retire the delayed transaction

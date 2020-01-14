@@ -15,6 +15,9 @@ class Chain(object):
     def startup(self, initdb):
         return _uuos.chain_startup(self.ptr, initdb)
 
+    def set_apply_context(self):
+        return _uuos.chain_set_apply_context(self.ptr)
+
     def __del__(self):
         pass
 

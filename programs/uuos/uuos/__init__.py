@@ -36,6 +36,15 @@ log_names = (
     'transaction_tracing'
 )
 
+def N(s):
+    return _uuos.N(s)
+
+def s2n(s):
+    return _uuos.s2n(s)
+
+def n2s(n):
+    return _uuos.n2s(n)
+
 def set_config(config):
     return _uuos.uuos_set_config(config)
 
@@ -78,3 +87,4 @@ def initialize_logging(config_path):
 def call_contract_off_chain(params):
     r = _uuos.uuos_call_contract_off_chain(params)
     return json.loads(r)
+

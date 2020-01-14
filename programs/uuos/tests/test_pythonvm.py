@@ -41,6 +41,7 @@ class PythonVMTest(ChainTest):
         except Exception as e:
             assert e.args[0]['code'] == 3050003 #eosio_assert_message_exception
             assert e.args[0]['stack'][0]['data']['s'] == 'no free vm memory left!'
+        self.produce_block()
 
         start = 0
         for i in range(10):
@@ -81,7 +82,6 @@ class PythonVMTestCaseJIT(unittest.TestCase):
         logger.debug('+++++++++++++++++++++PythonVMTestCaseJIT++++++++++++++++')
         super(PythonVMTestCaseJIT, self).__init__(testName)
         self.extra_args = extra_args
-#        UUOSTester.chain = self.chain
 
     def test_api(self):
         PythonVMTestCaseJIT.chain.test_api()

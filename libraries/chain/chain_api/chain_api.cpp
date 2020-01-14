@@ -354,3 +354,17 @@ controller& chain_api_get_controller() {
    get_vm_api()->eosio_assert(s_ctrl != nullptr, "controller not set");
    return *s_ctrl;
 }
+
+
+extern "C" uint64_t s2n(char *s, int in_len) {
+    string ss(s, in_len);
+    return str2n(ss);
+}
+
+extern "C" int n2s(uint64_t n, char * out, int length) {
+    string s;
+    n2str(n, s);
+    int copy_len = std::min(length, (int)s.size());
+    ::memcpy(out, s.c_str(), copy_len);
+    return copy_len;
+}

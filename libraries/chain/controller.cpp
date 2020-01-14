@@ -254,6 +254,7 @@ struct controller_impl {
    uint32_t                       snapshot_head_block = 0;
    named_thread_pool              thread_pool;
    platform_timer                 timer;
+   std::shared_ptr<transaction_context> ctx;
 #if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
    vm::wasm_allocator                 wasm_alloc;
 #endif
@@ -303,6 +304,25 @@ struct controller_impl {
 
    void set_apply_handler( account_name receiver, account_name contract, action_name action, apply_handler v ) {
       apply_handlers[receiver][make_pair(contract,action)] = v;
+   }
+   
+   transaction_context& get_context() {
+      if (!ctx.get()) {
+         fc::time_point deadline = fc::time_point::maximum();
+         fc::time_point start = fc::time_point::now();
+
+         signed_transaction* trx = new signed_transaction();
+         // Deliver onerror action containing the failed deferred transaction directly back to the sender.
+         trx->actions.emplace_back( vector<permission_level>{}, name(0), name(0), vector<char>() );
+         trx->expiration = time_point_sec();
+         trx->ref_block_num = 0;
+         trx->ref_block_prefix = 0;
+
+         transaction_checktime_timer* trx_timer = new transaction_checktime_timer(timer);
+         ctx = std::make_shared<transaction_context>( self, *trx, trx->id(), std::move(*trx_timer), start, true );
+         ctx->schedule_action( trx->actions.back(), name(0), false, 0, 0 );
+      }
+      return *ctx;
    }
 
    controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
@@ -2514,6 +2534,10 @@ chainbase::database& controller::get_db(bool read_only)const {
    } else {
       return my->db; 
    }
+}
+
+transaction_context& controller::get_context() {
+   return my->get_context();
 }
 
 const fork_database& controller::fork_db()const { return my->fork_db; }

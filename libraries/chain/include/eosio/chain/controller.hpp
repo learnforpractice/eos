@@ -23,6 +23,7 @@ namespace eosio { namespace chain {
    class authorization_manager;
    class python_interface;
    class db_interface;
+   class transaction_context;
    
    namespace resource_limits {
       class resource_limits_manager;
@@ -301,6 +302,7 @@ namespace eosio { namespace chain {
 #endif
 
          transaction_trace_ptr call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs);
+         transaction_context& get_context();
 
          static fc::optional<uint64_t> convert_exception_to_error_code( const fc::exception& e );
 

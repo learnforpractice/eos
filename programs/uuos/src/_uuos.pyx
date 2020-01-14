@@ -6,6 +6,7 @@ from libcpp.vector cimport vector
 from libcpp.map cimport map
 from libcpp cimport bool
 
+
 cdef extern from * :
     ctypedef long long int64_t
     ctypedef unsigned long long uint64_t
@@ -19,6 +20,13 @@ cdef extern from "uuos.hpp":
     void register_on_accepted_block_cb_()
 
 cdef extern from "native_object.hpp":
+    object PyInit__db();
+
+    ctypedef void* (*fn_run_py_func)(void *func)
+    void* run_py_function_(fn_run_py_func run_py_func, void *py_func)
+
+    uint64_t s2n_(string& s);
+    int n2s_(uint64_t n, string& s);
 
     string& uuos_get_last_error_();
     void uuos_set_last_error_(string& error);
@@ -30,6 +38,7 @@ cdef extern from "native_object.hpp":
     bool chain_startup_(void* ptr, bool initdb);
     void chain_free_(void *ptr);
     int chain_abort_block_(void *ptr);
+    void chain_set_apply_context_(void *ptr);
 
     void chain_get_global_properties_(void *ptr, string& result);
     void chain_get_dynamic_global_properties_(void *ptr, string& result);
@@ -205,13 +214,17 @@ cdef extern from "native_object.hpp":
 
     void db_size_api_get_(void *ptr, string& result)
 
-cpdef void hello(str strArg):
-    "Prints back 'Hello <param>', for example example: hello.hello('you')"
-    print("Hello, {}!)".format(strArg))
 
-cpdef long elevation():
-    "Returns elevation of Nevado Sajama."
-    return 21463L
+def N(string& s):
+    return s2n_(s)
+
+def s2n(string& s):
+    return s2n_(s)
+
+def n2s(uint64_t n):
+    cdef string s
+    n2s_(n, s)
+    return s
 
 def uuos_get_last_error():
     return uuos_get_last_error_()
@@ -231,6 +244,9 @@ def unpack_native_object(int _type, string& packed_message):
 
 def chain_new(string& config, string& genesis, string& protocol_features_dir, string& snapshot_dir):
     return <unsigned long long>chain_new_(config, genesis, protocol_features_dir, snapshot_dir)
+
+def chain_set_apply_context(uint64_t ptr):
+    chain_set_apply_context_(<void *>ptr);
 
 def chain_startup(uint64_t ptr, bool initdb):
     return chain_startup_(<void*> ptr, initdb);
@@ -895,9 +911,6 @@ def set_accepted_block_callback(cb):
     global g_accepted_block_cb
     g_accepted_block_cb = cb
 
-register_on_accepted_block_cb_()
-
-
 g_config = None
 def uuos_set_config(config):
     global g_config
@@ -962,4 +975,19 @@ def db_size_api_get(uint64_t ptr):
     db_size_api_get_(<void *>ptr, result)
     return result
 
+cdef extern object run_py_code(object func):
+    return func()
+
+cdef object run_py_func(object func):
+    return func()
+
+def run_py_func_safe(func):
+    cdef void *ret
+    ret = run_py_function_(<fn_run_py_func>run_py_func, <void *>func)
+    if <uint64_t>ret == 0:
+        return None
+    return <object>ret
+
+register_on_accepted_block_cb_()
 uuos_set_version()
+_db = <object>PyInit__db()

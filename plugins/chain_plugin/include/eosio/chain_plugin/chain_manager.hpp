@@ -3,6 +3,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <eosio/chain_plugin/chain_plugin.hpp>
+#include <eosio/chain/platform_timer.hpp>
 
 #include <fc/io/json.hpp>
 #include <fc/io/raw.hpp>
@@ -15,6 +16,14 @@ using namespace eosio::chain;
 
 void *chain_new_(string& config, string& protocol_features_dir);
 void chain_free_(void *ptr);
+
+namespace eosio {
+    namespace chain {
+        class apply_context;
+        class transaction_context;
+        struct signed_transaction;
+    }
+}
 
 class chain_manager {
 public:
@@ -33,6 +42,7 @@ public:
     controller::config cfg;
     string snapshot_dir;
     genesis_state genesis;
+
 };
 
 eosio::chain::controller& chain_get_controller(void *ptr);

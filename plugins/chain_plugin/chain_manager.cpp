@@ -1,7 +1,15 @@
 #include <eosio/chain_plugin/chain_manager.hpp>
 #include <eosio/chain/global_property_object.hpp>
+#include <eosio/chain/transaction_context.hpp>
+#include <eosio/chain/apply_context.hpp>
 
 using namespace eosio::chain;
+
+namespace eosio {
+    namespace chain {
+        void set_apply_context(apply_context *ctx);
+    }
+}
 
 #define CATCH_AND_LOG_EXCEPTION()\
    catch ( const fc::exception& err ) {\
@@ -197,6 +205,12 @@ void chain_free_(void *ptr) {
 
 eosio::chain::controller& chain_get_controller(void *ptr) {
     return *(eosio::chain::controller*)ptr;
+}
+
+void chain_set_apply_context_(void *ptr) {
+        auto& chain = chain_get_controller(ptr);
+        auto& ctx = chain.get_context().get_apply_context();
+        set_apply_context(&ctx);
 }
 
 void chain_id_(void *ptr, string& chain_id) {
@@ -904,3 +918,26 @@ void uuos_set_log_level_(string& logger_name, int level) {
 void uuos_shutdown_() {
     s_shutdown = true;
 }
+
+extern "C" uint64_t s2n(char *s, int in_len);
+extern "C" int n2s(uint64_t n, char * out, int length);
+
+uint64_t s2n_(string& s) {
+    return s2n((char *)s.c_str(), s.size());
+}
+
+int n2s_(uint64_t n, string& s) {
+    char temp[13];
+    memset(temp, 0, 13);
+    int ret = n2s(n, temp, 13);
+    s = string(temp, ret);
+}
+
+typedef void* (*fn_run_py_func)(void *func);
+void* run_py_function_(fn_run_py_func run_py_func, void *py_func) {
+    try {
+        return run_py_func(py_func);
+    } FC_LOG_AND_DROP();
+    return nullptr;
+}
+
