@@ -29,6 +29,18 @@ class PythonVMTest(ChainTest):
 
         self.push_action(contract_name, 'test1', b'hello,world!')
         self.push_action(contract_name, 'test2', b'hello,world!')
+        self.push_action(contract_name, 'test3', '你好，世界!'.encode('utf8'))
+        try:
+            self.push_action(contract_name, 'test4', b'')
+        except Exception as e:
+            assert e.args[0]['code'] == 3080006 #deadline_exception
+
+        try:
+            self.push_action(contract_name, 'test5', b'')
+        except Exception as e:
+            assert e.args[0]['code'] == 3050003 #eosio_assert_message_exception
+            assert e.args[0]['stack'][0]['data']['s'] == 'no free vm memory left!'
+#            print(e)
 
 class PythonVMTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):
