@@ -11,8 +11,6 @@ sys.path.append(os.path.join(test_dir, '..'))
 from uuos import application
 from chaintest import ChainTest
 
-gc.set_debug(gc.DEBUG_STATS)
-
 logger = application.get_logger(__name__)
 
 from uuos import db
@@ -41,7 +39,14 @@ class ChainDBTest(ChainTest):
             amount /=10000
             logger.info(f'{amount}, {symbol}')
 
-    @apply_context
+        logger.info(self.get_balance('eosio'))
+        logger.info(self.get_balance('uuos'))
+        self.transfer('eosio', 'uuos', 1.0)
+        logger.info(self.get_balance('eosio'))
+        logger.info(self.get_balance('uuos'))
+
+        self.produce_block()
+
     def test_safe_runner(self):
         with self.chain:
             db.get_i64(1)

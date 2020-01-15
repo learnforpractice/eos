@@ -19,16 +19,14 @@ from datetime import datetime, timedelta
 from uuos.jsonobject import JsonObject
 from uuos.nativeobject import SignedBlockMessage, PackedTransactionMessage
 
+from uuos import db
 from uuos import config
-
 from uuos.chain import Chain
 from uuos.chainapi import ChainApi
 
 from uuos import nativeobject
 from uuos import application
 import uuos
-
-# gc.set_debug(gc.DEBUG_STATS)
 
 logger = application.get_logger(__name__)
 
@@ -117,7 +115,7 @@ class ChainTest(object):
     def __init__(self, uuos_network=False, jit=False):
         self.feature_activated = False
         self.main_token = 'UUOS'
-        print(os.getpid())
+        logger.info(('++++++++++++pid:', os.getpid()))
         # input()
         uuos.set_default_log_level(0)
 
@@ -263,6 +261,20 @@ class ChainTest(object):
         # logger.info(msg)
 
     def get_balance(self, account, token_account='eosio.token', token_name='UUOS'):
+        with self.chain:
+            symbol = b'\x04'+token_name.encode('utf8')
+            symbol = symbol.ljust(8, b'\x00')
+            symbol = int.from_bytes(symbol, 'little')
+            symbol >>= 8
+            itr = db.find_i64(token_account, account, 'accounts', symbol)
+            if itr < 0:
+                return 0.0
+            value = db.get_i64(itr)
+            amount, symbol = struct.unpack('q8s', value)
+            amount /=10000
+            # logger.info(f'{amount}, {symbol}')
+            return amount
+
         params = {
             'code': token_account,
             'account': account,
@@ -687,9 +699,9 @@ def apply(receiver, code, action):
         r = JsonObject(r)
 
         r = self.push_action('helloworld11', 'update', b'')
-        logger.info(r)
+        # logger.info(r)
         r = self.push_action('helloworld11', 'update', b'1')
-        logger.info(r)
+        # logger.info(r)
 
 #        print(r)
         self.produce_block()

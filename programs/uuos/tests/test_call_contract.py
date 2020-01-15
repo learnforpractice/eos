@@ -12,8 +12,6 @@ from uuos import wasmcompiler
 
 from chaintest import ChainTest
 
-gc.set_debug(gc.DEBUG_STATS)
-
 logger = application.get_logger(__name__)
 
 

@@ -10,15 +10,18 @@ import uuos
 from uuos import db
 from uuos.saferunner import safe_runner
 
+from uuos import application
+logger = application.get_logger(__name__)
+
 def f(a , b, c):
-    print(a, b, c)
+    logger.info((a, b, c))
 
 
 @safe_runner
 def say_hello(a, b, c):
-    print('hello', a, b, c)
+    logger.info(('hello', a, b, c))
     db.get_i64(1)
-    print('hello,world')
+    logger.info('hello,world')
 
 class Runner(object):
     
@@ -38,26 +41,29 @@ class Runner(object):
     def say_hello3(self):
         raise Exception('goodbye,world')
 
+import unittest
+class ChainDBTestCase(unittest.TestCase):
 
-try:
-    say_hello(1, 2, 3)
-except Exception as e:
-    print(e)
+    def test(self):
+        try:
+            say_hello(1, 2, 3)
+        except Exception as e:
+            logger.info(e)
 
-error = uuos.get_last_error()
-print(error)
+        error = uuos.get_last_error()
+        logger.info(error)
 
-runner = Runner()
-runner.say_hello(4, 5, 6)
+        runner = Runner()
+        runner.say_hello(4, 5, 6)
 
-try:
-    runner.say_hello2()
-except Exception as e:
-    traceback.print_exc()
+        try:
+            runner.say_hello2()
+        except Exception as e:
+            logger.info(e)
 
-try:
-    runner.say_hello3()
-except Exception as e:
-    traceback.print_exc()
+        try:
+            runner.say_hello3()
+        except Exception as e:
+            logger.info(e)
 
-print('goodbye, world')
+        print('goodbye, world')

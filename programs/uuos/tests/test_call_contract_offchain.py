@@ -13,8 +13,6 @@ from uuos import wasmcompiler
 
 from chaintest import ChainTest
 
-gc.set_debug(gc.DEBUG_STATS)
-
 logger = application.get_logger(__name__)
 
 
@@ -148,7 +146,7 @@ extern "C" {
         r = json.loads(r)
         assert r['primary'] == 11
         assert r['data'] == 'hello,worldddd'
-        logger.info(f'++++++++call_contract_off_chain return {r}')
+#        logger.info(f'++++++++call_contract_off_chain return {r}')
 
     def test_call_offchain2(self):
         code = r'''
@@ -197,6 +195,8 @@ extern "C" {
         r = uuos.call_contract_off_chain(params)
         assert 'error' in r and r['error']['code'] == 3050007
         logger.info(r['error'])
+
+        logger.info('++++++++++++++++++++++++++++++hello,world')
 
     def test_call_offchain3(self):
         code = r'''
@@ -282,7 +282,7 @@ extern "C" {
         params = json.dumps(params)
         r = uuos.call_contract_off_chain(params)
         assert 'error' in r and r['error']['code'] == 3080004 #tx_cpu_usage_exceeded
-        logger.info(r['error'])
+#        logger.info(r['error'])
 
 class CallContractOffChainTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):

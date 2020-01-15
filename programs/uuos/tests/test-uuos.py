@@ -9,7 +9,6 @@ sys.path.append(os.path.join(test_dir, '..'))
 from uuos import application
 from chaintest import ChainTest
 
-gc.set_debug(gc.DEBUG_STATS)
 
 logger = application.get_logger(__name__)
 
