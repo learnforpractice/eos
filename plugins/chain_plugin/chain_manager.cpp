@@ -40,8 +40,9 @@ void uuos_set_last_error_(string& error) {
 }
 
 void uuos_on_error(const fc::exception_ptr& ex) {
-    s_last_error = ex->to_detail_string();
-};
+//    s_last_error = ex->to_detail_string();
+    s_last_error = fc::json::to_string(*ex, fc::time_point::maximum());
+}
 
 namespace eosio {
     protocol_feature_set initialize_protocol_features( const fc::path& p, bool populate_missing_builtins = true );
@@ -931,13 +932,15 @@ int n2s_(uint64_t n, string& s) {
     memset(temp, 0, 13);
     int ret = n2s(n, temp, 13);
     s = string(temp, ret);
+    return ret;
 }
 
-typedef void* (*fn_run_py_func)(void *func);
-void* run_py_function_(fn_run_py_func run_py_func, void *py_func) {
+typedef void* (*fn_run_py_func)(void *func, void *args);
+int run_py_function_(fn_run_py_func run_py_func, void *py_func, void *args, void **result) {
     try {
-        return run_py_func(py_func);
-    } FC_LOG_AND_DROP();
-    return nullptr;
+        *result = run_py_func(py_func, args);
+        return 1;
+    } CATCH_AND_LOG_EXCEPTION();
+    return 0;
 }
 

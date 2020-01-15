@@ -26,8 +26,8 @@ cdef extern from "native_object.hpp":
     ctypedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id)
     void register_on_accepted_block(fn_on_accepted_block cb)
 
-    ctypedef void* (*fn_run_py_func)(void *func)
-    void* run_py_function_(fn_run_py_func run_py_func, void *py_func)
+    ctypedef void* (*fn_run_py_func)(void *func, void *args)
+    int run_py_function_(fn_run_py_func run_py_func, void *py_func, void *args, void **result)
 
     uint64_t s2n_(string& s);
     int n2s_(uint64_t n, string& s);
@@ -982,15 +982,16 @@ def db_size_api_get(uint64_t ptr):
 cdef extern object run_py_code(object func):
     return func()
 
-cdef object run_py_func(object func):
-    return func()
+cdef object run_py_func(object func, object args):
+    return func(*args)
 
-def run_py_func_safe(func):
-    cdef void *ret
-    ret = run_py_function_(<fn_run_py_func>run_py_func, <void *>func)
-    if <uint64_t>ret == 0:
-        return None
-    return <object>ret
+def run_py_func_safe(func, args):
+    cdef void *result
+    cdef int ret
+    ret = run_py_function_(<fn_run_py_func>run_py_func, <void *>func, <void *>args, &result)
+    if not ret:
+        return ret, None
+    return ret, <object>result
 
 register_on_accepted_block(on_accepted_block)
 

@@ -5,8 +5,8 @@ using namespace std;
 
 extern "C" PyObject* PyInit__db(void);
 
-typedef void* (*fn_run_py_func)(void *func);
-void* run_py_function_(fn_run_py_func run_py_func, void *py_func);
+typedef void* (*fn_run_py_func)(void *func, void *args);
+int run_py_function_(fn_run_py_func run_py_func, void *py_func, void *args, void **result);
 
 typedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id);
 void register_on_accepted_block(fn_on_accepted_block cb);
