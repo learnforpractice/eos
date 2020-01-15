@@ -15,18 +15,8 @@ gc.set_debug(gc.DEBUG_STATS)
 
 logger = application.get_logger(__name__)
 
-import _uuos
-
-def safe_runner(func):
-    def runner(*args):
-        ret, result = _uuos.run_py_func_safe(func, args)
-        if not ret:
-            error = _uuos.uuos_get_last_error()
-            if error:
-                error = json.loads(error)
-            raise Exception(error)
-        return result
-    return runner
+from uuos import db
+from uuos.saferunner import safe_runner
 
 class ChainDBTest(ChainTest):
 
@@ -39,17 +29,16 @@ class ChainDBTest(ChainTest):
         symbol = b'\x04UUOS\x00\x00\x00'
         symbol = int.from_bytes(symbol, 'little')
         symbol >>= 8
-        itr = _uuos._db.find_i64('eosio.token', 'eosio', 'accounts', symbol)
+        itr = db.find_i64('eosio.token', 'eosio', 'accounts', symbol)
         logger.info(itr)
-        value = _uuos._db.get_i64(itr)
+        value = db.get_i64(itr)
         amount, symbol = struct.unpack('q8s', value)
         amount /=10000
         logger.info(f'{amount}, {symbol}')
     
-    @safe_runner
     def test_safe_runner(self):
         self.chain.set_apply_context()
-        _uuos._db.get_i64(1)
+        db.get_i64(1)
 
 class ChainDBTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):

@@ -15,6 +15,7 @@ __all__ = [
     'set_default_log_level',
     'pack_native_object',
     'unpack_native_object',
+    'db'
 ]
 
 import _uuos
@@ -88,3 +89,5 @@ def call_contract_off_chain(params):
     r = _uuos.uuos_call_contract_off_chain(params)
     return json.loads(r)
 
+def run_py_func_safe(func, args):
+    return _uuos.run_py_func_safe(func, args)
