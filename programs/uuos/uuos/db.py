@@ -6,8 +6,8 @@ from .saferunner import safe_runner
 def store_i64(*args):
     return _db.store_i64(*args)
 
-@safe_runner
 def update_i64(*args):
+    raise Exception('bad call')
     return _db.update_i64(*args)
 
 @safe_runner
@@ -18,8 +18,8 @@ def find_i64(*args):
 def get_i64(*args):
     return _db.get_i64(*args)
 
-@safe_runner
 def remove_i64(*args):
+    raise Exception('bad call')
     return _db.remove_i64(*args)
 
 @safe_runner
@@ -46,16 +46,16 @@ def end_i64(*args):
 def get_count(*args):
     return _db.get_count(*args)
 
-@safe_runner
 def idx64_store(*args):
+    raise Exception('bad call')
     return _db.idx64_store(*args)
 
-@safe_runner
 def idx64_update(*args):
+    raise Exception('bad call')
     return _db.idx64_update(*args)
 
-@safe_runner
 def idx64_remove(*args):
+    raise Exception('bad call')
     return _db.idx64_remove(*args)
 
 @safe_runner
@@ -86,16 +86,16 @@ def idx64_upperbound(*args):
 def idx64_end(*args):
     return _db.idx64_end(*args)
 
-@safe_runner
 def idx128_store(*args):
+    raise Exception('bad call')
     return _db.idx128_store(*args)
 
-@safe_runner
 def idx128_update(*args):
+    raise Exception('bad call')
     return _db.idx128_update(*args)
 
-@safe_runner
 def idx128_remove(*args):
+    raise Exception('bad call')
     return _db.idx128_remove(*args)
 
 @safe_runner
@@ -126,12 +126,12 @@ def idx128_upperbound(*args):
 def idx128_end(*args):
     return _db.idx128_end(*args)
 
-@safe_runner
 def idx256_update(*args):
+    raise Exception('bad call')
     return _db.idx256_update(*args)
 
-@safe_runner
 def idx256_remove(*args):
+    raise Exception('bad call')
     return _db.idx256_remove(*args)
 
 @safe_runner
@@ -162,16 +162,16 @@ def idx256_upperbound(*args):
 def idx256_end(*args):
     return _db.idx256_end(*args)
 
-@safe_runner
 def idx_double_store(*args):
+    raise Exception('bad call')
     return _db.idx_double_store(*args)
 
-@safe_runner
 def idx_double_update(*args):
+    raise Exception('bad call')
     return _db.idx_double_update(*args)
 
-@safe_runner
 def idx_double_remove(*args):
+    raise Exception('bad call')
     return _db.idx_double_remove(*args)
 
 @safe_runner
@@ -202,16 +202,16 @@ def idx_double_upperbound(*args):
 def idx_double_end(*args):
     return _db.idx_double_end(*args)
 
-@safe_runner
 def idx_long_double_store(*args):
+    raise Exception('bad call')
     return _db.idx_long_double_store(*args)
 
-@safe_runner
 def idx_long_double_update(*args):
+    raise Exception('bad call')
     return _db.idx_long_double_update(*args)
 
-@safe_runner
 def idx_long_double_remove(*args):
+    raise Exception('bad call')
     return _db.idx_long_double_remove(*args)
 
 @safe_runner
