@@ -18,6 +18,11 @@ logger = application.get_logger(__name__)
 from uuos import db
 from uuos.saferunner import safe_runner
 
+def apply_context(func):
+    def decorator(*args):
+        return func(*args)
+    return decorator
+
 class ChainDBTest(ChainTest):
 
     def __init__(self, uuos_network=False, jit=False):
@@ -25,20 +30,21 @@ class ChainDBTest(ChainTest):
 
     @safe_runner
     def test_chain_db_api(self):
-        self.chain.set_apply_context()
-        symbol = b'\x04UUOS\x00\x00\x00'
-        symbol = int.from_bytes(symbol, 'little')
-        symbol >>= 8
-        itr = db.find_i64('eosio.token', 'eosio', 'accounts', symbol)
-        logger.info(itr)
-        value = db.get_i64(itr)
-        amount, symbol = struct.unpack('q8s', value)
-        amount /=10000
-        logger.info(f'{amount}, {symbol}')
-    
+        with self.chain:
+            symbol = b'\x04UUOS\x00\x00\x00'
+            symbol = int.from_bytes(symbol, 'little')
+            symbol >>= 8
+            itr = db.find_i64('eosio.token', 'eosio', 'accounts', symbol)
+            logger.info(itr)
+            value = db.get_i64(itr)
+            amount, symbol = struct.unpack('q8s', value)
+            amount /=10000
+            logger.info(f'{amount}, {symbol}')
+
+    @apply_context
     def test_safe_runner(self):
-        self.chain.set_apply_context()
-        db.get_i64(1)
+        with self.chain:
+            db.get_i64(1)
 
 class ChainDBTestCase(unittest.TestCase):
     def __init__(self, testName, extra_args=[]):

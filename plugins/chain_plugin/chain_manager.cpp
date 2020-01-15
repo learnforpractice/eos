@@ -209,9 +209,9 @@ eosio::chain::controller& chain_get_controller(void *ptr) {
 }
 
 void chain_set_apply_context_(void *ptr) {
-        auto& chain = chain_get_controller(ptr);
-        auto& ctx = chain.get_context().get_apply_context();
-        set_apply_context(&ctx);
+    auto& chain = chain_get_controller(ptr);
+    auto& ctx = chain.get_context().get_apply_context();
+    set_apply_context(&ctx);
 }
 
 void chain_id_(void *ptr, string& chain_id) {
