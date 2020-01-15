@@ -23,6 +23,7 @@ class UUOSTester2(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainTest(True)
 
     @classmethod

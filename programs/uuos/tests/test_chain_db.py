@@ -39,11 +39,11 @@ class ChainDBTest(ChainTest):
             amount /=10000
             logger.info(f'{amount}, {symbol}')
 
-        logger.info(self.get_balance('eosio'))
-        logger.info(self.get_balance('uuos'))
-        self.transfer('eosio', 'uuos', 1.0)
-        logger.info(self.get_balance('eosio'))
-        logger.info(self.get_balance('uuos'))
+            logger.info(self.get_balance('eosio'))
+            logger.info(self.get_balance('uuos'))
+            self.transfer('eosio', 'uuos', 1.0)
+            logger.info(self.get_balance('eosio'))
+            logger.info(self.get_balance('uuos'))
 
         self.produce_block()
 
@@ -70,6 +70,43 @@ class ChainDBTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
+        cls.chain = ChainDBTest()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.chain:
+            cls.chain.free()
+            cls.chain = None
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+
+
+class ChainDBTestCase2(unittest.TestCase):
+    def __init__(self, testName, extra_args=[]):
+        logger.info('+++++++++++++++++++++ChainDBTestCase2++++++++++++++++')
+        super(ChainDBTestCase2, self).__init__(testName)
+        self.extra_args = extra_args
+
+    def test_chain_db_api(self):
+        logger.info('+++++++++++++db_test1+++++++++++++++')
+        ChainDBTestCase2.chain.test_chain_db_api()
+
+    def test_safe_runner(self):
+        try:
+            ChainDBTestCase2.chain.test_safe_runner()
+        except Exception as e:
+            logger.info(e.args)
+            assert e.args[0]['code'] == 3160003
+
+    @classmethod
+    def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainDBTest()
 
     @classmethod

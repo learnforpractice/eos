@@ -110,6 +110,10 @@ genesis_eos = {
 class Object():
     pass
 
+# print(os.getpid())
+# print('>>>')
+# input()
+
 class ChainTest(object):
 
     def __init__(self, uuos_network=False, jit=False):
@@ -261,19 +265,19 @@ class ChainTest(object):
         # logger.info(msg)
 
     def get_balance(self, account, token_account='eosio.token', token_name='UUOS'):
-        with self.chain:
-            symbol = b'\x04'+token_name.encode('utf8')
-            symbol = symbol.ljust(8, b'\x00')
-            symbol = int.from_bytes(symbol, 'little')
-            symbol >>= 8
-            itr = db.find_i64(token_account, account, 'accounts', symbol)
-            if itr < 0:
-                return 0.0
-            value = db.get_i64(itr)
-            amount, symbol = struct.unpack('q8s', value)
-            amount /=10000
-            # logger.info(f'{amount}, {symbol}')
-            return amount
+        # with self.chain:
+        #     symbol = b'\x04'+token_name.encode('utf8')
+        #     symbol = symbol.ljust(8, b'\x00')
+        #     symbol = int.from_bytes(symbol, 'little')
+        #     symbol >>= 8
+        #     itr = db.find_i64(token_account, account, 'accounts', symbol)
+        #     if itr < 0:
+        #         return 0.0
+        #     value = db.get_i64(itr)
+        #     amount, symbol = struct.unpack('q8s', value)
+        #     amount /=10000
+        #     # logger.info(f'{amount}, {symbol}')
+        #     return amount
 
         params = {
             'code': token_account,

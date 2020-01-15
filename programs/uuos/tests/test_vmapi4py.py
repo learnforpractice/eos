@@ -43,6 +43,7 @@ class VMAPITestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = VMAPITest(uuos_network=False, jit=False)
 
     @classmethod
@@ -69,6 +70,7 @@ class VMAPITestCaseJIT(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = VMAPITest(uuos_network=False, jit=True)
 
     @classmethod

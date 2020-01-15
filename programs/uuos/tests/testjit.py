@@ -23,6 +23,7 @@ class UUOSTester1(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainTest(uuos_network=False, jit=True)
 
     @classmethod
@@ -49,6 +50,7 @@ class UUOSTester2(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainTest(uuos_network=False, jit=False)
 
     @classmethod

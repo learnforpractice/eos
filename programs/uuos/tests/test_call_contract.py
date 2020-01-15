@@ -79,6 +79,7 @@ class CallContractTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = CallContractTest(uuos_network=False, jit=False)
 
     @classmethod
@@ -105,6 +106,7 @@ class CallContractTestCaseJIT(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = CallContractTest(uuos_network=False, jit=True)
 
     @classmethod

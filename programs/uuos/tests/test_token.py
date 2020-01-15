@@ -105,6 +105,7 @@ class TokenTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = TokenTest(uuos_network=False, jit=True)
 
     @classmethod

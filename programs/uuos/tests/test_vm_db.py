@@ -24,6 +24,7 @@ class DBTester1(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainTest()
 
     @classmethod
@@ -51,6 +52,7 @@ class DBTester2(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainTest()
 
     @classmethod
@@ -78,6 +80,7 @@ class DBTester3(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = ChainTest()
 
     @classmethod

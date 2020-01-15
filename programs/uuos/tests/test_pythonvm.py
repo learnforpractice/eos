@@ -63,6 +63,7 @@ class PythonVMTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = PythonVMTest(uuos_network=False, jit=False)
 
     @classmethod
@@ -88,6 +89,7 @@ class PythonVMTestCaseJIT(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        logger.info('++++++++++++setUpClass++++++++++++')
         cls.chain = PythonVMTest(uuos_network=False, jit=True)
 
     @classmethod
