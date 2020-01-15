@@ -24,6 +24,7 @@ void *chain_new_(string& config, string& _genesis, string& protocol_features_dir
 bool chain_startup_(void* ptr, bool initdb);
 void chain_free_(void *ptr);
 void chain_set_apply_context_(void *ptr);
+void chain_clear_apply_context_();
 
 void chain_id_(void *ptr, string& chain_id);
 int chain_abort_block_(void *ptr);

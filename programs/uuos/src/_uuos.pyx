@@ -43,6 +43,7 @@ cdef extern from "native_object.hpp":
     void chain_free_(void *ptr);
     int chain_abort_block_(void *ptr);
     void chain_set_apply_context_(void *ptr);
+    void chain_clear_apply_context_()
 
     void chain_get_global_properties_(void *ptr, string& result);
     void chain_get_dynamic_global_properties_(void *ptr, string& result);
@@ -251,6 +252,9 @@ def chain_new(string& config, string& genesis, string& protocol_features_dir, st
 
 def chain_set_apply_context(uint64_t ptr):
     chain_set_apply_context_(<void *>ptr);
+
+def chain_clear_apply_context():
+    chain_clear_apply_context_()
 
 def chain_startup(uint64_t ptr, bool initdb):
     return chain_startup_(<void*> ptr, initdb);

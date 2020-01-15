@@ -18,11 +18,14 @@ class Chain(object):
     def set_apply_context(self):
         return _uuos.chain_set_apply_context(self.ptr)
 
+    def clear_apply_context(self):
+        return _uuos.chain_clear_apply_context()
+
     def __enter__(self):
         self.set_apply_context()
 
     def __exit__(self, type, value, traceback):
-        pass
+        self.clear_apply_context()
 
     def __del__(self):
         pass

@@ -10,6 +10,7 @@ namespace eosio {
         void set_apply_context(apply_context *ctx);
     }
 }
+void chain_api_set_controller(controller *_ctrl);
 
 #define CATCH_AND_LOG_EXCEPTION()\
    catch ( const fc::exception& err ) {\
@@ -212,6 +213,12 @@ void chain_set_apply_context_(void *ptr) {
     auto& chain = chain_get_controller(ptr);
     auto& ctx = chain.get_context().get_apply_context();
     set_apply_context(&ctx);
+    chain_api_set_controller(&chain);
+}
+
+void chain_clear_apply_context_() {
+    set_apply_context(nullptr);
+    chain_api_set_controller(nullptr);
 }
 
 void chain_id_(void *ptr, string& chain_id) {
