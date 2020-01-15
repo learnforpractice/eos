@@ -983,7 +983,10 @@ cdef extern object run_py_code(object func):
     return func()
 
 cdef object run_py_func(object func, object args):
-    return func(*args)
+    try:
+        return func(*args)
+    except Exception as e:
+        return e
 
 def run_py_func_safe(func, args):
     cdef void *result
