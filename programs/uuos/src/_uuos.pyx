@@ -23,6 +23,9 @@ cdef extern from "uuos.hpp":
 cdef extern from "native_object.hpp":
     object PyInit__db();
 
+    void string_to_float128_(string& s, string& result)
+    void float128_to_string_(string& s, string& result)
+
     ctypedef int (*fn_on_accepted_block)(string& packed_block, uint32_t num, string& block_id)
     void register_on_accepted_block(fn_on_accepted_block cb)
 
@@ -981,6 +984,18 @@ def uuos_call_contract_off_chain(string& params):
 def db_size_api_get(uint64_t ptr):
     cdef string result
     db_size_api_get_(<void *>ptr, result)
+    return result
+
+def s2f(string& s):
+    cdef string result
+    string_to_float128_(s, result)
+    return PyBytes_FromStringAndSize(result.c_str(), result.size())
+
+def f2s(string& s):
+    cdef string result
+    if s.size() != 16:
+        raise Exception('bad size')
+    float128_to_string_(s, result)
     return result
 
 cdef extern object run_py_code(object func):

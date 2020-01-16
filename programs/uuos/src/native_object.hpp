@@ -3,6 +3,9 @@
 #include <Python.h>
 using namespace std;
 
+void string_to_float128_(string& s, string& result);
+void float128_to_string_(string& s, string& result);
+
 extern "C" PyObject* PyInit__db(void);
 
 typedef void* (*fn_run_py_func)(void *func, void *args);
