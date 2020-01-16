@@ -18,7 +18,20 @@ namespace eosio { namespace chain {
       fc::unsigned_int                abi_sequence  = 0; ///< total number of setabis
       fc::optional<std::vector<char>> return_value;      ///< return value of the action
 
-      digest_type digest()const { return digest_type::hash(*this); }
+      digest_type digest()const {
+         digest_type::encoder e;
+         fc::raw::pack(e, receiver);
+         fc::raw::pack(e, act_digest);
+         fc::raw::pack(e, global_sequence);
+         fc::raw::pack(e, recv_sequence);
+         fc::raw::pack(e, auth_sequence);
+         fc::raw::pack(e, code_sequence);
+         fc::raw::pack(e, abi_sequence);
+         if(return_value)
+            fc::raw::pack(e, *return_value);
+         return e.result();
+      }
+
    };
 
 } }  /// namespace eosio::chain
