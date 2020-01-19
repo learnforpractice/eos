@@ -39,9 +39,7 @@ namespace eosio::chain {
       return n;
    }
 
-#define N(X) eosio::chain::string_to_name(#X)
-#define NN(X) eosio::chain::string_to_name(X)
-
+   /// Immutable except for fc::from_variant.
    struct name {
    private:
 
@@ -95,6 +93,7 @@ namespace eosio::chain {
    }
 
 #define N(X) eosio::chain::string_to_name(#X)
+#define NN(X) eosio::chain::string_to_name(X)
 
 } // eosio::chain
 
