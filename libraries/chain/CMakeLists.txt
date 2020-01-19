@@ -87,7 +87,10 @@ add_library( eosio_chain
               snapshot.cpp
 
              webassembly/wabt.cpp
+<<<<<<< HEAD
 #             wasm_eosio_constraints.cpp
+=======
+>>>>>>> eosio/master
              ${CHAIN_EOSVMOC_SOURCES}
              ${CHAIN_EOSVM_SOURCES}
 
@@ -108,10 +111,13 @@ add_library( eosio_chain
              genesis_intrinsics.cpp
              whitelisted_intrinsics.cpp
              thread_utils.cpp
+<<<<<<< HEAD
              chain_api/chain_api.cpp
              chain_api/chain_exceptions.cpp
              db_api/db_api.cpp
              db_api/db_interface.cpp
+=======
+>>>>>>> eosio/master
              platform_timer_accuracy.cpp
              ${PLATFORM_TIMER_IMPL}
              ${HEADERS}
@@ -120,6 +126,7 @@ add_library( eosio_chain
 set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
+<<<<<<< HEAD
                        softfloat builtins wabt vm_api chain_api vm_manager
                        native_contracts
                        wasm2c_contracts
@@ -130,6 +137,14 @@ target_include_directories( eosio_chain
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
                                    "${CMAKE_SOURCE_DIR}/libraries/eos-vm/include"
+=======
+                       softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS}
+                     )
+target_include_directories( eosio_chain
+                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
+>>>>>>> eosio/master
                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
                                    "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager"
@@ -146,6 +161,21 @@ target_include_directories( eosio_chain
                         )
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain aleth)
+
+if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
+   target_link_libraries(eosio_chain "-Wl,-wrap=main")
+endif()
+
+foreach(RUNTIME ${EOSIO_WASM_RUNTIMES})
+   string(TOUPPER "${RUNTIME}" RUNTIMEUC)
+   string(REPLACE "-" "_" RUNTIMEUC ${RUNTIMEUC})
+   target_compile_definitions(eosio_chain PUBLIC "EOSIO_${RUNTIMEUC}_RUNTIME_ENABLED")
+endforeach()
+
+if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
+   message(WARNING "EOS VM OC Developer Options are enabled; these are NOT supported")
+   target_compile_definitions(eosio_chain PUBLIC EOSIO_EOS_VM_OC_DEVELOPER)
+endif()
 
 if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
    target_link_libraries(eosio_chain "-Wl,-wrap=main")

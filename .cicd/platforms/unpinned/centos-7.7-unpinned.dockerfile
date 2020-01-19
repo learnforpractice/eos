@@ -7,7 +7,15 @@ RUN yum update -y && \
     yum --enablerepo=extras install -y devtoolset-8 && \
     yum --enablerepo=extras install -y which git autoconf automake libtool make bzip2 doxygen \
     graphviz bzip2-devel openssl-devel gmp-devel ocaml libicu-devel \
+<<<<<<< HEAD
     python python-devel rh-python36 file libusbx-devel \
+=======
+<<<<<<< HEAD:.cicd/platforms/unpinned/centos-7.6-unpinned.dockerfile
+    python python-devel rh-python36 file libusbx-devel \
+=======
+    python python-devel rh-python36 gettext-devel file libusbx-devel \
+>>>>>>> eosio/master:.cicd/platforms/unpinned/centos-7.7-unpinned.dockerfile
+>>>>>>> eosio/master
     libcurl-devel patch vim-common jq llvm-toolset-7.0-llvm-devel llvm-toolset-7.0-llvm-static
 # build cmake.
 RUN curl -LO https://cmake.org/files/v3.13/cmake-3.13.2.tar.gz && \

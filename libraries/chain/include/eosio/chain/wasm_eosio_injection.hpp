@@ -677,10 +677,13 @@ namespace eosio { namespace chain { namespace wasm_injections {
    };
 
    struct pre_op_injectors : wasm_ops::op_types<pass_injector> {
+<<<<<<< HEAD
 #ifndef WASM_INJECTOR_FOR_PYTHON_VM
       using call_t            = wasm_ops::call                    <call_depth_check_and_insert_checktime>;
       using call_indirect_t   = wasm_ops::call_indirect           <call_depth_check_and_insert_checktime>;
 #endif      
+=======
+>>>>>>> eosio/master
       // float binops 
       using f32_add_t         = wasm_ops::f32_add                 <f32_binop_injector<wasm_ops::f32_add_code>>;
       using f32_sub_t         = wasm_ops::f32_sub                 <f32_binop_injector<wasm_ops::f32_sub_code>>;
@@ -754,10 +757,15 @@ namespace eosio { namespace chain { namespace wasm_injections {
    }; // pre_op_injectors
 
    struct pre_op_full_injectors : pre_op_injectors {
+<<<<<<< HEAD
 #ifndef WASM_INJECTOR_FOR_PYTHON_VM
       using call_t            = wasm_ops::call                    <call_depth_check_and_insert_checktime>;
       using call_indirect_t   = wasm_ops::call_indirect           <call_depth_check_and_insert_checktime>;
 #endif
+=======
+      using call_t            = wasm_ops::call                    <call_depth_check_and_insert_checktime>;
+      using call_indirect_t   = wasm_ops::call_indirect           <call_depth_check_and_insert_checktime>;
+>>>>>>> eosio/master
    };
 
    struct post_op_injectors : wasm_ops::op_types<pass_injector> {
@@ -826,13 +834,21 @@ namespace eosio { namespace chain { namespace wasm_injections {
             for ( auto& fd : _module->functions.defs ) {
                wasm_ops::EOSIO_OperatorDecoderStream<std::conditional_t<full_injection, post_op_full_injectors, post_op_injectors>> post_decoder(fd.code);
                wasm_ops::instruction_stream post_code(fd.code.size()*2);
+<<<<<<< HEAD
 #ifndef WASM_INJECTOR_FOR_PYTHON_VM
+=======
+
+>>>>>>> eosio/master
                if constexpr (full_injection) {
                   wasm_ops::op_types<>::call_t chktm;
                   chktm.field = injector_utils::injected_index_mapping.find(checktime_injection::chktm_idx)->second;
                   chktm.pack(&post_code);
                }
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> eosio/master
                while ( post_decoder ) {
                   auto op = post_decoder.decodeOp();
                   if (op->is_post()) {

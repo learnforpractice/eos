@@ -208,6 +208,7 @@ namespace eosio {
             if (bypass_filter) {
               pass_on = true;
             }
+<<<<<<< HEAD
 
             do {
                if (filter_transfer) {
@@ -236,6 +237,22 @@ namespace eosio {
                   }
                }
             } while (false);
+=======
+            if (filter_on.find({ act.receiver, {}, {} }) != filter_on.end()) {
+              pass_on = true;
+            }
+            if (filter_on.find({ act.receiver, act.act.name, {} }) != filter_on.end()) {
+              pass_on = true;
+            }
+            for (const auto& a : act.act.authorization) {
+              if (filter_on.find({ act.receiver, {}, a.actor }) != filter_on.end()) {
+                pass_on = true;
+              }
+              if (filter_on.find({ act.receiver, act.act.name, a.actor }) != filter_on.end()) {
+                pass_on = true;
+              }
+            }
+>>>>>>> eosio/master
 
             if (!pass_on) {  return false;  }
 
@@ -418,6 +435,7 @@ namespace eosio {
                EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-out", ("s", s));
                filter_entry fe{eosio::chain::name(v[0]), eosio::chain::name(v[1]), eosio::chain::name(v[2])};
                EOS_ASSERT( fe.receiver.to_uint64_t(), fc::invalid_arg_exception,
+<<<<<<< HEAD
                            "Invalid value ${s} for --filter-out", ("s", s));
                my->filter_out.insert( fe );
             }
@@ -479,6 +497,8 @@ namespace eosio {
                EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-out", ("s", s));
                filter_entry fe{eosio::chain::name(v[0]), eosio::chain::name(v[1]), eosio::chain::name(v[2])};
                EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
+=======
+>>>>>>> eosio/master
                            "Invalid value ${s} for --filter-out", ("s", s));
                my->filter_out.insert( fe );
             }

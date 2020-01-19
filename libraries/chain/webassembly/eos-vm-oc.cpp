@@ -30,6 +30,7 @@ class eosvmoc_instantiated_module : public wasm_instantiated_module_interface {
          _eosvmoc_runtime.exec.execute(*cd, _eosvmoc_runtime.mem, context);
       }
 
+<<<<<<< HEAD
       void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) override {
          const code_descriptor* const cd = _eosvmoc_runtime.cc.get_descriptor_for_code_sync(_code_hash, _vm_version);
          EOS_ASSERT(cd, wasm_execution_error, "EOS VM OC instantiation failed");
@@ -38,6 +39,8 @@ class eosvmoc_instantiated_module : public wasm_instantiated_module_interface {
       }
 
 
+=======
+>>>>>>> eosio/master
       const digest_type              _code_hash;
       const uint8_t                  _vm_version;
       eosvmoc_runtime&               _eosvmoc_runtime;

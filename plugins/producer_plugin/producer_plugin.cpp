@@ -6,7 +6,10 @@
 #include <eosio/chain/transaction_object.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/unapplied_transaction_queue.hpp>
+<<<<<<< HEAD
 #include <eosio/http_plugin/http_plugin.hpp>
+=======
+>>>>>>> eosio/master
 
 #include <fc/io/json.hpp>
 #include <fc/log/logger_config.hpp>
@@ -227,8 +230,12 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
       std::vector<chain::digest_type>                           _protocol_features_to_activate;
       bool                                                      _protocol_features_signaled = false; // to mark whether it has been signaled in start_block
 
+<<<<<<< HEAD
       producer_plugin* _self = nullptr;
       fc::optional<fake_chain_plugin> chain_plug;
+=======
+      chain_plugin* chain_plug = nullptr;
+>>>>>>> eosio/master
 
       incoming::channels::block::channel_type::handle         _incoming_block_subscription;
       incoming::channels::transaction::channel_type::handle   _incoming_transaction_subscription;
@@ -432,6 +439,7 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
 
       public:
          void set_max_incoming_transaction_queue_size( uint64_t v ) { max_incoming_transaction_queue_size = v; }
+<<<<<<< HEAD
 
          void add( const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next ) {
             add_size( trx );
@@ -456,6 +464,32 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
          size_t size()const { return _incoming_transactions.size(); }
       };
 
+=======
+
+         void add( const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next ) {
+            add_size( trx );
+            _incoming_transactions.emplace_back( trx, persist_until_expired, std::move( next ) );
+         }
+
+         void add_front( const transaction_metadata_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next ) {
+            add_size( trx );
+            _incoming_transactions.emplace_front( trx, persist_until_expired, std::move( next ) );
+         }
+
+         auto pop_front() {
+            EOS_ASSERT( !_incoming_transactions.empty(), producer_exception, "logic error, front() called on empty incoming_transactions" );
+            auto intrx = _incoming_transactions.front();
+            _incoming_transactions.pop_front();
+            const transaction_metadata_ptr& trx = std::get<0>( intrx );
+            size_in_bytes -= calc_size( trx );
+            return intrx;
+         }
+
+         bool empty()const { return _incoming_transactions.empty(); }
+         size_t size()const { return _incoming_transactions.size(); }
+      };
+
+>>>>>>> eosio/master
       incoming_transaction_queue _pending_incoming_transactions;
 
       void on_incoming_transaction_async(const packed_transaction_ptr& trx, bool persist_until_expired, next_function<transaction_trace_ptr> next) {

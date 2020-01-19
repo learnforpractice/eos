@@ -131,8 +131,13 @@ public:
    fc::variants get_supported_protocol_features( const get_supported_protocol_features_params& params ) const;
 
    get_account_ram_corrections_result  get_account_ram_corrections( const get_account_ram_corrections_params& params ) const;
+<<<<<<< HEAD
    
 //private:
+=======
+
+private:
+>>>>>>> eosio/master
    std::shared_ptr<class producer_plugin_impl> my;
 };
 

@@ -150,6 +150,7 @@ namespace eosio { namespace testing {
      return control->head_block_id() == other.control->head_block_id();
    }
 
+<<<<<<< HEAD
    void base_tester::init(const setup_policy policy, db_read_mode read_mode, bool uuos_mainnet, string genesis_accounts_file) {
       auto def_conf = default_config(tempdir);
       def_conf.first.read_mode = read_mode;
@@ -159,6 +160,12 @@ namespace eosio { namespace testing {
       }
       cfg.uuos_mainnet = uuos_mainnet;
       cfg.genesis_accounts_file = genesis_accounts_file;
+=======
+   void base_tester::init(const setup_policy policy, db_read_mode read_mode) {
+      auto def_conf = default_config(tempdir);
+      def_conf.first.read_mode = read_mode;
+      cfg = def_conf.first;
+>>>>>>> eosio/master
 
       open(def_conf.second);
       execute_setup_policy(policy);
@@ -1105,6 +1112,7 @@ namespace eosio { namespace testing {
       for( const auto& e: schedule ) {
          schedule_variant.emplace_back(e.get_abi_variant());
       }
+<<<<<<< HEAD
 
       return push_action( config::system_account_name, N(setprods), config::system_account_name,
                           fc::mutable_variant_object()("schedule", schedule_variant));
@@ -1128,6 +1136,31 @@ namespace eosio { namespace testing {
 
    }
 
+=======
+
+      return push_action( config::system_account_name, N(setprods), config::system_account_name,
+                          fc::mutable_variant_object()("schedule", schedule_variant));
+
+   }
+
+   transaction_trace_ptr base_tester::set_producers_legacy(const vector<account_name>& producer_names) {
+      auto schedule = get_producer_authorities( producer_names );
+      // down-rank to old version
+
+      vector<legacy::producer_key> legacy_keys;
+      legacy_keys.reserve(schedule.size());
+      for (const auto &p : schedule) {
+         p.authority.visit([&legacy_keys, &p](const auto& auth){
+            legacy_keys.emplace_back(legacy::producer_key{p.producer_name, auth.keys.front().key});
+         });
+      }
+
+      return push_action( config::system_account_name, N(setprods), config::system_account_name,
+                          fc::mutable_variant_object()("schedule", legacy_keys));
+
+   }
+
+>>>>>>> eosio/master
 
    const table_id_object* base_tester::find_table( name code, name scope, name table ) {
       auto tid = control->db().find<table_id_object, by_code_scope_table>(boost::make_tuple(code, scope, table));

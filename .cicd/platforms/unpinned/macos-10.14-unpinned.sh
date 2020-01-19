@@ -30,4 +30,8 @@ cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=
 make -j $(getconf _NPROCESSORS_ONLN) VERBOSE=1
 sudo make install
 cd ../..
+<<<<<<< HEAD
 rm -f mongo-cxx-driver-r3.4.0.tar.gz 
+=======
+rm -f mongo-cxx-driver-r3.4.0.tar.gz 
+>>>>>>> eosio/master

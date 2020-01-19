@@ -1739,6 +1739,7 @@ BOOST_AUTO_TEST_CASE( wtmsig_block_signing_inflight_extension_test ) { try {
 
 } FC_LOG_AND_RETHROW() }
 
+<<<<<<< HEAD
 BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
    tester c( setup_policy::preactivate_feature_and_new_bios );
 
@@ -1809,4 +1810,6 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
 }
 
 
+=======
+>>>>>>> eosio/master
 BOOST_AUTO_TEST_SUITE_END()

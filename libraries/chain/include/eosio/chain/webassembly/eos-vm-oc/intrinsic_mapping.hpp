@@ -248,6 +248,7 @@ constexpr auto intrinsic_table = boost::hana::make_tuple(
    "eosio_injection._eosio_i32_to_f64"_s,
    "eosio_injection._eosio_i64_to_f64"_s,
    "eosio_injection._eosio_ui32_to_f64"_s,
+<<<<<<< HEAD
    "eosio_injection._eosio_ui64_to_f64"_s,
 
    "env.evm_execute"_s,
@@ -276,6 +277,9 @@ constexpr auto intrinsic_table = boost::hana::make_tuple(
    "env.call_contract_get_results"_s,
    "env.to_base58"_s,
    "env.from_base58"_s
+=======
+   "eosio_injection._eosio_ui64_to_f64"_s
+>>>>>>> eosio/master
 );
 
 }}}

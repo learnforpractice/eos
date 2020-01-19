@@ -25,7 +25,10 @@
 #include <eosio/chain/chain_snapshot.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/platform_timer.hpp>
+<<<<<<< HEAD
 #include <eosio/chain/python_interface.hpp>
+=======
+>>>>>>> eosio/master
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -33,11 +36,16 @@
 #include <fc/scoped_exit.hpp>
 #include <fc/variant_object.hpp>
 
+<<<<<<< HEAD
 #include "db_interface.hpp"
 #include <new>
 
 void chain_api_set_controller(eosio::chain::controller *_ctrl);
 
+=======
+#include <new>
+
+>>>>>>> eosio/master
 namespace eosio { namespace chain {
 
 void apply_eosio_addaccounts(apply_context&);
@@ -254,7 +262,10 @@ struct controller_impl {
    uint32_t                       snapshot_head_block = 0;
    named_thread_pool              thread_pool;
    platform_timer                 timer;
+<<<<<<< HEAD
    std::shared_ptr<transaction_context> ctx;
+=======
+>>>>>>> eosio/master
 #if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
    vm::wasm_allocator                 wasm_alloc;
 #endif
@@ -340,8 +351,11 @@ struct controller_impl {
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+<<<<<<< HEAD
     pythonif( db ),
     dbif( db ), 
+=======
+>>>>>>> eosio/master
     resource_limits( db ),
     authorization( s, db ),
     protocol_features( std::move(pfs) ),
@@ -359,12 +373,17 @@ struct controller_impl {
       set_activation_handler<builtin_protocol_feature_t::preactivate_feature>();
       set_activation_handler<builtin_protocol_feature_t::replace_deferred>();
       set_activation_handler<builtin_protocol_feature_t::get_sender>();
+<<<<<<< HEAD
       set_activation_handler<builtin_protocol_feature_t::pythonvm>();
       set_activation_handler<builtin_protocol_feature_t::ethereum_vm>();
 
       set_activation_handler<builtin_protocol_feature_t::webauthn_key>();
       set_activation_handler<builtin_protocol_feature_t::wtmsig_block_signatures>();
       set_activation_handler<builtin_protocol_feature_t::action_return_value>();
+=======
+      set_activation_handler<builtin_protocol_feature_t::webauthn_key>();
+      set_activation_handler<builtin_protocol_feature_t::wtmsig_block_signatures>();
+>>>>>>> eosio/master
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
@@ -1131,6 +1150,7 @@ struct controller_impl {
                                                                              majority_permission.id,
                                                                              active_producers_authority,
                                                                              genesis.initial_timestamp );
+<<<<<<< HEAD
       if (conf.uuos_mainnet) {
          string s = conf.genesis_accounts_file.string();
          if (!s.empty()) {
@@ -1139,6 +1159,8 @@ struct controller_impl {
             dbif.init_accounts();
          }
       }
+=======
+>>>>>>> eosio/master
    }
 
    // The returned scoped_exit should not exceed the lifetime of the pending which existed when make_block_restore_point was called.
@@ -3424,6 +3446,7 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
 }
 
 template<>
+<<<<<<< HEAD
 void controller_impl::on_activation<builtin_protocol_feature_t::pythonvm>() {
 #if 0
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
@@ -3440,6 +3463,8 @@ void controller_impl::on_activation<builtin_protocol_feature_t::ethereum_vm>() {
 }
 
 template<>
+=======
+>>>>>>> eosio/master
 void controller_impl::on_activation<builtin_protocol_feature_t::webauthn_key>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
       ps.num_supported_key_types = 3;
@@ -3453,12 +3478,16 @@ void controller_impl::on_activation<builtin_protocol_feature_t::wtmsig_block_sig
    } );
 }
 
+<<<<<<< HEAD
 template<>
 void controller_impl::on_activation<builtin_protocol_feature_t::action_return_value>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
       add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "set_action_return_value" );
    } );
 }
+=======
+
+>>>>>>> eosio/master
 
 /// End of protocol feature activation handlers
 

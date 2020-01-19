@@ -8,13 +8,19 @@ export PLATFORMS_JSON_ARRAY='[]'
 BUILDKITE_BUILD_AGENT_QUEUE='automation-eks-eos-builder-fleet'
 BUILDKITE_TEST_AGENT_QUEUE='automation-eks-eos-tester-fleet'
 [[ -z "$ROUNDS" ]] && export ROUNDS='1'
+<<<<<<< HEAD
 DISABLE_CONCURRENCY=${DISABLE_CONCURRENCY:-false}
+=======
+>>>>>>> eosio/master
 LINUX_CONCURRENCY='8'
 MAC_CONCURRENCY='2'
 LINUX_CONCURRENCY_GROUP='eos-scheduled-build'
 MAC_CONCURRENCY_GROUP='eos-scheduled-build-mac'
+<<<<<<< HEAD
 BUILDKITE_BUILD_AGENT_QUEUE='automation-eks-eos-builder-fleet'
 BUILDKITE_TEST_AGENT_QUEUE='automation-eks-eos-tester-fleet'
+=======
+>>>>>>> eosio/master
 
 # Determine if it's a forked PR and make sure to add git fetch so we don't have to git clone the forked repo's url
 if [[ $BUILDKITE_BRANCH =~ ^pull/[0-9]+/head: ]]; then
@@ -123,10 +129,14 @@ EOF
       - "cd eos && tar -pczf build.tar.gz build && buildkite-agent artifact upload build.tar.gz"
     plugins:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - chef/anka#v0.5.5:
 =======
       - EOSIO/anka#v0.5.7:
 >>>>>>> master-uuos
+=======
+      - EOSIO/anka#v0.5.7:
+>>>>>>> eosio/master
           no-volume: true
           inherit-environment-vars: true
           vm-name: ${MOJAVE_ANKA_TEMPLATE_NAME}
@@ -140,10 +150,14 @@ EOF
             - 'registry_1'
             - 'registry_2'
 <<<<<<< HEAD
+<<<<<<< HEAD
           pre-execute-sleep: 10
 =======
           pre-execute-ping-sleep: "8.8.8.8"
 >>>>>>> master-uuos
+=======
+          pre-execute-ping-sleep: "8.8.8.8"
+>>>>>>> eosio/master
           pre-commands: 
             - "git clone git@github.com:EOSIO/mac-anka-fleet.git && cd mac-anka-fleet && . ./ensure-tag.bash -u 12 -r 25G -a '-n'"
     env:
@@ -160,7 +174,11 @@ EOF
     skip: \${SKIP_$(echo "$PLATFORM_JSON" | jq -r .PLATFORM_NAME_UPCASE)_$(echo "$PLATFORM_JSON" | jq -r .VERSION_MAJOR)$(echo "$PLATFORM_JSON" | jq -r .VERSION_MINOR)}${SKIP_BUILD}
 EOF
     fi
+<<<<<<< HEAD
     if [ "$BUILDKITE_SOURCE" = "schedule" ] && [[ $DISABLE_CONCURRENCY != true ]]; then
+=======
+    if [ "$BUILDKITE_SOURCE" = "schedule" ]; then
+>>>>>>> eosio/master
         cat <<EOF
     concurrency: ${CONCURRENCY}
     concurrency_group: ${CONCURRENCY_GROUP}
@@ -232,10 +250,14 @@ EOF
             - 'registry_1'
             - 'registry_2'
 <<<<<<< HEAD
+<<<<<<< HEAD
           pre-execute-sleep: 10
 =======
           pre-execute-ping-sleep: "8.8.8.8"
 >>>>>>> master-uuos
+=======
+          pre-execute-ping-sleep: "8.8.8.8"
+>>>>>>> eosio/master
     agents: "queue=mac-anka-node-fleet"
     retry:
       manual:
@@ -245,6 +267,7 @@ EOF
 
 EOF
         fi
+<<<<<<< HEAD
         if [ "$BUILDKITE_SOURCE" = "schedule" ] && [[ $DISABLE_CONCURRENCY != true ]]; then
             cat <<EOF
     concurrency: ${CONCURRENCY}
@@ -304,6 +327,9 @@ EOF
 EOF
         fi
         if [ "$BUILDKITE_SOURCE" = "schedule" ] && [[ $DISABLE_CONCURRENCY != true ]]; then
+=======
+        if [ "$BUILDKITE_SOURCE" = "schedule" ]; then
+>>>>>>> eosio/master
             cat <<EOF
     concurrency: ${CONCURRENCY}
     concurrency_group: ${CONCURRENCY_GROUP}
@@ -345,10 +371,14 @@ EOF
       - "cd eos && ./.cicd/test.sh scripts/wasm-spec-test.sh"
     plugins:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - chef/anka#v0.5.4:
 =======
       - EOSIO/anka#v0.5.7:
 >>>>>>> master-uuos
+=======
+      - EOSIO/anka#v0.5.7:
+>>>>>>> eosio/master
           no-volume: true
           inherit-environment-vars: true
           vm-name: ${MOJAVE_ANKA_TEMPLATE_NAME}
@@ -360,10 +390,14 @@ EOF
             - 'registry_1'
             - 'registry_2'
 <<<<<<< HEAD
+<<<<<<< HEAD
           pre-execute-sleep: 10
 =======
           pre-execute-ping-sleep: "8.8.8.8"
 >>>>>>> master-uuos
+=======
+          pre-execute-ping-sleep: "8.8.8.8"
+>>>>>>> eosio/master
     agents: "queue=mac-anka-node-fleet"
     retry:
       manual:
@@ -435,10 +469,14 @@ EOF
             - 'registry_1'
             - 'registry_2'
 <<<<<<< HEAD
+<<<<<<< HEAD
           pre-execute-sleep: 10
 =======
           pre-execute-ping-sleep: "8.8.8.8"
 >>>>>>> master-uuos
+=======
+          pre-execute-ping-sleep: "8.8.8.8"
+>>>>>>> eosio/master
     agents: "queue=mac-anka-node-fleet"
     retry:
       manual:
@@ -447,7 +485,11 @@ EOF
     skip: \${SKIP_$(echo "$PLATFORM_JSON" | jq -r .PLATFORM_NAME_UPCASE)_$(echo "$PLATFORM_JSON" | jq -r .VERSION_MAJOR)$(echo "$PLATFORM_JSON" | jq -r .VERSION_MINOR)}${SKIP_SERIAL_TESTS}
 EOF
             fi
+<<<<<<< HEAD
             if [ "$BUILDKITE_SOURCE" = "schedule" ] && [[ $DISABLE_CONCURRENCY != true ]]; then
+=======
+            if [ "$BUILDKITE_SOURCE" = "schedule" ]; then
+>>>>>>> eosio/master
                 cat <<EOF
     concurrency: ${CONCURRENCY}
     concurrency_group: ${CONCURRENCY_GROUP}
@@ -511,10 +553,14 @@ EOF
             - 'registry_1'
             - 'registry_2'
 <<<<<<< HEAD
+<<<<<<< HEAD
           pre-execute-sleep: 10
 =======
           pre-execute-ping-sleep: "8.8.8.8"
 >>>>>>> master-uuos
+=======
+          pre-execute-ping-sleep: "8.8.8.8"
+>>>>>>> eosio/master
     agents: "queue=mac-anka-node-fleet"
     retry:
       manual:
@@ -523,7 +569,11 @@ EOF
     skip: \${SKIP_$(echo "$PLATFORM_JSON" | jq -r .PLATFORM_NAME_UPCASE)_$(echo "$PLATFORM_JSON" | jq -r .VERSION_MAJOR)$(echo "$PLATFORM_JSON" | jq -r .VERSION_MINOR)}${SKIP_LONG_RUNNING_TESTS:-true}
 EOF
             fi
+<<<<<<< HEAD
             if [ "$BUILDKITE_SOURCE" = "schedule" ] && [[ $DISABLE_CONCURRENCY != true ]]; then
+=======
+            if [ "$BUILDKITE_SOURCE" = "schedule" ]; then
+>>>>>>> eosio/master
                 cat <<EOF
     concurrency: ${CONCURRENCY}
     concurrency_group: ${CONCURRENCY_GROUP}
@@ -720,10 +770,14 @@ cat <<EOF
             - 'registry_1'
             - 'registry_2'
 <<<<<<< HEAD
+<<<<<<< HEAD
           pre-execute-sleep: 10
 =======
           pre-execute-ping-sleep: "8.8.8.8"
 >>>>>>> master-uuos
+=======
+          pre-execute-ping-sleep: "8.8.8.8"
+>>>>>>> eosio/master
     agents:
       - "queue=mac-anka-node-fleet"
     timeout: ${TIMEOUT:-60}

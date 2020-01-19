@@ -48,8 +48,12 @@ namespace eosio { namespace chain {
                                              const signed_transaction& t,
                                              const transaction_id_type& trx_id,
                                              transaction_checktime_timer&& tmr,
+<<<<<<< HEAD
                                              fc::time_point s,
                                              bool read_only )
+=======
+                                             fc::time_point s )
+>>>>>>> eosio/master
    :control(c)
    ,trx(t)
    ,id(trx_id)
