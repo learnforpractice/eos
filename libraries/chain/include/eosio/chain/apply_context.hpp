@@ -524,7 +524,6 @@ class apply_context {
       int  db_lowerbound_i64( name code, name scope, name table, uint64_t id );
       int  db_upperbound_i64( name code, name scope, name table, uint64_t id );
       int  db_end_i64( name code, name scope, name table );
-<<<<<<< HEAD
 
       int  db_store_i256( uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size );
       int  db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size );
@@ -541,8 +540,6 @@ class apply_context {
       int db_next_i256( int iterator, key256_t& primary );
 
       int db_end_i256( uint64_t code, uint64_t scope, uint64_t table );
-=======
->>>>>>> eosio/master
 
    private:
 

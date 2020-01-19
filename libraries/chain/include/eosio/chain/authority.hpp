@@ -306,8 +306,4 @@ FC_REFLECT(eosio::chain::wait_weight, (wait_sec)(weight) )
 FC_REFLECT(eosio::chain::authority, (threshold)(keys)(accounts)(waits) )
 FC_REFLECT(eosio::chain::shared_key_weight, (key)(weight) )
 FC_REFLECT(eosio::chain::shared_authority, (threshold)(keys)(accounts)(waits) )
-<<<<<<< HEAD
 FC_REFLECT(eosio::chain::shared_public_key, (pubkey))
-=======
-FC_REFLECT(eosio::chain::shared_public_key, (pubkey))
->>>>>>> eosio/master

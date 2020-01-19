@@ -2678,11 +2678,7 @@ namespace eosio {
    void connection::handle_message( const go_away_message& msg ) {
       peer_wlog( this, "received go_away_message, reason = ${r}", ("r", reason_str( msg.reason )) );
       bool retry = no_retry == no_reason; // if no previous go away message
-<<<<<<< HEAD
       no_retry = (eosio::go_away_reason)msg.reason;
-=======
-      no_retry = msg.reason;
->>>>>>> eosio/master
       if( msg.reason == duplicate ) {
          std::lock_guard<std::mutex> g_conn( conn_mtx );
          conn_node_id = msg.node_id;

@@ -29,14 +29,11 @@ if( GPERFTOOLS_FOUND )
    list( APPEND PLATFORM_SPECIFIC_LIBS tcmalloc )
 endif()
 
-<<<<<<< HEAD
 if (APPLE)
 else()
   list( APPEND PLATFORM_SPECIFIC_LIBS util )
 endif()
 
-=======
->>>>>>> eosio/master
 add_subdirectory(contracts)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/contracts.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/include/contracts.hpp ESCAPE_QUOTES)
 

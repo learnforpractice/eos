@@ -76,7 +76,6 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          _runtime->_bkend = nullptr;
       }
 
-<<<<<<< HEAD
       void call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) override {
          _instantiated_module->set_wasm_allocator(&context.control.get_wasm_allocator());
          _runtime->_bkend = _instantiated_module.get();
@@ -107,8 +106,6 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
       }
 
 
-=======
->>>>>>> eosio/master
    private:
       eos_vm_runtime<Impl>*            _runtime;
       std::unique_ptr<backend_t> _instantiated_module;

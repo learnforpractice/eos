@@ -33,10 +33,7 @@ struct code_descriptor {
    size_t code_begin;
    eosvmoc_optional_offset_or_import_t start;
    unsigned apply_offset;
-<<<<<<< HEAD
    unsigned call_offset;
-=======
->>>>>>> eosio/master
    int starting_memory_pages;
    size_t initdata_begin;
    unsigned initdata_size;
@@ -55,10 +52,6 @@ enum eosvmoc_exitcode : int {
 FC_REFLECT(eosio::chain::eosvmoc::no_offset, );
 FC_REFLECT(eosio::chain::eosvmoc::code_offset, (offset));
 FC_REFLECT(eosio::chain::eosvmoc::intrinsic_ordinal, (ordinal));
-<<<<<<< HEAD
 FC_REFLECT(eosio::chain::eosvmoc::code_descriptor, (code_hash)(vm_version)(codegen_version)(code_begin)(start)(apply_offset)(call_offset)(starting_memory_pages)(initdata_begin)(initdata_size)(initdata_prologue_size));
-=======
-FC_REFLECT(eosio::chain::eosvmoc::code_descriptor, (code_hash)(vm_version)(codegen_version)(code_begin)(start)(apply_offset)(starting_memory_pages)(initdata_begin)(initdata_size)(initdata_prologue_size));
->>>>>>> eosio/master
 
 #define EOSVMOC_INTRINSIC_INIT_PRIORITY __attribute__((init_priority(198)))

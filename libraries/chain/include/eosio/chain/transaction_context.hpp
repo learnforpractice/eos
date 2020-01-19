@@ -8,10 +8,7 @@ namespace eosio { namespace chain {
 
    struct transaction_checktime_timer {
       public:
-<<<<<<< HEAD
          transaction_checktime_timer(platform_timer& timer);
-=======
->>>>>>> eosio/master
          transaction_checktime_timer() = delete;
          transaction_checktime_timer(const transaction_checktime_timer&) = delete;
          transaction_checktime_timer(transaction_checktime_timer&&) = default;
@@ -28,11 +25,6 @@ namespace eosio { namespace chain {
          std::atomic_bool& expired;
       private:
          platform_timer& _timer;
-<<<<<<< HEAD
-=======
-
-         transaction_checktime_timer(platform_timer& timer);
->>>>>>> eosio/master
          friend controller_impl;
    };
 
@@ -46,11 +38,7 @@ namespace eosio { namespace chain {
                               const signed_transaction& t,
                               const transaction_id_type& trx_id,
                               transaction_checktime_timer&& timer,
-<<<<<<< HEAD
                               fc::time_point start = fc::time_point::now(), bool read_only=false );
-=======
-                              fc::time_point start = fc::time_point::now() );
->>>>>>> eosio/master
 
          void init_for_implicit_trx( uint64_t initial_net_usage = 0 );
 
@@ -165,11 +153,8 @@ namespace eosio { namespace chain {
          fc::time_point                pseudo_start;
          fc::microseconds              billed_time;
          fc::microseconds              billing_timer_duration_limit;
-<<<<<<< HEAD
          bool                          read_only;
          std::shared_ptr<apply_context> ctx;
-=======
->>>>>>> eosio/master
    };
 
 } }

@@ -152,7 +152,6 @@ either the account authorized the action or the action's net effect on RAM usage
 */
             {}
          } )
-<<<<<<< HEAD
          (  builtin_protocol_feature_t::pythonvm, builtin_protocol_feature_spec{
             "PYTHONVM",
             fc::variant("7038ce787c6483212925640412f60458702e96a478c61f8a10ba6db2ae9a2175").as<digest_type>(),
@@ -163,8 +162,6 @@ either the account authorized the action or the action's net effect on RAM usage
             fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
             {}
          } )
-=======
->>>>>>> eosio/master
          (  builtin_protocol_feature_t::webauthn_key, builtin_protocol_feature_spec{
             "WEBAUTHN_KEY",
             fc::variant("927fdf78c51e77a899f2db938249fb1f8bb38f4e43d9c1f75b190492080cbc34").as<digest_type>(),
@@ -199,7 +196,6 @@ may use a new `set_proposed_producers_ex` intrinsic to access extended features.
 */
             {}
          } )
-<<<<<<< HEAD
          (  builtin_protocol_feature_t::action_return_value, builtin_protocol_feature_spec{
             "ACTION_RETURN_VALUE",
             fc::variant("69b064c5178e2738e144ed6caa9349a3995370d78db29e494b3126ebd9111966").as<digest_type>(),
@@ -211,8 +207,6 @@ Enables new `set_action_return_value` intrinsic which sets a value that is inclu
 */
             {}
          } )
-=======
->>>>>>> eosio/master
    ;
 
 

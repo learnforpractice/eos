@@ -42,7 +42,6 @@ namespace eosio::chain {
    /// Immutable except for fc::from_variant.
    struct name {
    private:
-<<<<<<< HEAD
 
       friend struct fc::reflector<name>;
       friend void fc::from_variant(const fc::variant& v, eosio::chain::name& check);
@@ -76,46 +75,12 @@ namespace eosio::chain {
       friend constexpr bool operator == ( const name& a, const name& b ) { return a.value == b.value; }
       friend constexpr bool operator != ( const name& a, const name& b ) { return a.value != b.value; }
 
-=======
-      uint64_t value = 0;
-
-      friend struct fc::reflector<name>;
-      friend void fc::from_variant(const fc::variant& v, eosio::chain::name& check);
-
-      void set( std::string_view str );
-
-   public:
-      constexpr bool empty()const { return 0 == value; }
-      constexpr bool good()const  { return !empty();   }
-
-      explicit name( std::string_view str ) { set( str ); }
-      constexpr explicit name( uint64_t v ) : value(v) {}
-      constexpr name() = default;
-
-      std::string to_string()const;
-      constexpr uint64_t to_uint64_t()const { return value; }
-
-      friend std::ostream& operator << ( std::ostream& out, const name& n ) {
-         return out << n.to_string();
-      }
-
-      friend constexpr bool operator < ( const name& a, const name& b ) { return a.value < b.value; }
-      friend constexpr bool operator > ( const name& a, const name& b ) { return a.value > b.value; }
-      friend constexpr bool operator <= ( const name& a, const name& b ) { return a.value <= b.value; }
-      friend constexpr bool operator >= ( const name& a, const name& b ) { return a.value >= b.value; }
-      friend constexpr bool operator == ( const name& a, const name& b ) { return a.value == b.value; }
-      friend constexpr bool operator != ( const name& a, const name& b ) { return a.value != b.value; }
-
->>>>>>> eosio/master
       friend constexpr bool operator == ( const name& a, uint64_t b ) { return a.value == b; }
       friend constexpr bool operator != ( const name& a, uint64_t b ) { return a.value != b; }
 
       constexpr explicit operator bool()const { return value != 0; }
-<<<<<<< HEAD
       operator uint64_t()const        { return value; }
       uint64_t value = 0;
-=======
->>>>>>> eosio/master
    };
 
    // Each char of the string is encoded into 5-bit chunk and left-shifted
@@ -128,10 +93,7 @@ namespace eosio::chain {
    }
 
 #define N(X) eosio::chain::string_to_name(#X)
-<<<<<<< HEAD
 #define NN(X) eosio::chain::string_to_name(X)
-=======
->>>>>>> eosio/master
 
 } // eosio::chain
 

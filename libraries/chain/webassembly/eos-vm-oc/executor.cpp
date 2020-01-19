@@ -223,7 +223,6 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
    }
 }
 
-<<<<<<< HEAD
 void executor::call(const code_descriptor& code, const memory& mem, apply_context& context, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
    if(mapping_is_executable == false) {
       mprotect(code_mapping, code_mapping_size, PROT_EXEC|PROT_READ);
@@ -300,8 +299,6 @@ void executor::call(const code_descriptor& code, const memory& mem, apply_contex
    }
 }
 
-=======
->>>>>>> eosio/master
 executor::~executor() {
    arch_prctl(ARCH_SET_GS, nullptr);
 }

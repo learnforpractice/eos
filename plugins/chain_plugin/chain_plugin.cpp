@@ -272,10 +272,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
 #ifdef __linux__
          ("database-hugepage-path", bpo::value<vector<string>>()->composing(), "Optional path for database hugepages when in \"locked\" mode (may specify multiple times)")
 #endif
-<<<<<<< HEAD
          ("interact-server", bpo::value<string>()->default_value(""), "run a interactive server.")
-=======
->>>>>>> eosio/master
 
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
          ("eos-vm-oc-cache-size-mb", bpo::value<uint64_t>()->default_value(eosvmoc::config().cache_size / (1024u*1024u)), "Maximum size (in MiB) of the EOS VM OC code cache")
@@ -580,16 +577,11 @@ protocol_feature_set initialize_protocol_features( const fc::path& p, bool popul
    return pfs;
 }
 
-<<<<<<< HEAD
 #include "../../unittests/incbin.h"
 INCBIN(GenesisEos, "genesis_eos.json");
 INCBIN(GenesisUUOS, "genesis_uuos.json");
 
 void chain_plugin::do_hard_replay(const variables_map& options) {
-=======
-void
-chain_plugin::do_hard_replay(const variables_map& options) {
->>>>>>> eosio/master
          ilog( "Hard replay requested: deleting state database" );
          clear_directory_contents( my->chain_config->state_dir );
          auto backup_dir = block_log::repair_log( my->blocks_dir, options.at( "truncate-at-block" ).as<uint32_t>());
@@ -929,7 +921,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                // Delay setting chain_id until later so that the code handling genesis-json below can know
                // that chain_id still only represents a chain ID extracted from the state (assuming it exists).
             }
-<<<<<<< HEAD
          }
 
          if ( options.count("uuos-mainnet") ) {
@@ -938,10 +929,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
 
          genesis_state provided_genesis;
 
-=======
-         }
-
->>>>>>> eosio/master
          if( options.count( "genesis-json" ) ) {
             bfs::path genesis_file = options.at( "genesis-json" ).as<bfs::path>();
             if( genesis_file.is_relative()) {
@@ -953,11 +940,7 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                        "Specified genesis file '${genesis}' does not exist.",
                        ("genesis", genesis_file.generic_string()));
 
-<<<<<<< HEAD
             provided_genesis = fc::json::from_file( genesis_file ).as<genesis_state>();
-=======
-            genesis_state provided_genesis = fc::json::from_file( genesis_file ).as<genesis_state>();
->>>>>>> eosio/master
 
             if( options.count( "genesis-timestamp" ) ) {
                provided_genesis.initial_timestamp = calculate_genesis_timestamp( options.at( "genesis-timestamp" ).as<string>() );
@@ -999,7 +982,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                   ilog( "Starting fresh blockchain state using provided genesis state." );
                   my->genesis = std::move(provided_genesis);
                }
-<<<<<<< HEAD
             }
          } else if ( options.count( "network" ) ) {
             string network = options.at( "network" ).as<string>();
@@ -1015,8 +997,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
                my->chain_config->uuos_mainnet = true;
             } else {
                my->chain_config->uuos_mainnet = false;
-=======
->>>>>>> eosio/master
             }
          } else {
             EOS_ASSERT( options.count( "genesis-timestamp" ) == 0,
@@ -1081,18 +1061,6 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
          my->chain_config->eosvmoc_tierup = true;
 #endif
 
-<<<<<<< HEAD
-=======
-#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
-      if( options.count("eos-vm-oc-cache-size-mb") )
-         my->chain_config->eosvmoc_config.cache_size = options.at( "eos-vm-oc-cache-size-mb" ).as<uint64_t>() * 1024u * 1024u;
-      if( options.count("eos-vm-oc-compile-threads") )
-         my->chain_config->eosvmoc_config.threads = options.at("eos-vm-oc-compile-threads").as<uint64_t>();
-      if( options["eos-vm-oc-enable"].as<bool>() )
-         my->chain_config->eosvmoc_tierup = true;
-#endif
-
->>>>>>> eosio/master
       my->chain.emplace( *my->chain_config, std::move(pfs), *chain_id );
 
       // set up method providers

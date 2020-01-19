@@ -152,11 +152,7 @@ namespace eosio { namespace testing {
 
          virtual ~base_tester() {};
 
-<<<<<<< HEAD
          void              init(const setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE, bool uuos_mainnet=false, string genesis_accounts_file="");
-=======
-         void              init(const setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE);
->>>>>>> eosio/master
          void              init(controller::config config, const snapshot_reader_ptr& snapshot);
          void              init(controller::config config, const genesis_state& genesis);
          void              init(controller::config config);
@@ -200,12 +196,6 @@ namespace eosio { namespace testing {
 
          transaction_trace_ptr    push_transaction( packed_transaction& trx, fc::time_point deadline = fc::time_point::maximum(), uint32_t billed_cpu_time_us = DEFAULT_BILLED_CPU_TIME_US );
          transaction_trace_ptr    push_transaction( signed_transaction& trx, fc::time_point deadline = fc::time_point::maximum(), uint32_t billed_cpu_time_us = DEFAULT_BILLED_CPU_TIME_US, bool no_throw = false );
-<<<<<<< HEAD
-=======
-
-         [[nodiscard]]
-         action_result            push_action(action&& cert_act, uint64_t authorizer); // TODO/QUESTION: Is this needed?
->>>>>>> eosio/master
 
          [[nodiscard]]
          action_result            push_action(action&& cert_act, uint64_t authorizer); // TODO/QUESTION: Is this needed?
@@ -527,7 +517,6 @@ namespace eosio { namespace testing {
       }
       controller::config vcfg;
 
-<<<<<<< HEAD
       validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>(), bool uuos_mainnet = false, string genesis_accounts_file = "") {
          auto def_conf = default_config(tempdir);
 
@@ -551,16 +540,6 @@ namespace eosio { namespace testing {
             def_conf.first.state_size = 1024*1024*600;
             def_conf.first.reversible_cache_size = 1024*1024*600;
          }
-=======
-      validating_tester(const flat_set<account_name>& trusted_producers = flat_set<account_name>()) {
-         auto def_conf = default_config(tempdir);
-
-         vcfg = def_conf.first;
-         config_validator(vcfg);
-         vcfg.trusted_producers = trusted_producers;
-
-         validating_node = create_validating_node(vcfg, def_conf.second, true);
->>>>>>> eosio/master
 
          init(def_conf.first, def_conf.second);
          execute_setup_policy(setup_policy::full);

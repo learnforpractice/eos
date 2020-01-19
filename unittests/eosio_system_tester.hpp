@@ -280,7 +280,6 @@ public:
 
          return base_tester::push_action( std::move(act), auth ? signer.to_uint64_t() :
                                                 signer == N(bob111111111) ? N(alice1111111).to_uint64_t() : N(bob111111111).to_uint64_t() );
-<<<<<<< HEAD
    }
 
    transaction_trace_ptr push_action2( const account_name& code,
@@ -292,8 +291,6 @@ public:
                                                  )
    {
       return base_tester::push_action( code, acttype, actor, data, expiration, delay_sec );
-=======
->>>>>>> eosio/master
    }
 
    action_result stake( const account_name& from, const account_name& to, const asset& net, const asset& cpu ) {
