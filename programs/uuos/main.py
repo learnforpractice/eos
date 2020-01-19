@@ -186,6 +186,8 @@ class UUOSMain(application.Application):
 
         self.history_api.startup()
         self.producer = Producer(self.config)
+        uuos.set_default_log_level(uuos.LogLevel.info)
+        uuos.set_log_level('producer_plugin', uuos.LogLevel.info)
 
         # self.hub = Hub()
 
