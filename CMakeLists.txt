@@ -254,7 +254,7 @@ target_compile_options(eosio_testing PRIVATE -fPIC)
 target_compile_options(secp256k1 PRIVATE -fPIC)
 target_compile_options(vm_manager PRIVATE -fPIC)
 target_compile_options(wasm2c_contracts PRIVATE -fPIC)
-
+target_compile_options(version PRIVATE -fPIC)
 endif()
 
 add_dependencies(test_contracts_project contracts_project)
