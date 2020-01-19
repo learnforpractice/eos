@@ -146,22 +146,6 @@ target_include_directories( eosio_chain
                         )
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain aleth)
-
-if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
-   target_link_libraries(eosio_chain "-Wl,-wrap=main")
-endif()
-
-foreach(RUNTIME ${EOSIO_WASM_RUNTIMES})
-   string(TOUPPER "${RUNTIME}" RUNTIMEUC)
-   string(REPLACE "-" "_" RUNTIMEUC ${RUNTIMEUC})
-   target_compile_definitions(eosio_chain PUBLIC "EOSIO_${RUNTIMEUC}_RUNTIME_ENABLED")
-endforeach()
-
-if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
-   message(WARNING "EOS VM OC Developer Options are enabled; these are NOT supported")
-   target_compile_definitions(eosio_chain PUBLIC EOSIO_EOS_VM_OC_DEVELOPER)
-endif()
-
 if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
    target_link_libraries(eosio_chain "-Wl,-wrap=main")
 endif()
