@@ -27,6 +27,10 @@
 
 #include <vm_api/vm_api.h>
 
+extern "C" {
+   int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
+}
+
 #if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
 #include <eosio/vm/allocator.hpp>
 #endif
