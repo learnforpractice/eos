@@ -445,10 +445,6 @@ namespace eosio { namespace testing {
          init(config, genesis);
       }
 
-      tester(controller::config config, const genesis_state& genesis) {
-         init(config, genesis);
-      }
-
       tester(controller::config config) {
          init(config);
       }
