@@ -841,7 +841,9 @@ void* history_new_(void *ptr, string& cfg) {
       auto& chain = *((eosio::chain::controller*)ptr);
       history->plugin_initialize(chain, _cfg);
       return (void *)history;
-   }FC_LOG_AND_DROP();
+   } catch ( boost::interprocess::bad_alloc& ) {
+      elog("bad_alloc");
+   } FC_LOG_AND_DROP();
    if (history) {
       delete history;
    }
@@ -853,7 +855,9 @@ bool history_startup_(void *ptr) {
       auto history = (eosio::history_plugin*)ptr;
       history->plugin_startup();
       return true;
-   }FC_LOG_AND_DROP();
+   }  catch ( boost::interprocess::bad_alloc& ) {
+      elog("bad_alloc");
+   } FC_LOG_AND_DROP();
    return false;
 }
 

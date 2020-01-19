@@ -28,7 +28,14 @@ class HistoryApi(object):
             os.mkdir(history_db_dir)
         cfg = dict()
         cfg['db_dir'] = history_db_dir
-        cfg['db_size_mb'] = config.history_db_size_mb
+        if config.network == 'eos':
+            if config.history_db_size_mb < 550:
+                cfg['db_size_mb'] = 550
+            else:
+                cfg['db_size_mb'] = config.history_db_size_mb
+        else:
+            cfg['db_size_mb'] = config.history_db_size_mb
+
         cfg['filter_on'] = config.filter_on
         cfg['filter_out'] = config.filter_out
         cfg['filter_transfer'] = config.filter_transfer
@@ -41,7 +48,9 @@ class HistoryApi(object):
         return _uuos.history_new(self.ptr, cfg)
 
     def startup(self):
-        return _uuos.history_startup(self.ptr)
+        ret = _uuos.history_startup(self.ptr)
+        if not ret:
+            raise Exception('history startup failed!')
 
     def free(self):
         if self.ptr:
