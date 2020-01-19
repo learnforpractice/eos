@@ -31,6 +31,8 @@ def apply(receiver, code, action):
             itr, primary = db.previous_i64(itr)
             if itr < 0:
                 break
+            data = db.get_i64(itr)
+            print(itr, data)
             db.remove_i64(itr)
         print('destroy done!')
     elif action == N('init'):
@@ -43,24 +45,56 @@ def apply(receiver, code, action):
         itr = db.upperbound_i64(code, scope, table, 3)
         data = db.get_i64(itr)
         print('upperbound of 3:', data)
+        assert data == b'5'
 
         itr = db.upperbound_i64(code, scope, table, 2)
         data = db.get_i64(itr)
         print('upperbound of 2:', data)
+        assert data == b'3'
 
         itr = db.lowerbound_i64(code, scope, table, 3)
         data = db.get_i64(itr)
         print('lowerbound of 3:', data)
+        assert data == b'3'
 
         itr = db.lowerbound_i64(code, scope, table, 2)
         data = db.get_i64(itr)
         print('lowerbound of 2:', data)
+        assert data == b'3'
+    elif action == N('test1'):
+        print('+++++++++test1')
+        itr = db.end_i64(code, scope, table)
+        assert itr != -1
+        while True:
+            itr, primary = db.previous_i64(itr)
+            if itr < 0:
+                break
+            data = db.get_i64(itr)
+            print(itr, data)
+    elif action == N('test2'):
+        print('+++++++++test2')
+        itr = db.lowerbound_i64(code, scope, table, 1);
+        assert itr != -1
+        data = db.get_i64(itr)
+        print(data)
+        while True:
+            itr, primary = db.next_i64(itr)
+            if itr < 0:
+                break
+            data = db.get_i64(itr)
+            print(primary, data)
         '''
         name = 'helloworld11'
         code = self.compile_py_code(code)
         self.deploy_contract(name, code, b'', 1)
         r = self.push_action(name, 'destroy', b'')
         r = self.push_action(name, 'init', b'hello,world')
+        self.push_action(name, 'test', b'')
+        self.push_action(name, 'test1', b'')
+        self.push_action(name, 'test2', b'')
+        self.produce_block()
+
+        self.push_action(name, 'destroy', b'')
         self.produce_block()
 
 class DBTesterCase(unittest.TestCase):
