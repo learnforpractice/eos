@@ -8,7 +8,7 @@ typedef unsigned __int128 uint128_t;
 
 uint64_t to_name(PyObject *o);
 
-uint64_t parse_db_arg(PyObject *args, int index) {
+uint64_t parse_name_arg(PyObject *args, int index) {
     PyObject *o;
     o = PyTuple_GetItem(args, index);
     if (o == NULL) {
@@ -18,26 +18,38 @@ uint64_t parse_db_arg(PyObject *args, int index) {
 }
 
 int parse_db_args3(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3) {
-    *arg1 = parse_db_arg(args, 0);
-    *arg2 = parse_db_arg(args, 1);
-    *arg3 = parse_db_arg(args, 2);
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return 0;
+    }
+    *arg1 = parse_name_arg(args, 0);
+    *arg2 = parse_name_arg(args, 1);
+    *arg3 = parse_name_arg(args, 2);
     return *arg1 && *arg2 && *arg3;
 }
 
 int parse_db_args4(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3, uint64_t *arg4) {
-    *arg1 = parse_db_arg(args, 0);
-    *arg2 = parse_db_arg(args, 1);
-    *arg3 = parse_db_arg(args, 2);
-    *arg4 = parse_db_arg(args, 3);
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return 0;
+    }
+    *arg1 = parse_name_arg(args, 0);
+    *arg2 = parse_name_arg(args, 1);
+    *arg3 = parse_name_arg(args, 2);
+    *arg4 = parse_name_arg(args, 3);
     return *arg1 && *arg2 && *arg3 && *arg4;
 }
 
 int parse_db_args5(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3, uint64_t *arg4, uint64_t *arg5) {
-    *arg1 = parse_db_arg(args, 0);
-    *arg2 = parse_db_arg(args, 1);
-    *arg3 = parse_db_arg(args, 2);
-    *arg4 = parse_db_arg(args, 3);
-    *arg5 = parse_db_arg(args, 4);
+    if (PyTuple_GET_SIZE(args) != 3) {
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+        return 0;
+    }
+    *arg1 = parse_name_arg(args, 0);
+    *arg2 = parse_name_arg(args, 1);
+    *arg3 = parse_name_arg(args, 2);
+    *arg4 = parse_name_arg(args, 3);
+    *arg5 = parse_name_arg(args, 4);
     return *arg1 && *arg2 && *arg3 && *arg4 && *arg5;
 }
 
