@@ -124,6 +124,7 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        native_contracts
                        wasm2c_contracts
                        ${LIBEVM4EOS}
+                       ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS}
                        )
 
 target_include_directories( eosio_chain
