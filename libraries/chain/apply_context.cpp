@@ -109,8 +109,8 @@ void apply_context::exec_one()
             try {
                if (receiver_account->vm_type == 0) {
                   if (!get_chain_api()->is_debug_enabled()) {
-                     if ( receiver.to_uint64_t() == N(eosio.token) && control.fork_db_pending_head_block_num() >= 90000000 ) {
-                     //if (false) {
+                     //if ( receiver.to_uint64_t() == N(eosio.token) && control.fork_db_pending_head_block_num() >= 90000000 ) {
+                     if (false) {
                         //wasm2c_eosio_token_apply( receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t() );
                         native_eosio_token_apply( receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t() );
                      } else {
