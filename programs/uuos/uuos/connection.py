@@ -624,7 +624,7 @@ class Connection(object):
 
                 if block_remains > 100:
                     bps = self.received_block_count/duration
-                    logger.info('+++++BPS: %.2f, estimate remain blocks: %d, estimate remain time: %02d:%02d:%02d'%(bps, block_remains, block_remains/bps/60/60, block_remains/bps%(60*60)/60, block_remains/bps%60))
+                    logger.info('+++++BPS: %.2f, estimate remaining blocks: %d, estimate remain time: %02d:%02d:%02d'%(bps, block_remains, block_remains/bps/60/60, block_remains/bps%(60*60)/60, block_remains/bps%60))
                 if duration >= 120.0:
                     logger.info('+++reset block counter')
                     self.received_block_count = 0
