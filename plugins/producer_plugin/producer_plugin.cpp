@@ -2237,11 +2237,14 @@ int producer_process_raw_transaction_(void *ptr, string& raw_packed_trx, string&
    };
 
    try {
-      packed_transaction _packed_trx;
-      fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), raw_packed_trx.size() );
-      fc::raw::unpack( ds, _packed_trx );
+//      packed_transaction _packed_trx;
+      auto ptrx = std::make_shared<packed_transaction>();
 
-      auto ptrx_meta = transaction_metadata::create_no_recover_keys( _packed_trx, transaction_metadata::trx_type::input );
+      fc::datastream<char*> ds( (char *)raw_packed_trx.c_str(), raw_packed_trx.size() );
+      fc::raw::unpack( ds, *ptrx );
+
+      auto ptrx_meta = transaction_metadata::recover_keys(ptrx, producer.my->chain_plug->chain().get_chain_id());
+//      auto ptrx_meta = transaction_metadata::create_no_recover_keys( _packed_trx, transaction_metadata::trx_type::input );
       producer.my->process_incoming_transaction_async(ptrx_meta, false, next);
       return 1;
    }
