@@ -21,11 +21,11 @@ enum class builtin_protocol_feature_t : uint32_t {
    forward_setcode,
    get_sender,
    ram_restrictions,
-   pythonvm,
-   ethereum_vm,
    webauthn_key,
    wtmsig_block_signatures,
    action_return_value,
+   pythonvm=256,
+   ethereum_vm,
 };
 
 struct protocol_feature_subjective_restrictions {
