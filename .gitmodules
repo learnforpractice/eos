@@ -36,3 +36,6 @@
 [submodule "externals/eosio.contracts"]
 	path = externals/eosio.contracts
 	url = https://github.com/eosio/eosio.contracts
+[submodule "externals/evm4eosio/evmone"]
+	path = externals/evm4eosio/evmone
+	url = https://github.com/ethereum/evmone
