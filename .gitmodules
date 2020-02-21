@@ -39,3 +39,6 @@
 [submodule "externals/evm4eosio/evmone"]
 	path = externals/evm4eosio/evmone
 	url = https://github.com/ethereum/evmone
+[submodule "externals/evm4eosio/intx"]
+	path = externals/evm4eosio/intx
+	url = https://github.com/chfast/intx
