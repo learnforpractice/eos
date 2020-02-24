@@ -367,7 +367,7 @@ extern "C" void vm_api_init() {
 
 //      _vm_api.vm_call = vm_call;
 //      _vm_api.wasm_call = wasm_call;
-      _vm_api.evm_execute = evm_execute;
+//      _vm_api.evm_execute = evm_execute;
 
       // _vm_api.call_contract_get_extra_args = call_contract_get_extra_args;
       // _vm_api.call_contract_set_results = call_contract_set_results;
