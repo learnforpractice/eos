@@ -13,7 +13,7 @@ target_include_directories(ethereum_vm
    ${CMAKE_SOURCE_DIR}/../../externals/aleth/evm4eos
 )
 
-target_compile_definitions(ethereum_vm PRIVATE USE_INTRINSIC_EVM_RECOVER_KEY USE_INTRINSIC_EVM_GET_ACCOUNT_ID USE_INTRINSIC_EVM_EXECUTE)
+target_compile_definitions(ethereum_vm PRIVATE __WASM USE_INTRINSIC_EVM_RECOVER_KEY USE_INTRINSIC_EVM_GET_ACCOUNT_ID USE_INTRINSIC_EVM_EXECUTE)
 
 set_target_properties(ethereum_vm
    PROPERTIES
@@ -24,12 +24,13 @@ configure_file( ${CMAKE_SOURCE_DIR}/../../externals/aleth/evm4eos/ethereum_vm.ab
 else()
 
 #add_contract( utility utility utility.cpp )
-add_library(ethereum_vm ${CMAKE_SOURCE_DIR}/externals/aleth/evm4eos/eth_account.cpp
+add_library(ethereum_vm STATIC ${CMAKE_SOURCE_DIR}/externals/aleth/evm4eos/eth_account.cpp
 )
 
 target_include_directories(ethereum_vm
    PRIVATE ${CMAKE_SOURCE_DIR}/externals/aleth/evm4eos
    PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
+   PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
    PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"
    #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libcxx"
    #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libc"
