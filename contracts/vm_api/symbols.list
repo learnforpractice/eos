@@ -145,3 +145,9 @@ _vm_register_api
 _is_feature_activated
 _preactivate_feature
 _set_action_return_value
+_vmlog_
+_vmdlog_
+_vmilog_
+_vmwlog_
+_vmelog_
+

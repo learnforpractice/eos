@@ -276,6 +276,13 @@ uint64_t wasm_call(const char* act, uint64_t* args, int argc);
 int has_option(const char* _option);
 int get_option(const char* option, char *result, int size);
 
+void vmlog_(int level, int line, const char *file, const char *func, const char *fmt, ...);
+void vmdlog_(int line, const char *file, const char *func, const char *fmt, ...);
+void vmilog_(int line, const char *file, const char *func, const char *fmt, ...);
+void vmwlog_(int line, const char *file, const char *func, const char *fmt, ...);
+void vmelog_(int line, const char *file, const char *func, const char *fmt, ...);
+
+
 #define vmdlog(fmt...) \
    get_vm_api()->log(1, __LINE__, __FILE__, __FUNCTION__, fmt);
 

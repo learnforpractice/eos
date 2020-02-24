@@ -21,3 +21,29 @@ struct vm_api* get_vm_api() {
    }
    return s_api;
 }
+
+extern "C" {
+
+void vmlog_(int level, int line, const char *file, const char *func, const char *fmt, ...) {
+   get_vm_api()->log(level, line, file, func, fmt);
+}
+
+void vmdlog_(int line, const char *file, const char *func, const char *fmt, ...) {
+   get_vm_api()->log(1, line, file, func, fmt);
+}
+
+void vmilog_(int line, const char *file, const char *func, const char *fmt, ...) {
+   get_vm_api()->log(2, line, file, func, fmt);
+}
+
+void vmwlog_(int line, const char *file, const char *func, const char *fmt, ...) {
+   get_vm_api()->log(3, line, file, func, fmt);
+}
+
+void vmelog_(int line, const char *file, const char *func, const char *fmt, ...) {
+   get_vm_api()->log(4, line, file, func, fmt);
+}
+
+}
+
+
