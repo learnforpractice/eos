@@ -6,7 +6,7 @@ if( EOSIO_COMPILE_EOSIO_CONTRACTS )
 
    message( STATUS "Building contracts in directory `eosio.contracts/contracts`" )
    ExternalProject_Add(
-      contracts_project
+      eosio_contracts_project
       SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eosio.contracts/contracts
       BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eosio.contracts/contracts
       CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_TEST_CONTRACTS=${EOSIO_COMPILE_TEST_CONTRACTS}
@@ -16,6 +16,19 @@ if( EOSIO_COMPILE_EOSIO_CONTRACTS )
       INSTALL_COMMAND ""
       BUILD_ALWAYS 1
    )
+
+   ExternalProject_Add(
+      evmone_contract_project
+      SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/lib/evmone
+      BINARY_DIR ${CMAKE_BINARY_DIR}/externals/evmone4eosio/evmone_contract
+      CMAKE_ARGS  -DEOSIO_COMPILE_CONTRACTS=TRUE -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR} -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+      UPDATE_COMMAND ""
+      PATCH_COMMAND ""
+      TEST_COMMAND ""
+      INSTALL_COMMAND ""
+      BUILD_ALWAYS 1
+   )
+
 else()
   message( STATUS "Not building contracts in directory `eosio.contracts/contracts`" )
 #  add_subdirectory(test-contracts)
@@ -36,7 +49,29 @@ ExternalProject_Add(
    BUILD_ALWAYS 1
 )
 
+
+include(ExternalProject)
+
+ExternalProject_Add(
+    evmone_native_project
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/evmone4eosio
+    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/evmone4eosio/evmone
+    CMAKE_ARGS -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DETH_ACCOUNT_NATIVE=${ETH_ACCOUNT_NATIVE} -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    TEST_COMMAND ""
+    INSTALL_COMMAND ""
+    BUILD_ALWAYS 1
+)
+
+
+
+# add_dependencies(evmone_project vm_api)
+# add_dependencies(evmone_project ethereum_vm)
+
+
 #add_subdirectory(test-contracts)
 #add_subdirectory(boost)
+#add_subdirectory(evm4eosio)
 add_dependencies(aleth ethereum_vm)
 add_dependencies(aleth vm_api)

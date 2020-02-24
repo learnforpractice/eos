@@ -93,6 +93,7 @@ add_library( eosio_chain
              trace.cpp
              transaction_metadata.cpp
              vm_api/vm_api.cpp
+             evm_loader.cpp
 #             vm_api/vm_exceptions.cpp
 #             vm_api_ro/vm_api_ro.cpp
 #             "${CMAKE_SOURCE_DIR}/contracts/eosio.token/eosio.token.cpp"
@@ -112,7 +113,7 @@ set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/aleth/evm4eos/libevm4eos${CMAKE_SHA
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt vm_api
-                       ${LIBEVM4EOS}
+#                       ${LIBEVM4EOS}
                        ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS}
                        )
 

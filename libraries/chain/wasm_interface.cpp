@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include <vm_api/vm_api.h>
+#include "evm_loader.hpp"
 
 extern "C" {
    int evm_get_account_id(const char* account, size_t account_size, const char* arbitrary_string, size_t arbitrary_string_size, char* hash, size_t hash_size);
@@ -1157,16 +1158,19 @@ class action_api : public context_aware_api {
       }
 
       int evm_execute(array_ptr<char> trx, uint32_t size, array_ptr<char> sender_address, uint32_t sender_address_size) {
-         return ::evm_execute(trx.value, size, sender_address, sender_address_size);
+         return evm_get_interface().execute(trx.value, size, sender_address, sender_address_size);
+//         return ::evm_execute(trx.value, size, sender_address, sender_address_size);
       }
 
       int evm_recover_key(array_ptr<char> _sig, uint32_t _sig_size, array_ptr<char> _message, uint32_t _message_len, array_ptr<char> _serialized_public_key, uint32_t _serialized_public_key_size) {
-         return ::evm_recover_key((const uint8_t*)_sig.value, _sig_size, (const uint8_t*)_message.value, _message_len, (uint8_t*)_serialized_public_key.value, _serialized_public_key_size);
+         return evm_get_interface().recover_key((const uint8_t*)_sig.value, _sig_size, (const uint8_t*)_message.value, _message_len, (uint8_t*)_serialized_public_key.value, _serialized_public_key_size);
+//         return ::evm_recover_key((const uint8_t*)_sig.value, _sig_size, (const uint8_t*)_message.value, _message_len, (uint8_t*)_serialized_public_key.value, _serialized_public_key_size);
       }
 
       int evm_get_account_id(uint64_t account, array_ptr<char> arbitrary_string, uint32_t arbitrary_string_size, array_ptr<char> hash, uint32_t hash_size) {
          string _account = account_name(account).to_string();
-         return ::evm_get_account_id(_account.c_str(), _account.size(), arbitrary_string.value, arbitrary_string_size, hash.value, hash_size);
+         return evm_get_interface().get_account_id(_account.c_str(), _account.size(), arbitrary_string.value, arbitrary_string_size, hash.value, hash_size);
+//         return ::evm_get_account_id(_account.c_str(), _account.size(), arbitrary_string.value, arbitrary_string_size, hash.value, hash_size);
       }
 };
 
