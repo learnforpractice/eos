@@ -4,13 +4,13 @@ set(EOSIO_WASM_OLD_BEHAVIOR "Off")
 find_package( eosio.cdt REQUIRED )
 
 add_contract(ethereum_vm ethereum_vm 
-    ${CMAKE_SOURCE_DIR}/../../externals/aleth/evm4eos/ethereum_vm.cpp
-    ${CMAKE_SOURCE_DIR}/../../externals/aleth/evm4eos/eth_account.cpp
+    ${CMAKE_SOURCE_DIR}/../../externals/evmone4eosio/ethereum_vm/ethereum_vm.cpp
+    ${CMAKE_SOURCE_DIR}/../../externals/evmone4eosio/ethereum_vm/eth_account.cpp
 )
 
 target_include_directories(ethereum_vm
    PUBLIC
-   ${CMAKE_SOURCE_DIR}/../../externals/aleth/evm4eos
+   ${CMAKE_SOURCE_DIR}/../../externals/evmone4eosio/ethereum_vm
 )
 
 target_compile_definitions(ethereum_vm PRIVATE __WASM USE_INTRINSIC_EVM_RECOVER_KEY USE_INTRINSIC_EVM_GET_ACCOUNT_ID USE_INTRINSIC_EVM_EXECUTE)
@@ -19,17 +19,16 @@ set_target_properties(ethereum_vm
    PROPERTIES
    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
-configure_file( ${CMAKE_SOURCE_DIR}/../../externals/aleth/evm4eos/ethereum_vm.abi ${CMAKE_CURRENT_BINARY_DIR}/ethereum_vm.abi @COPYONLY )
+configure_file( ${CMAKE_SOURCE_DIR}/../../externals/evmone4eosio/ethereum_vm/ethereum_vm.abi ${CMAKE_CURRENT_BINARY_DIR}/ethereum_vm.abi @COPYONLY )
 
 else()
 
 #add_contract( utility utility utility.cpp )
-add_library(ethereum_vm STATIC ${CMAKE_SOURCE_DIR}/externals/aleth/evm4eos/eth_account.cpp
+add_library(ethereum_vm STATIC ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/ethereum_vm/eth_account.cpp
 )
 
 target_include_directories(ethereum_vm
-   PRIVATE ${CMAKE_SOURCE_DIR}/externals/aleth/evm4eos
-   PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
+   PRIVATE ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/ethereum_vm
    PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
    PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"
    #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libcxx"
