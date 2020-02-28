@@ -230,7 +230,7 @@ class multi_index
          return (n & 0x000000000000000FULL) == 0;
       }
 
-      constexpr static size_t max_stack_buffer_size = 512;
+      constexpr static uint32_t max_stack_buffer_size = 512;
 
       static_assert( validate_table_name(TableName), "multi_index does not support table names with a length greater than 12");
 
@@ -561,13 +561,13 @@ class multi_index
          eosio_assert( size >= 0, "error reading iterator" );
 
          //using malloc/free here potentially is not exception-safe, although WASM doesn't support exceptions
-         void* buffer = max_stack_buffer_size < size_t(size) ? malloc(size_t(size)) : alloca(size_t(size));
+         void* buffer = max_stack_buffer_size < uint32_t(size) ? malloc(uint32_t(size)) : alloca(uint32_t(size));
 
          db_get_i64( itr, buffer, uint32_t(size) );
 
          datastream<const char*> ds( (char*)buffer, uint32_t(size) );
 
-         if ( max_stack_buffer_size < size_t(size) ) {
+         if ( max_stack_buffer_size < uint32_t(size) ) {
             free(buffer);
          }
 
@@ -1663,7 +1663,7 @@ class multi_index
             T& obj = static_cast<T&>(i);
             constructor( obj );
 
-            size_t size = pack_size( obj );
+            uint32_t size = pack_size( obj );
 
             //using malloc/free here potentially is not exception-safe, although WASM doesn't support exceptions
             void* buffer = max_stack_buffer_size < size ? malloc(size) : alloca(size);
@@ -1852,7 +1852,7 @@ class multi_index
 
          eosio_assert( pk == obj.primary_key(), "updater cannot change primary key when modifying an object" );
 
-         size_t size = pack_size( obj );
+         uint32_t size = pack_size( obj );
          //using malloc/free here potentially is not exception-safe, although WASM doesn't support exceptions
          void* buffer = max_stack_buffer_size < size ? malloc(size) : alloca(size);
 

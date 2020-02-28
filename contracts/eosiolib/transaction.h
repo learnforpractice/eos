@@ -58,7 +58,7 @@ extern "C" {
      *  @param replace_existing - f this is `0` then if the provided sender_id is already in use by an in-flight transaction from this contract, which will be a failing assert. If `1` then transaction will atomically cancel/replace the inflight transaction
      */
 #ifdef __cplusplus
-     WASM_IMPORT void send_deferred(const uint128_t& sender_id, account_name payer, const char *serialized_transaction, size_t size, uint32_t replace_existing = 0);
+     WASM_IMPORT void send_deferred(const uint128_t& sender_id, account_name payer, const char *serialized_transaction, uint32_t size, uint32_t replace_existing = 0);
 
     /**
      *  Cancels a deferred transaction.
@@ -89,7 +89,7 @@ extern "C" {
     * @param size - the size of the buffer, 0 to return required size
     * @return the size of the transaction written to the buffer, or number of bytes that can be copied if size==0 passed
     */
-   WASM_IMPORT size_t read_transaction(char *buffer, size_t size);
+   WASM_IMPORT uint32_t read_transaction(char *buffer, uint32_t size);
 
    /**
     * Gets the size of the currently executing transaction.
@@ -97,7 +97,7 @@ extern "C" {
     * @brief Gets the size of the currently executing transaction.
     * @return size of the currently executing transaction
     */
-   WASM_IMPORT size_t transaction_size(void);
+   WASM_IMPORT uint32_t transaction_size(void);
 
    /**
     * Gets the block number used for TAPOS on the currently executing transaction.
@@ -146,7 +146,7 @@ extern "C" {
     * @param size - amount of buff read, pass 0 to have size returned
     * @return the size of the action, -1 on failure
     */
-   WASM_IMPORT int get_action( uint32_t type, uint32_t index, char* buff, size_t size );
+   WASM_IMPORT int get_action( uint32_t type, uint32_t index, char* buff, uint32_t size );
 
    /**
     * Retrieve the signed_transaction.context_free_data[index].
@@ -157,7 +157,7 @@ extern "C" {
     * @param size - amount of context_free_data[index] to retrieve into buff, 0 to report required size
     * @return size copied, or context_free_data[index].size() if 0 passed for size, or -1 if index not valid
     */
-   WASM_IMPORT int get_context_free_data( uint32_t index, char* buff, size_t size );
+   WASM_IMPORT int get_context_free_data( uint32_t index, char* buff, uint32_t size );
 
    ///@ } transactioncapi
 #ifdef __cplusplus

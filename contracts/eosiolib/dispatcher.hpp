@@ -64,10 +64,10 @@ namespace eosio {
     */
    template<typename T, typename Q, typename... Args>
    bool execute_action( T* obj, void (Q::*func)(Args...)  ) {
-      size_t size = action_data_size();
+      uint32_t size = action_data_size();
 
       //using malloc/free here potentially is not exception-safe, although WASM doesn't support exceptions
-      constexpr size_t max_stack_buffer_size = 512;
+      constexpr uint32_t max_stack_buffer_size = 512;
       void* buffer = nullptr;
       if( size > 0 ) {
          buffer = max_stack_buffer_size < size ? malloc(size) : alloca(size);

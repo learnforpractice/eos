@@ -46,8 +46,8 @@ namespace eosio {
     */
    template<typename T>
    T unpack_action_data() {
-      constexpr size_t max_stack_buffer_size = 512;
-      size_t size = action_data_size();
+      constexpr uint32_t max_stack_buffer_size = 512;
+      uint32_t size = action_data_size();
       const bool heap_allocation = max_stack_buffer_size < size;
       char* buffer = (char*)( heap_allocation ? malloc(size) : alloca(size) );
       read_action_data( buffer, size );

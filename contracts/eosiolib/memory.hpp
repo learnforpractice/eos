@@ -7,7 +7,7 @@
 #include <eosiolib/memory.h>
 #include <eosiolib/print.hpp>
 
-void* sbrk(size_t num_bytes);
+void* sbrk(uint32_t num_bytes);
 
   /**
    *  @defgroup memoryapi Memory API
@@ -32,7 +32,7 @@ extern "C" {
  * @param size - Number of additional bytes to be allocated
  * @return void* - Pointer to start of the new allocated memory
  */
-void* malloc(size_t size);
+void* malloc(uint32_t size);
 
 /**
  * Allocate a block of memory for an array of **count** elements, each of them **size** bytes long, and initializes all bits with 0
@@ -42,7 +42,7 @@ void* malloc(size_t size);
  * @param size - Size of each element
  * @return void* - Pointer to start of the new allocated memory
  */
-void* calloc(size_t count, size_t size);
+void* calloc(uint32_t count, uint32_t size);
 
 /**
  * Reallocate the given area of memory, which is allocated by malloc(), calloc(), or realloc() previously
@@ -52,7 +52,7 @@ void* calloc(size_t count, size_t size);
  * @param size - New size of the memory
  * @return void* - Pointer to the new reallocated memory
  */
-void* realloc(void* ptr, size_t size);
+void* realloc(void* ptr, uint32_t size);
 
 /**
  * 

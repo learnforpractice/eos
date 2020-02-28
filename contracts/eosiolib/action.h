@@ -133,7 +133,7 @@ extern "C" {
     *  @param size - size of serialized action in bytes
     *  @pre `serialized_action` is a valid pointer to an array at least `size` bytes long
     */
-   WASM_IMPORT void send_inline(char *serialized_action, size_t size);
+   WASM_IMPORT void send_inline(char *serialized_action, uint32_t size);
 
    /**
     *  Send an inline context free action in the context of this action's parent transaction
@@ -142,7 +142,7 @@ extern "C" {
     *  @param size - size of serialized action in bytes
     *  @pre `serialized_action` is a valid pointer to an array at least `size` bytes long
     */
-   WASM_IMPORT void send_context_free_inline(char *serialized_action, size_t size);
+   WASM_IMPORT void send_context_free_inline(char *serialized_action, uint32_t size);
 
    /**
     *  Verifies that @ref name exists in the set of write locks held on a action. Throws if not found
@@ -173,20 +173,20 @@ extern "C" {
 
    WASM_IMPORT account_name current_receiver( void );
 
-   WASM_IMPORT void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, void* extra_args, size_t size1);
+   WASM_IMPORT void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, void* extra_args, uint32_t size1);
 
-   WASM_IMPORT int call_contract_get_extra_args(void* extra_args, size_t size1);
-   WASM_IMPORT int call_contract_set_results(void* result, size_t size1);
-   WASM_IMPORT int call_contract_get_results(void* result, size_t size1);
+   WASM_IMPORT int call_contract_get_extra_args(void* extra_args, uint32_t size1);
+   WASM_IMPORT int call_contract_set_results(void* result, uint32_t size1);
+   WASM_IMPORT int call_contract_get_results(void* result, uint32_t size1);
 
-   WASM_IMPORT uint64_t s2n(const char *in, size_t in_len);
-   WASM_IMPORT int n2s(uint64_t n, char *out, size_t length);
+   WASM_IMPORT uint64_t s2n(const char *in, uint32_t in_len);
+   WASM_IMPORT int n2s(uint64_t n, char *out, uint32_t length);
 
    WASM_IMPORT int get_code_size(uint64_t account);
-   WASM_IMPORT int get_code(uint64_t account, char *code, size_t size);
-   WASM_IMPORT bool is_feature_activated(const char *digest, size_t size);
-   WASM_IMPORT void preactivate_feature(const char *digest, size_t size);
-   WASM_IMPORT void set_action_return_value( const char* packed_blob, size_t datalen );
+   WASM_IMPORT int get_code(uint64_t account, char *code, uint32_t size);
+   WASM_IMPORT bool is_feature_activated(const char *digest, uint32_t size);
+   WASM_IMPORT void preactivate_feature(const char *digest, uint32_t size);
+   WASM_IMPORT void set_action_return_value( const char* packed_blob, uint32_t datalen );
    ///@ } actioncapi
 
 #ifdef __cplusplus

@@ -15,7 +15,7 @@ struct checksum512 {
    uint8_t hash[64];
 };
 
-template<class Encoder> auto encode(const char* data, size_t datalen) {
+template<class Encoder> auto encode(const char* data, uint32_t datalen) {
    Encoder e;
    const size_t bs = config::hashing_checktime_block_size;
    while ( datalen > bs ) {
@@ -52,7 +52,7 @@ void assert_ripemd160( const char* data, uint32_t datalen, const struct checksum
    EOS_ASSERT( memcmp(&result, hash, sizeof(*hash)) == 0, crypto_api_exception, "hash mismatch" );
 }
 
-void assert_recover_key( const struct checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen ) {
+void assert_recover_key( const struct checksum256* digest, const char* sig, uint32_t siglen, const char* pub, uint32_t publen ) {
 //   FC_ASSERT(digest != nullptr && sig != nullptr && siglen != 0 && pub != nullptr && publen != 0);
 
    fc::crypto::signature s;
@@ -91,7 +91,7 @@ void ripemd160( const char* data, uint32_t datalen, struct checksum160* hash ) {
    memcpy(hash, &hash_val._hash, sizeof(struct checksum160));
 }
 
-int recover_key( const struct checksum256* digest, const char* sig, size_t siglen, char* pub, size_t publen ) {
+int recover_key( const struct checksum256* digest, const char* sig, uint32_t siglen, char* pub, uint32_t publen ) {
 //   FC_ASSERT(digest != nullptr && sig != nullptr && siglen != 0 && pub != nullptr && publen != 0);
 
    fc::crypto::signature s;
