@@ -88,7 +88,6 @@ enum return_codes {
 int main(int argc, char** argv)
 {
    try {
-      evm_init();
       vm_api_init();
 
       app().set_version(eosio::nodeos::config::version);
