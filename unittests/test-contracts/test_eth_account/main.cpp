@@ -75,7 +75,7 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action) {
       check(!eth_account_clear_value(eth_address1, key), "eth_account_clear_value expected to return false");
       check(!eth_account_get_value(eth_address1, key, value), "value expected to not exist");
 
-      uint32_t nonce = 0;
+      uint64_t nonce = 0;
       ret = eth_account_get_nonce(eth_address1, nonce);
       check(ret == true, "bad eth_account_get_nonce return");
       check(nonce == 1, "eth_account_get_nonce return bad nonce");
