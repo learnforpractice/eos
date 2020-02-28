@@ -63,6 +63,8 @@ ExternalProject_Add(
     INSTALL_COMMAND ""
     BUILD_ALWAYS 1
 )
+add_dependencies(eevm_project vm_api)
+
 
 # add_dependencies(evmone_project vm_api)
 # add_dependencies(evmone_project ethereum_vm)
@@ -73,5 +75,5 @@ ExternalProject_Add(
 #add_subdirectory(evm4eosio)
 add_dependencies(aleth ethereum_vm)
 add_dependencies(aleth vm_api)
-add_dependencies(eevm_project vm_api)
+#add_dependencies(eevm_project vm_api)
 
