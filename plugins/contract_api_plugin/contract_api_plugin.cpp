@@ -6,7 +6,6 @@
 #include <fc/io/json.hpp>
 #include <eosio/contract_api_plugin/contract_api_plugin.hpp>
 
-
 namespace eosio {
 
 static appbase::abstract_plugin& _contract_api_plugin = app().register_plugin<contract_api_plugin>();
@@ -30,7 +29,13 @@ using namespace fc;
    auto params = fc::json::from_string(body).as<type>(); \
    auto result = api_handle->call_name(params);
 
-void contract_api_plugin::plugin_initialize(const variables_map& vm) {
+void contract_api_plugin::set_program_options(options_description& cli, options_description& cfg)
+{
+   // cfg.add_options()
+   //       ("evm-lib", bpo::value<bfs::path>()->default_value("libevmone.dylib"));
+}
+
+void contract_api_plugin::plugin_initialize(const variables_map& options) {
    chain_plug = app().find_plugin<chain_plugin>();
 }
 
