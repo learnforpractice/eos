@@ -16,19 +16,7 @@ if( EOSIO_COMPILE_EOSIO_CONTRACTS )
       INSTALL_COMMAND ""
       BUILD_ALWAYS 1
    )
-
-   ExternalProject_Add(
-      evmone_contract_project
-      SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/lib/evmone
-      BINARY_DIR ${CMAKE_BINARY_DIR}/externals/evmone4eosio/evmone_contract
-      CMAKE_ARGS  -DEOSIO_COMPILE_CONTRACTS=TRUE -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR} -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
-      UPDATE_COMMAND ""
-      PATCH_COMMAND ""
-      TEST_COMMAND ""
-      INSTALL_COMMAND ""
-      BUILD_ALWAYS 1
-   )
-
+   
 else()
   message( STATUS "Not building contracts in directory `eosio.contracts/contracts`" )
 #  add_subdirectory(test-contracts)
