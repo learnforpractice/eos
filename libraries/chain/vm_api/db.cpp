@@ -32,11 +32,11 @@ int32_t db_get_i64(int32_t iterator, void* data, uint32_t len) {
    return ctx().db_get_i64(iterator, (char*)data, len);
 }
 #if 0
-int32_t db_get_i64_ex( int itr, uint64_t* primary, char* buffer, uint32_t buffer_size ) {
+int32_t db_get_i64_ex( int itr, uint64_t* primary, char* buffer, size_t buffer_size ) {
    return ctx().db_get_i64_ex( itr, *primary, buffer, buffer_size );
 }
 
-const char* db_get_i64_exex( int itr, uint32_t* buffer_size ) {
+const char* db_get_i64_exex( int itr, size_t* buffer_size ) {
    return ctx().db_get_i64_exex( itr,  buffer_size);
 }
 #endif
@@ -97,14 +97,14 @@ int32_t db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
       }
 
 #define DB_API_METHOD_WRAPPERS_ARRAY_SECONDARY_(IDX, ARR_SIZE, ARR_ELEMENT_TYPE)\
-      int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const ARR_ELEMENT_TYPE* data, uint32_t data_len) {\
+      int db_##IDX##_store( uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const ARR_ELEMENT_TYPE* data, size_t data_len) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
          return ctx().IDX.store(scope, table, name(payer), id, (const ARR_ELEMENT_TYPE*)data);\
       }\
-      void db_##IDX##_update( int iterator, uint64_t payer, const void* data, uint32_t data_len ) {\
+      void db_##IDX##_update( int iterator, uint64_t payer, const void* data, size_t data_len ) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
@@ -114,28 +114,28 @@ int32_t db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
       void db_##IDX##_remove( int iterator ) {\
          ctx().IDX.remove(iterator);\
       }\
-      int db_##IDX##_find_secondary( uint64_t code, uint64_t scope, uint64_t table, const ARR_ELEMENT_TYPE* data, uint32_t data_len, uint64_t* primary ) {\
+      int db_##IDX##_find_secondary( uint64_t code, uint64_t scope, uint64_t table, const ARR_ELEMENT_TYPE* data, size_t data_len, uint64_t* primary ) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
          return ctx().IDX.find_secondary(code, scope, table, (const ARR_ELEMENT_TYPE*)data, *primary);\
       }\
-      int db_##IDX##_find_primary( uint64_t code, uint64_t scope, uint64_t table, ARR_ELEMENT_TYPE* data, uint32_t data_len, uint64_t primary ) {\
+      int db_##IDX##_find_primary( uint64_t code, uint64_t scope, uint64_t table, ARR_ELEMENT_TYPE* data, size_t data_len, uint64_t primary ) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
          return ctx().IDX.find_primary(code, scope, table, (ARR_ELEMENT_TYPE*)data, primary);\
       }\
-      int db_##IDX##_lowerbound( uint64_t code, uint64_t scope, uint64_t table, ARR_ELEMENT_TYPE* data, uint32_t data_len, uint64_t* primary ) {\
+      int db_##IDX##_lowerbound( uint64_t code, uint64_t scope, uint64_t table, ARR_ELEMENT_TYPE* data, size_t data_len, uint64_t* primary ) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
                     ("given",data_len)("expected",ARR_SIZE) );\
          return ctx().IDX.lowerbound_secondary(code, scope, table, (ARR_ELEMENT_TYPE*)data, *primary);\
       }\
-      int db_##IDX##_upperbound( uint64_t code, uint64_t scope, uint64_t table, ARR_ELEMENT_TYPE* data, uint32_t data_len, uint64_t* primary ) {\
+      int db_##IDX##_upperbound( uint64_t code, uint64_t scope, uint64_t table, ARR_ELEMENT_TYPE* data, size_t data_len, uint64_t* primary ) {\
          EOS_ASSERT( data_len == ARR_SIZE,\
               db_api_exception,\
                     "invalid size of secondary key array for " #IDX ": given ${given} bytes but expected ${expected} bytes",\
@@ -196,14 +196,14 @@ DB_API_METHOD_WRAPPERS_FLOAT_SECONDARY_(idx_double, float64_t)
 DB_API_METHOD_WRAPPERS_FLOAT_SECONDARY_(idx_long_double, float128_t)
 
 
-int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, uint32_t buffer_size ) {
+int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, size_t buffer_size ) {
    eosio_assert(size <= sizeof(key256_t), "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
    return ctx().db_store_i256( scope, table, name(payer), key, buffer, buffer_size);
 }
 
-void db_update_i256( int iterator, uint64_t payer, const char* buffer, uint32_t buffer_size ) {
+void db_update_i256( int iterator, uint64_t payer, const char* buffer, size_t buffer_size ) {
    return ctx().db_update_i256(iterator, name(payer), buffer, buffer_size, false);
 }
 
@@ -211,25 +211,25 @@ void db_remove_i256( int iterator ) {
    return ctx().db_remove_i256(iterator);
 }
 
-int db_get_i256( int iterator, char* buffer, uint32_t buffer_size ) {
+int db_get_i256( int iterator, char* buffer, size_t buffer_size ) {
    return ctx().db_get_i256(iterator, buffer, buffer_size);
 }
 
-int db_find_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, uint32_t size ) {
+int db_find_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t size ) {
    eosio_assert(size == 32, "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
    return ctx().db_find_i256(code, scope, table, key);
 }
 
-int db_previous_i256( int iterator, void* primary, uint32_t size ) {
+int db_previous_i256( int iterator, void* primary, size_t size ) {
    eosio_assert(size == 32, "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(), primary, size);
    return ctx().db_previous_i256(iterator, key);
 }
 
-int db_next_i256( int iterator, void* primary, uint32_t size ) {
+int db_next_i256( int iterator, void* primary, size_t size ) {
    eosio_assert(size == 32, "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(), primary, size);

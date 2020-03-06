@@ -34,11 +34,11 @@ bool is_account( account_name name ) {
    return get_vm_api()->is_account( name ) ;
 }
 
-void send_inline(char *serialized_action, uint32_t size) {
+void send_inline(char *serialized_action, size_t size) {
    get_vm_api()->send_inline(serialized_action, size);
 }
 
-void send_context_free_inline(char *serialized_action, uint32_t size) {
+void send_context_free_inline(char *serialized_action, size_t size) {
    get_vm_api()->send_context_free_inline(serialized_action, size);
 }
 
@@ -51,15 +51,15 @@ account_name current_receiver() {
    return get_vm_api()->current_receiver();
 }
 
-bool is_feature_activated(const char *digest, uint32_t size) {
+bool is_feature_activated(const char *digest, size_t size) {
    return get_vm_api()->is_feature_activated(digest, size);
 }
 
-void preactivate_feature(const char *digest, uint32_t size) {
+void preactivate_feature(const char *digest, size_t size) {
    get_vm_api()->preactivate_feature(digest, size);
 }
 
-void set_action_return_value( const char* packed_blob, uint32_t datalen ) {
+void set_action_return_value( const char* packed_blob, size_t datalen ) {
    get_vm_api()->set_action_return_value(packed_blob, datalen);
 }
 

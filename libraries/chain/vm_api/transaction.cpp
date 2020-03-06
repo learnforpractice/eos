@@ -1,4 +1,4 @@
-void _send_deferred(const uint128_t* sender_id, uint64_t payer, const char *data, uint32_t data_len, uint32_t replace_existing) {
+void _send_deferred(const uint128_t* sender_id, uint64_t payer, const char *data, size_t data_len, uint32_t replace_existing) {
    try {
       transaction trx;
       fc::raw::unpack<transaction>(data, data_len, trx);
@@ -11,19 +11,19 @@ int _cancel_deferred(const uint128_t* val) {
    return ctx().cancel_deferred_transaction( (unsigned __int128)sender_id );
 }
 
-uint32_t read_transaction(char *data, uint32_t buffer_size) {
+size_t read_transaction(char *data, size_t buffer_size) {
    bytes trx = ctx().get_packed_transaction();
 
    auto s = trx.size();
    if( buffer_size == 0) return s;
 
-   auto copy_size = std::min( buffer_size, (uint32_t)s );
+   auto copy_size = std::min( buffer_size, s );
    memcpy( data, trx.data(), copy_size );
 
    return copy_size;
 }
 
-uint32_t transaction_size() {
+size_t transaction_size() {
    return ctx().get_packed_transaction().size();
 }
 
@@ -39,7 +39,7 @@ uint32_t expiration() {
    return ctx().trx_context.trx.expiration.sec_since_epoch();
 }
 
-int get_action( uint32_t type, uint32_t index, char* buffer, uint32_t buffer_size ) {
+int get_action( uint32_t type, uint32_t index, char* buffer, size_t buffer_size ) {
    return ctx().get_action( type, index, buffer, buffer_size );
 }
 
@@ -52,6 +52,6 @@ void assert_context_free() {
    EOS_ASSERT( ctx().is_context_free(), unaccessible_api, "this API may only be called from context_free apply" );
 }
 
-int get_context_free_data( uint32_t index, char* buffer, uint32_t buffer_size ) {
+int get_context_free_data( uint32_t index, char* buffer, size_t buffer_size ) {
    return ctx().get_context_free_data( index, buffer, buffer_size );
 }

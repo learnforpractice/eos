@@ -12,19 +12,19 @@
 
 namespace eosio {
 
-   template<uint32_t Size>
+   template<size_t Size>
    class fixed_key;
 
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator==(const fixed_key<Size> &c1, const fixed_key<Size> &c2);
 
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator!=(const fixed_key<Size> &c1, const fixed_key<Size> &c2);
 
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator>(const fixed_key<Size> &c1, const fixed_key<Size> &c2);
 
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator<(const fixed_key<Size> &c1, const fixed_key<Size> &c2);
 
     /**
@@ -41,7 +41,7 @@ namespace eosio {
     *  @tparam Size - Size of the fixed_key object
     *  @ingroup types
     */
-   template<uint32_t Size>
+   template<size_t Size>
    class fixed_key {
       private:
 
@@ -49,13 +49,13 @@ namespace eosio {
          template<bool... bs>
          using all_true = std::is_same< bool_pack<bs..., true>, bool_pack<true, bs...> >;
 
-         template<typename Word, uint32_t NumWords>
+         template<typename Word, size_t NumWords>
          static void set_from_word_sequence(const std::array<Word, NumWords>& arr, fixed_key<Size>& key)
          {
             auto itr = key._data.begin();
             word_t temp_word = 0;
-            const uint32_t sub_word_shift = 8 * sizeof(Word);
-            const uint32_t num_sub_words = sizeof(word_t) / sizeof(Word);
+            const size_t sub_word_shift = 8 * sizeof(Word);
+            const size_t num_sub_words = sizeof(word_t) / sizeof(Word);
             auto sub_words_left = num_sub_words;
             for( auto&& w : arr ) {
                if( sub_words_left > 1 ) {
@@ -90,7 +90,7 @@ namespace eosio {
           * @brief Get number of words contained in this fixed_key object
           */
 
-         static constexpr uint32_t num_words() { return (Size + sizeof(word_t) - 1) / sizeof(word_t); }
+         static constexpr size_t num_words() { return (Size + sizeof(word_t) - 1) / sizeof(word_t); }
 
          /**
           * Get number of padded bytes contained in this fixed_key object. Padded bytes are the remaining bytes
@@ -98,7 +98,7 @@ namespace eosio {
           * 
           * @brief Get number of padded bytes contained in this fixed_key object
           */
-         static constexpr uint32_t padded_bytes() { return num_words() * sizeof(word_t) - Size; }
+         static constexpr size_t padded_bytes() { return num_words() * sizeof(word_t) - Size; }
 
          /**
          * @brief Default constructor to fixed_key object
@@ -124,7 +124,7 @@ namespace eosio {
          * @details Constructor to fixed_key object from std::array of num_words() words
          * @param arr - Source data
          */
-         template<typename Word, uint32_t NumWords,
+         template<typename Word, size_t NumWords,
                   typename Enable = typename std::enable_if<std::is_integral<Word>::value &&
                                                              !std::is_same<Word, bool>::value &&
                                                              sizeof(Word) < sizeof(word_t)>::type >
@@ -198,13 +198,13 @@ namespace eosio {
          std::array<uint8_t, Size> extract_as_byte_array()const {
             std::array<uint8_t, Size> arr;
 
-            const uint32_t num_sub_words = sizeof(word_t);
+            const size_t num_sub_words = sizeof(word_t);
 
             auto arr_itr  = arr.begin();
             auto data_itr = _data.begin();
 
-            for( uint32_t counter = _data.size(); counter > 0; --counter, ++data_itr ) {
-               uint32_t sub_words_left = num_sub_words;
+            for( size_t counter = _data.size(); counter > 0; --counter, ++data_itr ) {
+               size_t sub_words_left = num_sub_words;
 
                if( counter == 1 ) { // If last word in _data array...
                   sub_words_left -= padded_bytes();
@@ -242,7 +242,7 @@ namespace eosio {
     * @param c2 - Second fixed_key object to compare
     * @return if c1 == c2, return true, otherwise false
     */
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator==(const fixed_key<Size> &c1, const fixed_key<Size> &c2) {
       return c1._data == c2._data;
    }
@@ -255,7 +255,7 @@ namespace eosio {
     * @param c2 - Second fixed_key object to compare
     * @return if c1 != c2, return true, otherwise false
     */
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator!=(const fixed_key<Size> &c1, const fixed_key<Size> &c2) {
       return c1._data != c2._data;
    }
@@ -268,7 +268,7 @@ namespace eosio {
     * @param c2 - Second fixed_key object to compare
     * @return if c1 > c2, return true, otherwise false
     */
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator>(const fixed_key<Size>& c1, const fixed_key<Size>& c2) {
       return c1._data > c2._data;
    }
@@ -281,7 +281,7 @@ namespace eosio {
     * @param c2 - Second fixed_key object to compare
     * @return if c1 < c2, return true, otherwise false
     */
-   template<uint32_t Size>
+   template<size_t Size>
    bool operator<(const fixed_key<Size> &c1, const fixed_key<Size> &c2) {
       return c1._data < c2._data;
    }

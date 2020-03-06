@@ -27,7 +27,7 @@ uint64_t current_receiver() {
    return ctx().get_receiver().to_uint64_t();
 }
 
-void set_action_return_value( const char* packed_blob, uint32_t datalen ) {
+void set_action_return_value( const char* packed_blob, size_t datalen ) {
    ctx().action_return_value.assign( packed_blob, packed_blob + datalen );
 }
 
@@ -51,7 +51,7 @@ bool is_account( uint64_t account ) {
    return ctx().is_account(name(account));
 }
 
-void send_inline(const char *data, uint32_t data_len) {
+void send_inline(const char *data, size_t data_len) {
    //TODO: Why is this limit even needed? And why is it not consistently checked on actions in input or deferred transactions
    EOS_ASSERT( data_len < ctx().control.get_global_properties().configuration.max_inline_action_size, inline_action_too_big,
               "inline action too big" );
@@ -61,7 +61,7 @@ void send_inline(const char *data, uint32_t data_len) {
    ctx().execute_inline(std::move(act));
 }
 
-void send_context_free_inline(const char *data, uint32_t data_len) {
+void send_context_free_inline(const char *data, size_t data_len) {
    //TODO: Why is this limit even needed? And why is it not consistently checked on actions in input or deferred transactions
    EOS_ASSERT( data_len < ctx().control.get_global_properties().configuration.max_inline_action_size, inline_action_too_big,
              "inline action too big" );
@@ -75,12 +75,12 @@ uint64_t  publication_time() {
    return static_cast<uint64_t>( ctx().trx_context.published.time_since_epoch().count() );
 }
 
-bool is_feature_activated(const char *digest, uint32_t size) {
+bool is_feature_activated(const char *digest, size_t size) {
    digest_type feature_digest(digest, size);
    return ctx().control.is_protocol_feature_activated( feature_digest );
 }
 
-void preactivate_feature(const char *digest, uint32_t size) {
+void preactivate_feature(const char *digest, size_t size) {
    digest_type feature_digest(digest, size);
    ctx().control.preactivate_feature( feature_digest );
 }

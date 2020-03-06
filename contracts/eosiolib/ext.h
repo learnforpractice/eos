@@ -10,7 +10,7 @@ __attribute__((eosio_wasm_import))
 int get_code_size(uint64_t account);
 
 __attribute__((eosio_wasm_import))
-int get_code(uint64_t account, char *code, uint32_t size);
+int get_code(uint64_t account, char *code, size_t size);
 
 
 #ifdef __cplusplus

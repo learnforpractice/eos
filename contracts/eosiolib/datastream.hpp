@@ -45,7 +45,7 @@ class datastream {
        * @param start - The start position of the buffer
        * @param s - The size of the buffer
        */
-      datastream( T start, uint32_t s )
+      datastream( T start, size_t s )
       :_start(start),_pos(start),_end(start+s){}
 
      /**
@@ -54,7 +54,7 @@ class datastream {
       *  @brief Skips a specific number of bytes from this stream
       *  @param s - The number of bytes to skip
       */
-      inline void skip( uint32_t s ){ _pos += s; }
+      inline void skip( size_t s ){ _pos += s; }
 
      /**
       *  Reads a specified number of bytes from the stream into a buffer
@@ -64,8 +64,8 @@ class datastream {
       *  @param s - the number of bytes to read
       *  @return true
       */
-      inline bool read( char* d, uint32_t s ) {
-        eosio_assert( uint32_t(_end - _pos) >= (uint32_t)s, "read" );
+      inline bool read( char* d, size_t s ) {
+        eosio_assert( size_t(_end - _pos) >= (size_t)s, "read" );
         memcpy( d, _pos, s );
         _pos += s;
         return true;
@@ -79,7 +79,7 @@ class datastream {
       *  @param s - The number of bytes to write
       *  @return true
       */
-      inline bool write( const char* d, uint32_t s ) {
+      inline bool write( const char* d, size_t s ) {
         eosio_assert( _end - _pos >= (int32_t)s, "write" );
         memcpy( (void*)_pos, d, s );
         _pos += s;
@@ -141,7 +141,7 @@ class datastream {
       *  @return true if p is within the range
       *  @return false if p is not within the rawnge
       */
-      inline bool seekp(uint32_t p) { _pos = _start + p; return _pos <= _end; }
+      inline bool seekp(size_t p) { _pos = _start + p; return _pos <= _end; }
 
      /**
       *  Gets the position within the current stream
@@ -149,15 +149,15 @@ class datastream {
       *  @brief Gets the position within the current stream
       *  @return p - The position within the current stream
       */
-      inline uint32_t tellp()const      { return uint32_t(_pos - _start); }
+      inline size_t tellp()const      { return size_t(_pos - _start); }
 
      /**
       *  Returns the number of remaining bytes that can be read/skipped
       *
       *  @brief Returns the number of remaining bytes that can be read/skipped
-      *  @return uint32_t - The number of remaining bytes
+      *  @return size_t - The number of remaining bytes
       */
-      inline uint32_t remaining()const  { return _end - _pos; }
+      inline size_t remaining()const  { return _end - _pos; }
     private:
       /**
        * The start position of the buffer
@@ -184,7 +184,7 @@ class datastream {
  * Specialization of datastream used to help determine the final size of a serialized value
  */
 template<>
-class datastream<uint32_t> {
+class datastream<size_t> {
    public:
       /**
        * Construct a new specialized datastream object given the initial size
@@ -192,25 +192,25 @@ class datastream<uint32_t> {
        * @brief Construct a new specialized datastream object
        * @param init_size - The initial size
        */
-     datastream( uint32_t init_size = 0):_size(init_size){}
+     datastream( size_t init_size = 0):_size(init_size){}
 
      /**
-      *  Increment the size by s. This behaves the same as write( const char* ,uint32_t s ).
+      *  Increment the size by s. This behaves the same as write( const char* ,size_t s ).
       *
       *  @brief Increase the size by s
       *  @param s - The amount of size to increase
       *  @return true
       */
-     inline bool     skip( uint32_t s )                 { _size += s; return true;  }
+     inline bool     skip( size_t s )                 { _size += s; return true;  }
 
      /**
-      *  Increment the size by s. This behaves the same as skip( uint32_t s )
+      *  Increment the size by s. This behaves the same as skip( size_t s )
       *
       *  @brief Increase the size by s
       *  @param s - The amount of size to increase
       *  @return true
       */
-     inline bool     write( const char* ,uint32_t s )  { _size += s; return true;  }
+     inline bool     write( const char* ,size_t s )  { _size += s; return true;  }
 
      /**
       *  Increment the size by one
@@ -235,30 +235,30 @@ class datastream<uint32_t> {
       * @param p - The new size
       * @return true
       */
-     inline bool     seekp(uint32_t p)                  { _size = p;  return true;  }
+     inline bool     seekp(size_t p)                  { _size = p;  return true;  }
 
      /**
       * Get the size
       *
       * @brief Get the size
-      * @return uint32_t - The size
+      * @return size_t - The size
       */
-     inline uint32_t   tellp()const                     { return _size;             }
+     inline size_t   tellp()const                     { return _size;             }
 
      /**
       * Always returns 0
       *
       * @brief Always returns 0
-      * @return uint32_t - 0
+      * @return size_t - 0
       */
-     inline uint32_t   remaining()const                 { return 0;                 }
+     inline size_t   remaining()const                 { return 0;                 }
   private:
      /**
       * The size used to determine the final size of a serialized value.
       *
       * @brief The size used to determine the final size of a serialized value.
       */
-     uint32_t _size;
+     size_t _size;
 };
 
 /**
@@ -430,7 +430,7 @@ DataStream& operator >> ( DataStream& ds, std::string& v ) {
  *  @tparam N - Size of the array
  *  @return DataStream& - Reference to the datastream
  */
-template<typename DataStream, typename T, std::uint32_t N>
+template<typename DataStream, typename T, std::size_t N>
 DataStream& operator << ( DataStream& ds, const std::array<T,N>& v ) {
    for( const auto& i : v )
       ds << i;
@@ -449,7 +449,7 @@ DataStream& operator << ( DataStream& ds, const std::array<T,N>& v ) {
  *  @tparam N - Size of the array
  *  @return DataStream& - Reference to the datastream
  */
-template<typename DataStream, typename T, std::uint32_t N>
+template<typename DataStream, typename T, std::size_t N>
 DataStream& operator >> ( DataStream& ds, std::array<T,N>& v ) {
    for( auto& i : v )
       ds >> i;
@@ -513,7 +513,7 @@ DataStream& operator >> ( DataStream& ds, T ) {
  *  @tparam T - Type of the pointer
  *  @return DataStream& - Reference to the datastream
  */
-template<typename DataStream, typename T, std::uint32_t N,
+template<typename DataStream, typename T, std::size_t N,
          std::enable_if_t<!_datastream_detail::is_primitive<T>() &&
                           !_datastream_detail::is_pointer<T>()>* = nullptr>
 DataStream& operator << ( DataStream& ds, const T (&v)[N] ) {
@@ -533,7 +533,7 @@ DataStream& operator << ( DataStream& ds, const T (&v)[N] ) {
  *  @tparam T - Type of the pointer
  *  @return DataStream& - Reference to the datastream
  */
-template<typename DataStream, typename T, std::uint32_t N,
+template<typename DataStream, typename T, std::size_t N,
          std::enable_if_t<_datastream_detail::is_primitive<T>()>* = nullptr>
 DataStream& operator << ( DataStream& ds, const T (&v)[N] ) {
    ds << unsigned_int( N );
@@ -552,7 +552,7 @@ DataStream& operator << ( DataStream& ds, const T (&v)[N] ) {
  *  @tparam DataStream - Type of datastream
  *  @return DataStream& - Reference to the datastream
  */
-template<typename DataStream, typename T, std::uint32_t N,
+template<typename DataStream, typename T, std::size_t N,
          std::enable_if_t<!_datastream_detail::is_primitive<T>() &&
                           !_datastream_detail::is_pointer<T>()>* = nullptr>
 DataStream& operator >> ( DataStream& ds, T (&v)[N] ) {
@@ -575,7 +575,7 @@ DataStream& operator >> ( DataStream& ds, T (&v)[N] ) {
  *  @tparam DataStream - Type of datastream
  *  @return DataStream& - Reference to the datastream
  */
-template<typename DataStream, typename T, std::uint32_t N,
+template<typename DataStream, typename T, std::size_t N,
          std::enable_if_t<_datastream_detail::is_primitive<T>()>* = nullptr>
 DataStream& operator >> ( DataStream& ds, T (&v)[N] ) {
    unsigned_int s;
@@ -903,7 +903,7 @@ DataStream& operator>>( DataStream& ds, T& v ) {
  * @return T - The unpacked data
  */
 template<typename T>
-T unpack( const char* buffer, uint32_t len ) {
+T unpack( const char* buffer, size_t len ) {
    T result;
    datastream<const char*> ds(buffer,len);
    ds >> result;
@@ -929,11 +929,11 @@ T unpack( const vector<char>& bytes ) {
  * @brief Get the size of the packed data
  * @tparam T - Type of the data to be packed
  * @param value - Data to be packed
- * @return uint32_t - Size of the packed data
+ * @return size_t - Size of the packed data
  */
 template<typename T>
-uint32_t pack_size( const T& value ) {
-  datastream<uint32_t> ps;
+size_t pack_size( const T& value ) {
+  datastream<size_t> ps;
   ps << value;
   return ps.tellp();
 }

@@ -209,7 +209,7 @@ WASM_IMPORT void ripemd160( const char* data, uint32_t length, struct checksum16
  *  @code
  *  @endcode
  */
-WASM_IMPORT int recover_key( const struct checksum256* digest, const char* sig, uint32_t siglen, char* pub, uint32_t publen );
+WASM_IMPORT int recover_key( const struct checksum256* digest, const char* sig, size_t siglen, char* pub, size_t publen );
 
 /**
  *  Tests a given public key with the generated key from digest and the signature.
@@ -229,18 +229,18 @@ WASM_IMPORT int recover_key( const struct checksum256* digest, const char* sig, 
  *  @code
  *  checksum digest;
  *  char sig;
- *  uint32_t siglen;
+ *  size_t siglen;
  *  char pub;
- *  uint32_t publen;
+ *  size_t publen;
  *  assert_recover_key( digest, sig, siglen, pub, publen )
  *  // If the given public key does not match with the generated key from digest and the signature, anything below will never fire.
  *  eosio::print("pub key matches the pub key generated from digest");
  *  @endcode
  */
-WASM_IMPORT void assert_recover_key( const struct checksum256* digest, const char* sig, uint32_t siglen, const char* pub, uint32_t publen );
+WASM_IMPORT void assert_recover_key( const struct checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen );
 
-WASM_IMPORT int to_base58( const char *in, uint32_t size1, char *out, uint32_t size2 );
-WASM_IMPORT int from_base58( const char *in, uint32_t size1, char *out, uint32_t size2 );
+WASM_IMPORT int to_base58( const char *in, size_t size1, char *out, size_t size2 );
+WASM_IMPORT int from_base58( const char *in, size_t size1, char *out, size_t size2 );
 
 /// }@cryptocapi
 

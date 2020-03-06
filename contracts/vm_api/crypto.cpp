@@ -40,11 +40,11 @@ void ripemd160( const char* data, uint32_t length, struct checksum160* hash ) {
    get_vm_api()->ripemd160(data, length, hash );
 }
 
-int recover_key( const struct checksum256* digest, const char* sig, uint32_t siglen, char* pub, uint32_t publen ) {
+int recover_key( const struct checksum256* digest, const char* sig, size_t siglen, char* pub, size_t publen ) {
    return get_vm_api()->recover_key(digest, sig, siglen, pub, publen);
 }
 
-void assert_recover_key( const struct checksum256* digest, const char* sig, uint32_t siglen, const char* pub, uint32_t publen ) {
+void assert_recover_key( const struct checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen ) {
    get_vm_api()->assert_recover_key(digest, sig, siglen, pub, publen);
 }
 

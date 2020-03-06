@@ -2,7 +2,7 @@
 #include "memory.hpp"
 #include "privileged.hpp"
 
-void* sbrk(uint32_t num_bytes) {
+void* sbrk(size_t num_bytes) {
       constexpr uint32_t NBPPL2  = 16U;
       constexpr uint32_t NBBP    = 65536U;
 
@@ -49,9 +49,9 @@ namespace eosio {
 
    void get_blockchain_parameters(eosio::blockchain_parameters& params) {
       char buf[sizeof(eosio::blockchain_parameters)];
-      uint32_t size = get_blockchain_parameters_packed( buf, sizeof(buf) );
+      size_t size = get_blockchain_parameters_packed( buf, sizeof(buf) );
       eosio_assert( size <= sizeof(buf), "buffer is too small" );
-      eosio::datastream<const char*> ds( buf, uint32_t(size) );
+      eosio::datastream<const char*> ds( buf, size_t(size) );
       ds >> params;
    }
 
@@ -62,9 +62,9 @@ namespace eosio {
 
    class memory_manager  // NOTE: Should never allocate another instance of memory_manager
    {
-   friend void* ::malloc(uint32_t size);
-   friend void* ::calloc(uint32_t count, uint32_t size);
-   friend void* ::realloc(void* ptr, uint32_t size);
+   friend void* ::malloc(size_t size);
+   friend void* ::calloc(size_t count, size_t size);
+   friend void* ::realloc(void* ptr, size_t size);
    friend void ::free(void* ptr);
    public:
       memory_manager()
@@ -533,19 +533,19 @@ extern "C" {
 
 void* __dso_handle = 0;
 
-void* malloc(uint32_t size)
+void* malloc(size_t size)
 {
    return eosio::memory_heap.malloc(size);
 }
 
-void* calloc(uint32_t count, uint32_t size)
+void* calloc(size_t count, size_t size)
 {
    void* ptr = eosio::memory_heap.malloc(count*size);
    memset(ptr, 0, count*size);
    return ptr;
 }
 
-void* realloc(void* ptr, uint32_t size)
+void* realloc(void* ptr, size_t size)
 {
    return eosio::memory_heap.realloc(ptr, size);
 }

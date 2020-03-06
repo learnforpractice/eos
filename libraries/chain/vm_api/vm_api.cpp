@@ -46,7 +46,7 @@ int transfer(uint64_t from, uint64_t to, int64_t amount, uint64_t symbol);
 extern "C" {
    void eosio_assert(uint32_t cnd, const char* msg);
 
-   int evm_execute(const char *raw_trx, uint32_t raw_trx_size, const char *sender_address, uint32_t sender_address_size);
+   int evm_execute(const char *raw_trx, size_t raw_trx_size, const char *sender_address, size_t sender_address_size);
 }
 
 namespace eosio {
@@ -177,7 +177,7 @@ static void __lshrti3(__int128* ret, uint64_t low, uint64_t high, uint32_t shift
    *ret = (unsigned __int128)i;
 }
 
-static bool get_code_version(uint64_t contract, char *hash, uint32_t size) {
+static bool get_code_version(uint64_t contract, char *hash, size_t size) {
    if (hash == nullptr || size != 32) {
       return false;
    }

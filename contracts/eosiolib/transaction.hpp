@@ -82,13 +82,13 @@ namespace eosio {
     * @return the indicated action
     */
    inline action get_action( uint32_t type, uint32_t index ) {
-      constexpr uint32_t max_stack_buffer_size = 512;
+      constexpr size_t max_stack_buffer_size = 512;
       int s = ::get_action( type, index, nullptr, 0 );
       eosio_assert( s > 0, "get_action size failed" );
-      uint32_t size = static_cast<uint32_t>(s);
+      size_t size = static_cast<size_t>(s);
       char* buffer = (char*)( max_stack_buffer_size < size ? malloc(size) : alloca(size) );
       auto size2 = ::get_action( type, index, buffer, size );
-      eosio_assert( size == static_cast<uint32_t>(size2), "get_action failed" );
+      eosio_assert( size == static_cast<size_t>(size2), "get_action failed" );
       return eosio::unpack<eosio::action>( buffer, size );
    }
 

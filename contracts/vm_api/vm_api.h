@@ -36,11 +36,11 @@ struct vm_api {
    void (*require_auth2)( uint64_t name, uint64_t permission );
    bool (*has_auth)( uint64_t name );
    bool (*is_account)( uint64_t name );
-   void (*send_inline)(const char *serialized_action, uint32_t size);
-   void (*send_context_free_inline)(const char *serialized_action, uint32_t size);
+   void (*send_inline)(const char *serialized_action, size_t size);
+   void (*send_context_free_inline)(const char *serialized_action, size_t size);
    uint64_t  (*publication_time)(void);
    uint64_t (*current_receiver)(void);
-   void (*set_action_return_value)( const char* packed_blob, uint32_t datalen );
+   void (*set_action_return_value)( const char* packed_blob, size_t datalen );
    uint32_t (*get_active_producers)( uint64_t* producers, uint32_t datalen );
 
    int (*get_balance)(uint64_t _account, uint64_t _symbol, int64_t* amount);
@@ -51,24 +51,24 @@ struct vm_api {
    void (*assert_sha1)( const char* data, uint32_t length, const struct checksum160* hash );
    void (*assert_sha512)( const char* data, uint32_t length, const struct checksum512* hash );
    void (*assert_ripemd160)( const char* data, uint32_t length, const struct checksum160* hash );
-   void (*assert_recover_key)( const struct checksum256* digest, const char* sig, uint32_t siglen, const char* pub, uint32_t publen );
+   void (*assert_recover_key)( const struct checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen );
 
    void (*sha256)( const char* data, uint32_t length, struct checksum256* hash );
    void (*sha1)( const char* data, uint32_t length, struct checksum160* hash );
    void (*sha512)( const char* data, uint32_t length, struct checksum512* hash );
    void (*ripemd160)( const char* data, uint32_t length, struct checksum160* hash );
-   int (*recover_key)( const struct checksum256* digest, const char* sig, uint32_t siglen, char* pub, uint32_t publen );
+   int (*recover_key)( const struct checksum256* digest, const char* sig, size_t siglen, char* pub, size_t publen );
    int (*sha3)(const char* data, int size, char* result, int size2);
 
    int32_t (*db_store_i64)(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len);
    int32_t (*db_store_i64_ex)(uint64_t code, uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len);
    void (*db_update_i64)(int32_t iterator, uint64_t payer, const char* data, uint32_t len);
    void (*db_remove_i64)(int32_t iterator);
-   void (*db_update_i64_ex)( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, uint32_t buffer_size );
+   void (*db_update_i64_ex)( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, size_t buffer_size );
    void (*db_remove_i64_ex)( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id );
    int32_t (*db_get_i64)(int32_t iterator, void* data, uint32_t len);
-   int32_t (*db_get_i64_ex)( int itr, uint64_t* primary, char* buffer, uint32_t buffer_size );
-   const char* (*db_get_i64_exex)( int itr, uint32_t* buffer_size );
+   int32_t (*db_get_i64_ex)( int itr, uint64_t* primary, char* buffer, size_t buffer_size );
+   const char* (*db_get_i64_exex)( int itr, size_t* buffer_size );
    int32_t (*db_next_i64)(int32_t iterator, uint64_t* primary);
    int32_t (*db_previous_i64)(int32_t iterator, uint64_t* primary);
    int32_t (*db_find_i64)(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
@@ -76,13 +76,13 @@ struct vm_api {
    int32_t (*db_upperbound_i64)(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
    int32_t (*db_end_i64)(uint64_t code, uint64_t scope, uint64_t table);
 
-   int (*db_store_i256)( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, uint32_t buffer_size );
-   void (*db_update_i256)( int iterator, uint64_t payer, const char* buffer, uint32_t buffer_size );
+   int (*db_store_i256)( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, size_t buffer_size );
+   void (*db_update_i256)( int iterator, uint64_t payer, const char* buffer, size_t buffer_size );
    void (*db_remove_i256)( int iterator );
-   int (*db_get_i256)( int iterator, char* buffer, uint32_t buffer_size );
-   int (*db_find_i256)( uint64_t code, uint64_t scope, uint64_t table, void* id, uint32_t size );
-   int (*db_previous_i256)( int iterator, void* primary, uint32_t size );
-   int (*db_next_i256)( int iterator, void* primary, uint32_t size );
+   int (*db_get_i256)( int iterator, char* buffer, size_t buffer_size );
+   int (*db_find_i256)( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t size );
+   int (*db_previous_i256)( int iterator, void* primary, size_t size );
+   int (*db_next_i256)( int iterator, void* primary, size_t size );
    int (*db_upperbound_i256)( uint64_t code, uint64_t scope, uint64_t table, void* id, int size );
    int (*db_lowerbound_i256)( uint64_t code, uint64_t scope, uint64_t table, void* id, int size );
    int32_t (*db_end_i256)(uint64_t code, uint64_t scope, uint64_t table);
@@ -113,16 +113,16 @@ struct vm_api {
    int32_t (*db_idx128_upperbound)(uint64_t code, uint64_t scope, uint64_t table, __uint128* secondary, uint64_t* primary);
 
    int32_t (*db_idx128_end)(uint64_t code, uint64_t scope, uint64_t table);
-   int32_t (*db_idx256_store)(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const __uint128* data, uint32_t data_len );
-   void (*db_idx256_update)(int32_t iterator, uint64_t payer, const void* data, uint32_t data_len);
+   int32_t (*db_idx256_store)(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const __uint128* data, size_t data_len );
+   void (*db_idx256_update)(int32_t iterator, uint64_t payer, const void* data, size_t data_len);
    void (*db_idx256_remove)(int32_t iterator);
    int32_t (*db_idx256_next)(int32_t iterator, uint64_t* primary);
 
    int32_t (*db_idx256_previous)(int32_t iterator, uint64_t* primary);
-   int32_t (*db_idx256_find_primary)(uint64_t code, uint64_t scope, uint64_t table, __uint128* data, uint32_t data_len, uint64_t primary);
-   int32_t (*db_idx256_find_secondary)(uint64_t code, uint64_t scope, uint64_t table, const __uint128* data, uint32_t data_len, uint64_t* primary);
-   int32_t (*db_idx256_lowerbound)(uint64_t code, uint64_t scope, uint64_t table, __uint128* data, uint32_t data_len, uint64_t* primary);
-   int32_t (*db_idx256_upperbound)(uint64_t code, uint64_t scope, uint64_t table, __uint128* data, uint32_t data_len, uint64_t* primary);
+   int32_t (*db_idx256_find_primary)(uint64_t code, uint64_t scope, uint64_t table, __uint128* data, size_t data_len, uint64_t primary);
+   int32_t (*db_idx256_find_secondary)(uint64_t code, uint64_t scope, uint64_t table, const __uint128* data, size_t data_len, uint64_t* primary);
+   int32_t (*db_idx256_lowerbound)(uint64_t code, uint64_t scope, uint64_t table, __uint128* data, size_t data_len, uint64_t* primary);
+   int32_t (*db_idx256_upperbound)(uint64_t code, uint64_t scope, uint64_t table, __uint128* data, size_t data_len, uint64_t* primary);
    int32_t (*db_idx256_end)(uint64_t code, uint64_t scope, uint64_t table);
 
    int32_t (*db_idx_double_store)(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const float64_t* secondary);
@@ -195,42 +195,42 @@ struct vm_api {
    void (*checktime)(void);
    void (*check_context_free)(bool context_free);
 
-   void (*send_deferred)(const __uint128* sender_id, uint64_t payer, const char *serialized_transaction, uint32_t size, uint32_t replace_existing);
+   void (*send_deferred)(const __uint128* sender_id, uint64_t payer, const char *serialized_transaction, size_t size, uint32_t replace_existing);
    int (*cancel_deferred)(const __uint128* sender_id);
 
-   uint32_t (*read_transaction)(char *buffer, uint32_t size);
-   uint32_t (*transaction_size)(void);
+   size_t (*read_transaction)(char *buffer, size_t size);
+   size_t (*transaction_size)(void);
    int (*tapos_block_num)(void);
    int (*tapos_block_prefix)(void);
    uint32_t (*expiration)(void);
-   int (*get_action)( uint32_t type, uint32_t index, char* buff, uint32_t size );
+   int (*get_action)( uint32_t type, uint32_t index, char* buff, size_t size );
 
    void (*assert_privileged)(void);
    void (*assert_context_free)(void);
-   int (*get_context_free_data)( uint32_t index, char* buff, uint32_t size );
+   int (*get_context_free_data)( uint32_t index, char* buff, size_t size );
 
-   int (*call_contract_get_extra_args)(void *extra_args, uint32_t size1);
-   int (*call_contract_set_results)(const void *result, uint32_t size1);
-   int (*call_contract_get_results)(void *result, uint32_t size1);
-   void (*vm_call)(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char *extra_args, uint32_t in_size);
+   int (*call_contract_get_extra_args)(void *extra_args, size_t size1);
+   int (*call_contract_set_results)(const void *result, size_t size1);
+   int (*call_contract_get_results)(void *result, size_t size1);
+   void (*vm_call)(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char *extra_args, size_t in_size);
    void (*wasm_call)(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3);
 
-   int (*evm_execute)(const char *raw_trx, uint32_t raw_trx_size, const char *sender_address, uint32_t sender_address_size);
+   int (*evm_execute)(const char *raw_trx, size_t raw_trx_size, const char *sender_address, size_t sender_address_size);
 
-   void (*set_last_error)(const char* error, uint32_t size);
-   uint32_t (*get_last_error)(char* error, uint32_t size);
+   void (*set_last_error)(const char* error, size_t size);
+   size_t (*get_last_error)(char* error, size_t size);
    void (*clear_last_error)();
 
    void (*log)(int level, int line, const char *file, const char *func, const char *fmt, ...);
 
-   bool (*is_feature_activated)(const char *digest, uint32_t size);
-   void (*preactivate_feature)(const char *digest, uint32_t size);
+   bool (*is_feature_activated)(const char *digest, size_t size);
+   void (*preactivate_feature)(const char *digest, size_t size);
 
    uint64_t (*get_sender)();
 
    void (*__ashlti3)(__int128* ret, uint64_t low, uint64_t high, uint32_t shift);
    void (*__lshrti3)(__int128* ret, uint64_t low, uint64_t high, uint32_t shift);
-   bool (*get_code_version)(uint64_t account, char *hash, uint32_t size);
+   bool (*get_code_version)(uint64_t account, char *hash, size_t size);
 
    bool is_in_apply_context;
    bool allow_access_apply_context;
@@ -264,7 +264,7 @@ void vm_deinit(void);
 
 int vm_setcode(uint64_t account);
 int vm_apply(uint64_t receiver, uint64_t account, uint64_t act);
-int vm_call(uint64_t account, uint64_t func, uint64_t arg1, uint64_t arg2, uint64_t arg3, void* extra_args, uint32_t extra_args_size);
+int vm_call(uint64_t account, uint64_t func, uint64_t arg1, uint64_t arg2, uint64_t arg3, void* extra_args, size_t extra_args_size);
 
 int vm_preload(uint64_t account);
 int vm_load(uint64_t account);

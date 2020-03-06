@@ -14,9 +14,9 @@ namespace eosio {
 
    void get_blockchain_parameters(eosio::blockchain_parameters& params) {
       char buf[sizeof(eosio::blockchain_parameters)];
-      uint32_t size = get_blockchain_parameters_packed( buf, sizeof(buf) );
+      size_t size = get_blockchain_parameters_packed( buf, sizeof(buf) );
       eosio_assert( size <= sizeof(buf), "buffer is too small" );
-      eosio::datastream<const char*> ds( buf, uint32_t(size) );
+      eosio::datastream<const char*> ds( buf, size_t(size) );
       ds >> params;
    }
 

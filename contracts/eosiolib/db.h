@@ -219,7 +219,7 @@ WASM_IMPORT int32_t db_end_i64(account_name code, account_name scope, table_name
 
 //for ipc & rpc
 WASM_IMPORT void db_remove_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id );
-WASM_IMPORT void db_update_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, uint32_t buffer_size );
+WASM_IMPORT void db_update_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, size_t buffer_size );
 
 /**
   *
@@ -935,17 +935,17 @@ WASM_IMPORT int32_t db_idx_long_double_upperbound(account_name code, account_nam
 WASM_IMPORT int32_t db_idx_long_double_end(account_name code, account_name scope, table_name table);
 
 
-WASM_IMPORT int32_t db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, uint32_t buffer_size );
-WASM_IMPORT void db_update_i256( int iterator, uint64_t payer, const char* buffer, uint32_t buffer_size );
+WASM_IMPORT int32_t db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, size_t buffer_size );
+WASM_IMPORT void db_update_i256( int iterator, uint64_t payer, const char* buffer, size_t buffer_size );
 WASM_IMPORT void db_remove_i256( int iterator );
-WASM_IMPORT int32_t db_get_i256( int iterator, char* buffer, uint32_t buffer_size );
-WASM_IMPORT int32_t db_find_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, uint32_t size );
+WASM_IMPORT int32_t db_get_i256( int iterator, char* buffer, size_t buffer_size );
+WASM_IMPORT int32_t db_find_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t size );
 
-WASM_IMPORT int db_previous_i256( int itr, void* primary, uint32_t id_size );
-WASM_IMPORT int db_next_i256( int itr, void* primary, uint32_t id_size );
+WASM_IMPORT int db_previous_i256( int itr, void* primary, size_t id_size );
+WASM_IMPORT int db_next_i256( int itr, void* primary, size_t id_size );
 
-WASM_IMPORT int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, uint32_t id_size );
-WASM_IMPORT int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, uint32_t id_size );
+WASM_IMPORT int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t id_size );
+WASM_IMPORT int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t id_size );
 
 WASM_IMPORT uint32_t db_get_table_count(uint64_t code, uint64_t scope, uint64_t table);
 
