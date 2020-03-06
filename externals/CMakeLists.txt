@@ -16,7 +16,7 @@ if( EOSIO_COMPILE_EOSIO_CONTRACTS )
       INSTALL_COMMAND ""
       BUILD_ALWAYS 1
    )
-   
+
 else()
   message( STATUS "Not building contracts in directory `eosio.contracts/contracts`" )
 #  add_subdirectory(test-contracts)
@@ -36,7 +36,8 @@ ExternalProject_Add(
    INSTALL_COMMAND ""
    BUILD_ALWAYS 1
 )
-
+add_dependencies(aleth ethereum_vm)
+add_dependencies(aleth vm_api)
 
 include(ExternalProject)
 
@@ -51,29 +52,27 @@ ExternalProject_Add(
     INSTALL_COMMAND ""
     BUILD_ALWAYS 1
 )
-
-ExternalProject_Add(
-    eevm_project
-    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eevm4eosio
-    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eevm4eosio
-    CMAKE_ARGS -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DETH_ACCOUNT_NATIVE=${ETH_ACCOUNT_NATIVE} -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR}
-    UPDATE_COMMAND ""
-    PATCH_COMMAND ""
-    TEST_COMMAND ""
-    INSTALL_COMMAND ""
-    BUILD_ALWAYS 1
-)
-add_dependencies(eevm_project vm_api)
+add_dependencies(evmone_native_project vm_api)
+add_dependencies(evmone_native_project ethereum_vm)
 
 
-# add_dependencies(evmone_project vm_api)
-# add_dependencies(evmone_project ethereum_vm)
+# ExternalProject_Add(
+#     eevm_project
+#     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eevm4eosio
+#     BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eevm4eosio
+#     CMAKE_ARGS -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DETH_ACCOUNT_NATIVE=${ETH_ACCOUNT_NATIVE} -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+#     UPDATE_COMMAND ""
+#     PATCH_COMMAND ""
+#     TEST_COMMAND ""
+#     INSTALL_COMMAND ""
+#     BUILD_ALWAYS 1
+# )
+# add_dependencies(eevm_project vm_api)
+# add_dependencies(eevm_project vm_api)
 
 
 #add_subdirectory(test-contracts)
 #add_subdirectory(boost)
 #add_subdirectory(evm4eosio)
-add_dependencies(aleth ethereum_vm)
-add_dependencies(aleth vm_api)
-#add_dependencies(eevm_project vm_api)
+
 

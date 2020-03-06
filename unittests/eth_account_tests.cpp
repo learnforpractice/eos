@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE( test2 ) try {
 
 BOOST_AUTO_TEST_CASE( test3 ) try {
 
-   test_signature_check();
+//   test_signature_check();
 
 } FC_LOG_AND_RETHROW()
 
