@@ -24,7 +24,9 @@ configure_file( ${CMAKE_SOURCE_DIR}/../../externals/evmone4eosio/ethereum_vm/eth
 else()
 
 #add_contract( utility utility utility.cpp )
-add_library(ethereum_vm STATIC ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/ethereum_vm/eth_account.cpp
+add_library(ethereum_vm STATIC 
+   ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/ethereum_vm/eth_account.cpp
+   ${CMAKE_SOURCE_DIR}/externals/evmone4eosio/ethereum_vm/eth_account.hpp
 )
 
 target_include_directories(ethereum_vm

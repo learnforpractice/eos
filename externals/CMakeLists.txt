@@ -56,19 +56,19 @@ add_dependencies(evmone_native_project vm_api)
 add_dependencies(evmone_native_project ethereum_vm)
 
 
-# ExternalProject_Add(
-#     eevm_project
-#     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eevm4eosio
-#     BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eevm4eosio
-#     CMAKE_ARGS -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DETH_ACCOUNT_NATIVE=${ETH_ACCOUNT_NATIVE} -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR}
-#     UPDATE_COMMAND ""
-#     PATCH_COMMAND ""
-#     TEST_COMMAND ""
-#     INSTALL_COMMAND ""
-#     BUILD_ALWAYS 1
-# )
-# add_dependencies(eevm_project vm_api)
-# add_dependencies(eevm_project vm_api)
+ExternalProject_Add(
+    eevm_project
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/eevm4eosio
+    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/eevm4eosio
+    CMAKE_ARGS -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DETH_ACCOUNT_NATIVE=${ETH_ACCOUNT_NATIVE} -DEOSIO_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    TEST_COMMAND ""
+    INSTALL_COMMAND ""
+    BUILD_ALWAYS 1
+)
+add_dependencies(eevm_project vm_api)
+add_dependencies(eevm_project vm_api)
 
 
 #add_subdirectory(test-contracts)
