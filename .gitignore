@@ -108,3 +108,4 @@ programs/uuos/dd2
 programs/uuos/dist
 programs/uuos/hello.egg-info
 programs/uuso/logfile.log
+!*.swagger.*
