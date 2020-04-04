@@ -176,6 +176,10 @@ struct fake_chain_plugin {
    eosio::chain::controller& chain()const {
       return ctrl;
    }
+   
+   bool accept_transactions() {
+      return true;
+   }
 
    eosio::chain::controller& ctrl;
 };
@@ -380,10 +384,8 @@ class producer_plugin_impl : public std::enable_shared_from_this<producer_plugin
          _unapplied_transactions.add_aborted( chain.abort_block() );
 
          // exceptions throw out, make sure we restart our loop
-         auto ensure = fc::make_scoped_exit([this, schedule](){
-            if (schedule) {
-               schedule_production_loop();
-            }
+         auto ensure = fc::make_scoped_exit([this](){
+            schedule_production_loop();
          });
 
          // push the new block
@@ -857,7 +859,7 @@ void producer_plugin::plugin_initialize(chain::controller& chain, const producer
 
    my->_incoming_block_subscription = app().get_channel<incoming::channels::block>().subscribe([this](const signed_block_ptr& block){
       try {
-         my->on_incoming_block(block);
+         my->on_incoming_block(block, {});
       } LOG_AND_DROP();
    });
 
@@ -868,8 +870,9 @@ void producer_plugin::plugin_initialize(chain::controller& chain, const producer
       } LOG_AND_DROP();
    });
 
-   my->_incoming_block_sync_provider = app().get_method<incoming::methods::block_sync>().register_provider([this](const signed_block_ptr& block){
-      my->on_incoming_block(block);
+   my->_incoming_block_sync_provider = app().get_method<incoming::methods::block_sync>().register_provider(
+         [this](const signed_block_ptr& block, const std::optional<block_id_type>& block_id) {
+      return my->on_incoming_block(block, block_id);
    });
 
    my->_incoming_transaction_async_provider = app().get_method<incoming::methods::transaction_async>().register_provider(
@@ -2390,7 +2393,7 @@ void producer_on_incoming_block_(void *ptr, string& packed_signed_block, uint32_
       std::shared_ptr<signed_block> block = std::make_shared<signed_block>();
       fc::datastream<const char*> ds( packed_signed_block.c_str(), packed_signed_block.size() );
       fc::raw::unpack( ds, *block );
-      producer.my->on_incoming_block(block, false);
+      producer.my->on_incoming_block(block, {});
       num = block->block_num();
       id = fc::json::to_string<block_id_type>(block->id(), fc::time_point::maximum());
    } LOG_AND_DROP();

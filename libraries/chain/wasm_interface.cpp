@@ -28,7 +28,10 @@
 #include <vm_api/vm_api.h>
 
 extern "C" {
-   int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
+   int evm_execute(const unsigned char *raw_trx, int raw_trx_size)
+   {
+      return 0;
+   }
 }
 
 #if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
@@ -1994,23 +1997,6 @@ class vm_apis : public context_aware_api {
       int call_contract_get_results(array_ptr<char> results, uint32_t size1) {
          return get_vm_api()->call_contract_get_results(results, size1);
       }
-
-
-      int to_base58( array_ptr<const char> in, uint32_t size1, array_ptr<char> out, uint32_t size2 ) {
-         std::vector<char> v(in.value, in.value+size1);
-         std::string s = fc::to_base58( v );
-         auto copy_size = std::min((size_t)size2, s.size());
-         ::memcpy(out, s.c_str(), copy_size);
-         return copy_size;
-      }
-
-      int from_base58( array_ptr<const char> in, uint32_t size1, array_ptr<char> out, uint32_t size2 ) {
-         string s(in.value, size1);
-         auto v = fc::from_base58(s);
-         auto copy_size = std::min(v.size(), (size_t)size2);
-         ::memcpy(out, v.data(), copy_size);
-         return copy_size;
-      }
 };
 
 
@@ -2026,9 +2012,6 @@ REGISTER_INTRINSICS(vm_apis,
    (call_contract_get_extra_args,   int(int, int))
    (call_contract_set_results,      int(int, int))
    (call_contract_get_results,      int(int, int))
-   (to_base58,                      int(int, int, int, int))
-   (from_base58,                    int(int, int, int, int))
-
 );
 
 REGISTER_INJECTED_INTRINSICS(call_depth_api,

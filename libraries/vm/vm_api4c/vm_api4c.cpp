@@ -302,9 +302,6 @@ void init_vm_api4c() {
     Z_envZ_assert_recover_keyZ_viiiii = assert_recover_key;
     Z_envZ_recover_keyZ_iiiiii = recover_key;
 
-    Z_envZ_from_base58Z_iiiii = from_base58;
-    Z_envZ_to_base58Z_iiiii = to_base58;
-
 
 //permission.cpp
     Z_envZ_check_transaction_authorizationZ_iiiiiii = check_transaction_authorization;

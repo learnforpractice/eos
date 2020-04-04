@@ -274,9 +274,6 @@ constexpr auto intrinsic_table = boost::hana::make_tuple(
    "env.call_contract_get_extra_args"_s,
    "env.call_contract_set_results"_s,
    "env.call_contract_get_results"_s,
-   "env.to_base58"_s,
-   "env.from_base58"_s,
-   "env.set_action_return_value"_s
 );
 
 }}}

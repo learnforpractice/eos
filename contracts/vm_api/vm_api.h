@@ -232,9 +232,6 @@ struct vm_api {
    void (*set_copy_memory_range)(int start, int end);
    void (*get_copy_memory_range)(int *start, int *end);
 
-   int (*to_base58)(const char *in, size_t size1, char *out, size_t size2);
-   int (*from_base58)(const char *in, size_t size1, char *out, size_t size2);
-
    bool (*is_feature_activated)(const char *digest, size_t size);
    void (*preactivate_feature)(const char *digest, size_t size);
 

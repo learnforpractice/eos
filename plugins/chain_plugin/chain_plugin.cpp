@@ -2701,7 +2701,7 @@ int chain_api_push_transaction_(void *ptr, string& params, string& result) {
    try {
       auto& cc = chain_get_controller(ptr);
       auto _params = fc::json::from_string(params).as<read_write::push_transaction_params>();
-      read_write(cc, fc::microseconds(max_abi_time)).push_transaction(_params,
+      read_write(cc, fc::microseconds(max_abi_time), true).push_transaction(_params,
          [&result](const fc::static_variant<fc::exception_ptr, chain_apis::read_write::push_transaction_results>& results){
             if (results.contains<fc::exception_ptr>()) {
                try {

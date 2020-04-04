@@ -51,7 +51,7 @@ namespace eosio {
 
 extern "C"
 {
-   void evm_init();
+   void evm_init(){}
    void chain_api_init();
    void vm_api_ro_init();
    void vm_api_init();
@@ -336,7 +336,7 @@ bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, u
     auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain.get_chain_id());
 //    auto ptrx_meta = transaction_metadata::create_no_recover_keys( trx, transaction_metadata::trx_type::input );
     auto _deadline = fc::time_point::from_iso_string(deadline);
-    auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us);
+    auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us, true);
     result = fc::json::to_string(ret, fc::time_point::maximum());
     if (ret->except) {
         return false;
@@ -348,7 +348,7 @@ void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, strin
     auto& chain = chain_get_controller(ptr);
     auto id = transaction_id_type(scheduled_tx_id);
     auto _deadline = fc::time_point::from_iso_string(deadline);
-    auto ret = chain.push_scheduled_transaction(id, _deadline, billed_cpu_time_us);
+    auto ret = chain.push_scheduled_transaction(id, _deadline, billed_cpu_time_us, true);
     result = fc::json::to_string(ret, fc::time_point::maximum());
 }
 
@@ -899,7 +899,7 @@ void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
 //      ilog("+++++${n}", ("n", _sig));
       auto digest = fc::sha256(_digest);
       auto s = fc::crypto::signature(_sig);
-      _pub = string(fc::crypto::public_key( s, digest, false ));
+      _pub = fc::crypto::public_key( s, digest, false ).to_string();
    } FC_LOG_AND_DROP();
 }
 
@@ -913,7 +913,7 @@ void uuos_sign_digest_(string& _priv_key, string& _digest, string& out) {
         chain::private_key_type priv_key(_priv_key);
         chain::digest_type digest(_digest.c_str(), _digest.size());
         auto sign = priv_key.sign(digest);
-        out = string(sign);
+        out = sign.to_string();
     } FC_LOG_AND_DROP();
 }
 

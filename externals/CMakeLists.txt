@@ -17,6 +17,18 @@ if( EOSIO_COMPILE_TEST_CONTRACTS )
       BUILD_ALWAYS 1
    )
 
+   ExternalProject_Add(
+      evmone4eosio_contract_project
+      SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/evmone4eosio
+      BINARY_DIR ${CMAKE_BINARY_DIR}/externals/evmone4eosio-contract
+      CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_TEST_CONTRACTS=${EOSIO_COMPILE_TEST_CONTRACTS}
+      UPDATE_COMMAND ""
+      PATCH_COMMAND ""
+      TEST_COMMAND ""
+      INSTALL_COMMAND ""
+      BUILD_ALWAYS 1
+   )
+
    # message( STATUS "Building contracts in directory `eos/unittests/test-contracts/`" )
    # ExternalProject_Add(
    #    contracts_tests_project
@@ -46,10 +58,22 @@ else()
 #  add_subdirectory(test-contracts)
 endif()
 
+# ExternalProject_Add(
+#    aleth
+#    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/aleth
+#    BINARY_DIR ${CMAKE_BINARY_DIR}/aleth
+# #   CMAKE_ARGS -DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+#    UPDATE_COMMAND ""
+#    PATCH_COMMAND ""
+#    TEST_COMMAND ""
+#    INSTALL_COMMAND ""
+#    BUILD_ALWAYS 1
+# )
+
 ExternalProject_Add(
-   aleth
-   SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/aleth
-   BINARY_DIR ${CMAKE_BINARY_DIR}/aleth
+   evmone4eosio
+   SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/evmone4eosio
+   BINARY_DIR ${CMAKE_BINARY_DIR}/externals/evmone4eosio
 #   CMAKE_ARGS -DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
    UPDATE_COMMAND ""
    PATCH_COMMAND ""
@@ -64,5 +88,5 @@ add_subdirectory(Python-3.7.4)
 add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
 add_dependencies(cppzmq libzmq)
-add_dependencies(aleth eth_account)
-add_dependencies(aleth vm_api)
+#add_dependencies(aleth eth_account)
+#add_dependencies(aleth vm_api)

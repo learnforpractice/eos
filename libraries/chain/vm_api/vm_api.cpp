@@ -178,22 +178,6 @@ int call_contract_get_results(void* result, size_t size1) {
    return vm_manager::get().get_result((char*)result, size1);
 }
 
-static int to_base58( const char *in, size_t size1, char *out, size_t size2 ) {
-   std::vector<char> v(in, in+size1);
-   std::string s = fc::to_base58( v );
-   auto copy_size = std::min(size2, s.size());
-   ::memcpy(out, s.c_str(), copy_size);
-   return copy_size;
-}
-
-static int from_base58( const char *in, size_t size1, char *out, size_t size2 ) {
-   string s(in, size1);
-   auto v = fc::from_base58(s);
-   auto copy_size = std::min(v.size(), size2);
-   ::memcpy(out, v.data(), copy_size);
-   return copy_size;
-}
-
 static void __ashlti3(__int128* ret, uint64_t low, uint64_t high, uint32_t shift) {
     fc::uint128_t i(high, low);
     i <<= shift;
@@ -415,9 +399,6 @@ extern "C" void vm_api_init() {
 
       _vm_api.set_copy_memory_range = set_copy_memory_range;
       _vm_api.get_copy_memory_range = get_copy_memory_range;
-
-      _vm_api.to_base58 = to_base58;
-      _vm_api.from_base58 = from_base58;
 
       _vm_api.is_feature_activated = is_feature_activated;
       _vm_api.preactivate_feature = preactivate_feature;

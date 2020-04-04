@@ -1,6 +1,7 @@
 add_library(eosiolib.native STATIC 
    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosiolib/crypto.cpp
-   ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosiolib/eosiolib.cpp
+  #  ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosiolib/eosiolib.cpp
+  eosiolib.cpp
 )
 
 target_link_libraries( eosiolib.native PUBLIC vm_api )
@@ -8,6 +9,8 @@ target_link_libraries( eosiolib.native PUBLIC vm_api )
 target_include_directories( eosiolib.native
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/eosiolib"
 #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libcxx"
 #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libc"
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/eosiolib/core"

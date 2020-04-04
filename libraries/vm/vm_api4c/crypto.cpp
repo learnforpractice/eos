@@ -61,16 +61,3 @@ static void assert_recover_key( u32 digest_offset, u32 sig_offset, u32 siglen, u
    char* pub = (char *)offset_to_ptr(pub_offset, publen);
    get_vm_api()->assert_recover_key(digest, sig, siglen, pub, publen);
 }
-
-static u32 to_base58(u32 in_offset, u32 size1, u32 out_offset, u32 size2) {
-   const char* in = (char *)offset_to_ptr(in_offset, size1);
-   char* out = (char *)offset_to_ptr(out_offset, size2);
-   return get_vm_api()->to_base58(in, size1, out, size2);
-}
-
-static u32 from_base58(u32 in_offset, u32 size1, u32 out_offset, u32 size2) {
-   const char* in = (char *)offset_to_ptr(in_offset, size1);
-   char* out = (char *)offset_to_ptr(out_offset, size2);
-   return get_vm_api()->from_base58(in, size1, out, size2);
-}
-

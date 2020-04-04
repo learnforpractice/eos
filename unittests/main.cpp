@@ -19,7 +19,7 @@ void translate_fc_exception(const fc::exception &e) {
 
 extern "C"
 {
-   void evm_init();
+   void evm_init(){}
    void chain_api_init();
    void vm_api_ro_init();
    void vm_api_init();

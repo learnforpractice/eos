@@ -1,19 +1,5 @@
 add_library(native_contracts SHARED 
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/eosio.system.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include/eosio.system/eosio.system.hpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/eosio.system.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/delegate_bandwidth.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/exchange_state.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/native.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/producer_pay.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/rex.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/voting.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/src/activate_accounts.cpp
-
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/src/eosio.token.cpp
-    ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include/eosio.token/eosio.token.hpp
-    main_eosio_token.cpp
-    main_eosio_contract.cpp
+    main.cpp
 )
 
 target_link_libraries( native_contracts PRIVATE eosiolib.native vm_api )
@@ -21,6 +7,8 @@ target_link_libraries( native_contracts PRIVATE eosiolib.native vm_api )
 target_include_directories( native_contracts
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
+                            PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts
+
                             PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"
 #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libcxx"
 #                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include/libc"

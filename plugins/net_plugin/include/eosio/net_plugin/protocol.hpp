@@ -77,9 +77,9 @@ namespace eosio {
   }
 
   struct go_away_message {
-    go_away_message(go_away_reason r = no_reason) : reason(((uint32_t)r), node_id() {}
+    go_away_message(go_away_reason r = no_reason) : reason(uint32_t(r)), node_id() {}
 //    go_away_reason reason{no_reason};
-    uint32_t reason{(uint32_t)no_reason};
+    uint32_t reason = uint32_t(no_reason);
     fc::sha256 node_id; ///< for duplicate notification
   };
 

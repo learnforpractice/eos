@@ -188,10 +188,6 @@ void apply_context::exec_one()
       r.auth_sequence[auth.actor] = next_auth_sequence( auth.actor );
    }
 
-   if( control.is_builtin_activated( builtin_protocol_feature_t::action_return_value ) ) {
-      r.return_value.emplace( std::move( action_return_value ) );
-   }
-
    action_trace& trace = trx_context.get_action_trace( action_ordinal );
    trace.receipt = r;
 

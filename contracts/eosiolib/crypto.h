@@ -239,9 +239,6 @@ WASM_IMPORT int recover_key( const struct checksum256* digest, const char* sig, 
  */
 WASM_IMPORT void assert_recover_key( const struct checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen );
 
-WASM_IMPORT int to_base58( const char *in, size_t size1, char *out, size_t size2 );
-WASM_IMPORT int from_base58( const char *in, size_t size1, char *out, size_t size2 );
-
 /// }@cryptocapi
 
 #ifdef __cplusplus
