@@ -117,7 +117,6 @@ void uuos_set_default_config_dir_(string& dir) {
    app().set_default_config_dir(fc::path(dir));  
 }
 
-const char *g_argv[] = {"python"};
 int main(int argc, char** argv)
 {
    for (int i=0;i<argc;i++) {
@@ -200,4 +199,148 @@ int main(int argc, char** argv)
 
    ilog("${name} successfully exiting", ("name", nodeos::config::node_executable_name));
    return SUCCESS;
+}
+
+int eos_main(int argc, char** argv)
+{
+   for (int i=0;i<argc;i++) {
+      if (strcmp(argv[i], "--create-accounts-snapshot")==0) {
+         return create_accounts_snapshot(argc, argv);
+      }
+   }
+   try {
+      evm_init();
+      vm_api_init();
+      vm_api_ro_init();
+      chain_api_init();
+      sandboxed_contracts_init();
+
+//      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
+
+      app().set_version(eosio::nodeos::config::version);
+      app().set_version_string(eosio::version::version_client());
+      app().set_full_version_string(eosio::version::version_full());
+
+      auto root = fc::app_path();
+      app().set_default_data_dir(root / "eosio" / nodeos::config::node_executable_name / "data" );
+      app().set_default_config_dir(root / "eosio" / nodeos::config::node_executable_name / "config" );
+      http_plugin::set_defaults({
+         .default_unix_socket_path = "uuos.sock",
+         .default_http_port = 8888
+      });
+      if(!app().initialize<chain_plugin, net_plugin, producer_plugin>(argc, argv)) {
+         const auto& opts = app().get_options();
+         if( opts.count("help") || opts.count("version") || opts.count("full-version") || opts.count("print-default-config") ) {
+            return SUCCESS;
+         }
+         return INITIALIZE_FAIL;
+      }
+      initialize_logging();
+      ilog( "${name} version ${ver} ${fv}",
+            ("name", nodeos::config::node_executable_name)("ver", app().version_string())
+            ("fv", app().version_string() == app().full_version_string() ? "" : app().full_version_string()) );
+      ilog("${name} using configuration file ${c}", ("name", nodeos::config::node_executable_name)("c", app().full_config_file_path().string()));
+      ilog("${name} data directory is ${d}", ("name", nodeos::config::node_executable_name)("d", app().data_dir().string()));
+      app().startup();
+      app().set_thread_priority_max();
+//      app().exec();
+   } catch( const extract_genesis_state_exception& e ) {
+      return EXTRACTED_GENESIS;
+   } catch( const fixed_reversible_db_exception& e ) {
+      return FIXED_REVERSIBLE;
+   } catch( const node_management_success& e ) {
+      return NODE_MANAGEMENT_SUCCESS;
+   } catch( const fc::exception& e ) {
+      if( e.code() == fc::std_exception_code ) {
+         if( e.top_message().find( "database dirty flag set" ) != std::string::npos ) {
+            elog( "database dirty flag set (likely due to unclean shutdown): replay required" );
+            return DATABASE_DIRTY;
+         }
+      }
+      elog( "${e}", ("e", e.to_detail_string()));
+      return OTHER_FAIL;
+   } catch( const boost::interprocess::bad_alloc& e ) {
+      elog("bad alloc");
+      return BAD_ALLOC;
+   } catch( const boost::exception& e ) {
+      elog("${e}", ("e",boost::diagnostic_information(e)));
+      return OTHER_FAIL;
+   } catch( const std::runtime_error& e ) {
+      if( std::string(e.what()).find("database dirty flag set") != std::string::npos ) {
+         elog( "database dirty flag set (likely due to unclean shutdown): replay required" );
+         return DATABASE_DIRTY;
+      } else {
+         elog( "${e}", ("e",e.what()));
+      }
+      return OTHER_FAIL;
+   } catch( const std::exception& e ) {
+      elog("${e}", ("e",e.what()));
+      return OTHER_FAIL;
+   } catch( ... ) {
+      elog("unknown exception");
+      return OTHER_FAIL;
+   }
+
+//   ilog("${name} successfully exiting", ("name", nodeos::config::node_executable_name));
+   return SUCCESS;
+}
+
+int app_exec_one() {
+   try {
+      bool ret = 0;
+      do {
+         int executed = app().get_io_service().poll_one();
+         if (executed) {
+            ret = true;
+         } else {
+            break;
+         }
+      } while (true);
+
+      ret |= app().get_priority_queue().execute_highest();
+      if (ret) {
+         return SUCCESS;
+      }
+      return -1;
+//      app().exec();
+   } catch( const extract_genesis_state_exception& e ) {
+      return EXTRACTED_GENESIS;
+   } catch( const fixed_reversible_db_exception& e ) {
+      return FIXED_REVERSIBLE;
+   } catch( const node_management_success& e ) {
+      return NODE_MANAGEMENT_SUCCESS;
+   } catch( const fc::exception& e ) {
+      if( e.code() == fc::std_exception_code ) {
+         if( e.top_message().find( "database dirty flag set" ) != std::string::npos ) {
+            elog( "database dirty flag set (likely due to unclean shutdown): replay required" );
+            return DATABASE_DIRTY;
+         }
+      }
+      elog( "${e}", ("e", e.to_detail_string()));
+      return OTHER_FAIL;
+   } catch( const boost::interprocess::bad_alloc& e ) {
+      elog("bad alloc");
+      return BAD_ALLOC;
+   } catch( const boost::exception& e ) {
+      elog("${e}", ("e",boost::diagnostic_information(e)));
+      return OTHER_FAIL;
+   } catch( const std::runtime_error& e ) {
+      if( std::string(e.what()).find("database dirty flag set") != std::string::npos ) {
+         elog( "database dirty flag set (likely due to unclean shutdown): replay required" );
+         return DATABASE_DIRTY;
+      } else {
+         elog( "${e}", ("e",e.what()));
+      }
+      return OTHER_FAIL;
+   } catch( const std::exception& e ) {
+      elog("${e}", ("e",e.what()));
+      return OTHER_FAIL;
+   } catch( ... ) {
+      elog("unknown exception");
+      return OTHER_FAIL;
+   }
+}
+
+void app_shutdown() {
+   app().shutdown();
 }

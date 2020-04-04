@@ -231,5 +231,6 @@ enum {
     signed_transaction_type,
 };
 
-
-
+int app_exec_one();
+int eos_main(int argc, char** argv);
+void app_shutdown();

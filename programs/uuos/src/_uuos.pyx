@@ -5,6 +5,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.map cimport map
 from libcpp cimport bool
+from libc.stdlib cimport malloc
 
 
 cdef extern from * :
@@ -222,6 +223,9 @@ cdef extern from "native_object.hpp":
 
     void db_size_api_get_(void *ptr, string& result)
 
+    int app_exec_one()
+    int eos_main(int argc, char** argv)
+    void app_shutdown()
 
 def N(string& s):
     return s2n_(s)
@@ -1014,6 +1018,25 @@ def run_py_func_safe(func, args):
     if not ret:
         return ret, None
     return ret, <object>result
+
+def uuos_exec_one():
+    return app_exec_one()
+
+def uuos_init(args):
+    cdef int argc;
+    cdef char **argv
+#    for arg in args:
+#        print(arg)
+
+    argc = len(args)
+    argv = <char **>malloc(argc * sizeof(char *))
+    for i in range(argc):
+        argv[i] = args[i]
+
+    return eos_main(argc, argv)
+
+def uuos_shutdown2():
+    app_shutdown()
 
 register_on_accepted_block(on_accepted_block)
 
