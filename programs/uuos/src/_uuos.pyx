@@ -226,6 +226,8 @@ cdef extern from "native_object.hpp":
     int app_exec_one()
     int eos_main(int argc, char** argv)
     void app_shutdown()
+    void *app_get_chain_ptr()
+
 
 def N(string& s):
     return s2n_(s)
@@ -1037,6 +1039,9 @@ def uuos_init(args):
 
 def uuos_shutdown2():
     app_shutdown()
+
+def uuos_get_chain_ptr():
+    return <uint64_t>app_get_chain_ptr()
 
 register_on_accepted_block(on_accepted_block)
 

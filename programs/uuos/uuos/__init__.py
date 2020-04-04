@@ -91,3 +91,10 @@ def call_contract_off_chain(params):
 
 def run_py_func_safe(func, args):
     return _uuos.run_py_func_safe(func, args)
+
+api = None
+def init():
+    global api
+    ptr = _uuos.uuos_get_chain_ptr()
+    from . import chainapi
+    api = chainapi.ChainApi(ptr)

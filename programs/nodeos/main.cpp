@@ -344,3 +344,7 @@ int app_exec_one() {
 void app_shutdown() {
    app().shutdown();
 }
+
+void *app_get_chain_ptr() {
+   return &app().find_plugin<chain_plugin>()->chain();
+}

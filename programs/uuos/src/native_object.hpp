@@ -234,3 +234,4 @@ enum {
 int app_exec_one();
 int eos_main(int argc, char** argv);
 void app_shutdown();
+void *app_get_chain_ptr();

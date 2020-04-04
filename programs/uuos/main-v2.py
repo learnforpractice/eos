@@ -3,6 +3,7 @@ import sys
 import signal
 import asyncio
 import aioconsole
+import uuos
 
 ret = _uuos.uuos_init(sys.argv)
 if not 0 == ret:
@@ -11,7 +12,6 @@ if not 0 == ret:
 def shutdown():
     _uuos.uuos_shutdown2()
     sys.exit(0)
-
 
 async def interactive_console():
     await aioconsole.interact(handle_sigint=False, banner=False)
@@ -25,10 +25,13 @@ async def uuos_main():
 
 async def main(loop):
     tasks = []
-    task = asyncio.create_task(interactive_console())
-    tasks.append(task)
+    # task = asyncio.create_task(interactive_console())
+    # tasks.append(task)
 
     task = asyncio.create_task(uuos_main())
+    tasks.append(task)
+
+    task = asyncio.create_task(aioconsole.start_interactive_server(host='localhost', port=8800))
     tasks.append(task)
 
     signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
@@ -37,7 +40,8 @@ async def main(loop):
 
     res = await asyncio.gather(*tasks, return_exceptions=False)
 
-_uuos.uuos_set_log_level('default', 10)
+uuos.init()
+#_uuos.uuos_set_log_level('default', 10)
 loop = asyncio.get_event_loop()
 
 loop.run_until_complete(main(loop))
