@@ -83,7 +83,6 @@ void apply_context::exec_one()
    const account_metadata_object* receiver_account = nullptr;
    try {
       try {
-         action_return_value.clear();
          receiver_account = &db.get<account_metadata_object,by_name>( receiver );
          privileged = receiver_account->is_privileged();
          auto native = control.find_apply_handler( receiver, act->account, act->name );

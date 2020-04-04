@@ -12,10 +12,5 @@ docker commit ci-contracts-builder-$BUILDKITE_PIPELINE_SLUG-$BUILDKITE_BUILD_NUM
 docker push $CONTRACTS_BUILDER_TAG-$BUILDKITE_COMMIT
 docker push $CONTRACTS_BUILDER_TAG-$BUILDKITE_COMMIT-$PLATFORM_TYPE
 docker push $CONTRACTS_BUILDER_TAG-$BRANCH-$BUILDKITE_COMMIT
-<<<<<<< HEAD
-docker stop ci-contracts-builder-$BUILDKITE_COMMIT
-docker rm ci-contracts-builder-$BUILDKITE_COMMIT
-=======
 docker stop ci-contracts-builder-$BUILDKITE_PIPELINE_SLUG-$BUILDKITE_BUILD_NUMBER
 docker rm ci-contracts-builder-$BUILDKITE_PIPELINE_SLUG-$BUILDKITE_BUILD_NUMBER
->>>>>>> eosio/master

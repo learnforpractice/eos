@@ -40,7 +40,6 @@ void chain_api_set_controller(eosio::chain::controller *_ctrl);
 
 namespace eosio { namespace chain {
 
-void apply_eosio_addaccounts(apply_context&);
 
 
 using resource_limits::resource_limits_manager;
@@ -1980,14 +1979,9 @@ struct controller_impl {
                            recover_keys_future{} );
                   } else {
                      auto ptrx = std::make_shared<packed_transaction>( pt );
-                     auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain_id);
-                     trx_metas.emplace_back( std::move(ptrx_meta), recover_keys_future{} );
-/*
-                     auto ptrx = std::make_shared<packed_transaction>( pt );
                      auto fut = transaction_metadata::start_recover_keys(
                            std::move( ptrx ), thread_pool.get_executor(), chain_id, microseconds::maximum() );
                      trx_metas.emplace_back( transaction_metadata_ptr{}, std::move( fut ) );
-*/
                   }
                }
             }
@@ -3511,12 +3505,7 @@ void controller_impl::on_activation<builtin_protocol_feature_t::wtmsig_block_sig
    } );
 }
 
-template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::action_return_value>() {
-   db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "set_action_return_value" );
-   } );
-}
+
 
 /// End of protocol feature activation handlers
 

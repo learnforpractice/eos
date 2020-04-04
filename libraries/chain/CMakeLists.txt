@@ -130,23 +130,23 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        )
 
 target_include_directories( eosio_chain
-                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
-                                   "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
-                                   "${CMAKE_SOURCE_DIR}/libraries/eos-vm/include"
-                                   "${CMAKE_SOURCE_DIR}/libraries/wabt"
-                                   "${CMAKE_BINARY_DIR}/libraries/wabt"
-                                   "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager"
-                                    "${CMAKE_SOURCE_DIR}/contracts/vm_api/include"
-                                    "${CMAKE_SOURCE_DIR}/contracts/vm_api"
-                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
-                              PRIVATE "${CMAKE_BINARY_DIR}/contracts"
-                              PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
-                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
-                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
-                              PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
-                              PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
-                              PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
-                        )
+                       PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
+                              "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
+                              "${CMAKE_SOURCE_DIR}/libraries/eos-vm/include"
+                              "${CMAKE_SOURCE_DIR}/libraries/wabt"
+                              "${CMAKE_BINARY_DIR}/libraries/wabt"
+                              "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager"
+                               "${CMAKE_SOURCE_DIR}/contracts/vm_api/include"
+                               "${CMAKE_SOURCE_DIR}/contracts/vm_api"
+                         PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
+                         PRIVATE "${CMAKE_BINARY_DIR}/contracts"
+                         PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
+                         PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
+                         PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
+                         PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
+                         PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
+                         PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
+)
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain aleth)
 if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)

@@ -58,7 +58,7 @@ void wallet_plugin::plugin_initialize(const variables_map& options) {
          if(options.count("yubihsm-url"))
             connector_endpoint = options.at("yubihsm-url").as<string>();
          try {
-//            wallet_manager_ptr->own_and_use_wallet("YubiHSM", make_unique<yubihsm_wallet>(connector_endpoint, key));
+            wallet_manager_ptr->own_and_use_wallet("YubiHSM", make_unique<yubihsm_wallet>(connector_endpoint, key));
          }FC_LOG_AND_RETHROW()
       }
    } FC_LOG_AND_RETHROW()
