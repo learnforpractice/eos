@@ -19,18 +19,41 @@ set(WASM_LINKER "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/wasm-ld")
 set(CMAKE_C_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 set(CMAKE_CXX_LINK_EXECUTABLE "${WASM_LINKER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
-set(WASM_LINK_FLAGS --gc-sections
--zstack-size=${PYTHON_VM_STACK_SIZE} #20480
+# --gc-sections
+# --strip-all
+# --merge-data-segments
+# -e
+# apply
+# --only-export
+# apply:function
+# -lc++
+# -lc
+# -leosio
+# -leosio_dsm
+# -mllvm
+# -use-cfl-aa-in-codegen=both
+# -L${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../lib
+# -stack-first
+# --lto-O3
+# -zstack-size=16384 #8192 #9808
+# --allow-undefined-file=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../eosio.imports
+
+set(WASM_LINK_FLAGS
+--gc-sections
+#--strip-all
 --merge-data-segments
---export-table
 -e apply
 --only-export apply:function
 -lc++ 
 -lc
 #-leosio
--mllvm -use-cfl-aa-in-codegen=both
--L../libpython37 -L${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../lib
--stack-first --lto-O3 -error-limit=0
+-mllvm
+-use-cfl-aa-in-codegen=both
+-L${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../lib
+-L../libpython37
+-stack-first
+--lto-O3
+-zstack-size=${PYTHON_VM_STACK_SIZE} #20480
 --allow-undefined-file=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../eosio.imports)
 
 add_executable(pythonvm pythonvm.c main.cpp)

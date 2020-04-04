@@ -107,7 +107,7 @@ else:
     contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
 
 if 1:
-    if False:
+    if True:
         code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
         abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
     else:
@@ -194,6 +194,7 @@ feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac0
             '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
             '737102c41d3bce173c009a310ec0d23ae26a4bbe6b621fa1b90846b2115b296e', #PYTHONVM
             '8e66379ab121fabc3d5309dc48d2654c7148958281eb86ae2273bda8f542d76a', #ACTION_RETURN_VALUE
+            '8431d19ea6d9ce0755c32f89237776f8006204447e8299f102d3273cd6b7ce62', #ETHEREUM_VM
 ]
 
 for digest in feature_digests: 

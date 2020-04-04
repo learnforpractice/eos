@@ -1,7 +1,6 @@
 #pragma once
 
 #include <eosio/chain/types.hpp>
-#include <eosio/chain/protocol_feature_manager.hpp>
 
 namespace eosio { namespace chain {
 
@@ -16,7 +15,7 @@ namespace eosio { namespace chain {
       flat_map<account_name,uint64_t> auth_sequence;
       fc::unsigned_int                code_sequence = 0; ///< total number of setcodes
       fc::unsigned_int                abi_sequence  = 0; ///< total number of setabis
-      fc::optional<std::vector<char>> return_value;      ///< return value of the action
+      fc::optional<std::vector<char>> return_value;      /**< return value of the action; optional is set if action was executed                                                              with return value protocol feature enabled */
 
       digest_type digest()const {
          digest_type::encoder e;
