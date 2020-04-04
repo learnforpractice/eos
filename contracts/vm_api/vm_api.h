@@ -40,7 +40,6 @@ struct vm_api {
    void (*send_context_free_inline)(const char *serialized_action, size_t size);
    uint64_t  (*publication_time)(void);
    uint64_t (*current_receiver)(void);
-   void (*set_action_return_value)( const char* packed_blob, size_t datalen );
    uint32_t (*get_active_producers)( uint64_t* producers, uint32_t datalen );
 
    int (*get_balance)(uint64_t _account, uint64_t _symbol, int64_t* amount);

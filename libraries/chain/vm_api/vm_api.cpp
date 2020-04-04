@@ -227,7 +227,6 @@ extern "C" void vm_api_init() {
       _vm_api.send_context_free_inline = send_context_free_inline;
       _vm_api.publication_time = publication_time;
       _vm_api.current_receiver = current_receiver;
-      _vm_api.set_action_return_value = set_action_return_value;
       _vm_api.get_active_producers = get_active_producers;
 
       _vm_api.assert_sha256 = assert_sha256;

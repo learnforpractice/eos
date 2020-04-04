@@ -297,11 +297,11 @@ static string call_contract_off_chain(uint64_t contract, uint64_t action, const 
    auto trace = ctrl().call_contract(contract, action, binargs);
    if (trace->action_traces.size() > 0) {
       auto& t = trace->action_traces[0];
-      if (t.receipt) {
-         if (t.receipt->return_value) {
-            return fc::to_hex(*t.receipt->return_value);
-         }
-      }
+      // if (t.receipt) {
+      //    if (t.receipt->return_value) {
+      //       return fc::to_hex(*t.receipt->return_value);
+      //    }
+      // }
    }
    return "";
 }
