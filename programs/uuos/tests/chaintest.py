@@ -46,9 +46,9 @@ genesis_test = {
     "net_usage_leeway": 500,
     "context_free_discount_net_usage_num": 20,
     "context_free_discount_net_usage_den": 100,
-    "max_block_cpu_usage": 200000,
+    "max_block_cpu_usage": 500000,
     "target_block_cpu_usage_pct": 1000,
-    "max_transaction_cpu_usage": 150000,
+    "max_transaction_cpu_usage": 450000,
     "min_transaction_cpu_usage": 100,
     "max_transaction_lifetime": 3600,
     "deferred_trx_expiration_window": 600,
@@ -117,6 +117,9 @@ class Object():
 class ChainTest(object):
 
     def __init__(self, uuos_network=False, jit=False):
+        uuos.set_log_level('default', 0)
+        self.feature_digests = []
+
         self.feature_activated = False
         self.main_token = 'UUOS'
         logger.info(('++++++++++++pid:', os.getpid()))
@@ -191,7 +194,9 @@ class ChainTest(object):
         self.chain.startup(True)
         uuos.set_default_log_level(0)
         uuos.set_accepted_block_callback(self.on_accepted_block)
+        self.feature_digests = ['0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd']
         self.start_block()
+        self.produce_block()
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         systemAccounts = [
                 'eosio.bpay',
@@ -220,7 +225,37 @@ class ChainTest(object):
         logger.info('deploy eosio.token')
         self.deploy_eosio_token()
 
-        logger.info('issue system token...')
+        logger.info('deploy eosio.bios...')
+        self.deploy_eosio_bios()
+        self.produce_block()
+
+        feature_digests = [
+            '1a99a59d87e06e09ec5b028a9cbb7749b4a5ad8819004365d02dc4379a8b7241', #'ONLY_LINK_TO_EXISTING_PERMISSION'
+            '2652f5f96006294109b3dd0bbde63693f55324af452b799ee137a81a905eed25', #'FORWARD_SETCODE'
+            '299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707',#'WTMSIG_BLOCK_SIGNATURES'
+            'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99',#'REPLACE_DEFERRED'
+            '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#'NO_DUPLICATE_DEFERRED_ID'
+            '4e7bf348da00a945489b2a681749eb56f5de00b900014e137ddae39f48f69d67',#'RAM_RESTRICTIONS'
+            '4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2',#'WEBAUTHN_KEY'
+            '626ff01727e783ac3597b10cb39aaf853c3ad5bb2a6b3a8f5fc3438fb362a6c8',#'PYTHONVM'
+            '68dcaa34c0517d19666e6b33add67351d8c5f69e999ca1e37931bc410a297428',#'DISALLOW_EMPTY_PRODUCER_SCHEDULE'
+            '80f35049d9fb83ef812a19bbb07eaafdd135a09276ee9a7b8dcff930ef40ebca',#'ETHEREUM_VM'
+            '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405',#'ONLY_BILL_FIRST_AUTHORIZER'
+            'ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#'RESTRICT_ACTION_TO_SELF'
+            'e0fb64b1085cc5538970158d05a009c24e276fb94e1a0bf6a528b48fbc4ff526',#'FIX_LINKAUTH_RESTRICTION'
+            'f0af56d2c5a48d60a4a5b5c903edfb7db3a736a94ed589d0b797df33ff9d3e1d',#'GET_SENDER'
+        ]
+
+        for digest in feature_digests: 
+            try:
+                args = {'feature_digest': digest}
+                self.push_action('eosio', 'activate', args, 'eosio', 'active')
+                self.feature_digests.append(digest)
+            except Exception as e:
+                logger.info(e)
+        self.produce_block()
+
+        logger.info('deploy eosio.system...')
         self.deploy_eosio_system()
         self.produce_block()
 
@@ -233,22 +268,6 @@ class ChainTest(object):
         args = {'version':0, 'core':'4,UUOS'}
         self.push_action('eosio', 'init', args, 'eosio', 'active')
         self.produce_block()
-
-        feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
-                    'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99',#REPLACE_DEFERRED
-                    '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#NO_DUPLICATE_DEFERRED_ID
-                    '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
-                    '737102c41d3bce173c009a310ec0d23ae26a4bbe6b621fa1b90846b2115b296e', #PYTHONVM
-                    'f16d7d240355ca947ec591e82f876cad5fef30b8914935691af00c92d169b8b2', #ETHEREUMVM
-                    '8e66379ab121fabc3d5309dc48d2654c7148958281eb86ae2273bda8f542d76a', #ACTION_RETURN_VALUE
-        ]
-
-        for digest in feature_digests: 
-            try:
-                args = {'feature_digest': digest}
-                self.push_action('eosio', 'activate', args, 'eosio', 'active')
-            except Exception as e:
-                logger.info(e)
 
         args = {'vmtype': 1, 'vmversion':0} #activate vm python
         self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
@@ -482,6 +501,16 @@ class ChainTest(object):
             abi = f.read()
         self.deploy_contract('eosio', code, abi)
 
+    def deploy_eosio_bios(self):
+        contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
+        code_path = os.path.join(contract_path, 'eosio.bios/eosio.bios.wasm')
+        abi_path = os.path.join(contract_path, 'eosio.bios/eosio.bios.abi')
+        with open(code_path, 'rb') as f:
+            code = f.read()
+        with open(abi_path, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('eosio', code, abi)
+
     def gen_trx(self):
         chain_id = self.chain.id()
         ref_block_id = self.chain.last_irreversible_block_id()
@@ -522,12 +551,12 @@ class ChainTest(object):
 
     def start_block(self):
         self.chain.abort_block()
-        if self.feature_activated:
-            self.chain.start_block(isoformat(self.calc_pending_block_time()))
-        else:
-            features = ['0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd']
-            self.chain.start_block(isoformat(self.calc_pending_block_time()), 0, features)
-            self.feature_activated = True
+#        num = self.chain.head_block_num() - self.chain.last_irreversible_block_num()
+
+        self.chain.start_block(isoformat(self.calc_pending_block_time()), 0, self.feature_digests)
+        self.feature_digests.clear()
+
+
 
     def produce_block(self):
         self.chain.finalize_block('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
