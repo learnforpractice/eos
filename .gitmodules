@@ -41,4 +41,4 @@
 	url = https://github.com/EOSIO/eosio-wasm-spec-tests
 [submodule "externals/evmone4eosio"]
 	path = externals/evmone4eosio
-	url = https://github.com/learnforpractice/evmone4eosio
+	url = https://github.com/learnforpractice/evmone4eosio-private
