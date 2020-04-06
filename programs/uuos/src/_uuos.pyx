@@ -224,7 +224,8 @@ cdef extern from "native_object.hpp":
     void db_size_api_get_(void *ptr, string& result)
 
     int app_exec_one()
-    int eos_main(int argc, char** argv)
+    int app_exec() nogil
+    int eos_main(bool run_exec, int argc, char** argv)
     void app_shutdown()
     void *app_get_chain_ptr()
 
@@ -1024,6 +1025,12 @@ def run_py_func_safe(func, args):
 def uuos_exec_one():
     return app_exec_one()
 
+def uuos_exec():
+    cdef int ret;
+    with nogil:
+        ret = app_exec()
+    return ret
+
 def uuos_init(args):
     cdef int argc;
     cdef char **argv
@@ -1035,7 +1042,7 @@ def uuos_init(args):
     for i in range(argc):
         argv[i] = args[i]
 
-    return eos_main(argc, argv)
+    return eos_main(0, argc, argv)
 
 def uuos_shutdown2():
     app_shutdown()
