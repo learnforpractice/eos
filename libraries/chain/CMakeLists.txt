@@ -91,11 +91,10 @@ add_library( eosio_chain
 #             wasm_eosio_constraints.cpp
              ${CHAIN_EOSVMOC_SOURCES}
              ${CHAIN_EOSVM_SOURCES}
-
 #             get_config.cpp
 #
 #             contracts/chain_initializer.cpp
-
+             evm_loader.cpp
              trace.cpp
              transaction_metadata.cpp
              vm_api/vm_api.cpp

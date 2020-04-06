@@ -30,6 +30,8 @@
 #include <signal.h>
 #include <cstdlib>
 
+void load_evm(const char *evm_path);
+
 // reflect chainbase::environment for --print-build-info option
 FC_REFLECT_ENUM( chainbase::environment::os_t,
                  (OS_LINUX)(OS_MACOS)(OS_WINDOWS)(OS_OTHER) )
@@ -200,6 +202,7 @@ chain_plugin::~chain_plugin(){}
 void chain_plugin::set_program_options(options_description& cli, options_description& cfg)
 {
    cfg.add_options()
+         ("vm.evm", bpo::value<bfs::path>()->default_value("libevmone.so"), "the location of evm shared library path")
          ("blocks-dir", bpo::value<bfs::path>()->default_value("blocks"),
           "the location of the blocks directory (absolute path or relative to application data dir)")
          ("protocol-features-dir", bpo::value<bfs::path>()->default_value("protocol_features"),
@@ -609,6 +612,12 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
    ilog("initializing chain plugin");
 
    try {
+      auto evm_lib = options.at( "vm.evm" ).as<bfs::path>();
+      if( evm_lib.is_relative()) {
+         evm_lib = app().data_dir() / evm_lib;
+      }
+      load_evm(evm_lib.string().c_str());
+
       try {
          genesis_state gs; // Check if EOSIO_ROOT_KEY is bad
       } catch ( const fc::exception& ) {

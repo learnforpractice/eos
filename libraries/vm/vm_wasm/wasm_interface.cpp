@@ -34,8 +34,6 @@ struct vm_api *debug_get_vm_api(const char * func_name, int line_num) {
    return get_vm_api();
 }
 
-extern "C" int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
-
 //#define API() debug_get_vm_api(__FUNCTION__, __LINE__)
 
 #define API() get_vm_api()
@@ -884,11 +882,7 @@ class action_api : public context_aware_api {
       name current_receiver() {
          return API()->current_receiver();
       }
-#if 0
-      int evm_execute(array_ptr<unsigned char> trx, size_t size) {
-         return ::evm_execute(trx.value, size);
-      }
-#endif
+
       int get_code_size(int64_t account) {
          size_t size = 0;
          get_chain_api()->get_code_ex( account, &size );

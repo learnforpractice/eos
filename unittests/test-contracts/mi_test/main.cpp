@@ -6,9 +6,6 @@
 #include <eosio/print.hpp>
 using namespace eosio;
 
-__attribute__((eosio_wasm_import))
-extern "C" int evm_execute(const unsigned char* code, size_t size);
-
 class A {
    [[eosio::action]]
    void init( int version, int core ) {

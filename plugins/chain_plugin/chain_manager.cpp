@@ -231,12 +231,14 @@ void chain_id_(void *ptr, string& chain_id) {
 void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features) {
     auto& chain = chain_get_controller(ptr);
     auto time = fc::time_point::from_iso_string(_time);
-    if (_new_features.size()) {
-        auto new_features = fc::json::from_string(_new_features).as<vector<digest_type>>();
-        chain.start_block(block_timestamp_type(time), confirm_block_count, new_features);
-    } else {
-        chain.start_block(block_timestamp_type(time), confirm_block_count);
-    }
+    try {
+        if (_new_features.size()) {
+            auto new_features = fc::json::from_string(_new_features).as<vector<digest_type>>();
+            chain.start_block(block_timestamp_type(time), confirm_block_count, new_features);
+        } else {
+            chain.start_block(block_timestamp_type(time), confirm_block_count);
+        }
+    } FC_LOG_AND_DROP();
 }
 
 int chain_abort_block_(void *ptr) {
@@ -246,6 +248,12 @@ int chain_abort_block_(void *ptr) {
         return 1;
    } FC_LOG_AND_DROP();
    return 0;
+}
+
+void chain_get_preactivated_protocol_features_(void *ptr, string& result) {
+   try {
+        auto& chain = chain_get_controller(ptr);
+   } FC_LOG_AND_DROP();
 }
 
 void chain_get_unapplied_transactions_(void *ptr, string& result) {

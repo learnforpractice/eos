@@ -1,4 +1,5 @@
 include(ExternalProject)
+set(EOSIOLIB_NATIVE "${CMAKE_BINARY_DIR}/contracts/vm_api/libvm_api${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 if( EOSIO_COMPILE_TEST_CONTRACTS )
    set(EOSIO_WASM_OLD_BEHAVIOR "Off")
@@ -74,7 +75,7 @@ ExternalProject_Add(
    evmone4eosio
    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/evmone4eosio
    BINARY_DIR ${CMAKE_BINARY_DIR}/externals/evmone4eosio
-#   CMAKE_ARGS -DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+   CMAKE_ARGS -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts #-DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
    UPDATE_COMMAND ""
    PATCH_COMMAND ""
    TEST_COMMAND ""

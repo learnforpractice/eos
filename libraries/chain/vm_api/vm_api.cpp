@@ -54,8 +54,6 @@ extern "C" {
    void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer );
    void token_retire( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size );
    void token_close( uint64_t owner, uint64_t _symbol );
-
-   int evm_execute(const char *raw_trx, size_t raw_trx_size);
 }
 
 void chain_api_set_controller(controller *_ctrl);
@@ -379,7 +377,6 @@ extern "C" void vm_api_init() {
 
       _vm_api.vm_call = vm_call;
       _vm_api.wasm_call = wasm_call;
-      _vm_api.evm_execute = evm_execute;
 
       _vm_api.call_contract_get_extra_args = call_contract_get_extra_args;
       _vm_api.call_contract_set_results = call_contract_set_results;
