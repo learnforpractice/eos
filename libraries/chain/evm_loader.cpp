@@ -6,7 +6,7 @@
 
 static evm_interface interface{};
 
-// extern "C" int evm_call_native(int type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size);
+// extern "C" int call_native(int main_type, int type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size);
 // extern "C" int evm_execute(const uint8_t *raw_trx, uint32_t raw_trx_size, const char *sender_address, uint32_t sender_address_size);
 
 void load_evm(const char *evm_path) {

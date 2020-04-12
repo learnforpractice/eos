@@ -1178,8 +1178,11 @@ class action_api : public context_aware_api {
          return context.get_receiver();
       }
 
-      int evm_call_native(int type, array_ptr<char> input, uint32_t input_size, array_ptr<char> output, uint32_t output_size) {
-         return evm_get_interface().call_native(type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
+      int call_native(int main_type, int sub_type, array_ptr<char> input, uint32_t input_size, array_ptr<char> output, uint32_t output_size) {
+         if (main_type == 0) {
+            return evm_get_interface().call_native(sub_type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
+         }
+         EOS_THROW( eosio_assert_message_exception, "bad native call" );
       }
 };
 
@@ -2177,7 +2180,7 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,         int(int, int)  )
    (action_data_size,         int()          )
    (current_receiver,         int64_t()      )
-   (evm_call_native,          int(int, int, int, int, int))
+   (call_native,          int(int, int, int, int, int, int))
 );
 
 REGISTER_INTRINSICS(authorization_api,

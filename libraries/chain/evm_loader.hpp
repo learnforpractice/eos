@@ -4,7 +4,7 @@
 
 typedef int (* fn_evm_init)();
 typedef int (* fn_evm_execute)(const char *raw_trx, size_t raw_trx_size, const char *sender_address, size_t sender_address_size);
-typedef int (* fn_evm_recover_key)(const uint8_t* _sig, uint32_t _sig_size, const uint8_t* _message, uint32_t _message_len, uint8_t* _serialized_public_key, uint32_t _serialized_public_key_size);
+typedef int (* fn_evm_recover_key)(const uint8_t* _sig, size_t _sig_size, const uint8_t* _message, size_t _message_len, uint8_t* _serialized_public_key, size_t _serialized_public_key_size);
 typedef int (* fn_evm_call_native)(int type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size);
 
 struct evm_interface {
