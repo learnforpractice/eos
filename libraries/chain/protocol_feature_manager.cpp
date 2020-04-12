@@ -162,6 +162,11 @@ either the account authorized the action or the action's net effect on RAM usage
             fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
             {}
          } )
+         (  builtin_protocol_feature_t::native_evm_execute, builtin_protocol_feature_spec{
+            "NATIVE_EVM_EXECUTE",
+            fc::variant("ffebe71f4308cb8e0c01619d230f14ece2b0fd2b30533f273646b6b338f5f49c").as<digest_type>(),
+            {}
+         } )
          (  builtin_protocol_feature_t::webauthn_key, builtin_protocol_feature_spec{
             "WEBAUTHN_KEY",
             fc::variant("927fdf78c51e77a899f2db938249fb1f8bb38f4e43d9c1f75b190492080cbc34").as<digest_type>(),

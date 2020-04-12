@@ -361,6 +361,7 @@ struct controller_impl {
       set_activation_handler<builtin_protocol_feature_t::get_sender>();
       set_activation_handler<builtin_protocol_feature_t::python_vm>();
       set_activation_handler<builtin_protocol_feature_t::ethereum_vm>();
+      set_activation_handler<builtin_protocol_feature_t::native_evm_execute>();
 
       set_activation_handler<builtin_protocol_feature_t::webauthn_key>();
       set_activation_handler<builtin_protocol_feature_t::wtmsig_block_signatures>();
@@ -3486,7 +3487,14 @@ void controller_impl::on_activation<builtin_protocol_feature_t::python_vm>() {
 template<>
 void controller_impl::on_activation<builtin_protocol_feature_t::ethereum_vm>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "evm_execute" );
+//      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "call_native" );
+   } );
+}
+
+template<>
+void controller_impl::on_activation<builtin_protocol_feature_t::native_evm_execute>() {
+   db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
+//      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "evm_execute" );
    } );
 }
 

@@ -17,7 +17,7 @@ void load_evm(const char *evm_path) {
     FC_ASSERT(evm_init, "evm_init not found!");
     evm_init();
 
-    interface.execute = (fn_evm_execute)dlsym(handle, "evm_execute");
+    interface.execute = (fn_evm_execute)dlsym(handle, "native_evm_execute");
     FC_ASSERT(interface.execute, "execute not found!");
 
     interface.recover_key = (fn_evm_recover_key)dlsym(handle, "evm_recover_key");

@@ -193,6 +193,7 @@ const std::vector<const char*> genesis_intrinsics = {
    "call_contract_get_extra_args",
    "call_contract_set_results",
    "call_contract_get_results",
+   "call_native"
 };
 
 } } // namespace eosio::chain

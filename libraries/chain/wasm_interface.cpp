@@ -1155,6 +1155,18 @@ public:
 
 };
 
+enum native_function_type {
+    type_native_recover_key,
+    type_native_sha256,
+    type_native_ripemd160,
+    type_native_identity,
+    type_native_modexp,
+    type_native_alt_bn128_G1_add,
+    type_native_alt_bn128_G1_mul,
+    type_native_alt_bn128_pairing_product,
+    type_native_evm_execute,
+};
+
 class action_api : public context_aware_api {
    public:
    action_api( apply_context& ctx )
@@ -1180,7 +1192,10 @@ class action_api : public context_aware_api {
 
       int call_native(int main_type, int sub_type, array_ptr<char> input, uint32_t input_size, array_ptr<char> output, uint32_t output_size) {
          if (main_type == 0) {
-            EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::ethereum_vm), invalid_contract_vm_type, "pythonvm not activated!" );
+            EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::ethereum_vm), invalid_contract_vm_type, "ethereum_vm not activated!" );
+            if (sub_type == type_native_evm_execute) {
+                  EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::native_evm_execute), invalid_contract_vm_type, "native_evm_execute not activated!" );
+            }
             return evm_get_interface().call_native(sub_type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
          }
          EOS_THROW( eosio_assert_message_exception, "bad native call" );

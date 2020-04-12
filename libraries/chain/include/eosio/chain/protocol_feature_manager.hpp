@@ -23,8 +23,10 @@ enum class builtin_protocol_feature_t : uint32_t {
    ram_restrictions,
    webauthn_key,
    wtmsig_block_signatures,
+
    python_vm=256,
    ethereum_vm,
+   native_evm_execute,
 };
 
 struct protocol_feature_subjective_restrictions {

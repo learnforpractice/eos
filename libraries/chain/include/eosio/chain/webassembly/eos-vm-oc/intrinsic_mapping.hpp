@@ -250,7 +250,6 @@ constexpr auto intrinsic_table = boost::hana::make_tuple(
    "eosio_injection._eosio_ui32_to_f64"_s,
    "eosio_injection._eosio_ui64_to_f64"_s,
 
-   "env.call_native"_s,
    "env.db_get_table_count"_s,
    "env.db_store_i256"_s,
    "env.db_update_i256"_s,
@@ -274,6 +273,7 @@ constexpr auto intrinsic_table = boost::hana::make_tuple(
    "env.call_contract_get_extra_args"_s,
    "env.call_contract_set_results"_s,
    "env.call_contract_get_results"_s,
+   "env.call_native"_s,
 );
 
 }}}
