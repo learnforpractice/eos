@@ -23,7 +23,7 @@ enum class builtin_protocol_feature_t : uint32_t {
    ram_restrictions,
    webauthn_key,
    wtmsig_block_signatures,
-   pythonvm=256,
+   python_vm=256,
    ethereum_vm,
 };
 

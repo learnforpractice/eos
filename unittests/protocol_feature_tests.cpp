@@ -1776,7 +1776,7 @@ BOOST_AUTO_TEST_CASE( pythonvm_test ) { try {
    ilog("+++++++++++");
 
    const auto& pfm = c.control->get_protocol_feature_manager();
-   const auto& d = pfm.get_builtin_digest( builtin_protocol_feature_t::pythonvm );
+   const auto& d = pfm.get_builtin_digest( builtin_protocol_feature_t::python_vm );
    BOOST_REQUIRE( d );
    ilog("+++++++++++");
 

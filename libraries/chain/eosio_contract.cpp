@@ -151,7 +151,7 @@ void apply_eosio_setcode(apply_context& context) {
    if (act.vmtype == 1) {
       //only allow privileged account use python smart contract when python vm is not activated
       if (!account.is_privileged()) {
-         EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
+         EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::python_vm), invalid_contract_vm_type, "pythonvm not activated!" );
          bool activated = system_contract_is_vm_activated(act.vmtype, act.vmversion);
          EOS_ASSERT( activated, invalid_contract_vm_version, "python vm with version ${v} not activated", ("v",act.vmversion) );
       }

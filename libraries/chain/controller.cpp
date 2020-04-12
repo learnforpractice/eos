@@ -359,7 +359,7 @@ struct controller_impl {
       set_activation_handler<builtin_protocol_feature_t::preactivate_feature>();
       set_activation_handler<builtin_protocol_feature_t::replace_deferred>();
       set_activation_handler<builtin_protocol_feature_t::get_sender>();
-      set_activation_handler<builtin_protocol_feature_t::pythonvm>();
+      set_activation_handler<builtin_protocol_feature_t::python_vm>();
       set_activation_handler<builtin_protocol_feature_t::ethereum_vm>();
 
       set_activation_handler<builtin_protocol_feature_t::webauthn_key>();
@@ -3475,7 +3475,7 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
 }
 
 template<>
-void controller_impl::on_activation<builtin_protocol_feature_t::pythonvm>() {
+void controller_impl::on_activation<builtin_protocol_feature_t::python_vm>() {
 #if 0
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
       add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "get_pythonvm" );

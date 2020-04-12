@@ -152,7 +152,7 @@ either the account authorized the action or the action's net effect on RAM usage
 */
             {}
          } )
-         (  builtin_protocol_feature_t::pythonvm, builtin_protocol_feature_spec{
+         (  builtin_protocol_feature_t::python_vm, builtin_protocol_feature_spec{
             "PYTHONVM",
             fc::variant("7038ce787c6483212925640412f60458702e96a478c61f8a10ba6db2ae9a2175").as<digest_type>(),
             {}

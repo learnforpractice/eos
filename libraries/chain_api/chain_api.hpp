@@ -27,7 +27,9 @@ enum class enum_builtin_protocol_feature : uint32_t {
    forward_setcode,
    get_sender,
    ram_restrictions,
-   pythonvm
+
+   python_vm=256,
+   ethereum_vm,
 };
 
 struct chain_api_cpp
