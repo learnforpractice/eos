@@ -122,7 +122,6 @@ set(WASM2C_ETHEREUM_VM_LIB ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/evmone
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt vm_api chain_api vm_manager
-                       native_contracts
                        wasm2c_contracts
                        ${LIBEVM4EOS}
                        ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS}
