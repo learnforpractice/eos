@@ -37,6 +37,7 @@ using namespace eosio::chain;
 
 static apply_context *s_ctx = nullptr;
 
+#include "../evm_loader.hpp"
 
 //vm_exceptions.cpp
 void vm_throw_exception(int type, const char* fmt, ...);
@@ -205,6 +206,19 @@ static bool get_code_version(uint64_t contract, char *hash, size_t size) {
 }
 
 using namespace eosio;
+
+typedef int (* fn_evm_init)();
+typedef int (* fn_evm_execute)(const char *raw_trx, size_t raw_trx_size, const char *sender_address, size_t sender_address_size);
+typedef int (* fn_evm_recover_key)(const uint8_t* _sig, size_t _sig_size, const uint8_t* _message, size_t _message_len, uint8_t* _serialized_public_key, size_t _serialized_public_key_size);
+typedef int (* fn_evm_call_native)(int type, const uint8_t *packed_args, size_t packed_args_size, uint8_t *output, size_t output_size);
+
+int _call_native(int main_type, int sub_type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size) {
+   if (main_type == 0) {
+      return evm_get_interface().call_native(sub_type, (uint8_t*)input, input_size, (uint8_t*)output, output_size);
+   }
+   eosio_assert(0, "bad native call" );
+   return 0;
+}
 
 extern "C" void vm_api_init() {
    static bool s_init = false;
@@ -404,6 +418,7 @@ extern "C" void vm_api_init() {
       _vm_api.__lshrti3 = __lshrti3;
 
       _vm_api.get_code_version = get_code_version;
+      _vm_api.call_native = _call_native;
 
       _vm_api.log = log_;
       _vm_api.is_in_apply_context = false;

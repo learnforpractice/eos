@@ -2250,7 +2250,7 @@ void read_write::push_transaction(const read_write::push_transaction_params& par
    } catch ( const std::bad_alloc& ) {
       chain_plugin::handle_bad_alloc();
    } CATCH_AND_CALL(next);
-   elog("+++++++++++++++push_transaction returned!");
+   // elog("+++++++++++++++push_transaction returned!");
 }
 
 static void push_recurse(read_write* rw, int index, const std::shared_ptr<read_write::push_transactions_params>& params, const std::shared_ptr<read_write::push_transactions_results>& results, const next_function<read_write::push_transactions_results>& next) {

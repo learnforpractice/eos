@@ -118,6 +118,7 @@ add_library( eosio_chain
              )
 
 #set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(WASM2C_ETHEREUM_VM_LIB ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/evmone/wasm2c/libethereum_vm${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt vm_api chain_api vm_manager
@@ -126,6 +127,7 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        ${LIBEVM4EOS}
                        ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS}
                        ${CHAIN_RT_LINKAGE}
+                       ${WASM2C_ETHEREUM_VM_LIB}
                        )
 
 target_include_directories( eosio_chain
@@ -147,6 +149,7 @@ target_include_directories( eosio_chain
                          PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
 )
 add_dependencies(eosio_chain contracts_project)
+add_dependencies(eosio_chain evmone4eosio)
 #add_dependencies(eosio_chain aleth)
 if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
    target_link_libraries(eosio_chain "-Wl,-wrap=main")
