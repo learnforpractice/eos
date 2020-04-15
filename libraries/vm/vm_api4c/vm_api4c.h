@@ -20,7 +20,7 @@ typedef void* (*fn_offset_to_char_ptr)(u32 offset);
 typedef void* (*fn_offset_to_ptr)(u32 offset, u32 size);
 
 extern "C" {
-    void set_memory_converter(fn_offset_to_ptr f1, fn_offset_to_char_ptr f2);
+    void wasm2c_set_memory_converter(fn_offset_to_ptr f1, fn_offset_to_char_ptr f2);
     void *offset_to_ptr(u32 offset, u32 size);
     void *offset_to_char_ptr(u32 offset);
     void init_vm_api4c();

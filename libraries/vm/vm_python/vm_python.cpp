@@ -179,7 +179,7 @@ void vm_python2_init(struct vm_python_info *python_info) {
 
    g_python_info = *python_info;
 
-   set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
+   wasm2c_set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
 
    Z_envZ_find_frozen_codeZ_iiiii = _find_frozen_code;
    init_vm_api4c();

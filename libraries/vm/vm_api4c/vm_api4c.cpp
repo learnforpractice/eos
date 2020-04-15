@@ -5,7 +5,7 @@
 #include "wasm-rt.h"
 #include <eosiolib/types.h>
 #include <vm_api/vm_api.h>
-#include <chain_api.hpp>
+//#include <chain_api.hpp>
 
 #include "src/interp.h"
 #include "vm_api4c.h"
@@ -221,6 +221,7 @@ u32 (*Z_envZ_read_transactionZ_iii)(u32, u32);
 u32 (*Z_envZ_transaction_sizeZ_iv)(void);
 /* import: 'env' 'tapos_block_num' */
 u32 (*Z_envZ_tapos_block_numZ_iv)(void);
+
 /* import: 'env' 'tapos_block_prefix' */
 u32 (*Z_envZ_tapos_block_prefixZ_iv)(void);
 /* import: 'env' 'expiration' */
@@ -365,7 +366,7 @@ void init_vm_api4c() {
 static fn_offset_to_ptr g_offset_to_ptr = 0;
 static fn_offset_to_char_ptr g_offset_to_char_ptr = 0;
 
-void set_memory_converter(fn_offset_to_ptr f1, fn_offset_to_char_ptr f2) {
+void wasm2c_set_memory_converter(fn_offset_to_ptr f1, fn_offset_to_char_ptr f2) {
     g_offset_to_ptr = f1;
     g_offset_to_char_ptr = f2;
 }

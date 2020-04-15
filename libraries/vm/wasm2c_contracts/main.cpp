@@ -144,7 +144,7 @@ static void *offset_to_char_ptr_s(u32 offset) {
 
 
 extern "C" void sandboxed_contracts_init() {
-    set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
+    wasm2c_set_memory_converter(offset_to_ptr_s, offset_to_char_ptr_s);
     init_eosio_system();
     init_vm_api4c();
     init_contracts();

@@ -1,5 +1,7 @@
 include(ExternalProject)
 set(EOSIOLIB_NATIVE "${CMAKE_BINARY_DIR}/contracts/vm_api/libvm_api${CMAKE_SHARED_LIBRARY_SUFFIX}")
+set(API4C_LIB "${CMAKE_BINARY_DIR}/libraries/vm/vm_api4c/libvm_api4c${CMAKE_STATIC_LIBRARY_SUFFIX}")
+
 
 if( EOSIO_COMPILE_TEST_CONTRACTS )
    set(EOSIO_WASM_OLD_BEHAVIOR "Off")
@@ -75,7 +77,7 @@ ExternalProject_Add(
    evmone4eosio
    SOURCE_DIR ${CMAKE_SOURCE_DIR}/externals/evmone4eosio
    BINARY_DIR ${CMAKE_BINARY_DIR}/externals/evmone4eosio
-   CMAKE_ARGS -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts #-DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+   CMAKE_ARGS -DEOSIOLIB_NATIVE=${EOSIOLIB_NATIVE} -DAPI4C_LIB=${API4C_LIB} -DEOSIOLIB_DIR=${CMAKE_SOURCE_DIR}/contracts #-DBUILD_SHARED_LIBS=true #-DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
    UPDATE_COMMAND ""
    PATCH_COMMAND ""
    TEST_COMMAND ""
@@ -89,5 +91,6 @@ add_subdirectory(Python-3.7.4)
 add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
 add_dependencies(cppzmq libzmq)
+add_dependencies(evmone4eosio vm_api4c)
 #add_dependencies(aleth eth_account)
 #add_dependencies(aleth vm_api)
