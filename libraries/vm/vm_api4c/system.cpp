@@ -1,7 +1,10 @@
 
 static void eosio_assert( u32 test, u32 msg_offset ) {
-   const char* msg = (char *)offset_to_char_ptr(msg_offset);
-   EOSIO_ASSERT( test, msg );
+   if (test) {
+   } else {
+      const char* msg = (char *)offset_to_char_ptr(msg_offset);
+      EOSIO_ASSERT( test, msg );
+   }
 }
 
 static void  eosio_assert_message( u32 test, u32 msg_offset, u32 msg_len ) {
