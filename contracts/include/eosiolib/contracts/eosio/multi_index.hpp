@@ -1541,7 +1541,7 @@ class multi_index
 
             auto pk = obj.primary_key();
 
-            i.__primary_itr = internal_use_do_not_use::db_store_i64( _scope, static_cast<uint64_t>(TableName), payer.value, pk, buffer, size );
+            i.__primary_itr = internal_use_do_not_use::db_store_i64( _scope, static_cast<uint64_t>(TableName), payer.value, pk, buffer, (uint32_t)size );
 
             if ( max_stack_buffer_size < size ) {
                free(buffer);
@@ -1683,7 +1683,7 @@ class multi_index
          datastream<char*> ds( (char*)buffer, size );
          ds << obj;
 
-         internal_use_do_not_use::db_update_i64( objitem.__primary_itr, payer.value, buffer, size );
+         internal_use_do_not_use::db_update_i64( objitem.__primary_itr, payer.value, buffer, (uint32_t)size );
 
          if ( max_stack_buffer_size < size ) {
             free( buffer );

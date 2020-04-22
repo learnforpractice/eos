@@ -32,6 +32,8 @@
 #include <eosio/vm/allocator.hpp>
 #endif
 
+extern "C" __attribute__ ((visibility ("default"))) int ethereum_vm_execute_trx(const uint8_t *trx, size_t trx_size, const uint8_t *sender, size_t sender_size);
+
 namespace eosio { namespace chain {
    using namespace webassembly::common;
 
@@ -1156,9 +1158,8 @@ public:
 };
 
 enum native_function_type {
+    type_native_keccak256,
     type_native_recover_key,
-    type_native_sha256,
-    type_native_ripemd160,
     type_native_identity,
     type_native_modexp,
     type_native_alt_bn128_G1_add,
@@ -1190,13 +1191,35 @@ class action_api : public context_aware_api {
          return context.get_receiver();
       }
 
+      vector<vector<uint8_t>> unpack_arg(const uint8_t *packed_args, size_t packed_args_size) {
+         vector<vector<uint8_t>> args;
+      //    args.reserve(3);
+
+         const uint8_t *ptr = packed_args;
+         const uint8_t *end_ptr = packed_args+packed_args_size;
+         while (ptr < end_ptr) {
+            size_t arg_size = *((uint32_t *)ptr);
+            ptr += sizeof(uint32_t);
+            vector<uint8_t> arg;
+            arg.resize(arg_size);
+            memcpy(arg.data(), ptr, arg_size);
+            ptr += arg_size;
+            args.emplace_back(arg);
+         }
+         return args;
+      }
+
       int call_native(int main_type, int sub_type, array_ptr<char> input, uint32_t input_size, array_ptr<char> output, uint32_t output_size) {
          if (main_type == 0) {
             EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::ethereum_vm), invalid_contract_vm_type, "ethereum_vm not activated!" );
             if (sub_type == type_native_evm_execute) {
-                  EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::native_evm_execute), invalid_contract_vm_type, "native_evm_execute not activated!" );
+               EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::native_evm_execute), invalid_contract_vm_type, "native_evm_execute not activated!" );
+               elog("++++++++++++++++type_native_evm_execute\n");
+               auto args = unpack_arg((uint8_t *)input.value, input_size);
+               EOS_ASSERT(args.size() == 2, eosio_assert_message_exception, "bad arguments count");
+               return evm_get_interface().ethereum_vm_execute_trx(args[0].data(), args[0].size(), args[1].data(), args[1].size());
             }
-            return evm_get_interface().call_native(sub_type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
+           return evm_get_interface().call_native(sub_type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
          }
          EOS_THROW( eosio_assert_message_exception, "bad native call" );
       }
