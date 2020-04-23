@@ -215,6 +215,22 @@ extern u32 (*WASM_RT_ADD_PREFIX(Z__Z5AnajSt11align_val_tZ_iii))(u32, u32);
 extern void (*WASM_RT_ADD_PREFIX(Z__Z5AdlPvSt11align_val_tZ_vii))(u32, u32);
 /* export: '_ZdaPvSt11align_val_t' */
 extern void (*WASM_RT_ADD_PREFIX(Z__Z5AdaPvSt11align_val_tZ_vii))(u32, u32);
+/* export: 'token_create' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_createZ_vjjj))(u64, u64, u64);
+/* export: 'token_issue' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_issueZ_vjjjii))(u64, u64, u64, u32, u32);
+/* export: 'token_transfer' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_transferZ_vjjjjii))(u64, u64, u64, u64, u32, u32);
+/* export: 'token_open' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_openZ_vjjj))(u64, u64, u64);
+/* export: 'token_retire' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_retireZ_vjjii))(u64, u64, u32, u32);
+/* export: 'token_close' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_closeZ_vjj))(u64, u64);
+/* export: 'token_get_balance' */
+extern u64 (*WASM_RT_ADD_PREFIX(Z_token_get_balanceZ_jji))(u64, u32);
+/* export: 'token_set_balance' */
+extern void (*WASM_RT_ADD_PREFIX(Z_token_set_balanceZ_vjji))(u64, u64, u32);
 /* export: 'native_eosio_token_apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_native_eosio_token_applyZ_vjjj))(u64, u64, u64);
 /* export: 'eosio_system_get_delegated_balance' */

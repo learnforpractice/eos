@@ -146,7 +146,7 @@ DEFINE_REINTERPRET(f64_reinterpret_i64, u64, f64)
 DEFINE_REINTERPRET(i64_reinterpret_f64, f64, u64)
 
 
-static u32 func_types[59];
+static u32 func_types[65];
 
 static void init_func_types(void) {
   func_types[0] = wasm_rt_register_func_type(0, 0);
@@ -206,8 +206,14 @@ static void init_func_types(void) {
   func_types[54] = wasm_rt_register_func_type(6, 1, WASM_RT_I32, WASM_RT_I32, WASM_RT_I32, WASM_RT_I32, WASM_RT_I32, WASM_RT_I32, WASM_RT_I64);
   func_types[55] = wasm_rt_register_func_type(5, 0, WASM_RT_I32, WASM_RT_I32, WASM_RT_I32, WASM_RT_I64, WASM_RT_I32);
   func_types[56] = wasm_rt_register_func_type(3, 0, WASM_RT_I64, WASM_RT_I64, WASM_RT_I64);
-  func_types[57] = wasm_rt_register_func_type(3, 1, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
-  func_types[58] = wasm_rt_register_func_type(5, 1, WASM_RT_I32, WASM_RT_I32, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
+  func_types[57] = wasm_rt_register_func_type(5, 0, WASM_RT_I64, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
+  func_types[58] = wasm_rt_register_func_type(6, 0, WASM_RT_I64, WASM_RT_I64, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
+  func_types[59] = wasm_rt_register_func_type(4, 0, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
+  func_types[60] = wasm_rt_register_func_type(2, 0, WASM_RT_I64, WASM_RT_I64);
+  func_types[61] = wasm_rt_register_func_type(2, 1, WASM_RT_I64, WASM_RT_I32, WASM_RT_I64);
+  func_types[62] = wasm_rt_register_func_type(3, 0, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32);
+  func_types[63] = wasm_rt_register_func_type(3, 1, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
+  func_types[64] = wasm_rt_register_func_type(5, 1, WASM_RT_I32, WASM_RT_I32, WASM_RT_I64, WASM_RT_I64, WASM_RT_I32, WASM_RT_I32);
 }
 
 static void __wasm_call_ctors(void);
@@ -553,6 +559,17 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
 static void eosio__token__transfer_eosio__name_const___eosio__name_const___eosio__asset_const___std____1__basic_string_char__std____1__char_traits_char___std____1__allocator_char____const__(u32, u32, u32, u32, u32);
 static void eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__name_const__(u32, u32, u32, u32);
 static void auto_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___const_iterator_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___emplace_eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__name_const______105__eosio__name__eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__name_const______105______lambda__eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__name_const______105____operator___eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item__eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__name_const______105___const(u32, u32);
+static void eosio__token__close_eosio__name_const___eosio__symbol_const__(u32, u32, u32);
+static void eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___erase_eosio__token__account_const__(u32, u32);
+static void token_create(u64, u64, u64);
+static void token_issue(u64, u64, u64, u32, u32);
+static void token_transfer(u64, u64, u64, u64, u32, u32);
+static void token_open(u64, u64, u64);
+static void token_retire(u64, u64, u32, u32);
+static void token_close(u64, u64);
+static u64 token_get_balance(u64, u32);
+static void token_set_balance(u64, u64, u32);
+static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___modify_token_set_balance____107__eosio__token__account_const___eosio__name__token_set_balance____107___(u32, u32, u32);
 static void native_eosio_token_apply(u64, u64, u64);
 static u32 bool_eosio__execute_action_eosio__token__eosio__name_const___eosio__asset_const___eosio__name__eosio__name__void__eosio__token_____eosio__name_const___eosio__asset_const___(u64, u64, u32);
 static u32 bool_eosio__execute_action_eosio__token__eosio__asset_const___std____1__basic_string_char__std____1__char_traits_char___std____1__allocator_char____const___eosio__name__eosio__name__void__eosio__token_____eosio__asset_const___std____1__basic_string_char__std____1__char_traits_char___std____1__allocator_char____const___(u64, u64, u32);
@@ -718,8 +735,8 @@ static u32 g2;
 
 static void init_globals(void) {
   g0 = 18432u;
-  g1 = 25534u;
-  g2 = 25534u;
+  g1 = 25654u;
+  g2 = 25654u;
 }
 
 static wasm_rt_memory_t M0;
@@ -5409,7 +5426,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p0;
@@ -5433,7 +5450,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l6;
@@ -5507,14 +5524,14 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
   i0 = 0u;
   l6 = i0;
   i0 = 0u;
-  i1 = 24799u;
+  i1 = 24919u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -5551,7 +5568,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   i0 = p3;
@@ -5585,7 +5602,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B14:;
   i0 = p0;
@@ -5609,7 +5626,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B17;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B17:;
   i0 = p3;
@@ -5650,7 +5667,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B11:;
   i0 = p3;
@@ -5735,7 +5752,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B24;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B24:;
   i0 = l5;
@@ -5765,7 +5782,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B22;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B22:;
   i0 = p0;
@@ -5789,7 +5806,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B25;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B25:;
   i0 = l5;
@@ -5826,7 +5843,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l5;
@@ -5871,7 +5888,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B32;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B32:;
   i0 = l5;
@@ -5901,7 +5918,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B30;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B30:;
   i0 = p0;
@@ -5925,7 +5942,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B33;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B33:;
   i0 = l5;
@@ -5965,7 +5982,7 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B27;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B27:;
   i0 = l5;
@@ -5999,17 +6016,17 @@ static u32 eosiosystem__system_contract__system_contract_eosio__name__eosio__nam
   goto Bfunc;
   B9:;
   i0 = 0u;
-  i1 = 24799u;
+  i1 = 24919u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   UNREACHABLE;
   B8:;
   i0 = 0u;
-  i1 = 24799u;
+  i1 = 24919u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   UNREACHABLE;
   B7:;
   i0 = 0u;
-  i1 = 24799u;
+  i1 = 24919u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   UNREACHABLE;
   Bfunc:;
@@ -6098,7 +6115,7 @@ static u32 eosio__multi_index__eosio__name__raw_7235159537265672192__eosio__sing
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -6339,7 +6356,7 @@ static u32 eosio__multi_index__eosio__name__raw_7235159538339414016__eosio__sing
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -6553,7 +6570,7 @@ static u32 eosio__multi_index__eosio__name__raw_7235159538876284928__eosio__sing
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -6582,7 +6599,7 @@ static u32 eosio__multi_index__eosio__name__raw_7235159538876284928__eosio__sing
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l5;
@@ -6604,7 +6621,7 @@ static u32 eosio__multi_index__eosio__name__raw_7235159538876284928__eosio__sing
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   i0 = l7;
@@ -6779,7 +6796,7 @@ static u32 eosio__multi_index__eosio__name__raw_7235159539413155840__eosio__sing
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -6944,7 +6961,7 @@ static u64 eosiosystem__system_contract__get_core_symbol_eosio__multi_index__eos
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 48u;
@@ -6972,7 +6989,7 @@ static u64 eosiosystem__system_contract__get_core_symbol_eosio__multi_index__eos
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -6982,7 +6999,7 @@ static u64 eosiosystem__system_contract__get_core_symbol_eosio__multi_index__eos
   goto Bfunc;
   B0:;
   i0 = 0u;
-  i1 = 24003u;
+  i1 = 24125u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   UNREACHABLE;
   Bfunc:;
@@ -7072,7 +7089,7 @@ static u32 eosio__multi_index__eosio__name__raw_13377137154988703744__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -7991,7 +8008,7 @@ static void eosio__singleton__eosio__name__raw_7235159537265672192__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -8018,7 +8035,7 @@ static void eosio__singleton__eosio__name__raw_7235159537265672192__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -8082,7 +8099,7 @@ static void eosio__singleton__eosio__name__raw_7235159538339414016__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -8109,7 +8126,7 @@ static void eosio__singleton__eosio__name__raw_7235159538339414016__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -8173,7 +8190,7 @@ static void eosio__singleton__eosio__name__raw_7235159538876284928__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -8200,7 +8217,7 @@ static void eosio__singleton__eosio__name__raw_7235159538876284928__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -8264,7 +8281,7 @@ static void eosio__singleton__eosio__name__raw_7235159539413155840__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -8291,7 +8308,7 @@ static void eosio__singleton__eosio__name__raw_7235159539413155840__eosiosystem_
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -8653,7 +8670,7 @@ static u32 std____1____vector_base_eosio__multi_index__eosio__name__raw_12531438
       i2 = l12;
       i3 = 2u;
       i2 <<= (i3 & 31);
-      i3 = 24660u;
+      i3 = 24780u;
       i2 += i3;
       i2 = i32_load((&M0), (u64)(i2));
       CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -8716,7 +8733,7 @@ static u32 std____1____vector_base_eosio__multi_index__eosio__name__raw_12531438
     i2 = l8;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -8774,7 +8791,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159537265672192__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -8783,7 +8800,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159537265672192__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -8852,7 +8869,7 @@ static void eosio__multi_index__eosio__name__raw_7235159537265672192__eosio__sin
   i0 = j0 == j1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = 192u;
@@ -9048,7 +9065,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159538339414016__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -9057,7 +9074,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159538339414016__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -9152,7 +9169,7 @@ static void eosio__multi_index__eosio__name__raw_7235159538339414016__eosio__sin
   i0 = j0 == j1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = 48u;
@@ -9335,7 +9352,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159538876284928__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -9344,7 +9361,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159538876284928__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -9416,7 +9433,7 @@ static void eosio__multi_index__eosio__name__raw_7235159538876284928__eosio__sin
   i0 = j0 == j1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = 32u;
@@ -9579,7 +9596,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159539413155840__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -9588,7 +9605,7 @@ static void void_eosio__multi_index__eosio__name__raw_7235159539413155840__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -9673,7 +9690,7 @@ static void eosio__multi_index__eosio__name__raw_7235159539413155840__eosio__sin
   i0 = j0 == j1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = 40u;
@@ -9924,7 +9941,7 @@ static void eosiosystem__system_contract__setram_unsigned_long_long_(u32 p0, u64
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B5;
   B6:;
@@ -9952,7 +9969,7 @@ static void eosiosystem__system_contract__setram_unsigned_long_long_(u32 p0, u64
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l2;
@@ -9968,7 +9985,7 @@ static void eosiosystem__system_contract__setram_unsigned_long_long_(u32 p0, u64
   i1 += i2;
   i32_store((&M0), (u64)(i0), i1);
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l3;
@@ -10006,7 +10023,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -10015,7 +10032,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -10142,7 +10159,7 @@ static void eosiosystem__system_contract__update_ram_supply__(u32 p0) {
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -10170,7 +10187,7 @@ static void eosiosystem__system_contract__update_ram_supply__(u32 p0) {
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -10206,7 +10223,7 @@ static void eosiosystem__system_contract__update_ram_supply__(u32 p0) {
   i0 = l7;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -10245,7 +10262,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -10254,7 +10271,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -10435,7 +10452,7 @@ static void eosiosystem__system_contract__setalimits_eosio__name_const___long_lo
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = 0u;
@@ -10490,7 +10507,7 @@ static void eosiosystem__system_contract__setalimits_eosio__name_const___long_lo
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l12;
   i0 = i32_load8_u((&M0), (u64)(i0 + 60));
@@ -10523,7 +10540,7 @@ static void eosiosystem__system_contract__setalimits_eosio__name_const___long_lo
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l12;
@@ -10682,7 +10699,7 @@ static u32 eosio__multi_index__eosio__name__raw_15426372072997126144__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -10905,7 +10922,7 @@ static u32 eosio__multi_index__eosio__name__raw_15938991009778630656__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -11199,7 +11216,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B12;
   B13:;
@@ -11225,7 +11242,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l4;
@@ -11248,7 +11265,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   i0 = j0 == j1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l3;
@@ -11368,7 +11385,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l9;
   i0 = i32_load8_u((&M0), (u64)(i0 + 60));
@@ -11401,7 +11418,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l9;
@@ -11457,7 +11474,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B21;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = l8;
@@ -11499,7 +11516,7 @@ static void eosiosystem__system_contract__setacctram_eosio__name_const___std____
   goto B1;
   B4:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p2;
@@ -11610,7 +11627,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -11619,7 +11636,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -12165,7 +12182,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -12174,7 +12191,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -12437,7 +12454,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B12;
   B13:;
@@ -12463,7 +12480,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l4;
@@ -12486,7 +12503,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = j0 == j1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l3;
@@ -12606,7 +12623,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l9;
   i0 = i32_load8_u((&M0), (u64)(i0 + 60));
@@ -12639,7 +12656,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l9;
@@ -12697,7 +12714,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B21;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = l8;
@@ -12707,7 +12724,7 @@ static void eosiosystem__system_contract__setacctnet_eosio__name_const___std____
   i0 = l9;
   if (i0) {goto B22;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B22:;
   i0 = p2;
@@ -12841,7 +12858,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -12850,7 +12867,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -13169,7 +13186,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -13178,7 +13195,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -13441,7 +13458,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B12;
   B13:;
@@ -13467,7 +13484,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l4;
@@ -13490,7 +13507,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = j0 == j1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l3;
@@ -13610,7 +13627,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l9;
   i0 = i32_load8_u((&M0), (u64)(i0 + 60));
@@ -13643,7 +13660,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l9;
@@ -13701,7 +13718,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = i0 == i1;
   if (i0) {goto B21;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = l8;
@@ -13711,7 +13728,7 @@ static void eosiosystem__system_contract__setacctcpu_eosio__name_const___std____
   i0 = l9;
   if (i0) {goto B22;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B22:;
   i0 = p2;
@@ -13845,7 +13862,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -13854,7 +13871,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -14173,7 +14190,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -14182,7 +14199,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -14568,7 +14585,7 @@ static void eosio__multi_index__eosio__name__raw_3617214701417456640__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p0;
@@ -14599,7 +14616,7 @@ static void eosio__multi_index__eosio__name__raw_3617214701417456640__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p0;
@@ -14916,7 +14933,7 @@ static u32 eosio__multi_index__eosio__name__raw_3617214701417456640__eosiosystem
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -14937,7 +14954,7 @@ static u32 eosio__multi_index__eosio__name__raw_3617214701417456640__eosiosystem
   i0 = l4;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l5;
@@ -14957,7 +14974,7 @@ static u32 eosio__multi_index__eosio__name__raw_3617214701417456640__eosiosystem
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   i0 = l7;
@@ -15115,7 +15132,7 @@ static void eosiosystem__system_contract__rmvproducer_eosio__name_const__(u32 p0
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l6;
@@ -15144,7 +15161,7 @@ static void eosiosystem__system_contract__rmvproducer_eosio__name_const__(u32 p0
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = l6;
@@ -15157,7 +15174,7 @@ static void eosiosystem__system_contract__rmvproducer_eosio__name_const__(u32 p0
   i1 = 19253u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = l2;
@@ -15249,7 +15266,7 @@ static u32 eosio__multi_index__eosio__name__raw_12531438729690087424__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -15465,7 +15482,7 @@ static u32 eosio__multi_index__eosio__name__raw_12531438729690087424__eosiosyste
     i2 = l6;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -15530,7 +15547,7 @@ static u32 eosio__multi_index__eosio__name__raw_12531438729690087424__eosiosyste
   i2 = l4;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -15572,7 +15589,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -15581,7 +15598,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -15609,7 +15626,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l3;
@@ -16067,7 +16084,7 @@ static u32 eosio__multi_index__eosio__name__raw_11071153799887323136__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -16510,7 +16527,7 @@ static void eosiosystem__system_contract__init_eosio__unsigned_int__eosio__symbo
   i0 = i0 == i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B2;
   B3:;
@@ -16535,7 +16552,7 @@ static void eosiosystem__system_contract__init_eosio__unsigned_int__eosio__symbo
   i0 = i0 == i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = 0u;
@@ -16655,7 +16672,7 @@ static void eosiosystem__system_contract__init_eosio__unsigned_int__eosio__symbo
   i0 = j0 == j1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B13:;
   i0 = 80u;
@@ -16982,7 +16999,7 @@ static u32 eosio__multi_index__eosio__name__raw_14289235522390851584__eosio__tok
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   goto Bfunc;
@@ -17009,7 +17026,7 @@ static u32 eosio__multi_index__eosio__name__raw_14289235522390851584__eosio__tok
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   goto Bfunc;
@@ -17044,7 +17061,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -17080,7 +17097,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -17723,7 +17740,7 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
   i0 = i0 < i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24085u;
+  i1 = 24205u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B4:;
@@ -17747,7 +17764,7 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
     i0 = i0 < i1;
     if (i0) {goto B6;}
     i0 = 0u;
-    i1 = 24130u;
+    i1 = 24250u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B6:;
     j0 = p0;
@@ -17936,7 +17953,7 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
     goto L15;
     B54:;
     i0 = 0u;
-    i1 = 24232u;
+    i1 = 24352u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 1u;
     l7 = i0;
@@ -17994,12 +18011,12 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
     goto L15;
     B48:;
     i0 = 0u;
-    i1 = 24294u;
+    i1 = 24414u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     goto B23;
     B47:;
     i0 = 0u;
-    i1 = 24275u;
+    i1 = 24395u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l2;
     i1 = 40u;
@@ -18011,7 +18028,7 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
     goto B28;
     B46:;
     i0 = 0u;
-    i1 = 24294u;
+    i1 = 24414u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l2;
     i1 = 40u;
@@ -18025,7 +18042,7 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
     goto L15;
     B45:;
     i0 = 0u;
-    i1 = 24232u;
+    i1 = 24352u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l2;
     j0 = i64_load((&M0), (u64)(i0 + 32));
@@ -18040,7 +18057,7 @@ static u64 eosiosystem__system_contract__get_delegated_balance_eosio__name_(u64 
     goto L15;
     B44:;
     i0 = 0u;
-    i1 = 24275u;
+    i1 = 24395u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 5u;
     l7 = i0;
@@ -18299,7 +18316,7 @@ static u32 eosio__multi_index__eosio__name__raw_5377987680120340480__eosiosystem
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -18492,7 +18509,7 @@ static u64 eosiosystem__system_contract__get_rex_fund_eosio__name_(u64 p0) {
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -18635,7 +18652,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455193572617748480__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -19265,7 +19282,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = j0 == j1;
   if (i0) {goto B21;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 24048));
+  i0 = i32_load((&M0), (u64)(i0 + 24168));
   l8 = i0;
   L23: 
     i0 = l4;
@@ -19626,7 +19643,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B43;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B43:;
   i0 = l4;
@@ -19668,7 +19685,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B44;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B44:;
   i0 = l4;
@@ -19775,7 +19792,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = i0 == i1;
   if (i0) {goto B48;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B48:;
   i0 = l4;
@@ -19813,7 +19830,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = j0 == j1;
   if (i0) {goto B49;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B49:;
   i0 = 48u;
@@ -20022,7 +20039,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = j0 == j1;
   if (i0) {goto B51;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B51:;
   i0 = l4;
@@ -20288,7 +20305,7 @@ static void eosiosystem__system_contract__bidname_eosio__name_const___eosio__nam
   i0 = l6;
   if (i0) {goto B52;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B52:;
   i0 = l4;
@@ -20777,7 +20794,7 @@ static void eosio__asset__print___const(u32 p0) {
   goto B0;
   B2:;
   i0 = 0u;
-  i1 = 25184u;
+  i1 = 25304u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l1;
   i1 = p0;
@@ -20881,7 +20898,7 @@ static u32 eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosystem
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -20913,7 +20930,7 @@ static u32 eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosystem
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l5;
@@ -20936,7 +20953,7 @@ static u32 eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosystem
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   i0 = l7;
@@ -20955,7 +20972,7 @@ static u32 eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosystem
   i0 = i0 != i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l3;
@@ -21078,7 +21095,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -21087,7 +21104,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -21129,7 +21146,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   i0 = j0 < j1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   j0 = l7;
@@ -21217,7 +21234,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   i0 = j0 == j1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = p1;
@@ -21238,7 +21255,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   goto B13;
   B15:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 8u;
@@ -21249,7 +21266,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   if (i0) {goto B13;}
   B14:;
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   j0 = l6;
   i1 = p1;
@@ -21265,7 +21282,7 @@ static void void_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   if (i0) {goto B11;}
   B12:;
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B11:;
   i0 = l3;
@@ -21338,7 +21355,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -21374,7 +21391,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -21410,7 +21427,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -21446,7 +21463,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -21529,7 +21546,7 @@ static void auto_eosio__multi_index__eosio__name__raw_4292903715935748096__eosio
   i0 = j0 < j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   j0 = l8;
@@ -22242,7 +22259,7 @@ static void void_std____1__vector_eosio__action__std____1__allocator_eosio__acti
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l8;
@@ -22268,7 +22285,7 @@ static void void_std____1__vector_eosio__action__std____1__allocator_eosio__acti
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l5;
@@ -22585,7 +22602,7 @@ static void void_eosio__multi_index__eosio__name__raw_11071153799887323136__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -22594,7 +22611,7 @@ static void void_eosio__multi_index__eosio__name__raw_11071153799887323136__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -22628,7 +22645,7 @@ static void void_eosio__multi_index__eosio__name__raw_11071153799887323136__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l4;
@@ -23544,7 +23561,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -23640,7 +23657,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B5;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -23757,7 +23774,7 @@ static void eosiosystem__system_contract__bidrefund_eosio__name_const___eosio__n
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B0;
   B1:;
@@ -23914,7 +23931,7 @@ static void eosiosystem__system_contract__bidrefund_eosio__name_const___eosio__n
   i0 = j0 == j1;
   if (i0) {goto B14;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 24048));
+  i0 = i32_load((&M0), (u64)(i0 + 24168));
   l8 = i0;
   L16: 
     i0 = l3;
@@ -24203,10 +24220,10 @@ static void eosiosystem__system_contract__bidrefund_eosio__name_const___eosio__n
   if (i0) {goto B2;}
   B3:;
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l4;
@@ -24621,7 +24638,7 @@ static void eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -24630,7 +24647,7 @@ static void eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosyste
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -24699,7 +24716,7 @@ static void eosio__multi_index__eosio__name__raw_4292903715935748096__eosiosyste
   l5 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l9 = i0;
@@ -24868,7 +24885,7 @@ static void eosiosystem__system_contract__buyrambytes_eosio__name_const___eosio_
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B0;
   B1:;
@@ -24889,7 +24906,7 @@ static void eosiosystem__system_contract__buyrambytes_eosio__name_const___eosio_
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p3;
@@ -24979,7 +24996,7 @@ static void eosiosystem__system_contract__buyrambytes_eosio__name_const___eosio_
   i0 = j0 < j1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   j0 = l11;
@@ -25432,7 +25449,7 @@ static void eosiosystem__system_contract__buyram_eosio__name_const___eosio__name
   i0 = i0 == i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B10;
   B11:;
@@ -25460,7 +25477,7 @@ static void eosiosystem__system_contract__buyram_eosio__name_const___eosio__name
   i0 = i0 == i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B10;
   B14:;
@@ -25559,7 +25576,7 @@ static void eosiosystem__system_contract__buyram_eosio__name_const___eosio__name
   i0 = i0 == i1;
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B18:;
   i0 = p2;
@@ -25604,7 +25621,7 @@ static void eosiosystem__system_contract__buyram_eosio__name_const___eosio__name
   i0 = j0 == j1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l4;
@@ -25776,7 +25793,7 @@ static void eosiosystem__system_contract__buyram_eosio__name_const___eosio__name
   i0 = i0 == i1;
   if (i0) {goto B24;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load8_u((&M0), (u64)(i0 + 60));
@@ -25808,7 +25825,7 @@ static void eosiosystem__system_contract__buyram_eosio__name_const___eosio__name
   i0 = i0 == i1;
   if (i0) {goto B24;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B24:;
   i0 = l5;
@@ -26376,7 +26393,7 @@ static void eosiosystem__system_contract__channel_to_rex_eosio__name_const___eos
   i0 = j0 == j1;
   if (i0) {goto B14;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 24048));
+  i0 = i32_load((&M0), (u64)(i0 + 24168));
   l4 = i0;
   L16: 
     i0 = l3;
@@ -26741,7 +26758,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -26750,7 +26767,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -26760,7 +26777,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i1 = p1;
   i2 = p2;
   i2 = i32_load((&M0), (u64)(i2 + 4));
-  i3 = 25176u;
+  i3 = 25296u;
   eosiosystem__exchange_state__direct_convert_eosio__asset_const___eosio__symbol_const__(i0, i1, i2, i3);
   i0 = p2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -26773,7 +26790,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l3;
@@ -26844,7 +26861,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -26853,7 +26870,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -27305,7 +27322,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455447620470177792__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -27595,7 +27612,7 @@ static void eosiosystem__system_contract__add_to_rex_return_pool_eosio__asset_co
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = 56u;
@@ -27803,7 +27820,7 @@ static void eosiosystem__system_contract__add_to_rex_return_pool_eosio__asset_co
   i0 = j0 == j1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   i0 = l2;
@@ -28169,7 +28186,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 40u;
@@ -28182,7 +28199,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   j0 = l4;
@@ -28193,7 +28210,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = j0 == j1;
   if (i0) {goto B17;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B17:;
   i0 = p1;
@@ -28211,7 +28228,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0));
@@ -28222,7 +28239,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto Bfunc;
   B9:;
@@ -28244,7 +28261,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 16u;
@@ -28257,7 +28274,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B20;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B20:;
   j0 = l4;
@@ -28268,7 +28285,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = j0 == j1;
   if (i0) {goto B21;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = p1;
@@ -28286,7 +28303,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B22;}
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0));
@@ -28300,7 +28317,7 @@ static void eosiosystem__exchange_state__direct_convert_eosio__asset_const___eos
   goto Bfunc;
   B6:;
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   Bfunc:;
   FUNC_EPILOGUE;
@@ -28378,7 +28395,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -28454,7 +28471,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B5;
   B6:;
@@ -28482,7 +28499,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -28501,7 +28518,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = l10;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = l7;
@@ -28562,7 +28579,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = l4;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l3;
@@ -28622,7 +28639,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = i0 == i1;
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l10;
   i0 = i32_load8_u((&M0), (u64)(i0 + 60));
@@ -28654,7 +28671,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = i0 == i1;
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B15:;
   i0 = l10;
@@ -28901,7 +28918,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = j0 < j1;
   if (i0) {goto B25;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 8u;
@@ -29057,7 +29074,7 @@ static void eosiosystem__system_contract__sellram_eosio__name_const___long_long_
   i0 = j0 < j1;
   if (i0) {goto B35;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 112u;
@@ -29237,7 +29254,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -29246,7 +29263,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -29271,7 +29288,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 < j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   j0 = 5062994ull;
@@ -29408,7 +29425,7 @@ static void void_eosio__multi_index__eosio__name__raw_13377137154988703744__eosi
   i0 = j0 == j1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = l3;
@@ -29481,7 +29498,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -29490,7 +29507,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -30259,7 +30276,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   if (i0) {goto B0;}
   B1:;
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p4;
@@ -30275,12 +30292,12 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B4:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   j0 = l7;
@@ -30362,7 +30379,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = l6;
@@ -30398,7 +30415,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = j0 == j1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B11:;
   i0 = 64u;
@@ -30628,10 +30645,10 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = l10;
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B18:;
   i0 = l10;
@@ -30747,7 +30764,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B28;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B28:;
   i0 = l6;
@@ -30799,7 +30816,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = j0 == j1;
   if (i0) {goto B29;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B29:;
   i0 = 64u;
@@ -31061,7 +31078,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B36;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B36;
   B37:;
@@ -31086,7 +31103,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B36;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B36:;
   i0 = l12;
@@ -31105,7 +31122,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = j0 == j1;
   if (i0) {goto B40;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B40:;
   i0 = l15;
@@ -31121,12 +31138,12 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B41;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B41;
   B42:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B41:;
   i0 = p2;
@@ -31201,7 +31218,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B50;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B50;
   B51:;
@@ -31233,7 +31250,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B50;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B50:;
   i0 = l13;
@@ -31356,10 +31373,10 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = l12;
   if (i0) {goto B54;}
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B54:;
   i0 = l12;
@@ -31488,7 +31505,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = i0 == i1;
   if (i0) {goto B61;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B61:;
   i0 = l6;
@@ -31672,7 +31689,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = j0 == j1;
   if (i0) {goto B72;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B72:;
   i0 = l6;
@@ -31910,7 +31927,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = j0 == j1;
   if (i0) {goto B75;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B75:;
   i0 = l6;
@@ -31932,7 +31949,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   goto B77;
   B80:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   i0 = i32_load((&M0), (u64)(i0 + 168));
@@ -31941,7 +31958,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   goto B60;
   B79:;
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B78:;
   i0 = l6;
@@ -32126,7 +32143,7 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = j0 == j1;
   if (i0) {goto B87;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B87:;
   i0 = l6;
@@ -32146,12 +32163,12 @@ static void eosiosystem__system_contract__changebw_eosio__name__eosio__name_cons
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B88;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B88;
   B89:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B88:;
   i0 = p0;
@@ -32188,7 +32205,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -32197,7 +32214,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -32214,7 +32231,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -32230,7 +32247,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 16u;
@@ -32243,7 +32260,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p2;
@@ -32257,7 +32274,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = j0 == j1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p1;
@@ -32273,7 +32290,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 32u;
@@ -32286,7 +32303,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   j0 = l5;
@@ -32297,7 +32314,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = j0 == j1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l3;
@@ -32369,7 +32386,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -32406,7 +32423,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -32435,7 +32452,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -32474,7 +32491,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -32505,7 +32522,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -32543,7 +32560,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -32796,7 +32813,7 @@ static void eosio__multi_index__eosio__name__raw_5377987680120340480__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -32805,7 +32822,7 @@ static void eosio__multi_index__eosio__name__raw_5377987680120340480__eosiosyste
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -32874,7 +32891,7 @@ static void eosio__multi_index__eosio__name__raw_5377987680120340480__eosiosyste
   l5 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l9 = i0;
@@ -33004,7 +33021,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -33013,7 +33030,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -33030,7 +33047,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -33046,7 +33063,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 8u;
@@ -33059,7 +33076,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p3;
@@ -33073,7 +33090,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 == j1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p1;
@@ -33095,7 +33112,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   goto B8;
   B10:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 24u;
@@ -33106,7 +33123,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   if (i0) {goto B8;}
   B9:;
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   j0 = l6;
   i1 = p1;
@@ -33122,7 +33139,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   if (i0) {goto B6;}
   B7:;
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l4;
@@ -33194,7 +33211,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -33231,7 +33248,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -33262,7 +33279,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -33301,7 +33318,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -33332,7 +33349,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -33370,7 +33387,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -33439,7 +33456,7 @@ static u32 eosio__multi_index__eosio__name__raw_12531438729690087424__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   goto Bfunc;
@@ -33466,7 +33483,7 @@ static u32 eosio__multi_index__eosio__name__raw_12531438729690087424__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   goto Bfunc;
@@ -33502,7 +33519,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -33511,7 +33528,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -33539,7 +33556,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l3;
@@ -33690,7 +33707,7 @@ static void eosio__multi_index__eosio__name__raw_15426372072997126144__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -33699,7 +33716,7 @@ static void eosio__multi_index__eosio__name__raw_15426372072997126144__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -33768,7 +33785,7 @@ static void eosio__multi_index__eosio__name__raw_15426372072997126144__eosiosyst
   l5 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l9 = i0;
@@ -33961,7 +33978,7 @@ static u32 eosio__multi_index__eosio__name__raw_13445401747262537728__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -34121,7 +34138,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -34130,7 +34147,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -34168,7 +34185,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   i0 = j0 == j1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p1;
@@ -34194,7 +34211,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   goto B8;
   B10:;
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0));
@@ -34204,7 +34221,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   if (i0) {goto B8;}
   B9:;
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0));
@@ -34252,7 +34269,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   i0 = j0 == j1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B11:;
   i0 = p1;
@@ -34278,7 +34295,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   goto B15;
   B17:;
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0));
@@ -34288,7 +34305,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   if (i0) {goto B15;}
   B16:;
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0));
@@ -34335,7 +34352,7 @@ static void void_eosio__multi_index__eosio__name__raw_13445401747262537728__eosi
   i0 = j0 == j1;
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B18:;
   i0 = l3;
@@ -34401,7 +34418,7 @@ static void eosio__multi_index__eosio__name__raw_13445401747262537728__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -34410,7 +34427,7 @@ static void eosio__multi_index__eosio__name__raw_13445401747262537728__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -34479,7 +34496,7 @@ static void eosio__multi_index__eosio__name__raw_13445401747262537728__eosiosyst
   l5 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l9 = i0;
@@ -35303,7 +35320,7 @@ static void void_std____1__vector_eosio__action__std____1__allocator_eosio__acti
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -35904,7 +35921,7 @@ static void eosiosystem__system_contract__update_rex_stake_eosio__name_const__(u
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -35930,7 +35947,7 @@ static void eosiosystem__system_contract__update_rex_stake_eosio__name_const__(u
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -36201,7 +36218,7 @@ static void eosiosystem__system_contract__update_rex_stake_eosio__name_const__(u
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B12;
   B13:;
@@ -36227,7 +36244,7 @@ static void eosiosystem__system_contract__update_rex_stake_eosio__name_const__(u
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l2;
@@ -36310,7 +36327,7 @@ static void eosiosystem__system_contract__update_voting_power_eosio__name_const_
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B5;
   B6:;
@@ -36336,7 +36353,7 @@ static void eosiosystem__system_contract__update_voting_power_eosio__name_const_
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -36373,7 +36390,7 @@ static void eosiosystem__system_contract__update_voting_power_eosio__name_const_
   i0 = j0 == j1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = l3;
@@ -36760,7 +36777,7 @@ static void eosiosystem__producer_info__deactivate__(u32 p0) {
   i2 = l9;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -36821,7 +36838,7 @@ static void eosiosystem__producer_info__deactivate__(u32 p0) {
   i2 = l2;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -36877,7 +36894,7 @@ static void eosiosystem__producer_info__deactivate__(u32 p0) {
     i2 = l3;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -36981,7 +36998,7 @@ static u32 eosio__datastream_unsigned_int___eosiosystem__operator___eosio__datas
   i2 = l4;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24672u;
+  i3 = 24792u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -37098,7 +37115,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -37135,7 +37152,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0));
@@ -37184,7 +37201,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B3;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0));
@@ -37228,7 +37245,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i2 = l3;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24684u;
+  i3 = 24804u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -37251,7 +37268,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -37288,7 +37305,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -37325,7 +37342,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0));
@@ -37354,7 +37371,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -37433,7 +37450,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
     i2 = l8;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -37490,7 +37507,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -37499,7 +37516,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -37961,7 +37978,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
   i0 = i0 == i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = l5;
@@ -38007,7 +38024,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l5;
@@ -38211,7 +38228,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
   i0 = i0 == i1;
   if (i0) {goto B23;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B23;
   B24:;
@@ -38241,7 +38258,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
   i0 = i0 == i1;
   if (i0) {goto B23;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B23:;
   i0 = l5;
@@ -38260,7 +38277,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
   i1 += i2;
   i32_store((&M0), (u64)(i0 + 80), i1);
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = l13;
@@ -38678,7 +38695,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B250:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = p4;
     if (i0) {goto B117;}
@@ -38718,7 +38735,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B247:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 20u;
     l17 = i0;
@@ -38775,7 +38792,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B240:;
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 23u;
     l17 = i0;
@@ -39365,7 +39382,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B201:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 100u;
     l17 = i0;
@@ -39403,7 +39420,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B197:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 32u;
     l17 = i0;
@@ -39497,7 +39514,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     i0 = 0u;
     l10 = i0;
     i0 = 0u;
-    i0 = i32_load((&M0), (u64)(i0 + 24048));
+    i0 = i32_load((&M0), (u64)(i0 + 24168));
     l11 = i0;
     i0 = 82u;
     l17 = i0;
@@ -39613,7 +39630,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B180:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 39u;
     l17 = i0;
@@ -39768,7 +39785,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     i0 = 0u;
     l10 = i0;
     i0 = 0u;
-    i0 = i32_load((&M0), (u64)(i0 + 24048));
+    i0 = i32_load((&M0), (u64)(i0 + 24168));
     l12 = i0;
     i0 = 64u;
     l17 = i0;
@@ -40182,7 +40199,7 @@ static void eosiosystem__system_contract__update_votes_eosio__name_const___eosio
     goto L28;
     B146:;
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = 47u;
     l17 = i0;
@@ -40693,7 +40710,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -40702,7 +40719,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -41095,7 +41112,7 @@ static void eosiosystem__system_contract__propagate_weight_change_eosiosystem__v
     if (i0) {goto B13;}
     B14:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B13:;
     i0 = l2;
@@ -41298,7 +41315,7 @@ static void eosiosystem__system_contract__propagate_weight_change_eosiosystem__v
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B4:;
@@ -41326,7 +41343,7 @@ static void eosiosystem__system_contract__propagate_weight_change_eosiosystem__v
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B20:;
@@ -41678,7 +41695,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -41687,7 +41704,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -41848,7 +41865,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -41857,7 +41874,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -42120,7 +42137,7 @@ static u32 eosio__multi_index__eosio__name__raw_12531438729690120192__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -42271,7 +42288,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690120192__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -42280,7 +42297,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690120192__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -42377,7 +42394,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -42386,7 +42403,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -42423,7 +42440,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B2;
   B3:;
@@ -42695,7 +42712,7 @@ static void eosiosystem__system_contract__delegatebw_eosio__name_const___eosio__
   if (i0) {goto B8;}
   B9:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p4;
   j0 = i64_load((&M0), (u64)(i0));
@@ -42727,7 +42744,7 @@ static void eosiosystem__system_contract__delegatebw_eosio__name_const___eosio__
   if (i0) {goto B4;}
   B5:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p3;
   j0 = i64_load((&M0), (u64)(i0));
@@ -42922,7 +42939,7 @@ static void eosiosystem__system_contract__undelegatebw_eosio__name_const___eosio
   if (i0) {goto B8;}
   B9:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p4;
   j0 = i64_load((&M0), (u64)(i0));
@@ -42954,7 +42971,7 @@ static void eosiosystem__system_contract__undelegatebw_eosio__name_const___eosio
   if (i0) {goto B4;}
   B5:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p3;
   j0 = i64_load((&M0), (u64)(i0));
@@ -43108,7 +43125,7 @@ static void eosiosystem__system_contract__refund_eosio__name_const__(u32 p0, u32
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B0;
   B1:;
@@ -43213,7 +43230,7 @@ static void eosiosystem__system_contract__refund_eosio__name_const__(u32 p0, u32
   i0 = j0 == j1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l2;
@@ -43233,12 +43250,12 @@ static void eosiosystem__system_contract__refund_eosio__name_const__(u32 p0, u32
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B4;
   B5:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l2;
@@ -43287,10 +43304,10 @@ static void eosiosystem__system_contract__refund_eosio__name_const__(u32 p0, u32
   i0 = l3;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l3;
@@ -43822,7 +43839,7 @@ static u32 std____1____variant_detail____copy_constructor_std____1____variant_de
     i3 = l8;
     i4 = 2u;
     i3 <<= (i4 & 31);
-    i4 = 24708u;
+    i4 = 24828u;
     i3 += i4;
     i3 = i32_load((&M0), (u64)(i3));
     CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -44239,7 +44256,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 < j1;
   if (i0) {goto B17;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 80u;
@@ -44467,7 +44484,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 < j1;
   if (i0) {goto B29;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 80u;
@@ -44639,7 +44656,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 < j1;
   if (i0) {goto B39;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 80u;
@@ -44811,7 +44828,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 < j1;
   if (i0) {goto B49;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 80u;
@@ -45027,7 +45044,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = i0 == i1;
   if (i0) {goto B62;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B62;
   B63:;
@@ -45053,7 +45070,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = i0 == i1;
   if (i0) {goto B62;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B62:;
   i0 = l4;
@@ -45098,7 +45115,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 == j1;
   if (i0) {goto B66;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B66:;
   i0 = 40u;
@@ -45344,7 +45361,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = l7;
   if (i0) {goto B71;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B71:;
   i0 = l16;
@@ -45732,7 +45749,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 < j1;
   if (i0) {goto B84;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 80u;
@@ -45970,7 +45987,7 @@ static void eosiosystem__system_contract__claimrewards_eosio__name_const__(u32 p
   i0 = j0 < j1;
   if (i0) {goto B95;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 80u;
@@ -47033,7 +47050,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -47070,7 +47087,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -47099,7 +47116,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -47360,7 +47377,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -47369,7 +47386,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -48771,7 +48788,7 @@ static void eosiosystem__system_contract__transfer_to_fund_eosio__name_const___e
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B5;
   B6:;
@@ -48797,7 +48814,7 @@ static void eosiosystem__system_contract__transfer_to_fund_eosio__name_const___e
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -48822,7 +48839,7 @@ static void eosiosystem__system_contract__transfer_to_fund_eosio__name_const___e
   i0 = j0 == j1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = 48u;
@@ -49088,7 +49105,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455274975669780480__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -49262,7 +49279,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455274975669780480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -49271,7 +49288,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455274975669780480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -49383,7 +49400,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -49419,7 +49436,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -49455,7 +49472,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -49491,7 +49508,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -50274,7 +50291,7 @@ static void eosiosystem__system_contract__update_rex_account_eosio__name_const__
   i0 = i0 == i1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B13:;
   i0 = l9;
@@ -50303,7 +50320,7 @@ static void eosiosystem__system_contract__update_rex_account_eosio__name_const__
   i0 = i0 == i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = l9;
@@ -50476,7 +50493,7 @@ static void eosiosystem__system_contract__transfer_from_fund_eosio__name_const__
   goto B6;
   B8:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p2;
   j0 = i64_load((&M0), (u64)(i0));
@@ -50508,7 +50525,7 @@ static void eosiosystem__system_contract__transfer_from_fund_eosio__name_const__
   if (i0) {goto B4;}
   B5:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l6;
@@ -50933,7 +50950,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -51148,7 +51165,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -51157,7 +51174,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -51226,7 +51243,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   l6 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l10 = i0;
@@ -51417,7 +51434,7 @@ static void eosio__multi_index__eosio__name__raw_13455274975669780480__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = l6;
@@ -51451,7 +51468,7 @@ static void eosio__multi_index__eosio__name__raw_13455274975669780480__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -51483,7 +51500,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455274975669780480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -51492,7 +51509,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455274975669780480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -51900,7 +51917,7 @@ static void eosiosystem__system_contract__check_voting_requirement_eosio__name_c
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l7;
   j0 = i64_load((&M0), (u64)(i0 + 8));
@@ -51931,7 +51948,7 @@ static void eosiosystem__system_contract__check_voting_requirement_eosio__name_c
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l7;
@@ -52320,7 +52337,7 @@ static void eosiosystem__system_contract__add_to_rex_pool_eosio__asset_const__(u
   i0 = l5;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   i0 = l7;
@@ -52363,7 +52380,7 @@ static void eosiosystem__system_contract__add_to_rex_pool_eosio__asset_const__(u
   i0 = j0 == j1;
   if (i0) {goto B17;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B17:;
   i0 = l3;
@@ -52770,7 +52787,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   i0 = i0 == i1;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B16;
   B17:;
@@ -52796,7 +52813,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   i0 = i0 == i1;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   i0 = l10;
@@ -52841,7 +52858,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   i0 = j0 == j1;
   if (i0) {goto B20;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B20:;
   i0 = l5;
@@ -53280,7 +53297,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   goto B39;
   B41:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l13;
   i1 = l10;
@@ -53293,7 +53310,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   if (i0) {goto B39;}
   B40:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B39:;
   i0 = l13;
@@ -53336,7 +53353,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   if (i0) {goto B43;}
   B44:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B43:;
   i0 = l13;
@@ -53355,7 +53372,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   i0 = j0 == j1;
   if (i0) {goto B46;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B46:;
   i0 = p0;
@@ -53373,7 +53390,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B48;}
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B48:;
   i0 = l5;
@@ -53383,7 +53400,7 @@ static void eosiosystem__system_contract__add_to_rex_balance_eosio__name_const__
   goto Bfunc;
   B47:;
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i1 = 48u;
@@ -53471,7 +53488,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
   i0 = l5;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l3;
@@ -53599,7 +53616,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = j0 == j1;
     if (i0) {goto B9;}
     i0 = 0u;
-    i1 = 24312u;
+    i1 = 24432u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i1 = 24u;
@@ -53721,7 +53738,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = 0u;
     l14 = i0;
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B12:;
     i0 = l3;
@@ -53746,7 +53763,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = l4;
     if (i0) {goto B16;}
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B16:;
     i0 = l2;
@@ -53792,7 +53809,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     l4 = i0;
     if (i0) {goto B18;}
     i0 = 0u;
-    i1 = 24914u;
+    i1 = 25034u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l2;
     i0 = i32_load((&M0), (u64)(i0 + 36));
@@ -53988,7 +54005,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = j0 == j1;
     if (i0) {goto B28;}
     i0 = 0u;
-    i1 = 24312u;
+    i1 = 24432u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i1 = 24u;
@@ -54110,7 +54127,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = 0u;
     l14 = i0;
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B31:;
     i0 = l3;
@@ -54135,7 +54152,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = l4;
     if (i0) {goto B35;}
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B35:;
     i0 = l2;
@@ -54181,7 +54198,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     l4 = i0;
     if (i0) {goto B37;}
     i0 = 0u;
-    i1 = 24914u;
+    i1 = 25034u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l2;
     i0 = i32_load((&M0), (u64)(i0 + 36));
@@ -54416,7 +54433,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     if (i0) {goto B47;}
     B48:;
     i0 = 0u;
-    i1 = 24720u;
+    i1 = 24840u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B47:;
     i0 = l2;
@@ -54455,7 +54472,7 @@ static void eosiosystem__system_contract__runrex_unsigned_short_(u32 p0, u32 p1)
     i0 = l4;
     if (i0) {goto B52;}
     i0 = 0u;
-    i1 = 24462u;
+    i1 = 24582u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B52:;
     i0 = l2;
@@ -54709,7 +54726,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -54718,7 +54735,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -54746,7 +54763,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 25486u;
+  i1 = 25606u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l3;
@@ -54865,7 +54882,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -54874,7 +54891,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -55171,7 +55188,7 @@ static void auto_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 8u;
@@ -55191,12 +55208,12 @@ static void auto_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B8;
   B9:;
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = p1;
@@ -55677,7 +55694,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -55686,7 +55703,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -55767,7 +55784,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -56482,7 +56499,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -56491,7 +56508,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -56576,7 +56593,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p1;
@@ -56810,7 +56827,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -56819,7 +56836,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -56928,7 +56945,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 76));
@@ -57167,7 +57184,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -57187,7 +57204,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   goto B9;
   B11:;
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   j0 = i64_load((&M0), (u64)(i0 + 8));
@@ -57422,7 +57439,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 76));
@@ -57657,7 +57674,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -57666,7 +57683,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -57828,7 +57845,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 76));
@@ -58202,7 +58219,7 @@ static void eosiosystem__system_contract__update_rex_pool__(u32 p0) {
   i0 = l5;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l6;
@@ -58264,7 +58281,7 @@ static void eosiosystem__system_contract__update_rex_pool__(u32 p0) {
   i0 = l5;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l6;
@@ -58351,7 +58368,7 @@ static void eosiosystem__system_contract__update_rex_pool__(u32 p0) {
   goto B8;
   B9:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l1;
@@ -58391,7 +58408,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -58400,7 +58417,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -58583,7 +58600,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -58602,7 +58619,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -58707,7 +58724,7 @@ static void eosiosystem__system_contract__remove_loan_from_rex_pool_eosiosystem_
   i0 = l4;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l3;
@@ -58842,7 +58859,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -58851,7 +58868,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -59012,7 +59029,7 @@ static void void_eosio__multi_index__eosio__name__raw_5004935261474258944__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -59021,7 +59038,7 @@ static void void_eosio__multi_index__eosio__name__raw_5004935261474258944__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -59263,7 +59280,7 @@ static void eosiosystem__system_contract__update_resource_limits_eosio__name_con
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -59331,7 +59348,7 @@ static void eosiosystem__system_contract__update_resource_limits_eosio__name_con
   i0 = j0 == j1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l5;
@@ -59536,7 +59553,7 @@ static void eosiosystem__system_contract__update_resource_limits_eosio__name_con
   i0 = i0 == i1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B13;
   B14:;
@@ -59566,7 +59583,7 @@ static void eosiosystem__system_contract__update_resource_limits_eosio__name_con
   i0 = i0 == i1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B13:;
   i0 = l14;
@@ -59647,10 +59664,10 @@ static void eosiosystem__system_contract__update_resource_limits_eosio__name_con
   i0 = l8;
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B18:;
   i0 = l8;
@@ -59755,7 +59772,7 @@ static u32 eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosystem
   goto B0;
   B2:;
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967295u;
   l3 = i0;
@@ -59861,7 +59878,7 @@ static u32 eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosystem
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B4:;
@@ -59880,7 +59897,7 @@ static u32 eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosystem
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p0;
@@ -59920,7 +59937,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -59929,7 +59946,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -59998,7 +60015,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   l6 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l10 = i0;
@@ -60251,7 +60268,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -60270,7 +60287,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -60313,7 +60330,7 @@ static void void_eosio__multi_index__eosio__name__raw_11147282203254194176__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -60322,7 +60339,7 @@ static void void_eosio__multi_index__eosio__name__raw_11147282203254194176__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -60524,7 +60541,7 @@ static u32 eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyste
   goto B0;
   B2:;
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967295u;
   l3 = i0;
@@ -60630,7 +60647,7 @@ static u32 eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B4:;
@@ -60649,7 +60666,7 @@ static u32 eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p0;
@@ -60689,7 +60706,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -60698,7 +60715,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -60767,7 +60784,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   l6 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l10 = i0;
@@ -61022,7 +61039,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -61041,7 +61058,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -61086,7 +61103,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyste
   goto B0;
   B2:;
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -61182,7 +61199,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B4;
   B5:;
@@ -61208,7 +61225,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -61342,7 +61359,7 @@ static void eosiosystem__system_contract__fill_rex_order_eosio__multi_index__eos
   i0 = j0 < j1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   j0 = l8;
@@ -61615,7 +61632,7 @@ static void eosiosystem__system_contract__fill_rex_order_eosio__multi_index__eos
   i0 = l7;
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B18:;
   i0 = l13;
@@ -61686,7 +61703,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455468344392024064__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -61695,7 +61712,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455468344392024064__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -62267,7 +62284,7 @@ static void eosiosystem__system_contract__unstaketorex_eosio__name_const___eosio
   if (i0) {goto B7;}
   B8:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   i0 = l5;
@@ -62299,10 +62316,10 @@ static void eosiosystem__system_contract__unstaketorex_eosio__name_const___eosio
   l9 = i0;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B13:;
   i0 = l9;
@@ -62414,7 +62431,7 @@ static void eosiosystem__system_contract__unstaketorex_eosio__name_const___eosio
   i0 = j0 == j1;
   if (i0) {goto B20;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B20:;
   i0 = l5;
@@ -62434,12 +62451,12 @@ static void eosiosystem__system_contract__unstaketorex_eosio__name_const___eosio
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B21;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B21;
   B22:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = l5;
@@ -62894,7 +62911,7 @@ static void eosio__multi_index__eosio__name__raw_5377987680120340480__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = l6;
@@ -62928,7 +62945,7 @@ static void eosio__multi_index__eosio__name__raw_5377987680120340480__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -62960,7 +62977,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -62969,7 +62986,7 @@ static void void_eosio__multi_index__eosio__name__raw_5377987680120340480__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -63390,7 +63407,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -63399,7 +63416,7 @@ static void void_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -63530,7 +63547,7 @@ static void auto_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 < j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   j0 = l8;
@@ -63650,7 +63667,7 @@ static void auto_eosio__multi_index__eosio__name__raw_15426372072997126144__eosi
   i0 = j0 < j1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   j0 = l8;
@@ -63858,7 +63875,7 @@ static void eosiosystem__system_contract__sellrex_eosio__name_const___eosio__ass
   i0 = l5;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l4;
@@ -63995,7 +64012,7 @@ static void eosiosystem__system_contract__sellrex_eosio__name_const___eosio__ass
   i0 = i0 == i1;
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B15:;
   i0 = l10;
@@ -64024,7 +64041,7 @@ static void eosiosystem__system_contract__sellrex_eosio__name_const___eosio__ass
   i0 = i0 == i1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B11:;
   i0 = l3;
@@ -64061,7 +64078,7 @@ static void eosiosystem__system_contract__sellrex_eosio__name_const___eosio__ass
   i0 = j0 == j1;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   i0 = l3;
@@ -64331,7 +64348,7 @@ static void eosio__multi_index__eosio__name__raw_13455193572617748480__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = l6;
@@ -64365,7 +64382,7 @@ static void eosio__multi_index__eosio__name__raw_13455193572617748480__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -64399,7 +64416,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455468344392024064__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -64408,7 +64425,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455468344392024064__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -65353,7 +65370,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -65362,7 +65379,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -65500,7 +65517,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -65509,7 +65526,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -65795,10 +65812,10 @@ static void eosiosystem__system_contract__cnclrexorder_eosio__name_const__(u32 p
   p1 = i0;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24914u;
+  i1 = 25034u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i1 = 24948u;
+  i1 = 25068u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -65875,7 +65892,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p0;
@@ -65910,7 +65927,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p0;
@@ -66051,7 +66068,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = eosiosystem__system_contract__rex_loans_available___const(i0);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 25213u;
+  i1 = 25333u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = 0u;
@@ -66085,7 +66102,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   if (i0) {goto B5;}
   B6:;
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B4;
   B5:;
@@ -66095,7 +66112,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = j0 == j1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p4;
   j0 = i64_load((&M0), (u64)(i0));
@@ -66117,7 +66134,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   if (i0) {goto B1;}
   B2:;
   i0 = 0u;
-  i1 = 25271u;
+  i1 = 25391u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l6;
@@ -66141,7 +66158,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = j0 == j1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l6;
@@ -66161,12 +66178,12 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B9;
   B10:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = p0;
@@ -66247,7 +66264,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 25302u;
+  i1 = 25422u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0 + 40));
@@ -66298,7 +66315,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = l9;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   i0 = l8;
@@ -66392,7 +66409,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = j0 < j1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   i1 = 8u;
@@ -66559,7 +66576,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = j0 == j1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = l4;
@@ -66950,7 +66967,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = eosiosystem__system_contract__rex_loans_available___const(i0);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 25213u;
+  i1 = 25333u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = 0u;
@@ -66984,7 +67001,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   if (i0) {goto B5;}
   B6:;
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B4;
   B5:;
@@ -66994,7 +67011,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = j0 == j1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p4;
   j0 = i64_load((&M0), (u64)(i0));
@@ -67016,7 +67033,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   if (i0) {goto B1;}
   B2:;
   i0 = 0u;
-  i1 = 25271u;
+  i1 = 25391u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l6;
@@ -67040,7 +67057,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = j0 == j1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l6;
@@ -67060,12 +67077,12 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B9;
   B10:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = p0;
@@ -67146,7 +67163,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 25302u;
+  i1 = 25422u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0 + 40));
@@ -67197,7 +67214,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = l9;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B16:;
   i0 = l8;
@@ -67291,7 +67308,7 @@ static u64 long_long_eosiosystem__system_contract__rent_rex_eosio__multi_index__
   i0 = j0 < j1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   i1 = 8u;
@@ -67458,7 +67475,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = l4;
@@ -67737,7 +67754,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   if (i0) {goto B0;}
   B1:;
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -67749,7 +67766,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   i0 += i1;
   i1 = p1;
   j2 = p3;
-  i3 = 25336u;
+  i3 = 25456u;
   eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosystem__rex_loan__eosio__indexed_by__eosio__name__raw_4581808834347008000__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_expr___const______eosio__indexed_by__eosio__name__raw_4587419431193280512__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_owner___const________require_find_unsigned_long_long__char_const___const(i0, i1, j2, i3);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -67769,7 +67786,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   goto B5;
   B7:;
   i0 = 0u;
-  i1 = 25351u;
+  i1 = 25471u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -67783,7 +67800,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   if (i0) {goto B5;}
   B6:;
   i0 = 0u;
-  i1 = 25377u;
+  i1 = 25497u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -67805,7 +67822,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   if (i0) {goto B3;}
   B4:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p1;
@@ -67867,7 +67884,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = l6;
@@ -67901,7 +67918,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -67935,7 +67952,7 @@ static void void_eosio__multi_index__eosio__name__raw_5004935261474258944__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -67944,7 +67961,7 @@ static void void_eosio__multi_index__eosio__name__raw_5004935261474258944__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -68249,7 +68266,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   if (i0) {goto B0;}
   B1:;
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -68261,7 +68278,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   i0 += i1;
   i1 = p1;
   j2 = p3;
-  i3 = 25336u;
+  i3 = 25456u;
   eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosystem__rex_loan__eosio__indexed_by__eosio__name__raw_4581808834347008000__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_expr___const______eosio__indexed_by__eosio__name__raw_4587419431193280512__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_owner___const________require_find_unsigned_long_long__char_const___const(i0, i1, j2, i3);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -68281,7 +68298,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   goto B5;
   B7:;
   i0 = 0u;
-  i1 = 25351u;
+  i1 = 25471u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -68295,7 +68312,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   if (i0) {goto B5;}
   B6:;
   i0 = 0u;
-  i1 = 25377u;
+  i1 = 25497u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -68317,7 +68334,7 @@ static void void_eosiosystem__system_contract__fund_rex_loan_eosio__multi_index_
   if (i0) {goto B3;}
   B4:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p1;
@@ -68379,7 +68396,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = l6;
@@ -68413,7 +68430,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p0;
@@ -68447,7 +68464,7 @@ static void void_eosio__multi_index__eosio__name__raw_11147282203254194176__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -68456,7 +68473,7 @@ static void void_eosio__multi_index__eosio__name__raw_11147282203254194176__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -68761,7 +68778,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   if (i0) {goto B0;}
   B1:;
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = l5;
@@ -68769,7 +68786,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   i0 += i1;
   i1 = p1;
   j2 = p3;
-  i3 = 25336u;
+  i3 = 25456u;
   eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosystem__rex_loan__eosio__indexed_by__eosio__name__raw_4581808834347008000__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_expr___const______eosio__indexed_by__eosio__name__raw_4587419431193280512__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_owner___const________require_find_unsigned_long_long__char_const___const(i0, i1, j2, i3);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -68780,7 +68797,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   i0 = j0 == j1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 25351u;
+  i1 = 25471u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -68794,7 +68811,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 25377u;
+  i1 = 25497u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -68818,7 +68835,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   goto B7;
   B9:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0 + 40));
@@ -68828,7 +68845,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   if (i0) {goto B7;}
   B8:;
   i0 = 0u;
-  i1 = 25402u;
+  i1 = 25522u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -68850,7 +68867,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   if (i0) {goto B5;}
   B6:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p1;
@@ -68890,7 +68907,7 @@ static void void_eosio__multi_index__eosio__name__raw_5004935261474258944__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -68899,7 +68916,7 @@ static void void_eosio__multi_index__eosio__name__raw_5004935261474258944__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -69204,7 +69221,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   if (i0) {goto B0;}
   B1:;
   i0 = 0u;
-  i1 = 25251u;
+  i1 = 25371u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = l5;
@@ -69212,7 +69229,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   i0 += i1;
   i1 = p1;
   j2 = p3;
-  i3 = 25336u;
+  i3 = 25456u;
   eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosystem__rex_loan__eosio__indexed_by__eosio__name__raw_4581808834347008000__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_expr___const______eosio__indexed_by__eosio__name__raw_4587419431193280512__eosio__const_mem_fun_eosiosystem__rex_loan__unsigned_long_long____eosiosystem__rex_loan__by_owner___const________require_find_unsigned_long_long__char_const___const(i0, i1, j2, i3);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -69223,7 +69240,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   i0 = j0 == j1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 25351u;
+  i1 = 25471u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -69237,7 +69254,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 25377u;
+  i1 = 25497u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -69261,7 +69278,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   goto B7;
   B9:;
   i0 = 0u;
-  i1 = 24312u;
+  i1 = 24432u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l6;
   j0 = i64_load((&M0), (u64)(i0 + 40));
@@ -69271,7 +69288,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   if (i0) {goto B7;}
   B8:;
   i0 = 0u;
-  i1 = 25402u;
+  i1 = 25522u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0 + 12));
@@ -69293,7 +69310,7 @@ static void void_eosiosystem__system_contract__defund_rex_loan_eosio__multi_inde
   if (i0) {goto B5;}
   B6:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p1;
@@ -69333,7 +69350,7 @@ static void void_eosio__multi_index__eosio__name__raw_11147282203254194176__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -69342,7 +69359,7 @@ static void void_eosio__multi_index__eosio__name__raw_11147282203254194176__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -69721,7 +69738,7 @@ static void eosiosystem__system_contract__updaterex_eosio__name_const__(u32 p0, 
   i0 = l4;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = l3;
@@ -69856,7 +69873,7 @@ static void eosiosystem__system_contract__updaterex_eosio__name_const__(u32 p0, 
   i0 = j0 == j1;
   if (i0) {goto B17;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B17:;
   i0 = l2;
@@ -69875,12 +69892,12 @@ static void eosiosystem__system_contract__updaterex_eosio__name_const__(u32 p0, 
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B18;}
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B18;
   B19:;
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B18:;
   i0 = l2;
@@ -69912,7 +69929,7 @@ static void eosiosystem__system_contract__updaterex_eosio__name_const__(u32 p0, 
   i0 = l4;
   if (i0) {goto B20;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B20:;
   i0 = l3;
@@ -69947,7 +69964,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -69956,7 +69973,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -70292,7 +70309,7 @@ static void eosiosystem__system_contract__setrex_eosio__asset_const__(u32 p0, u3
   goto B6;
   B7:;
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l2;
@@ -70329,7 +70346,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -70338,7 +70355,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -70823,7 +70840,7 @@ static void eosiosystem__system_contract__consolidate_rex_balance_eosio__multi_i
   i0 = l5;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p0;
@@ -70861,7 +70878,7 @@ static void eosiosystem__system_contract__consolidate_rex_balance_eosio__multi_i
   i0 = l5;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = p0;
@@ -70896,7 +70913,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -70905,7 +70922,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -71186,7 +71203,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 76));
@@ -71772,7 +71789,7 @@ static void eosiosystem__system_contract__mvtosavings_eosio__name_const___eosio_
   i0 = l6;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l4;
@@ -71795,7 +71812,7 @@ static void eosiosystem__system_contract__mvtosavings_eosio__name_const___eosio_
   i0 = l6;
   if (i0) {goto B20;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B20:;
   i0 = l4;
@@ -71835,7 +71852,7 @@ static void eosiosystem__system_contract__mvtosavings_eosio__name_const___eosio_
   i0 = l6;
   if (i0) {goto B23;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B23:;
   i0 = l4;
@@ -71872,7 +71889,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -71881,7 +71898,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -72047,7 +72064,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = (u64)((s64)j0 <= (s64)j1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 25427u;
+  i1 = 25547u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   j0 = l17;
   i1 = p2;
@@ -72057,7 +72074,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   if (i0) {goto B2;}
   B3:;
   i0 = 0u;
-  i1 = 25454u;
+  i1 = 25574u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   j0 = l5;
@@ -72068,7 +72085,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = p1;
@@ -72423,7 +72440,7 @@ static void eosiosystem__system_contract__mvfrsavings_eosio__name_const___eosio_
   i0 = l6;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l4;
@@ -72441,7 +72458,7 @@ static void eosiosystem__system_contract__mvfrsavings_eosio__name_const___eosio_
   i0 = l6;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l4;
@@ -72481,7 +72498,7 @@ static void eosiosystem__system_contract__mvfrsavings_eosio__name_const___eosio_
   i0 = p2;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24462u;
+  i1 = 24582u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B9:;
   i0 = l4;
@@ -72739,7 +72756,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -72759,7 +72776,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   goto B9;
   B11:;
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   j0 = i64_load((&M0), (u64)(i0 + 8));
@@ -72994,7 +73011,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 76));
@@ -73619,7 +73636,7 @@ static void eosiosystem__system_contract__closerex_eosio__name_const__(u32 p0, u
   i0 = i0 == i1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l8;
   i1 = l9;
@@ -73650,7 +73667,7 @@ static void eosiosystem__system_contract__closerex_eosio__name_const__(u32 p0, u
   i0 = i0 == i1;
   if (i0) {goto B19;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B19:;
   i0 = l8;
@@ -73829,7 +73846,7 @@ static void eosiosystem__system_contract__closerex_eosio__name_const__(u32 p0, u
   i0 = i0 == i1;
   if (i0) {goto B37;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l7;
   j0 = i64_load((&M0), (u64)(i0 + 32));
@@ -73860,7 +73877,7 @@ static void eosiosystem__system_contract__closerex_eosio__name_const__(u32 p0, u
   i0 = i0 == i1;
   if (i0) {goto B37;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B37:;
   i0 = l7;
@@ -73977,7 +73994,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -73996,7 +74013,7 @@ static void eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosyste
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -74098,7 +74115,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -74117,7 +74134,7 @@ static void eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -74151,7 +74168,7 @@ static void eosio__multi_index__eosio__name__raw_13455274975669780480__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -74160,7 +74177,7 @@ static void eosio__multi_index__eosio__name__raw_13455274975669780480__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -74229,7 +74246,7 @@ static void eosio__multi_index__eosio__name__raw_13455274975669780480__eosiosyst
   l5 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l9 = i0;
@@ -74352,7 +74369,7 @@ static void eosio__multi_index__eosio__name__raw_13455193572617748480__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24978u;
+  i1 = 25098u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -74361,7 +74378,7 @@ static void eosio__multi_index__eosio__name__raw_13455193572617748480__eosiosyst
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 25023u;
+  i1 = 25143u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p0;
@@ -74434,7 +74451,7 @@ static void eosio__multi_index__eosio__name__raw_13455193572617748480__eosiosyst
   l5 = i0;
   B6:;
   i0 = 0u;
-  i1 = 25073u;
+  i1 = 25193u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 4294967272u;
   l7 = i0;
@@ -74589,7 +74606,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B1;
   B2:;
@@ -74608,7 +74625,7 @@ static void eosio__multi_index__eosio__name__raw_13455468344392024064__eosiosyst
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -74709,7 +74726,7 @@ static u32 eosio__multi_index__eosio__name__raw_13455477395677265920__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -74907,7 +74924,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -74916,7 +74933,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -75060,7 +75077,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -75096,7 +75113,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -75132,7 +75149,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -75168,7 +75185,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -75204,7 +75221,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -75240,7 +75257,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -75276,7 +75293,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -75647,7 +75664,7 @@ static void auto_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0 + 4));
@@ -75956,7 +75973,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -75965,7 +75982,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -76182,7 +76199,7 @@ static u32 eosio__multi_index__eosio__name__raw_13452952622072725504__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l6;
@@ -76231,7 +76248,7 @@ static u32 eosio__multi_index__eosio__name__raw_13452952622072725504__eosiosyste
   i0 = l6;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0 + 36));
@@ -76366,7 +76383,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -76375,7 +76392,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -76596,7 +76613,7 @@ static void void_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -76605,7 +76622,7 @@ static void void_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -76982,7 +76999,7 @@ static void void_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
     goto L6;
     B36:;
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0 + 4));
@@ -77175,7 +77192,7 @@ static void void_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -77184,7 +77201,7 @@ static void void_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -77483,7 +77500,7 @@ static void void_eosio__multi_index__eosio__name__raw_13452952622072725504__eosi
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B22;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0 + 4));
@@ -77566,7 +77583,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -77575,7 +77592,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -77749,7 +77766,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -77758,7 +77775,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455477395677265920__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -77886,7 +77903,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -77895,7 +77912,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -77919,7 +77936,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -77935,12 +77952,12 @@ static void void_eosio__multi_index__eosio__name__raw_13455447620470177792__eosi
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B3;
   B4:;
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p1;
@@ -78067,7 +78084,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -78076,7 +78093,7 @@ static void void_eosio__multi_index__eosio__name__raw_13455193572617748480__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -78317,7 +78334,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -78326,7 +78343,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -78530,7 +78547,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B0;
   B1:;
@@ -78558,7 +78575,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = l5;
@@ -78629,7 +78646,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i3 = l9;
   i4 = 2u;
   i3 <<= (i4 & 31);
-  i4 = 24696u;
+  i4 = 24816u;
   i3 += i4;
   i3 = i32_load((&M0), (u64)(i3));
   CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -78686,7 +78703,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = j0 == j1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = l5;
@@ -78894,7 +78911,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
     i2 = p2;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -78959,7 +78976,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i2 = l9;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -78983,7 +79000,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = j0 == j1;
   if (i0) {goto B21;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B21:;
   i0 = 40u;
@@ -79213,7 +79230,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B4;
   B25:;
@@ -79238,7 +79255,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B4;
   B28:;
@@ -79251,7 +79268,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i0 = j0 == j1;
   if (i0) {goto B29;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B29:;
   i0 = 40u;
@@ -79497,7 +79514,7 @@ static void eosiosystem__system_contract__register_producer_eosio__name_const___
   i2 = p4;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -79566,7 +79583,7 @@ static void auto_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i2 = l9;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -79593,7 +79610,7 @@ static void auto_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i3 = l8;
   i4 = 2u;
   i3 <<= (i4 & 31);
-  i4 = 24696u;
+  i4 = 24816u;
   i3 += i4;
   i3 = i32_load((&M0), (u64)(i3));
   CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -79673,7 +79690,7 @@ static void auto_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
     i2 = l7;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -80130,7 +80147,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -80139,7 +80156,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l5;
@@ -80187,7 +80204,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i2 = l11;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -80214,7 +80231,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i3 = l10;
   i4 = 2u;
   i3 <<= (i4 & 31);
-  i4 = 24696u;
+  i4 = 24816u;
   i3 += i4;
   i3 = i32_load((&M0), (u64)(i3));
   CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -80291,7 +80308,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
     i2 = l11;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -80360,7 +80377,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   if (i0) {goto B10;}
   B11:;
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = l5;
@@ -80551,7 +80568,7 @@ static void eosiosystem__system_contract__regproducer_eosio__name_const___std___
   i3 = l7;
   i4 = 2u;
   i3 <<= (i4 & 31);
-  i4 = 24708u;
+  i4 = 24828u;
   i3 += i4;
   i3 = i32_load((&M0), (u64)(i3));
   CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -80602,7 +80619,7 @@ static void eosiosystem__system_contract__regproducer_eosio__name_const___std___
   i3 = l9;
   i4 = 2u;
   i3 <<= (i4 & 31);
-  i4 = 24708u;
+  i4 = 24828u;
   i3 += i4;
   i3 = i32_load((&M0), (u64)(i3));
   CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -80652,7 +80669,7 @@ static void eosiosystem__system_contract__regproducer_eosio__name_const___std___
   i2 = l6;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -80711,7 +80728,7 @@ static void eosiosystem__system_contract__regproducer_eosio__name_const___std___
     i2 = p1;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -80783,7 +80800,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -80792,7 +80809,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l3;
@@ -80820,7 +80837,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l3;
@@ -81026,7 +81043,7 @@ static void eosiosystem__system_contract__voteproducer_eosio__name_const___eosio
   i0 = i0 == i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l7;
   j0 = i64_load((&M0), (u64)(i0 + 32));
@@ -81057,7 +81074,7 @@ static void eosiosystem__system_contract__voteproducer_eosio__name_const___eosio
   i0 = i0 == i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = l7;
@@ -81095,7 +81112,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -81104,7 +81121,7 @@ static void void_eosio__multi_index__eosio__name__raw_12531438729690087424__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = l4;
@@ -81302,7 +81319,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -81311,7 +81328,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -81478,7 +81495,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -81487,7 +81504,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -81689,7 +81706,7 @@ static void eosiosystem__system_contract__regproxy_eosio__name_const___bool_(u32
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l9;
   i0 = i32_load8_u((&M0), (u64)(i0 + 56));
@@ -81720,7 +81737,7 @@ static void eosiosystem__system_contract__regproxy_eosio__name_const___bool_(u32
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l9;
@@ -81784,7 +81801,7 @@ static void eosiosystem__system_contract__regproxy_eosio__name_const___bool_(u32
   i0 = j0 == j1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B8:;
   i0 = l3;
@@ -81964,7 +81981,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -81973,7 +81990,7 @@ static void void_eosio__multi_index__eosio__name__raw_15938991009778630656__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -82292,7 +82309,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -82328,7 +82345,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -82363,7 +82380,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -82400,7 +82417,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -82429,7 +82446,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -82466,7 +82483,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -82497,7 +82514,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -82534,7 +82551,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -82563,7 +82580,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -82601,7 +82618,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -82642,7 +82659,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -82678,7 +82695,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -82939,7 +82956,7 @@ static void eosio__token__create_eosio__name_const___eosio__asset_const__(u32 p0
   i0 = i0 == i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B12:;
   i0 = 0u;
@@ -82955,7 +82972,7 @@ static void eosio__token__create_eosio__name_const___eosio__asset_const__(u32 p0
   i0 = j0 == j1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B13:;
   i0 = 56u;
@@ -83292,7 +83309,7 @@ static u32 eosio__multi_index__eosio__name__raw_14289235522390851584__eosio__tok
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -83477,7 +83494,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -83513,7 +83530,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -83546,7 +83563,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -83582,7 +83599,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -83615,7 +83632,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -84012,7 +84029,7 @@ static void eosio__token__issue_eosio__name_const___eosio__asset_const___std____
   i0 = i0 == i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B10:;
   i0 = p1;
@@ -84262,7 +84279,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -84271,7 +84288,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -84284,7 +84301,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -84300,7 +84317,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   j0 = i64_load((&M0), (u64)(i0));
@@ -84315,7 +84332,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   j0 = l5;
@@ -84328,7 +84345,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = j0 == j1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -84452,7 +84469,7 @@ static void eosio__token__add_balance_eosio__name_const___eosio__asset_const___e
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -84479,7 +84496,7 @@ static void eosio__token__add_balance_eosio__name_const___eosio__asset_const___e
   i0 = j0 == j1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = 32u;
@@ -84770,7 +84787,7 @@ static u32 eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__toke
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -84799,7 +84816,7 @@ static u32 eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__toke
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l5;
@@ -84820,7 +84837,7 @@ static u32 eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__toke
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B7:;
   i0 = l3;
@@ -84945,7 +84962,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -84954,7 +84971,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -84967,7 +84984,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24232u;
+  i1 = 24352u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -84983,7 +85000,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24275u;
+  i1 = 24395u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   j0 = i64_load((&M0), (u64)(i0));
@@ -84998,7 +85015,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24294u;
+  i1 = 24414u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   j0 = l5;
@@ -85012,7 +85029,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = j0 == j1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -85432,7 +85449,7 @@ static void eosio__token__retire_eosio__asset_const___std____1__basic_string_cha
   i0 = i0 == i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   goto B7;
   B8:;
@@ -85645,7 +85662,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -85654,7 +85671,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p2;
@@ -85667,7 +85684,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -85683,7 +85700,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   j0 = i64_load((&M0), (u64)(i0));
@@ -85698,7 +85715,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   j0 = l5;
@@ -85711,7 +85728,7 @@ static void void_eosio__multi_index__eosio__name__raw_14289235522390851584__eosi
   i0 = j0 == j1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l3;
@@ -85841,7 +85858,7 @@ static void eosio__token__sub_balance_eosio__name_const___eosio__asset_const__(u
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -85955,7 +85972,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24497u;
+  i1 = 24617u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   j0 = (*Z_envZ_current_receiverZ_jv)();
@@ -85964,7 +85981,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = j0 == j1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24543u;
+  i1 = 24663u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p3;
@@ -85977,7 +85994,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = j0 == j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24371u;
+  i1 = 24491u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   i0 = p1;
@@ -85993,7 +86010,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = (u64)((s64)j0 > (s64)j1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24419u;
+  i1 = 24539u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   j0 = i64_load((&M0), (u64)(i0));
@@ -86008,7 +86025,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = (u64)((s64)j0 < (s64)j1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24441u;
+  i1 = 24561u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   j0 = l6;
@@ -86022,7 +86039,7 @@ static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i0 = j0 == j1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24594u;
+  i1 = 24714u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l4;
@@ -86453,7 +86470,7 @@ static void eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24720u;
+  i1 = 24840u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0 + 32));
@@ -86476,7 +86493,7 @@ static void eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__
   i0 = j0 == j1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24824u;
+  i1 = 24944u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l4;
@@ -86855,6 +86872,1591 @@ static void auto_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio
   i64_store((&M0), (u64)(i0), j1);
   B5:;
   i0 = l3;
+  i1 = 16u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
+static void eosio__token__close_eosio__name_const___eosio__symbol_const__(u32 p0, u32 p1, u32 p2) {
+  u32 l3 = 0, l4 = 0;
+  u64 l5 = 0, l6 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3;
+  u64 j0, j1, j2, j3, j4;
+  i0 = g0;
+  i1 = 48u;
+  i0 -= i1;
+  l3 = i0;
+  g0 = i0;
+  i0 = p1;
+  j0 = i64_load((&M0), (u64)(i0));
+  (*Z_envZ_require_authZ_vj)(j0);
+  i0 = 0u;
+  l4 = i0;
+  i0 = l3;
+  i1 = 32u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l3;
+  j1 = 18446744073709551615ull;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l3;
+  i1 = p0;
+  j1 = i64_load((&M0), (u64)(i1));
+  l5 = j1;
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = l3;
+  i1 = p1;
+  j1 = i64_load((&M0), (u64)(i1));
+  l6 = j1;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  j0 = l5;
+  j1 = l6;
+  j2 = 3607749779137757184ull;
+  i3 = p2;
+  j3 = i64_load((&M0), (u64)(i3));
+  j4 = 8ull;
+  j3 >>= (j4 & 63);
+  i0 = (*Z_envZ_db_find_i64Z_ijjjj)(j0, j1, j2, j3);
+  p1 = i0;
+  i1 = 4294967295u;
+  i0 = (u32)((s32)i0 <= (s32)i1);
+  if (i0) {goto B2;}
+  i0 = l3;
+  i1 = p1;
+  i0 = eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___load_object_by_primary_iterator_int__const(i0, i1);
+  l4 = i0;
+  i0 = i32_load((&M0), (u64)(i0 + 16));
+  i1 = l3;
+  i0 = i0 == i1;
+  if (i0) {goto B3;}
+  i0 = 0u;
+  i1 = 24840u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B3:;
+  i0 = l4;
+  j0 = i64_load((&M0), (u64)(i0));
+  i0 = !(j0);
+  if (i0) {goto B0;}
+  goto B1;
+  B2:;
+  i0 = 0u;
+  i1 = 24003u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  i0 = 0u;
+  j0 = i64_load((&M0), (u64)(i0));
+  i0 = !(j0);
+  if (i0) {goto B0;}
+  B1:;
+  i0 = 0u;
+  i1 = 24079u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B0:;
+  i0 = l4;
+  if (i0) {goto B4;}
+  i0 = 0u;
+  i1 = 25034u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  i0 = 0u;
+  i1 = 25068u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B4:;
+  i0 = l4;
+  i0 = i32_load((&M0), (u64)(i0 + 20));
+  i1 = l3;
+  i2 = 40u;
+  i1 += i2;
+  i0 = (*Z_envZ_db_next_i64Z_iii)(i0, i1);
+  p1 = i0;
+  i1 = 0u;
+  i0 = (u32)((s32)i0 < (s32)i1);
+  if (i0) {goto B5;}
+  i0 = l3;
+  i1 = p1;
+  i0 = eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___load_object_by_primary_iterator_int__const(i0, i1);
+  B5:;
+  i0 = l3;
+  i1 = l4;
+  eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___erase_eosio__token__account_const__(i0, i1);
+  i0 = l3;
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  p2 = i0;
+  i0 = !(i0);
+  if (i0) {goto B6;}
+  i0 = l3;
+  i1 = 28u;
+  i0 += i1;
+  p0 = i0;
+  i0 = i32_load((&M0), (u64)(i0));
+  l4 = i0;
+  i1 = p2;
+  i0 = i0 == i1;
+  if (i0) {goto B8;}
+  L9: 
+    i0 = l4;
+    i1 = 4294967272u;
+    i0 += i1;
+    l4 = i0;
+    i0 = i32_load((&M0), (u64)(i0));
+    p1 = i0;
+    i0 = l4;
+    i1 = 0u;
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = p1;
+    i0 = !(i0);
+    if (i0) {goto B10;}
+    i0 = p1;
+    operator_delete_void__(i0);
+    B10:;
+    i0 = p2;
+    i1 = l4;
+    i0 = i0 != i1;
+    if (i0) {goto L9;}
+  i0 = l3;
+  i1 = 24u;
+  i0 += i1;
+  i0 = i32_load((&M0), (u64)(i0));
+  l4 = i0;
+  goto B7;
+  B8:;
+  i0 = p2;
+  l4 = i0;
+  B7:;
+  i0 = p0;
+  i1 = p2;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l4;
+  operator_delete_void__(i0);
+  B6:;
+  i0 = l3;
+  i1 = 48u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
+static void eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___erase_eosio__token__account_const__(u32 p0, u32 p1) {
+  u32 l2 = 0, l3 = 0, l4 = 0, l5 = 0, l7 = 0, l8 = 0, l9 = 0;
+  u64 l6 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2;
+  u64 j0, j1;
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0 + 16));
+  i1 = p0;
+  i0 = i0 == i1;
+  if (i0) {goto B0;}
+  i0 = 0u;
+  i1 = 25098u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B0:;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  i1 = p0;
+  j1 = i64_load((&M0), (u64)(i1));
+  i0 = j0 == j1;
+  if (i0) {goto B1;}
+  i0 = 0u;
+  i1 = 25143u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B1:;
+  i0 = p0;
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  l2 = i0;
+  i1 = p0;
+  i2 = 28u;
+  i1 += i2;
+  l3 = i1;
+  i1 = i32_load((&M0), (u64)(i1));
+  l4 = i1;
+  i0 = i0 == i1;
+  if (i0) {goto B7;}
+  i0 = l4;
+  l5 = i0;
+  i0 = l4;
+  i1 = 4294967272u;
+  i0 += i1;
+  i0 = i32_load((&M0), (u64)(i0));
+  j0 = i64_load((&M0), (u64)(i0 + 8));
+  i1 = p1;
+  j1 = i64_load((&M0), (u64)(i1 + 8));
+  l6 = j1;
+  j0 ^= j1;
+  j1 = 256ull;
+  i0 = j0 < j1;
+  if (i0) {goto B8;}
+  i0 = l2;
+  i1 = 24u;
+  i0 += i1;
+  l7 = i0;
+  i0 = l4;
+  l8 = i0;
+  L9: 
+    i0 = l7;
+    i1 = l8;
+    i0 = i0 == i1;
+    if (i0) {goto B7;}
+    i0 = l8;
+    i1 = 4294967248u;
+    i0 += i1;
+    l9 = i0;
+    i0 = l8;
+    i1 = 4294967272u;
+    i0 += i1;
+    l5 = i0;
+    l8 = i0;
+    i0 = l9;
+    i0 = i32_load((&M0), (u64)(i0));
+    j0 = i64_load((&M0), (u64)(i0 + 8));
+    j1 = l6;
+    j0 ^= j1;
+    j1 = 256ull;
+    i0 = j0 >= j1;
+    if (i0) {goto L9;}
+  B8:;
+  i0 = l2;
+  i1 = l5;
+  i0 = i0 == i1;
+  if (i0) {goto B6;}
+  i0 = 4294967272u;
+  l9 = i0;
+  i0 = l5;
+  i1 = l4;
+  i0 = i0 == i1;
+  if (i0) {goto B5;}
+  goto B4;
+  B7:;
+  i0 = l2;
+  l5 = i0;
+  B6:;
+  i0 = 0u;
+  i1 = 25193u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  i0 = 4294967272u;
+  l9 = i0;
+  i0 = l5;
+  i1 = l3;
+  i1 = i32_load((&M0), (u64)(i1));
+  l4 = i1;
+  i0 = i0 != i1;
+  if (i0) {goto B4;}
+  B5:;
+  i0 = l5;
+  i1 = l9;
+  i0 += i1;
+  l7 = i0;
+  goto B3;
+  B4:;
+  i0 = l5;
+  l8 = i0;
+  L10: 
+    i0 = l8;
+    i0 = i32_load((&M0), (u64)(i0));
+    l7 = i0;
+    i0 = l8;
+    i1 = 0u;
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = l8;
+    i1 = l9;
+    i0 += i1;
+    l2 = i0;
+    i0 = i32_load((&M0), (u64)(i0));
+    l5 = i0;
+    i0 = l2;
+    i1 = l7;
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = l5;
+    i0 = !(i0);
+    if (i0) {goto B11;}
+    i0 = l5;
+    operator_delete_void__(i0);
+    B11:;
+    i0 = l8;
+    i1 = 4294967288u;
+    i0 += i1;
+    i1 = l8;
+    i2 = 16u;
+    i1 += i2;
+    i1 = i32_load((&M0), (u64)(i1));
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = l8;
+    i1 = 4294967280u;
+    i0 += i1;
+    i1 = l8;
+    i2 = 8u;
+    i1 += i2;
+    j1 = i64_load((&M0), (u64)(i1));
+    i64_store((&M0), (u64)(i0), j1);
+    i0 = l4;
+    i1 = l8;
+    i2 = 24u;
+    i1 += i2;
+    l8 = i1;
+    i0 = i0 != i1;
+    if (i0) {goto L10;}
+  i0 = l8;
+  i1 = 4294967272u;
+  i0 += i1;
+  l7 = i0;
+  i0 = p0;
+  i1 = 28u;
+  i0 += i1;
+  i0 = i32_load((&M0), (u64)(i0));
+  l5 = i0;
+  i1 = 24u;
+  i0 += i1;
+  i1 = l8;
+  i0 = i0 == i1;
+  if (i0) {goto B2;}
+  B3:;
+  L12: 
+    i0 = l5;
+    i1 = l9;
+    i0 += i1;
+    l5 = i0;
+    i0 = i32_load((&M0), (u64)(i0));
+    l8 = i0;
+    i0 = l5;
+    i1 = 0u;
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = l8;
+    i0 = !(i0);
+    if (i0) {goto B13;}
+    i0 = l8;
+    operator_delete_void__(i0);
+    B13:;
+    i0 = l7;
+    i1 = l5;
+    i0 = i0 != i1;
+    if (i0) {goto L12;}
+  B2:;
+  i0 = p0;
+  i1 = 28u;
+  i0 += i1;
+  i1 = l7;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0 + 20));
+  (*Z_envZ_db_remove_i64Z_vi)(i0);
+  FUNC_EPILOGUE;
+}
+
+static void token_create(u64 p0, u64 p1, u64 p2) {
+  u32 l3 = 0;
+  u64 l4 = 0, l5 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3;
+  u64 j0, j1;
+  i0 = g0;
+  i1 = 64u;
+  i0 -= i1;
+  l3 = i0;
+  g0 = i0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l4 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l5 = j0;
+  i0 = l3;
+  i1 = 56u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l3;
+  j1 = l5;
+  i64_store((&M0), (u64)(i0 + 40), j1);
+  i0 = l3;
+  j1 = l4;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 48), j1);
+  i0 = l3;
+  j1 = p2;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l3;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l3;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l3;
+  i1 = 32u;
+  i0 += i1;
+  i1 = l3;
+  i2 = 8u;
+  i1 += i2;
+  i2 = l3;
+  i3 = 16u;
+  i2 += i3;
+  eosio__token__create_eosio__name_const___eosio__asset_const__(i0, i1, i2);
+  i0 = l3;
+  i1 = 64u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
+static void token_issue(u64 p0, u64 p1, u64 p2, u32 p3, u32 p4) {
+  u32 l5 = 0, l6 = 0, l7 = 0;
+  u64 l8 = 0, l9 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3, i4;
+  u64 j0, j1;
+  i0 = g0;
+  i1 = 80u;
+  i0 -= i1;
+  l5 = i0;
+  g0 = i0;
+  i0 = l5;
+  i1 = 72u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l5;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 64), j1);
+  i0 = p4;
+  i1 = 4294967280u;
+  i0 = i0 >= i1;
+  if (i0) {goto B0;}
+  i0 = p4;
+  i1 = 11u;
+  i0 = i0 >= i1;
+  if (i0) {goto B3;}
+  i0 = l5;
+  i1 = p4;
+  i2 = 1u;
+  i1 <<= (i2 & 31);
+  i32_store8((&M0), (u64)(i0 + 64), i1);
+  i0 = l5;
+  i1 = 64u;
+  i0 += i1;
+  i1 = 1u;
+  i0 |= i1;
+  l6 = i0;
+  i0 = p4;
+  if (i0) {goto B2;}
+  goto B1;
+  B3:;
+  i0 = p4;
+  i1 = 16u;
+  i0 += i1;
+  i1 = 4294967280u;
+  i0 &= i1;
+  l7 = i0;
+  i0 = operator_new_unsigned_int_(i0);
+  l6 = i0;
+  i0 = l5;
+  i1 = l7;
+  i2 = 1u;
+  i1 |= i2;
+  i32_store((&M0), (u64)(i0 + 64), i1);
+  i0 = l5;
+  i1 = l6;
+  i32_store((&M0), (u64)(i0 + 72), i1);
+  i0 = l5;
+  i1 = p4;
+  i32_store((&M0), (u64)(i0 + 68), i1);
+  B2:;
+  i0 = l6;
+  i1 = p3;
+  i2 = p4;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  B1:;
+  i0 = l6;
+  i1 = p4;
+  i0 += i1;
+  i1 = 0u;
+  i32_store8((&M0), (u64)(i0), i1);
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l8 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l9 = j0;
+  i0 = l5;
+  i1 = 56u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l5;
+  j1 = l9;
+  i64_store((&M0), (u64)(i0 + 40), j1);
+  i0 = l5;
+  j1 = l8;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = l5;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 48), j1);
+  i0 = l5;
+  j1 = p2;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l5;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l5;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l5;
+  i1 = 32u;
+  i0 += i1;
+  i1 = l5;
+  i2 = 8u;
+  i1 += i2;
+  i2 = l5;
+  i3 = 16u;
+  i2 += i3;
+  i3 = l5;
+  i4 = 64u;
+  i3 += i4;
+  eosio__token__issue_eosio__name_const___eosio__asset_const___std____1__basic_string_char__std____1__char_traits_char___std____1__allocator_char____const__(i0, i1, i2, i3);
+  i0 = l5;
+  i0 = i32_load8_u((&M0), (u64)(i0 + 64));
+  i1 = 1u;
+  i0 &= i1;
+  i0 = !(i0);
+  if (i0) {goto B4;}
+  i0 = l5;
+  i0 = i32_load((&M0), (u64)(i0 + 72));
+  operator_delete_void__(i0);
+  B4:;
+  i0 = l5;
+  i1 = 80u;
+  i0 += i1;
+  g0 = i0;
+  goto Bfunc;
+  B0:;
+  i0 = l5;
+  i1 = 64u;
+  i0 += i1;
+  std____1____basic_string_common_true_____throw_length_error___const(i0);
+  UNREACHABLE;
+  Bfunc:;
+  FUNC_EPILOGUE;
+}
+
+static void token_transfer(u64 p0, u64 p1, u64 p2, u64 p3, u32 p4, u32 p5) {
+  u32 l6 = 0, l7 = 0, l8 = 0;
+  u64 l9 = 0, l10 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3, i4, i5;
+  u64 j0, j1;
+  i0 = g0;
+  i1 = 80u;
+  i0 -= i1;
+  l6 = i0;
+  g0 = i0;
+  i0 = l6;
+  i1 = 72u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l6;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 64), j1);
+  i0 = p5;
+  i1 = 4294967280u;
+  i0 = i0 >= i1;
+  if (i0) {goto B0;}
+  i0 = p5;
+  i1 = 11u;
+  i0 = i0 >= i1;
+  if (i0) {goto B3;}
+  i0 = l6;
+  i1 = p5;
+  i2 = 1u;
+  i1 <<= (i2 & 31);
+  i32_store8((&M0), (u64)(i0 + 64), i1);
+  i0 = l6;
+  i1 = 64u;
+  i0 += i1;
+  i1 = 1u;
+  i0 |= i1;
+  l7 = i0;
+  i0 = p5;
+  if (i0) {goto B2;}
+  goto B1;
+  B3:;
+  i0 = p5;
+  i1 = 16u;
+  i0 += i1;
+  i1 = 4294967280u;
+  i0 &= i1;
+  l8 = i0;
+  i0 = operator_new_unsigned_int_(i0);
+  l7 = i0;
+  i0 = l6;
+  i1 = l8;
+  i2 = 1u;
+  i1 |= i2;
+  i32_store((&M0), (u64)(i0 + 64), i1);
+  i0 = l6;
+  i1 = l7;
+  i32_store((&M0), (u64)(i0 + 72), i1);
+  i0 = l6;
+  i1 = p5;
+  i32_store((&M0), (u64)(i0 + 68), i1);
+  B2:;
+  i0 = l7;
+  i1 = p4;
+  i2 = p5;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  B1:;
+  i0 = l7;
+  i1 = p5;
+  i0 += i1;
+  i1 = 0u;
+  i32_store8((&M0), (u64)(i0), i1);
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l9 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l10 = j0;
+  i0 = l6;
+  i1 = 56u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l6;
+  j1 = l10;
+  i64_store((&M0), (u64)(i0 + 40), j1);
+  i0 = l6;
+  j1 = l9;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = l6;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 48), j1);
+  i0 = l6;
+  j1 = p3;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l6;
+  j1 = p2;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l6;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l6;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = l6;
+  i1 = 32u;
+  i0 += i1;
+  i1 = l6;
+  i2 = 8u;
+  i1 += i2;
+  i2 = l6;
+  i3 = l6;
+  i4 = 16u;
+  i3 += i4;
+  i4 = l6;
+  i5 = 64u;
+  i4 += i5;
+  eosio__token__transfer_eosio__name_const___eosio__name_const___eosio__asset_const___std____1__basic_string_char__std____1__char_traits_char___std____1__allocator_char____const__(i0, i1, i2, i3, i4);
+  i0 = l6;
+  i0 = i32_load8_u((&M0), (u64)(i0 + 64));
+  i1 = 1u;
+  i0 &= i1;
+  i0 = !(i0);
+  if (i0) {goto B4;}
+  i0 = l6;
+  i0 = i32_load((&M0), (u64)(i0 + 72));
+  operator_delete_void__(i0);
+  B4:;
+  i0 = l6;
+  i1 = 80u;
+  i0 += i1;
+  g0 = i0;
+  goto Bfunc;
+  B0:;
+  i0 = l6;
+  i1 = 64u;
+  i0 += i1;
+  std____1____basic_string_common_true_____throw_length_error___const(i0);
+  UNREACHABLE;
+  Bfunc:;
+  FUNC_EPILOGUE;
+}
+
+static void token_open(u64 p0, u64 p1, u64 p2) {
+  u32 l3 = 0;
+  u64 l4 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3, i4;
+  u64 j0, j1;
+  i0 = g0;
+  i1 = 64u;
+  i0 -= i1;
+  l3 = i0;
+  g0 = i0;
+  i0 = l3;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 56), j1);
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  p1 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l4 = j0;
+  i0 = l3;
+  i1 = 48u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l3;
+  j1 = l4;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = l3;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 40), j1);
+  i0 = l3;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l3;
+  j1 = p2;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l3;
+  i1 = 24u;
+  i0 += i1;
+  i1 = l3;
+  i2 = 16u;
+  i1 += i2;
+  i2 = l3;
+  i3 = 56u;
+  i2 += i3;
+  i3 = l3;
+  i4 = 8u;
+  i3 += i4;
+  eosio__token__open_eosio__name_const___eosio__symbol_const___eosio__name_const__(i0, i1, i2, i3);
+  i0 = l3;
+  i1 = 64u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
+static void token_retire(u64 p0, u64 p1, u32 p2, u32 p3) {
+  u32 l4 = 0, l5 = 0, l6 = 0;
+  u64 l7 = 0, l8 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3;
+  u64 j0, j1;
+  i0 = g0;
+  i1 = 64u;
+  i0 -= i1;
+  l4 = i0;
+  g0 = i0;
+  i0 = l4;
+  i1 = 56u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l4;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 48), j1);
+  i0 = p3;
+  i1 = 4294967280u;
+  i0 = i0 >= i1;
+  if (i0) {goto B0;}
+  i0 = p3;
+  i1 = 11u;
+  i0 = i0 >= i1;
+  if (i0) {goto B3;}
+  i0 = l4;
+  i1 = p3;
+  i2 = 1u;
+  i1 <<= (i2 & 31);
+  i32_store8((&M0), (u64)(i0 + 48), i1);
+  i0 = l4;
+  i1 = 48u;
+  i0 += i1;
+  i1 = 1u;
+  i0 |= i1;
+  l5 = i0;
+  i0 = p3;
+  if (i0) {goto B2;}
+  goto B1;
+  B3:;
+  i0 = p3;
+  i1 = 16u;
+  i0 += i1;
+  i1 = 4294967280u;
+  i0 &= i1;
+  l6 = i0;
+  i0 = operator_new_unsigned_int_(i0);
+  l5 = i0;
+  i0 = l4;
+  i1 = l6;
+  i2 = 1u;
+  i1 |= i2;
+  i32_store((&M0), (u64)(i0 + 48), i1);
+  i0 = l4;
+  i1 = l5;
+  i32_store((&M0), (u64)(i0 + 56), i1);
+  i0 = l4;
+  i1 = p3;
+  i32_store((&M0), (u64)(i0 + 52), i1);
+  B2:;
+  i0 = l5;
+  i1 = p2;
+  i2 = p3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  B1:;
+  i0 = l5;
+  i1 = p3;
+  i0 += i1;
+  i1 = 0u;
+  i32_store8((&M0), (u64)(i0), i1);
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l7 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l8 = j0;
+  i0 = l4;
+  i1 = 40u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l4;
+  j1 = l8;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l4;
+  j1 = l7;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l4;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = l4;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l4;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = l4;
+  i1 = 16u;
+  i0 += i1;
+  i1 = l4;
+  i2 = l4;
+  i3 = 48u;
+  i2 += i3;
+  eosio__token__retire_eosio__asset_const___std____1__basic_string_char__std____1__char_traits_char___std____1__allocator_char____const__(i0, i1, i2);
+  i0 = l4;
+  i0 = i32_load8_u((&M0), (u64)(i0 + 48));
+  i1 = 1u;
+  i0 &= i1;
+  i0 = !(i0);
+  if (i0) {goto B4;}
+  i0 = l4;
+  i0 = i32_load((&M0), (u64)(i0 + 56));
+  operator_delete_void__(i0);
+  B4:;
+  i0 = l4;
+  i1 = 64u;
+  i0 += i1;
+  g0 = i0;
+  goto Bfunc;
+  B0:;
+  i0 = l4;
+  i1 = 48u;
+  i0 += i1;
+  std____1____basic_string_common_true_____throw_length_error___const(i0);
+  UNREACHABLE;
+  Bfunc:;
+  FUNC_EPILOGUE;
+}
+
+static void token_close(u64 p0, u64 p1) {
+  u32 l2 = 0;
+  u64 l3 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3;
+  u64 j0, j1;
+  i0 = g0;
+  i1 = 48u;
+  i0 -= i1;
+  l2 = i0;
+  g0 = i0;
+  i0 = l2;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 40), j1);
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  p1 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l3 = j0;
+  i0 = l2;
+  i1 = 32u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l2;
+  j1 = l3;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l2;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l2;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l2;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = l2;
+  i1 = 8u;
+  i0 += i1;
+  i1 = l2;
+  i2 = l2;
+  i3 = 40u;
+  i2 += i3;
+  eosio__token__close_eosio__name_const___eosio__symbol_const__(i0, i1, i2);
+  i0 = l2;
+  i1 = 48u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
+static u64 token_get_balance(u64 p0, u32 p1) {
+  u32 l2 = 0, l5 = 0, l6 = 0, l7 = 0;
+  u64 l3 = 0, l4 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2;
+  u64 j0, j1, j2, j3;
+  i0 = g0;
+  i1 = 48u;
+  i0 -= i1;
+  l2 = i0;
+  g0 = i0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l3 = j0;
+  i0 = l2;
+  i1 = 40u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l2;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l2;
+  j1 = l3;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l2;
+  j1 = 18446744073709551615ull;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  j0 = 0ull;
+  l4 = j0;
+  i0 = l2;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = p1;
+  i0 = strlen_0(i0);
+  l5 = i0;
+  i1 = 8u;
+  i0 = i0 < i1;
+  if (i0) {goto B2;}
+  i0 = 0u;
+  i1 = 24205u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  goto B1;
+  B2:;
+  i0 = l5;
+  i0 = !(i0);
+  if (i0) {goto B0;}
+  B1:;
+  j0 = 0ull;
+  l4 = j0;
+  L3: 
+    i0 = p1;
+    i1 = l5;
+    i0 += i1;
+    i1 = 4294967295u;
+    i0 += i1;
+    l6 = i0;
+    i0 = i32_load8_u((&M0), (u64)(i0));
+    l7 = i0;
+    i1 = 4294967231u;
+    i0 += i1;
+    i1 = 255u;
+    i0 &= i1;
+    i1 = 26u;
+    i0 = i0 < i1;
+    if (i0) {goto B4;}
+    i0 = 0u;
+    i1 = 24250u;
+    (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+    i0 = l6;
+    i0 = i32_load8_u((&M0), (u64)(i0));
+    l7 = i0;
+    B4:;
+    j0 = l4;
+    j1 = 8ull;
+    j0 <<= (j1 & 63);
+    i1 = l7;
+    j1 = (u64)(i1);
+    j2 = 56ull;
+    j1 <<= (j2 & 63);
+    j2 = 56ull;
+    j1 = (u64)((s64)j1 >> (j2 & 63));
+    j0 |= j1;
+    l4 = j0;
+    i0 = l5;
+    i1 = 4294967295u;
+    i0 += i1;
+    l5 = i0;
+    if (i0) {goto L3;}
+  j0 = l4;
+  j1 = 72057594037927935ull;
+  j0 &= j1;
+  l4 = j0;
+  B0:;
+  j0 = l3;
+  j1 = p0;
+  j2 = 3607749779137757184ull;
+  j3 = l4;
+  i0 = (*Z_envZ_db_find_i64Z_ijjjj)(j0, j1, j2, j3);
+  l5 = i0;
+  i1 = 0u;
+  i0 = (u32)((s32)i0 < (s32)i1);
+  if (i0) {goto B8;}
+  i0 = l2;
+  i1 = 8u;
+  i0 += i1;
+  i1 = l5;
+  i0 = eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___load_object_by_primary_iterator_int__const(i0, i1);
+  l5 = i0;
+  i0 = i32_load((&M0), (u64)(i0 + 16));
+  i1 = l2;
+  i2 = 8u;
+  i1 += i2;
+  i0 = i0 == i1;
+  if (i0) {goto B9;}
+  i0 = 0u;
+  i1 = 24840u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B9:;
+  i0 = l5;
+  j0 = i64_load((&M0), (u64)(i0));
+  l4 = j0;
+  i0 = l2;
+  i0 = i32_load((&M0), (u64)(i0 + 32));
+  l6 = i0;
+  i0 = !(i0);
+  if (i0) {goto B7;}
+  i0 = l2;
+  i1 = 36u;
+  i0 += i1;
+  p1 = i0;
+  i0 = i32_load((&M0), (u64)(i0));
+  l5 = i0;
+  i1 = l6;
+  i0 = i0 == i1;
+  if (i0) {goto B6;}
+  L10: 
+    i0 = l5;
+    i1 = 4294967272u;
+    i0 += i1;
+    l5 = i0;
+    i0 = i32_load((&M0), (u64)(i0));
+    l7 = i0;
+    i0 = l5;
+    i1 = 0u;
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = l7;
+    i0 = !(i0);
+    if (i0) {goto B11;}
+    i0 = l7;
+    operator_delete_void__(i0);
+    B11:;
+    i0 = l6;
+    i1 = l5;
+    i0 = i0 != i1;
+    if (i0) {goto L10;}
+  i0 = l2;
+  i1 = 32u;
+  i0 += i1;
+  i0 = i32_load((&M0), (u64)(i0));
+  l5 = i0;
+  goto B5;
+  B8:;
+  j0 = 0ull;
+  l4 = j0;
+  B7:;
+  i0 = l2;
+  i1 = 48u;
+  i0 += i1;
+  g0 = i0;
+  j0 = l4;
+  goto Bfunc;
+  B6:;
+  i0 = l6;
+  l5 = i0;
+  B5:;
+  i0 = p1;
+  i1 = l6;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l5;
+  operator_delete_void__(i0);
+  i0 = l2;
+  i1 = 48u;
+  i0 += i1;
+  g0 = i0;
+  j0 = l4;
+  Bfunc:;
+  FUNC_EPILOGUE;
+  return j0;
+}
+
+static void token_set_balance(u64 p0, u64 p1, u32 p2) {
+  u32 l3 = 0, l6 = 0, l7 = 0, l8 = 0;
+  u64 l4 = 0, l5 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3, i4, i5, i6;
+  u64 j0, j1, j2, j3, j4, j5;
+  i0 = g0;
+  i1 = 96u;
+  i0 -= i1;
+  l3 = i0;
+  g0 = i0;
+  i0 = l3;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 48), j1);
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l4 = j0;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  l5 = j0;
+  i0 = l3;
+  i1 = 40u;
+  i0 += i1;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l3;
+  j1 = p0;
+  i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = l3;
+  j1 = l5;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l3;
+  j1 = 18446744073709551615ull;
+  i64_store((&M0), (u64)(i0 + 24), j1);
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 32), j1);
+  i0 = p2;
+  i0 = strlen_0(i0);
+  l6 = i0;
+  i1 = 8u;
+  i0 = i0 < i1;
+  if (i0) {goto B3;}
+  i0 = 0u;
+  i1 = 24205u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  goto B2;
+  B3:;
+  i0 = l6;
+  i0 = !(i0);
+  if (i0) {goto B1;}
+  B2:;
+  j0 = 0ull;
+  p1 = j0;
+  L4: 
+    i0 = p2;
+    i1 = l6;
+    i0 += i1;
+    i1 = 4294967295u;
+    i0 += i1;
+    l7 = i0;
+    i0 = i32_load8_u((&M0), (u64)(i0));
+    l8 = i0;
+    i1 = 4294967231u;
+    i0 += i1;
+    i1 = 255u;
+    i0 &= i1;
+    i1 = 26u;
+    i0 = i0 < i1;
+    if (i0) {goto B5;}
+    i0 = 0u;
+    i1 = 24250u;
+    (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+    i0 = l7;
+    i0 = i32_load8_u((&M0), (u64)(i0));
+    l8 = i0;
+    B5:;
+    j0 = p1;
+    j1 = 8ull;
+    j0 <<= (j1 & 63);
+    i1 = l8;
+    j1 = (u64)(i1);
+    j2 = 56ull;
+    j1 <<= (j2 & 63);
+    j2 = 56ull;
+    j1 = (u64)((s64)j1 >> (j2 & 63));
+    j0 |= j1;
+    p1 = j0;
+    i0 = l6;
+    i1 = 4294967295u;
+    i0 += i1;
+    l6 = i0;
+    if (i0) {goto L4;}
+  j0 = p1;
+  j1 = 8ull;
+  j0 <<= (j1 & 63);
+  j1 = 4ull;
+  j0 |= j1;
+  p1 = j0;
+  goto B0;
+  B1:;
+  j0 = 4ull;
+  p1 = j0;
+  B0:;
+  j0 = l5;
+  j1 = p0;
+  j2 = 3607749779137757184ull;
+  j3 = p1;
+  j4 = 8ull;
+  j3 >>= (j4 & 63);
+  i0 = (*Z_envZ_db_find_i64Z_ijjjj)(j0, j1, j2, j3);
+  l6 = i0;
+  i1 = 0u;
+  i0 = (u32)((s32)i0 < (s32)i1);
+  if (i0) {goto B8;}
+  i0 = l3;
+  i1 = 8u;
+  i0 += i1;
+  i1 = l6;
+  i0 = eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___load_object_by_primary_iterator_int__const(i0, i1);
+  l6 = i0;
+  i0 = i32_load((&M0), (u64)(i0 + 16));
+  i1 = l3;
+  i2 = 8u;
+  i1 += i2;
+  i0 = i0 == i1;
+  if (i0) {goto B9;}
+  i0 = 0u;
+  i1 = 24840u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B9:;
+  i0 = l3;
+  i1 = l3;
+  i2 = 48u;
+  i1 += i2;
+  i32_store((&M0), (u64)(i0 + 64), i1);
+  i0 = l3;
+  i1 = 8u;
+  i0 += i1;
+  i1 = l6;
+  i2 = l3;
+  i3 = 64u;
+  i2 += i3;
+  void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___modify_token_set_balance____107__eosio__token__account_const___eosio__name__token_set_balance____107___(i0, i1, i2);
+  i0 = l3;
+  i0 = i32_load((&M0), (u64)(i0 + 32));
+  l7 = i0;
+  if (i0) {goto B7;}
+  goto B6;
+  B8:;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  i1 = l3;
+  j1 = i64_load((&M0), (u64)(i1 + 8));
+  i0 = j0 == j1;
+  if (i0) {goto B10;}
+  i0 = 0u;
+  i1 = 24944u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B10:;
+  i0 = 32u;
+  i0 = operator_new_unsigned_int_(i0);
+  l6 = i0;
+  i1 = l3;
+  i2 = 8u;
+  i1 += i2;
+  i32_store((&M0), (u64)(i0 + 16), i1);
+  i0 = l6;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l6;
+  i1 = l3;
+  j1 = i64_load((&M0), (u64)(i1 + 48));
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = l3;
+  i1 = 64u;
+  i0 += i1;
+  i1 = l6;
+  i2 = 8u;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  i0 = l3;
+  i1 = l6;
+  j1 = i64_load((&M0), (u64)(i1 + 8));
+  i64_store((&M0), (u64)(i0 + 88), j1);
+  i0 = l3;
+  i1 = 64u;
+  i0 += i1;
+  i1 = 8u;
+  i0 |= i1;
+  i1 = l3;
+  i2 = 88u;
+  i1 += i2;
+  i2 = 8u;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  i0 = l6;
+  i1 = l3;
+  i2 = 8u;
+  i1 += i2;
+  i2 = 8u;
+  i1 += i2;
+  j1 = i64_load((&M0), (u64)(i1));
+  j2 = 3607749779137757184ull;
+  j3 = l4;
+  i4 = l6;
+  j4 = i64_load((&M0), (u64)(i4 + 8));
+  j5 = 8ull;
+  j4 >>= (j5 & 63);
+  p1 = j4;
+  i5 = l3;
+  i6 = 64u;
+  i5 += i6;
+  i6 = 16u;
+  i1 = (*Z_envZ_db_store_i64Z_ijjjjii)(j1, j2, j3, j4, i5, i6);
+  l7 = i1;
+  i32_store((&M0), (u64)(i0 + 20), i1);
+  j0 = p1;
+  i1 = l3;
+  i2 = 8u;
+  i1 += i2;
+  i2 = 16u;
+  i1 += i2;
+  l8 = i1;
+  j1 = i64_load((&M0), (u64)(i1));
+  i0 = j0 < j1;
+  if (i0) {goto B11;}
+  i0 = l8;
+  j1 = p1;
+  j2 = 1ull;
+  j1 += j2;
+  i64_store((&M0), (u64)(i0), j1);
+  B11:;
+  i0 = l3;
+  i1 = l6;
+  i32_store((&M0), (u64)(i0 + 88), i1);
+  i0 = l3;
+  i1 = l6;
+  i2 = 8u;
+  i1 += i2;
+  j1 = i64_load((&M0), (u64)(i1));
+  j2 = 8ull;
+  j1 >>= (j2 & 63);
+  p1 = j1;
+  i64_store((&M0), (u64)(i0 + 64), j1);
+  i0 = l3;
+  i1 = l7;
+  i32_store((&M0), (u64)(i0 + 60), i1);
+  i0 = l3;
+  i1 = 36u;
+  i0 += i1;
+  p2 = i0;
+  i0 = i32_load((&M0), (u64)(i0));
+  l8 = i0;
+  i1 = l3;
+  i2 = 8u;
+  i1 += i2;
+  i2 = 32u;
+  i1 += i2;
+  i1 = i32_load((&M0), (u64)(i1));
+  i0 = i0 >= i1;
+  if (i0) {goto B14;}
+  i0 = l8;
+  j1 = p1;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l8;
+  i1 = l7;
+  i32_store((&M0), (u64)(i0 + 16), i1);
+  i0 = l3;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 88), i1);
+  i0 = l8;
+  i1 = l6;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = p2;
+  i1 = l8;
+  i2 = 24u;
+  i1 += i2;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l3;
+  i0 = i32_load((&M0), (u64)(i0 + 88));
+  l6 = i0;
+  i0 = l3;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 88), i1);
+  i0 = l6;
+  if (i0) {goto B13;}
+  goto B12;
+  B14:;
+  i0 = l3;
+  i1 = 32u;
+  i0 += i1;
+  i1 = l3;
+  i2 = 88u;
+  i1 += i2;
+  i2 = l3;
+  i3 = 64u;
+  i2 += i3;
+  i3 = l3;
+  i4 = 60u;
+  i3 += i4;
+  void_std____1__vector_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item_ptr__std____1__allocator_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item_ptr_______emplace_back_slow_path_std____1__unique_ptr_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item__std____1__default_delete_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item_____unsigned_long_long___int___std____1__unique_ptr_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item__std____1__default_delete_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___item_______unsigned_long_long_____int____(i0, i1, i2, i3);
+  i0 = l3;
+  i0 = i32_load((&M0), (u64)(i0 + 88));
+  l6 = i0;
+  i0 = l3;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 88), i1);
+  i0 = l6;
+  i0 = !(i0);
+  if (i0) {goto B12;}
+  B13:;
+  i0 = l6;
+  operator_delete_void__(i0);
+  B12:;
+  i0 = l3;
+  i0 = i32_load((&M0), (u64)(i0 + 32));
+  l7 = i0;
+  i0 = !(i0);
+  if (i0) {goto B6;}
+  B7:;
+  i0 = l3;
+  i1 = 36u;
+  i0 += i1;
+  p2 = i0;
+  i0 = i32_load((&M0), (u64)(i0));
+  l6 = i0;
+  i1 = l7;
+  i0 = i0 == i1;
+  if (i0) {goto B16;}
+  L17: 
+    i0 = l6;
+    i1 = 4294967272u;
+    i0 += i1;
+    l6 = i0;
+    i0 = i32_load((&M0), (u64)(i0));
+    l8 = i0;
+    i0 = l6;
+    i1 = 0u;
+    i32_store((&M0), (u64)(i0), i1);
+    i0 = l8;
+    i0 = !(i0);
+    if (i0) {goto B18;}
+    i0 = l8;
+    operator_delete_void__(i0);
+    B18:;
+    i0 = l7;
+    i1 = l6;
+    i0 = i0 != i1;
+    if (i0) {goto L17;}
+  i0 = l3;
+  i1 = 32u;
+  i0 += i1;
+  i0 = i32_load((&M0), (u64)(i0));
+  l6 = i0;
+  goto B15;
+  B16:;
+  i0 = l7;
+  l6 = i0;
+  B15:;
+  i0 = p2;
+  i1 = l7;
+  i32_store((&M0), (u64)(i0), i1);
+  i0 = l6;
+  operator_delete_void__(i0);
+  B6:;
+  i0 = l3;
+  i1 = 96u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
+static void void_eosio__multi_index__eosio__name__raw_3607749779137757184__eosio__token__account___modify_token_set_balance____107__eosio__token__account_const___eosio__name__token_set_balance____107___(u32 p0, u32 p1, u32 p2) {
+  u32 l3 = 0, l4 = 0;
+  u64 l5 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3;
+  u64 j0, j1, j2;
+  i0 = g0;
+  i1 = 16u;
+  i0 -= i1;
+  l3 = i0;
+  l4 = i0;
+  i0 = l3;
+  g0 = i0;
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0 + 16));
+  i1 = p0;
+  i0 = i0 == i1;
+  if (i0) {goto B0;}
+  i0 = 0u;
+  i1 = 24617u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B0:;
+  j0 = (*Z_envZ_current_receiverZ_jv)();
+  i1 = p0;
+  j1 = i64_load((&M0), (u64)(i1));
+  i0 = j0 == j1;
+  if (i0) {goto B1;}
+  i0 = 0u;
+  i1 = 24663u;
+  (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  B1:;
+  i0 = p1;
+  i1 = p2;
+  i1 = i32_load((&M0), (u64)(i1));
+  j1 = i64_load((&M0), (u64)(i1));
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = p1;
+  j0 = i64_load((&M0), (u64)(i0 + 8));
+  l5 = j0;
+  i0 = l3;
+  p2 = i0;
+  i1 = 4294967280u;
+  i0 += i1;
+  l3 = i0;
+  g0 = i0;
+  i0 = l3;
+  i1 = p1;
+  i2 = 8u;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  i0 = l4;
+  i1 = p1;
+  j1 = i64_load((&M0), (u64)(i1 + 8));
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = p2;
+  i1 = 4294967288u;
+  i0 += i1;
+  i1 = l4;
+  i2 = 8u;
+  i1 += i2;
+  i2 = 8u;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0 + 20));
+  j1 = 0ull;
+  i2 = l3;
+  i3 = 16u;
+  (*Z_envZ_db_update_i64Z_vijii)(i0, j1, i2, i3);
+  j0 = l5;
+  j1 = 8ull;
+  j0 >>= (j1 & 63);
+  l5 = j0;
+  i1 = p0;
+  j1 = i64_load((&M0), (u64)(i1 + 16));
+  i0 = j0 < j1;
+  if (i0) {goto B2;}
+  i0 = p0;
+  i1 = 16u;
+  i0 += i1;
+  j1 = l5;
+  j2 = 1ull;
+  j1 += j2;
+  i64_store((&M0), (u64)(i0), j1);
+  B2:;
+  i0 = l4;
   i1 = 16u;
   i0 += i1;
   g0 = i0;
@@ -87848,7 +89450,7 @@ static u32 bool_eosio__execute_action_eosio__token__eosio__name_const___eosio__a
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 56u;
@@ -87884,7 +89486,7 @@ static u32 bool_eosio__execute_action_eosio__token__eosio__name_const___eosio__a
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 48u;
@@ -87917,7 +89519,7 @@ static u32 bool_eosio__execute_action_eosio__token__eosio__name_const___eosio__a
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0 + 52));
@@ -88357,7 +89959,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88396,7 +89998,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88431,7 +90033,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88696,7 +90298,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88735,7 +90337,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88772,7 +90374,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88807,7 +90409,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -88869,7 +90471,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88909,7 +90511,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -88952,7 +90554,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -89005,7 +90607,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -89040,7 +90642,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -90474,7 +92076,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p2;
@@ -90504,7 +92106,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 != i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l8;
@@ -90661,7 +92263,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p2;
@@ -90691,7 +92293,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 != i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l9;
@@ -90842,7 +92444,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__unsigned_sho
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -91184,7 +92786,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = p2;
@@ -91206,7 +92808,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 != i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -91750,7 +93352,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -91899,7 +93501,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__unsig
     i0 = i0 < i1;
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B4:;
     j0 = l10;
@@ -91938,7 +93540,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__unsig
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   j0 = l10;
@@ -92097,7 +93699,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l4;
@@ -92118,7 +93720,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 != i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p2;
@@ -92152,7 +93754,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B6:;
   i0 = l4;
@@ -93041,7 +94643,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 888u;
@@ -93070,7 +94672,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 != i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l8;
@@ -93228,7 +94830,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__unsigned_lon
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -93770,7 +95372,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i2 = p2;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -93821,7 +95423,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__unsigned_cha
   i1 = 0u;
   i32_store8((&M0), (u64)(i0 + 888), i1);
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 888u;
@@ -94342,7 +95944,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p2;
@@ -94372,7 +95974,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__name_
   i0 = i0 != i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l8;
@@ -94707,7 +96309,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__asset
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = p2;
@@ -94734,7 +96336,7 @@ static u32 bool_eosio__execute_action_eosiosystem__system_contract__eosio__asset
   i0 = i0 != i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l4;
@@ -94875,7 +96477,7 @@ static void void_boost__fusion__detail__for_each_unrolled_1___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -94955,7 +96557,7 @@ static void void_boost__fusion__detail__for_each_unrolled_1___call_boost__fusion
     i0 = i0 == i1;
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 25126u;
+    i1 = 25246u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     B4:;
     i0 = l5;
@@ -95080,7 +96682,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -95119,7 +96721,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -95156,7 +96758,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -95191,7 +96793,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -95231,7 +96833,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -95266,7 +96868,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -95300,7 +96902,7 @@ static void void_boost__fusion__detail__for_each_unrolled_5___call_boost__fusion
   i0 = i0 != i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -95363,7 +96965,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -95402,7 +97004,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -95439,7 +97041,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -95474,7 +97076,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -95514,7 +97116,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -95549,7 +97151,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -95605,7 +97207,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -95644,7 +97246,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -95681,7 +97283,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -95716,7 +97318,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0));
@@ -95772,7 +97374,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -95811,7 +97413,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -95848,7 +97450,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -95883,7 +97485,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i0 = i32_load((&M0), (u64)(i0));
@@ -95933,7 +97535,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -95972,7 +97574,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96009,7 +97611,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -96052,7 +97654,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96103,7 +97705,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -96169,7 +97771,7 @@ static void decltype_std__forward_eosiosystem__system_contract__fp__std__get_0u_
   i3 = l4;
   i4 = 2u;
   i3 <<= (i4 & 31);
-  i4 = 24708u;
+  i4 = 24828u;
   i3 += i4;
   i3 = i32_load((&M0), (u64)(i3));
   CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -96258,7 +97860,7 @@ static void decltype_std__forward_eosiosystem__system_contract__fp__std__get_0u_
   i2 = p1;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -96289,7 +97891,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96328,7 +97930,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96524,7 +98126,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96563,7 +98165,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96600,7 +98202,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -96637,7 +98239,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -96675,7 +98277,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -96712,7 +98314,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -96741,7 +98343,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -96778,7 +98380,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -96807,7 +98409,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -96844,7 +98446,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -96873,7 +98475,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -96910,7 +98512,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -96939,7 +98541,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -96976,7 +98578,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -97005,7 +98607,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -97042,7 +98644,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -97071,7 +98673,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -97108,7 +98710,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -97137,7 +98739,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -97174,7 +98776,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -97203,7 +98805,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 > i1;
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -97254,7 +98856,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97290,7 +98892,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97326,7 +98928,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97362,7 +98964,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97398,7 +99000,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97436,7 +99038,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97472,7 +99074,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97510,7 +99112,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97546,7 +99148,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97584,7 +99186,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -97620,7 +99222,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -98016,7 +99618,7 @@ static u32 eosio__datastream_unsigned_int___eosio__operator___eosio__datastream_
     i2 = l6;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24672u;
+    i3 = 24792u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -98101,7 +99703,7 @@ static u32 eosio__datastream_char____eosio__operator___char___eosio__block_signi
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98139,7 +99741,7 @@ static u32 eosio__datastream_char____eosio__operator___char___eosio__block_signi
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -98340,7 +99942,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98444,7 +100046,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98486,7 +100088,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i2 = l3;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24684u;
+  i3 = 24804u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -98509,7 +100111,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -98572,7 +100174,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98632,7 +100234,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98692,7 +100294,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98730,7 +100332,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i1 = 4u;
@@ -98821,7 +100423,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -98877,7 +100479,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 >= (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -98977,7 +100579,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
   i2 = l4;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -99106,7 +100708,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
   i2 = l4;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -99304,7 +100906,7 @@ static void decltype_auto__std____1____variant_detail____visitation____base____d
   i2 = l8;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -99550,7 +101152,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = p0;
     i1 = 4u;
@@ -99603,7 +101205,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -99628,7 +101230,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B5;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -99720,7 +101322,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -99759,7 +101361,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 >= (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -99809,7 +101411,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -99844,7 +101446,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -99905,7 +101507,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -99941,7 +101543,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -99976,7 +101578,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100029,7 +101631,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100065,7 +101667,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100100,7 +101702,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100142,7 +101744,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100177,7 +101779,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100219,7 +101821,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100254,7 +101856,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100296,7 +101898,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100331,7 +101933,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100373,7 +101975,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100408,7 +102010,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100450,7 +102052,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100485,7 +102087,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -100527,7 +102129,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100576,7 +102178,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100613,7 +102215,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -100642,7 +102244,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100679,7 +102281,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -100708,7 +102310,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100745,7 +102347,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -100774,7 +102376,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100811,7 +102413,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -100840,7 +102442,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100877,7 +102479,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -100906,7 +102508,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -100943,7 +102545,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -100972,7 +102574,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -101226,7 +102828,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -101263,7 +102865,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -101292,7 +102894,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -101329,7 +102931,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -101356,7 +102958,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 != i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -101824,7 +103426,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -101861,7 +103463,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -101890,7 +103492,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102151,7 +103753,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102188,7 +103790,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102217,7 +103819,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102254,7 +103856,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102283,7 +103885,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102320,7 +103922,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102349,7 +103951,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102386,7 +103988,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102415,7 +104017,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102452,7 +104054,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102481,7 +104083,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102518,7 +104120,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102547,7 +104149,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102587,7 +104189,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102624,7 +104226,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102653,7 +104255,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102690,7 +104292,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102719,7 +104321,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102756,7 +104358,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102785,7 +104387,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102822,7 +104424,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102851,7 +104453,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102888,7 +104490,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102917,7 +104519,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -102954,7 +104556,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -102983,7 +104585,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103020,7 +104622,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103049,7 +104651,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B14;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103086,7 +104688,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B15;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103115,7 +104717,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B16;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103155,7 +104757,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103192,7 +104794,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103221,7 +104823,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103258,7 +104860,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103287,7 +104889,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103327,7 +104929,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103364,7 +104966,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103393,7 +104995,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103439,7 +105041,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103476,7 +105078,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103507,7 +105109,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103557,7 +105159,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103594,7 +105196,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103622,7 +105224,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103667,7 +105269,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103695,7 +105297,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103739,7 +105341,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103784,7 +105386,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103820,7 +105422,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103855,7 +105457,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103892,7 +105494,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103921,7 +105523,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -103952,7 +105554,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 != i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -103991,7 +105593,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -104028,7 +105630,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -104057,7 +105659,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -104092,7 +105694,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -104153,7 +105755,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 < i1;
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l5;
     i0 = i32_load((&M0), (u64)(i0));
@@ -104261,7 +105863,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 > i1;
     if (i0) {goto B7;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -104536,7 +106138,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -104584,7 +106186,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l7;
     i0 = i32_load((&M0), (u64)(i0));
@@ -104637,7 +106239,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -104673,7 +106275,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -104702,7 +106304,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 != i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -104752,7 +106354,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -104789,7 +106391,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -104823,7 +106425,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -104887,7 +106489,7 @@ static u32 eosio__datastream_char_const____eosio__operator___char_const___std___
     i0 = i0 < i1;
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -104961,7 +106563,7 @@ static u32 eosio__datastream_char_const____eosio__operator___char_const___std___
     i0 = i0 != i1;
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l8;
     i0 = i32_load((&M0), (u64)(i0));
@@ -104998,7 +106600,7 @@ static u32 eosio__datastream_char_const____eosio__operator___char_const___std___
   i2 = l3;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -105165,7 +106767,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     goto L3;
     B55:;
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -105284,7 +106886,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i2 = l6;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -105462,7 +107064,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i3 = l10;
     i4 = 2u;
     i3 <<= (i4 & 31);
-    i4 = 24708u;
+    i4 = 24828u;
     i3 += i4;
     i3 = i32_load((&M0), (u64)(i3));
     CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -105574,7 +107176,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i2 = l6;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -105726,7 +107328,7 @@ static void void_eosio__deserialize_0__char_const___eosio__block_signing_authori
   i0 = !(i0);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24892u;
+  i1 = 25012u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 32u;
@@ -105752,7 +107354,7 @@ static void void_eosio__deserialize_0__char_const___eosio__block_signing_authori
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -105826,7 +107428,7 @@ static void void_eosio__deserialize_0__char_const___eosio__block_signing_authori
     i2 = l7;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -105907,7 +107509,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 < i1;
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l5;
     i0 = i32_load((&M0), (u64)(i0));
@@ -106003,7 +107605,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
   i0 = i0 >= i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -106073,7 +107675,7 @@ static void void_eosio__deserialize_1__char_const___std____1__array_char__33u___
     i0 = i0 != i1;
     if (i0) {goto B3;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l5;
     i0 = i32_load((&M0), (u64)(i0));
@@ -106110,7 +107712,7 @@ static void void_eosio__deserialize_1__char_const___std____1__array_char__33u___
   i2 = p2;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -106204,7 +107806,7 @@ static void void_eosio__deserialize_1__char_const___std____1__array_char__33u___
     i0 = i0 != i1;
     if (i0) {goto B6;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l5;
     i0 = i32_load((&M0), (u64)(i0));
@@ -106240,7 +107842,7 @@ static void void_eosio__deserialize_1__char_const___std____1__array_char__33u___
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -106280,7 +107882,7 @@ static void void_eosio__deserialize_1__char_const___std____1__array_char__33u___
   i2 = l6;
   i3 = 2u;
   i2 <<= (i3 & 31);
-  i3 = 24660u;
+  i3 = 24780u;
   i2 += i3;
   i2 = i32_load((&M0), (u64)(i2));
   CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -106353,7 +107955,7 @@ static void void_eosio__deserialize_1__char_const___std____1__array_char__33u___
   goto Bfunc;
   B0:;
   i0 = 0u;
-  i1 = 24892u;
+  i1 = 25012u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 64u;
@@ -106396,7 +107998,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 < i1;
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -106501,7 +108103,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i2 = l7;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -106545,7 +108147,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 > i1;
     if (i0) {goto B10;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l8;
     i1 = 4u;
@@ -106848,7 +108450,7 @@ static void std____1__vector_eosio__key_weight__std____1__allocator_eosio__key_w
     i3 = l6;
     i4 = 2u;
     i3 <<= (i4 & 31);
-    i4 = 24880u;
+    i4 = 25000u;
     i3 += i4;
     i3 = i32_load((&M0), (u64)(i3));
     CALL_INDIRECT(T0, void (*)(u32, u32, u32), 2, i3, i0, i1, i2);
@@ -106919,7 +108521,7 @@ static void std____1__vector_eosio__key_weight__std____1__allocator_eosio__key_w
     i2 = l5;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -107202,7 +108804,7 @@ static u32 std____1____split_buffer_eosio__multi_index__eosio__name__raw_1253143
       i2 = l12;
       i3 = 2u;
       i2 <<= (i3 & 31);
-      i3 = 24660u;
+      i3 = 24780u;
       i2 += i3;
       i2 = i32_load((&M0), (u64)(i2));
       CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -107265,7 +108867,7 @@ static u32 std____1____split_buffer_eosio__multi_index__eosio__name__raw_1253143
     i2 = l9;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -107421,7 +109023,7 @@ static u32 eosio__datastream_unsigned_int___eosio__operator___eosio__datastream_
     i2 = l9;
     i3 = 2u;
     i2 <<= (i3 & 31);
-    i3 = 24660u;
+    i3 = 24780u;
     i2 += i3;
     i2 = i32_load((&M0), (u64)(i2));
     CALL_INDIRECT(T0, void (*)(u32, u32), 1, i2, i0, i1);
@@ -107481,7 +109083,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -107517,7 +109119,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -107553,7 +109155,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -107589,7 +109191,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -107638,7 +109240,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -107678,7 +109280,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -107717,7 +109319,7 @@ static void void_boost__fusion__detail__for_each_unrolled_3___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -107765,7 +109367,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -107802,7 +109404,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -107831,7 +109433,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -107867,7 +109469,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -107904,7 +109506,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -107939,7 +109541,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -107995,7 +109597,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -108031,7 +109633,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -108067,7 +109669,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -108102,7 +109704,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -108139,7 +109741,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -108174,7 +109776,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -108211,7 +109813,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -108277,7 +109879,7 @@ static u32 eosio__datastream_char_const____eosio__operator___char_const___std___
     i0 = i0 < i1;
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -108386,7 +109988,7 @@ static u32 eosio__datastream_char_const____eosio__operator___char_const___std___
     i0 = i0 > i1;
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l8;
     i0 = i32_load((&M0), (u64)(i0));
@@ -108413,7 +110015,7 @@ static u32 eosio__datastream_char_const____eosio__operator___char_const___std___
     i0 = i0 > i1;
     if (i0) {goto B5;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l8;
     i0 = i32_load((&M0), (u64)(i0));
@@ -111037,7 +112639,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -111074,7 +112676,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -111103,7 +112705,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -111159,7 +112761,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0));
@@ -111195,7 +112797,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -111247,7 +112849,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B7;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l4;
     i0 = i32_load((&M0), (u64)(i0));
@@ -111331,7 +112933,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = p0;
     i1 = 4u;
@@ -111416,7 +113018,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     goto L5;
     B10:;
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l7;
     i0 = i32_load((&M0), (u64)(i0));
@@ -111495,7 +113097,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -111534,7 +113136,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -111571,7 +113173,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -111609,7 +113211,7 @@ static void void_boost__fusion__detail__for_each_unrolled_4___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -111874,7 +113476,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -111910,7 +113512,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -111943,7 +113545,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -111995,7 +113597,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112032,7 +113634,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112061,7 +113663,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112097,7 +113699,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112134,7 +113736,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112169,7 +113771,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112222,7 +113824,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112259,7 +113861,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112288,7 +113890,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112327,7 +113929,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112358,7 +113960,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112396,7 +113998,7 @@ static u32 eosio__datastream_char____eosiosystem__operator___eosio__datastream_c
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112516,7 +114118,7 @@ static void std____1__vector_char__std____1__allocator_char____eosio__pack_std__
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B3:;
   i0 = l3;
@@ -112540,7 +114142,7 @@ static void std____1__vector_char__std____1__allocator_char____eosio__pack_std__
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l4;
@@ -112566,7 +114168,7 @@ static void std____1__vector_char__std____1__allocator_char____eosio__pack_std__
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B5:;
   i0 = l4;
@@ -112606,7 +114208,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112643,7 +114245,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l2;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112672,7 +114274,7 @@ static u32 eosio__datastream_char_const____eosiosystem__operator___eosio__datast
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -112763,7 +114365,7 @@ static u32 eosio__action__action_std____1__tuple_eosio__asset____std____1__vecto
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B0:;
   i0 = p1;
@@ -112785,7 +114387,7 @@ static u32 eosio__action__action_std____1__tuple_eosio__asset____std____1__vecto
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B1:;
   i0 = p1;
@@ -112826,7 +114428,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -112862,7 +114464,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -112898,7 +114500,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -112933,7 +114535,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -112970,7 +114572,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113005,7 +114607,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -113042,7 +114644,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113077,7 +114679,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -113114,7 +114716,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113148,7 +114750,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -113209,7 +114811,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113245,7 +114847,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113281,7 +114883,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113317,7 +114919,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -113350,7 +114952,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113386,7 +114988,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -113419,7 +115021,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113455,7 +115057,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -113488,7 +115090,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -113527,7 +115129,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i1 = 4u;
@@ -114024,7 +115626,7 @@ static void auto_long_long_eosiosystem__system_contract__rent_rex_eosio__multi_i
   i0 = j0 < j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   j0 = l5;
@@ -114593,7 +116195,7 @@ static void auto_long_long_eosiosystem__system_contract__rent_rex_eosio__multi_i
   i0 = j0 < j1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24183u;
+  i1 = 24303u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B2:;
   j0 = l5;
@@ -114777,7 +116379,7 @@ static u32 eosio__multi_index__eosio__name__raw_5004935261474258944__eosiosystem
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -115001,7 +116603,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115037,7 +116639,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115073,7 +116675,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115109,7 +116711,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115144,7 +116746,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115186,7 +116788,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115221,7 +116823,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115263,7 +116865,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115298,7 +116900,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115340,7 +116942,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -115376,7 +116978,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -115615,7 +117217,7 @@ static u32 eosio__multi_index__eosio__name__raw_11147282203254194176__eosiosyste
   goto B3;
   B5:;
   i0 = 0u;
-  i1 = 24771u;
+  i1 = 24891u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   B4:;
   i0 = l5;
@@ -116228,7 +117830,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116264,7 +117866,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116300,7 +117902,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116336,7 +117938,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -116369,7 +117971,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116405,7 +118007,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -116438,7 +118040,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116523,7 +118125,7 @@ static u32 eosio__datastream_char____eosio__operator___char___std____1__pair_eos
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -116621,7 +118223,7 @@ static u32 eosio__datastream_char____eosio__operator___char___std____1__pair_eos
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B6;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l7;
     i0 = i32_load((&M0), (u64)(i0));
@@ -116650,7 +118252,7 @@ static u32 eosio__datastream_char____eosio__operator___char___std____1__pair_eos
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B7;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l7;
     i0 = i32_load((&M0), (u64)(i0));
@@ -116724,7 +118326,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116760,7 +118362,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116796,7 +118398,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116834,7 +118436,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116870,7 +118472,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116908,7 +118510,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116944,7 +118546,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -116982,7 +118584,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B7;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -117018,7 +118620,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B8;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -117056,7 +118658,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B9;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -117092,7 +118694,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B10;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -117130,7 +118732,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B11;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -117166,7 +118768,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B12;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -117204,7 +118806,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B13;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -117969,7 +119571,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -118005,7 +119607,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -118041,7 +119643,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -118076,7 +119678,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -118370,7 +119972,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -118409,7 +120011,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -118447,7 +120049,7 @@ static void void_boost__fusion__detail__for_each_unrolled_2___call_boost__fusion
   i0 = (u32)((s32)i0 > (s32)i1);
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24653u;
+  i1 = 24773u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -118494,7 +120096,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -118530,7 +120132,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -118566,7 +120168,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -118602,7 +120204,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -118638,7 +120240,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -118674,7 +120276,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B5;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l3;
   i1 = 4u;
@@ -118710,7 +120312,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B6;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = p0;
   i1 = 4u;
@@ -118777,7 +120379,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 < i1;
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24875u;
+    i1 = 24995u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = p0;
     i1 = 4u;
@@ -118845,7 +120447,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 > i1;
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = p0;
     i1 = 4u;
@@ -118877,7 +120479,7 @@ static u32 eosio__datastream_char_const____eosio__operator___eosio__datastream_c
     i0 = i0 > i1;
     if (i0) {goto B5;}
     i0 = 0u;
-    i1 = 24794u;
+    i1 = 24914u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -119185,7 +120787,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B1;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l6;
     i0 = i32_load((&M0), (u64)(i0));
@@ -119237,7 +120839,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B4;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l5;
     i0 = i32_load((&M0), (u64)(i0));
@@ -119266,7 +120868,7 @@ static u32 eosio__datastream_char____eosio__operator___eosio__datastream_char___
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B5;}
     i0 = 0u;
-    i1 = 24653u;
+    i1 = 24773u;
     (*Z_envZ_eosio_assertZ_vii)(i0, i1);
     i0 = l5;
     i0 = i32_load((&M0), (u64)(i0));
@@ -120249,7 +121851,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B0;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -120284,7 +121886,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B1;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -120321,7 +121923,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B2;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -120356,7 +121958,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B3;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l5;
   i0 = i32_load((&M0), (u64)(i0));
@@ -120393,7 +121995,7 @@ static void void_boost__pfr__detail__for_each_field_impl_boost__pfr__detail__seq
   i0 = i0 > i1;
   if (i0) {goto B4;}
   i0 = 0u;
-  i1 = 24794u;
+  i1 = 24914u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = l4;
   i1 = 4u;
@@ -121490,30 +123092,47 @@ static const u8 data_segment_data_170[] = {
 };
 
 static const u8 data_segment_data_171[] = {
+  0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x20, 0x72, 0x6f, 0x77, 0x20, 
+  0x61, 0x6c, 0x72, 0x65, 0x61, 0x64, 0x79, 0x20, 0x64, 0x65, 0x6c, 0x65, 
+  0x74, 0x65, 0x64, 0x20, 0x6f, 0x72, 0x20, 0x6e, 0x65, 0x76, 0x65, 0x72, 
+  0x20, 0x65, 0x78, 0x69, 0x73, 0x74, 0x65, 0x64, 0x2e, 0x20, 0x41, 0x63, 
+  0x74, 0x69, 0x6f, 0x6e, 0x20, 0x77, 0x6f, 0x6e, 0x27, 0x74, 0x20, 0x68, 
+  0x61, 0x76, 0x65, 0x20, 0x61, 0x6e, 0x79, 0x20, 0x65, 0x66, 0x66, 0x65, 
+  0x63, 0x74, 0x2e, 0x00, 
+};
+
+static const u8 data_segment_data_172[] = {
+  0x43, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x63, 0x6c, 0x6f, 0x73, 0x65, 
+  0x20, 0x62, 0x65, 0x63, 0x61, 0x75, 0x73, 0x65, 0x20, 0x74, 0x68, 0x65, 
+  0x20, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x20, 0x69, 0x73, 0x20, 
+  0x6e, 0x6f, 0x74, 0x20, 0x7a, 0x65, 0x72, 0x6f, 0x2e, 0x00, 
+};
+
+static const u8 data_segment_data_173[] = {
   0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x20, 0x63, 0x6f, 0x6e, 0x74, 0x72, 
   0x61, 0x63, 0x74, 0x20, 0x6d, 0x75, 0x73, 0x74, 0x20, 0x66, 0x69, 0x72, 
   0x73, 0x74, 0x20, 0x62, 0x65, 0x20, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 
   0x6c, 0x69, 0x7a, 0x65, 0x64, 0x00, 
 };
 
-static const u8 data_segment_data_172[] = {
-  0xf4, 0x5d, 0x00, 0x00, 
+static const u8 data_segment_data_174[] = {
+  0x6c, 0x5e, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_173[] = {
+static const u8 data_segment_data_175[] = {
   0x2e, 0x31, 0x32, 0x33, 0x34, 0x35, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 
   0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70, 0x71, 0x72, 
   0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x00, 
 };
 
-static const u8 data_segment_data_174[] = {
+static const u8 data_segment_data_176[] = {
   0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x20, 0x69, 0x73, 0x20, 0x74, 0x6f, 
   0x6f, 0x20, 0x6c, 0x6f, 0x6e, 0x67, 0x20, 0x74, 0x6f, 0x20, 0x62, 0x65, 
   0x20, 0x61, 0x20, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x20, 0x73, 0x79, 0x6d, 
   0x62, 0x6f, 0x6c, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x00, 
 };
 
-static const u8 data_segment_data_175[] = {
+static const u8 data_segment_data_177[] = {
   0x6f, 0x6e, 0x6c, 0x79, 0x20, 0x75, 0x70, 0x70, 0x65, 0x72, 0x63, 0x61, 
   0x73, 0x65, 0x20, 0x6c, 0x65, 0x74, 0x74, 0x65, 0x72, 0x73, 0x20, 0x61, 
   0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x20, 0x69, 0x6e, 0x20, 0x73, 0x79, 
@@ -121521,7 +123140,7 @@ static const u8 data_segment_data_175[] = {
   0x72, 0x69, 0x6e, 0x67, 0x00, 
 };
 
-static const u8 data_segment_data_176[] = {
+static const u8 data_segment_data_178[] = {
   0x6d, 0x61, 0x67, 0x6e, 0x69, 0x74, 0x75, 0x64, 0x65, 0x20, 0x6f, 0x66, 
   0x20, 0x61, 0x73, 0x73, 0x65, 0x74, 0x20, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 
   0x74, 0x20, 0x6d, 0x75, 0x73, 0x74, 0x20, 0x62, 0x65, 0x20, 0x6c, 0x65, 
@@ -121529,24 +123148,24 @@ static const u8 data_segment_data_176[] = {
   0x00, 
 };
 
-static const u8 data_segment_data_177[] = {
+static const u8 data_segment_data_179[] = {
   0x61, 0x74, 0x74, 0x65, 0x6d, 0x70, 0x74, 0x20, 0x74, 0x6f, 0x20, 0x61, 
   0x64, 0x64, 0x20, 0x61, 0x73, 0x73, 0x65, 0x74, 0x20, 0x77, 0x69, 0x74, 
   0x68, 0x20, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x74, 0x20, 
   0x73, 0x79, 0x6d, 0x62, 0x6f, 0x6c, 0x00, 
 };
 
-static const u8 data_segment_data_178[] = {
+static const u8 data_segment_data_180[] = {
   0x61, 0x64, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x75, 0x6e, 0x64, 
   0x65, 0x72, 0x66, 0x6c, 0x6f, 0x77, 0x00, 
 };
 
-static const u8 data_segment_data_179[] = {
+static const u8 data_segment_data_181[] = {
   0x61, 0x64, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x6f, 0x76, 0x65, 
   0x72, 0x66, 0x6c, 0x6f, 0x77, 0x00, 
 };
 
-static const u8 data_segment_data_180[] = {
+static const u8 data_segment_data_182[] = {
   0x63, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x69, 0x73, 0x6f, 0x6e, 0x20, 0x6f, 
   0x66, 0x20, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x20, 0x77, 0x69, 0x74, 
   0x68, 0x20, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x74, 0x20, 
@@ -121554,7 +123173,7 @@ static const u8 data_segment_data_180[] = {
   0x6f, 0x74, 0x20, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x00, 
 };
 
-static const u8 data_segment_data_181[] = {
+static const u8 data_segment_data_183[] = {
   0x61, 0x74, 0x74, 0x65, 0x6d, 0x70, 0x74, 0x20, 0x74, 0x6f, 0x20, 0x73, 
   0x75, 0x62, 0x74, 0x72, 0x61, 0x63, 0x74, 0x20, 0x61, 0x73, 0x73, 0x65, 
   0x74, 0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x64, 0x69, 0x66, 0x66, 0x65, 
@@ -121562,30 +123181,30 @@ static const u8 data_segment_data_181[] = {
   
 };
 
-static const u8 data_segment_data_182[] = {
+static const u8 data_segment_data_184[] = {
   0x73, 0x75, 0x62, 0x74, 0x72, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x20, 
   0x75, 0x6e, 0x64, 0x65, 0x72, 0x66, 0x6c, 0x6f, 0x77, 0x00, 
 };
 
-static const u8 data_segment_data_183[] = {
+static const u8 data_segment_data_185[] = {
   0x73, 0x75, 0x62, 0x74, 0x72, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x20, 
   0x6f, 0x76, 0x65, 0x72, 0x66, 0x6c, 0x6f, 0x77, 0x00, 
 };
 
-static const u8 data_segment_data_184[] = {
+static const u8 data_segment_data_186[] = {
   0x63, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x70, 0x61, 0x73, 0x73, 0x20, 
   0x65, 0x6e, 0x64, 0x20, 0x69, 0x74, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 
   0x20, 0x74, 0x6f, 0x20, 0x6d, 0x6f, 0x64, 0x69, 0x66, 0x79, 0x00, 
 };
 
-static const u8 data_segment_data_185[] = {
+static const u8 data_segment_data_187[] = {
   0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20, 0x70, 0x61, 0x73, 0x73, 0x65, 
   0x64, 0x20, 0x74, 0x6f, 0x20, 0x6d, 0x6f, 0x64, 0x69, 0x66, 0x79, 0x20, 
   0x69, 0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x69, 0x6e, 0x20, 0x6d, 0x75, 
   0x6c, 0x74, 0x69, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x00, 
 };
 
-static const u8 data_segment_data_186[] = {
+static const u8 data_segment_data_188[] = {
   0x63, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x6d, 0x6f, 0x64, 0x69, 0x66, 
   0x79, 0x20, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x20, 0x69, 0x6e, 
   0x20, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x20, 0x6f, 0x66, 0x20, 0x61, 0x6e, 
@@ -121593,7 +123212,7 @@ static const u8 data_segment_data_186[] = {
   0x63, 0x74, 0x00, 
 };
 
-static const u8 data_segment_data_187[] = {
+static const u8 data_segment_data_189[] = {
   0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x72, 0x20, 0x63, 0x61, 0x6e, 0x6e, 
   0x6f, 0x74, 0x20, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x20, 0x70, 0x72, 
   0x69, 0x6d, 0x61, 0x72, 0x79, 0x20, 0x6b, 0x65, 0x79, 0x20, 0x77, 0x68, 
@@ -121601,36 +123220,36 @@ static const u8 data_segment_data_187[] = {
   0x20, 0x61, 0x6e, 0x20, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x00, 
 };
 
-static const u8 data_segment_data_188[] = {
+static const u8 data_segment_data_190[] = {
   0x77, 0x72, 0x69, 0x74, 0x65, 0x00, 
 };
 
-static const u8 data_segment_data_189[] = {
+static const u8 data_segment_data_191[] = {
   0x32, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x34, 0x00, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_190[] = {
+static const u8 data_segment_data_192[] = {
   0x35, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x37, 0x00, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_191[] = {
+static const u8 data_segment_data_193[] = {
   0x38, 0x00, 0x00, 0x00, 0x39, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_192[] = {
+static const u8 data_segment_data_194[] = {
   0x3b, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x3d, 0x00, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_193[] = {
+static const u8 data_segment_data_195[] = {
   0x3e, 0x00, 0x00, 0x00, 0x3f, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_194[] = {
+static const u8 data_segment_data_196[] = {
   0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20, 0x70, 0x61, 0x73, 0x73, 0x65, 
   0x64, 0x20, 0x74, 0x6f, 0x20, 0x69, 0x74, 0x65, 0x72, 0x61, 0x74, 0x6f, 
   0x72, 0x5f, 0x74, 0x6f, 0x20, 0x69, 0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 
@@ -121638,22 +123257,22 @@ static const u8 data_segment_data_194[] = {
   0x65, 0x78, 0x00, 
 };
 
-static const u8 data_segment_data_195[] = {
+static const u8 data_segment_data_197[] = {
   0x65, 0x72, 0x72, 0x6f, 0x72, 0x20, 0x72, 0x65, 0x61, 0x64, 0x69, 0x6e, 
   0x67, 0x20, 0x69, 0x74, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 0x00, 
 };
 
-static const u8 data_segment_data_196[] = {
+static const u8 data_segment_data_198[] = {
   0x72, 0x65, 0x61, 0x64, 0x00, 
 };
 
-static const u8 data_segment_data_197[] = {
+static const u8 data_segment_data_199[] = {
   0x73, 0x69, 0x6e, 0x67, 0x6c, 0x65, 0x74, 0x6f, 0x6e, 0x20, 0x64, 0x6f, 
   0x65, 0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x65, 0x78, 0x69, 0x73, 0x74, 
   0x00, 
 };
 
-static const u8 data_segment_data_198[] = {
+static const u8 data_segment_data_200[] = {
   0x63, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x63, 0x72, 0x65, 0x61, 0x74, 
   0x65, 0x20, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x20, 0x69, 0x6e, 
   0x20, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x20, 0x6f, 0x66, 0x20, 0x61, 0x6e, 
@@ -121661,40 +123280,40 @@ static const u8 data_segment_data_198[] = {
   0x63, 0x74, 0x00, 
 };
 
-static const u8 data_segment_data_199[] = {
+static const u8 data_segment_data_201[] = {
   0x67, 0x65, 0x74, 0x00, 
 };
 
-static const u8 data_segment_data_200[] = {
+static const u8 data_segment_data_202[] = {
   0x41, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_201[] = {
+static const u8 data_segment_data_203[] = {
   0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x20, 0x76, 0x61, 0x72, 0x69, 
   0x61, 0x6e, 0x74, 0x20, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x00, 
 };
 
-static const u8 data_segment_data_202[] = {
+static const u8 data_segment_data_204[] = {
   0x63, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x70, 0x61, 0x73, 0x73, 0x20, 
   0x65, 0x6e, 0x64, 0x20, 0x69, 0x74, 0x65, 0x72, 0x61, 0x74, 0x6f, 0x72, 
   0x20, 0x74, 0x6f, 0x20, 0x65, 0x72, 0x61, 0x73, 0x65, 0x00, 
 };
 
-static const u8 data_segment_data_203[] = {
+static const u8 data_segment_data_205[] = {
   0x63, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x69, 0x6e, 0x63, 0x72, 0x65, 
   0x6d, 0x65, 0x6e, 0x74, 0x20, 0x65, 0x6e, 0x64, 0x20, 0x69, 0x74, 0x65, 
   0x72, 0x61, 0x74, 0x6f, 0x72, 0x00, 
 };
 
-static const u8 data_segment_data_204[] = {
+static const u8 data_segment_data_206[] = {
   0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20, 0x70, 0x61, 0x73, 0x73, 0x65, 
   0x64, 0x20, 0x74, 0x6f, 0x20, 0x65, 0x72, 0x61, 0x73, 0x65, 0x20, 0x69, 
   0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x69, 0x6e, 0x20, 0x6d, 0x75, 0x6c, 
   0x74, 0x69, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x00, 
 };
 
-static const u8 data_segment_data_205[] = {
+static const u8 data_segment_data_207[] = {
   0x63, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x20, 0x65, 0x72, 0x61, 0x73, 0x65, 
   0x20, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x73, 0x20, 0x69, 0x6e, 0x20, 
   0x74, 0x61, 0x62, 0x6c, 0x65, 0x20, 0x6f, 0x66, 0x20, 0x61, 0x6e, 0x6f, 
@@ -121702,7 +123321,7 @@ static const u8 data_segment_data_205[] = {
   0x74, 0x00, 
 };
 
-static const u8 data_segment_data_206[] = {
+static const u8 data_segment_data_208[] = {
   0x61, 0x74, 0x74, 0x65, 0x6d, 0x70, 0x74, 0x20, 0x74, 0x6f, 0x20, 0x72, 
   0x65, 0x6d, 0x6f, 0x76, 0x65, 0x20, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 
   0x20, 0x74, 0x68, 0x61, 0x74, 0x20, 0x77, 0x61, 0x73, 0x20, 0x6e, 0x6f, 
@@ -121710,83 +123329,83 @@ static const u8 data_segment_data_206[] = {
   0x6e, 0x64, 0x65, 0x78, 0x00, 
 };
 
-static const u8 data_segment_data_207[] = {
+static const u8 data_segment_data_209[] = {
   0x75, 0x6e, 0x65, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x20, 0x65, 
   0x72, 0x72, 0x6f, 0x72, 0x20, 0x69, 0x6e, 0x20, 0x66, 0x69, 0x78, 0x65, 
   0x64, 0x5f, 0x62, 0x79, 0x74, 0x65, 0x73, 0x20, 0x63, 0x6f, 0x6e, 0x73, 
   0x74, 0x72, 0x75, 0x63, 0x74, 0x6f, 0x72, 0x00, 
 };
 
-static const u8 data_segment_data_208[] = {
+static const u8 data_segment_data_210[] = {
   0x00, 0x52, 0x41, 0x4d, 0x00, 0x00, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_209[] = {
+static const u8 data_segment_data_211[] = {
   0x69, 0x6e, 0x73, 0x75, 0x66, 0x66, 0x69, 0x63, 0x69, 0x65, 0x6e, 0x74, 
   0x20, 0x73, 0x70, 0x61, 0x63, 0x65, 0x20, 0x69, 0x6e, 0x20, 0x62, 0x75, 
   0x66, 0x66, 0x65, 0x72, 0x00, 
 };
 
-static const u8 data_segment_data_210[] = {
+static const u8 data_segment_data_212[] = {
   0x72, 0x65, 0x78, 0x20, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x20, 0x61, 0x72, 
   0x65, 0x20, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x6c, 0x79, 0x20, 
   0x6e, 0x6f, 0x74, 0x20, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 
   0x65, 0x00, 
 };
 
-static const u8 data_segment_data_211[] = {
+static const u8 data_segment_data_213[] = {
   0x6d, 0x75, 0x73, 0x74, 0x20, 0x75, 0x73, 0x65, 0x20, 0x63, 0x6f, 0x72, 
   0x65, 0x20, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x00, 
 };
 
-static const u8 data_segment_data_212[] = {
+static const u8 data_segment_data_214[] = {
   0x6d, 0x75, 0x73, 0x74, 0x20, 0x75, 0x73, 0x65, 0x20, 0x70, 0x6f, 0x73, 
   0x69, 0x74, 0x69, 0x76, 0x65, 0x20, 0x61, 0x73, 0x73, 0x65, 0x74, 0x20, 
   0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x00, 
 };
 
-static const u8 data_segment_data_213[] = {
+static const u8 data_segment_data_215[] = {
   0x6c, 0x6f, 0x61, 0x6e, 0x20, 0x70, 0x72, 0x69, 0x63, 0x65, 0x20, 0x64, 
   0x6f, 0x65, 0x73, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x66, 0x61, 0x76, 0x6f, 
   0x72, 0x20, 0x72, 0x65, 0x6e, 0x74, 0x69, 0x6e, 0x67, 0x00, 
 };
 
-static const u8 data_segment_data_214[] = {
+static const u8 data_segment_data_216[] = {
   0x6c, 0x6f, 0x61, 0x6e, 0x20, 0x6e, 0x6f, 0x74, 0x20, 0x66, 0x6f, 0x75, 
   0x6e, 0x64, 0x00, 
 };
 
-static const u8 data_segment_data_215[] = {
+static const u8 data_segment_data_217[] = {
   0x75, 0x73, 0x65, 0x72, 0x20, 0x6d, 0x75, 0x73, 0x74, 0x20, 0x62, 0x65, 
   0x20, 0x6c, 0x6f, 0x61, 0x6e, 0x20, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 
   0x72, 0x00, 
 };
 
-static const u8 data_segment_data_216[] = {
+static const u8 data_segment_data_218[] = {
   0x6c, 0x6f, 0x61, 0x6e, 0x20, 0x68, 0x61, 0x73, 0x20, 0x61, 0x6c, 0x72, 
   0x65, 0x61, 0x64, 0x79, 0x20, 0x65, 0x78, 0x70, 0x69, 0x72, 0x65, 0x64, 
   0x00, 
 };
 
-static const u8 data_segment_data_217[] = {
+static const u8 data_segment_data_219[] = {
   0x69, 0x6e, 0x73, 0x75, 0x66, 0x66, 0x69, 0x63, 0x65, 0x6e, 0x74, 0x20, 
   0x6c, 0x6f, 0x61, 0x6e, 0x20, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 
   0x00, 
 };
 
-static const u8 data_segment_data_218[] = {
+static const u8 data_segment_data_220[] = {
   0x6c, 0x6f, 0x67, 0x69, 0x63, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x20, 
   0x69, 0x6e, 0x20, 0x6d, 0x76, 0x74, 0x6f, 0x73, 0x61, 0x76, 0x69, 0x6e, 
   0x67, 0x73, 0x00, 
 };
 
-static const u8 data_segment_data_219[] = {
+static const u8 data_segment_data_221[] = {
   0x70, 0x72, 0x6f, 0x67, 0x72, 0x61, 0x6d, 0x6d, 0x65, 0x72, 0x20, 0x65, 
   0x72, 0x72, 0x6f, 0x72, 0x20, 0x69, 0x6e, 0x20, 0x6d, 0x76, 0x74, 0x6f, 
   0x73, 0x61, 0x76, 0x69, 0x6e, 0x67, 0x73, 0x00, 
 };
 
-static const u8 data_segment_data_220[] = {
+static const u8 data_segment_data_222[] = {
   0x70, 0x72, 0x6f, 0x67, 0x72, 0x61, 0x6d, 0x6d, 0x65, 0x72, 0x20, 0x65, 
   0x72, 0x72, 0x6f, 0x72, 0x2c, 0x20, 0x74, 0x68, 0x69, 0x73, 0x20, 0x73, 
   0x68, 0x6f, 0x75, 0x6c, 0x64, 0x20, 0x6e, 0x65, 0x76, 0x65, 0x72, 0x20, 
@@ -121967,56 +123586,58 @@ static void init_memory(void) {
   memcpy(&(M0.data[23934u]), data_segment_data_168, 18);
   memcpy(&(M0.data[23952u]), data_segment_data_169, 29);
   memcpy(&(M0.data[23981u]), data_segment_data_170, 22);
-  memcpy(&(M0.data[24003u]), data_segment_data_171, 42);
-  memcpy(&(M0.data[24048u]), data_segment_data_172, 4);
-  memcpy(&(M0.data[24052u]), data_segment_data_173, 33);
-  memcpy(&(M0.data[24085u]), data_segment_data_174, 45);
-  memcpy(&(M0.data[24130u]), data_segment_data_175, 53);
-  memcpy(&(M0.data[24183u]), data_segment_data_176, 49);
-  memcpy(&(M0.data[24232u]), data_segment_data_177, 43);
-  memcpy(&(M0.data[24275u]), data_segment_data_178, 19);
-  memcpy(&(M0.data[24294u]), data_segment_data_179, 18);
-  memcpy(&(M0.data[24312u]), data_segment_data_180, 59);
-  memcpy(&(M0.data[24371u]), data_segment_data_181, 48);
-  memcpy(&(M0.data[24419u]), data_segment_data_182, 22);
-  memcpy(&(M0.data[24441u]), data_segment_data_183, 21);
-  memcpy(&(M0.data[24462u]), data_segment_data_184, 35);
-  memcpy(&(M0.data[24497u]), data_segment_data_185, 46);
-  memcpy(&(M0.data[24543u]), data_segment_data_186, 51);
-  memcpy(&(M0.data[24594u]), data_segment_data_187, 59);
-  memcpy(&(M0.data[24653u]), data_segment_data_188, 6);
-  memcpy(&(M0.data[24660u]), data_segment_data_189, 12);
-  memcpy(&(M0.data[24672u]), data_segment_data_190, 12);
-  memcpy(&(M0.data[24684u]), data_segment_data_191, 12);
-  memcpy(&(M0.data[24696u]), data_segment_data_192, 12);
-  memcpy(&(M0.data[24708u]), data_segment_data_193, 12);
-  memcpy(&(M0.data[24720u]), data_segment_data_194, 51);
-  memcpy(&(M0.data[24771u]), data_segment_data_195, 23);
-  memcpy(&(M0.data[24794u]), data_segment_data_196, 5);
-  memcpy(&(M0.data[24799u]), data_segment_data_197, 25);
-  memcpy(&(M0.data[24824u]), data_segment_data_198, 51);
-  memcpy(&(M0.data[24875u]), data_segment_data_199, 4);
-  memcpy(&(M0.data[24880u]), data_segment_data_200, 12);
-  memcpy(&(M0.data[24892u]), data_segment_data_201, 22);
-  memcpy(&(M0.data[24914u]), data_segment_data_202, 34);
-  memcpy(&(M0.data[24948u]), data_segment_data_203, 30);
-  memcpy(&(M0.data[24978u]), data_segment_data_204, 45);
-  memcpy(&(M0.data[25023u]), data_segment_data_205, 50);
-  memcpy(&(M0.data[25073u]), data_segment_data_206, 53);
-  memcpy(&(M0.data[25126u]), data_segment_data_207, 44);
-  memcpy(&(M0.data[25176u]), data_segment_data_208, 8);
-  memcpy(&(M0.data[25184u]), data_segment_data_209, 29);
-  memcpy(&(M0.data[25213u]), data_segment_data_210, 38);
-  memcpy(&(M0.data[25251u]), data_segment_data_211, 20);
-  memcpy(&(M0.data[25271u]), data_segment_data_212, 31);
-  memcpy(&(M0.data[25302u]), data_segment_data_213, 34);
-  memcpy(&(M0.data[25336u]), data_segment_data_214, 15);
-  memcpy(&(M0.data[25351u]), data_segment_data_215, 26);
-  memcpy(&(M0.data[25377u]), data_segment_data_216, 25);
-  memcpy(&(M0.data[25402u]), data_segment_data_217, 25);
-  memcpy(&(M0.data[25427u]), data_segment_data_218, 27);
-  memcpy(&(M0.data[25454u]), data_segment_data_219, 32);
-  memcpy(&(M0.data[25486u]), data_segment_data_220, 48);
+  memcpy(&(M0.data[24003u]), data_segment_data_171, 76);
+  memcpy(&(M0.data[24079u]), data_segment_data_172, 46);
+  memcpy(&(M0.data[24125u]), data_segment_data_173, 42);
+  memcpy(&(M0.data[24168u]), data_segment_data_174, 4);
+  memcpy(&(M0.data[24172u]), data_segment_data_175, 33);
+  memcpy(&(M0.data[24205u]), data_segment_data_176, 45);
+  memcpy(&(M0.data[24250u]), data_segment_data_177, 53);
+  memcpy(&(M0.data[24303u]), data_segment_data_178, 49);
+  memcpy(&(M0.data[24352u]), data_segment_data_179, 43);
+  memcpy(&(M0.data[24395u]), data_segment_data_180, 19);
+  memcpy(&(M0.data[24414u]), data_segment_data_181, 18);
+  memcpy(&(M0.data[24432u]), data_segment_data_182, 59);
+  memcpy(&(M0.data[24491u]), data_segment_data_183, 48);
+  memcpy(&(M0.data[24539u]), data_segment_data_184, 22);
+  memcpy(&(M0.data[24561u]), data_segment_data_185, 21);
+  memcpy(&(M0.data[24582u]), data_segment_data_186, 35);
+  memcpy(&(M0.data[24617u]), data_segment_data_187, 46);
+  memcpy(&(M0.data[24663u]), data_segment_data_188, 51);
+  memcpy(&(M0.data[24714u]), data_segment_data_189, 59);
+  memcpy(&(M0.data[24773u]), data_segment_data_190, 6);
+  memcpy(&(M0.data[24780u]), data_segment_data_191, 12);
+  memcpy(&(M0.data[24792u]), data_segment_data_192, 12);
+  memcpy(&(M0.data[24804u]), data_segment_data_193, 12);
+  memcpy(&(M0.data[24816u]), data_segment_data_194, 12);
+  memcpy(&(M0.data[24828u]), data_segment_data_195, 12);
+  memcpy(&(M0.data[24840u]), data_segment_data_196, 51);
+  memcpy(&(M0.data[24891u]), data_segment_data_197, 23);
+  memcpy(&(M0.data[24914u]), data_segment_data_198, 5);
+  memcpy(&(M0.data[24919u]), data_segment_data_199, 25);
+  memcpy(&(M0.data[24944u]), data_segment_data_200, 51);
+  memcpy(&(M0.data[24995u]), data_segment_data_201, 4);
+  memcpy(&(M0.data[25000u]), data_segment_data_202, 12);
+  memcpy(&(M0.data[25012u]), data_segment_data_203, 22);
+  memcpy(&(M0.data[25034u]), data_segment_data_204, 34);
+  memcpy(&(M0.data[25068u]), data_segment_data_205, 30);
+  memcpy(&(M0.data[25098u]), data_segment_data_206, 45);
+  memcpy(&(M0.data[25143u]), data_segment_data_207, 50);
+  memcpy(&(M0.data[25193u]), data_segment_data_208, 53);
+  memcpy(&(M0.data[25246u]), data_segment_data_209, 44);
+  memcpy(&(M0.data[25296u]), data_segment_data_210, 8);
+  memcpy(&(M0.data[25304u]), data_segment_data_211, 29);
+  memcpy(&(M0.data[25333u]), data_segment_data_212, 38);
+  memcpy(&(M0.data[25371u]), data_segment_data_213, 20);
+  memcpy(&(M0.data[25391u]), data_segment_data_214, 31);
+  memcpy(&(M0.data[25422u]), data_segment_data_215, 34);
+  memcpy(&(M0.data[25456u]), data_segment_data_216, 15);
+  memcpy(&(M0.data[25471u]), data_segment_data_217, 26);
+  memcpy(&(M0.data[25497u]), data_segment_data_218, 25);
+  memcpy(&(M0.data[25522u]), data_segment_data_219, 25);
+  memcpy(&(M0.data[25547u]), data_segment_data_220, 27);
+  memcpy(&(M0.data[25574u]), data_segment_data_221, 32);
+  memcpy(&(M0.data[25606u]), data_segment_data_222, 48);
 }
 
 static void init_table(void) {
@@ -122110,6 +123731,22 @@ u32 (*WASM_RT_ADD_PREFIX(Z__Z5AnajSt11align_val_tZ_iii))(u32, u32);
 void (*WASM_RT_ADD_PREFIX(Z__Z5AdlPvSt11align_val_tZ_vii))(u32, u32);
 /* export: '_ZdaPvSt11align_val_t' */
 void (*WASM_RT_ADD_PREFIX(Z__Z5AdaPvSt11align_val_tZ_vii))(u32, u32);
+/* export: 'token_create' */
+void (*WASM_RT_ADD_PREFIX(Z_token_createZ_vjjj))(u64, u64, u64);
+/* export: 'token_issue' */
+void (*WASM_RT_ADD_PREFIX(Z_token_issueZ_vjjjii))(u64, u64, u64, u32, u32);
+/* export: 'token_transfer' */
+void (*WASM_RT_ADD_PREFIX(Z_token_transferZ_vjjjjii))(u64, u64, u64, u64, u32, u32);
+/* export: 'token_open' */
+void (*WASM_RT_ADD_PREFIX(Z_token_openZ_vjjj))(u64, u64, u64);
+/* export: 'token_retire' */
+void (*WASM_RT_ADD_PREFIX(Z_token_retireZ_vjjii))(u64, u64, u32, u32);
+/* export: 'token_close' */
+void (*WASM_RT_ADD_PREFIX(Z_token_closeZ_vjj))(u64, u64);
+/* export: 'token_get_balance' */
+u64 (*WASM_RT_ADD_PREFIX(Z_token_get_balanceZ_jji))(u64, u32);
+/* export: 'token_set_balance' */
+void (*WASM_RT_ADD_PREFIX(Z_token_set_balanceZ_vjji))(u64, u64, u32);
 /* export: 'native_eosio_token_apply' */
 void (*WASM_RT_ADD_PREFIX(Z_native_eosio_token_applyZ_vjjj))(u64, u64, u64);
 /* export: 'eosio_system_get_delegated_balance' */
@@ -122138,6 +123775,22 @@ static void init_exports(void) {
   WASM_RT_ADD_PREFIX(Z__Z5AdlPvSt11align_val_tZ_vii) = (&operator_delete_void___std__align_val_t_);
   /* export: '_ZdaPvSt11align_val_t' */
   WASM_RT_ADD_PREFIX(Z__Z5AdaPvSt11align_val_tZ_vii) = (&operator_delete___void___std__align_val_t_);
+  /* export: 'token_create' */
+  WASM_RT_ADD_PREFIX(Z_token_createZ_vjjj) = (&token_create);
+  /* export: 'token_issue' */
+  WASM_RT_ADD_PREFIX(Z_token_issueZ_vjjjii) = (&token_issue);
+  /* export: 'token_transfer' */
+  WASM_RT_ADD_PREFIX(Z_token_transferZ_vjjjjii) = (&token_transfer);
+  /* export: 'token_open' */
+  WASM_RT_ADD_PREFIX(Z_token_openZ_vjjj) = (&token_open);
+  /* export: 'token_retire' */
+  WASM_RT_ADD_PREFIX(Z_token_retireZ_vjjii) = (&token_retire);
+  /* export: 'token_close' */
+  WASM_RT_ADD_PREFIX(Z_token_closeZ_vjj) = (&token_close);
+  /* export: 'token_get_balance' */
+  WASM_RT_ADD_PREFIX(Z_token_get_balanceZ_jji) = (&token_get_balance);
+  /* export: 'token_set_balance' */
+  WASM_RT_ADD_PREFIX(Z_token_set_balanceZ_vjji) = (&token_set_balance);
   /* export: 'native_eosio_token_apply' */
   WASM_RT_ADD_PREFIX(Z_native_eosio_token_applyZ_vjjj) = (&native_eosio_token_apply);
   /* export: 'eosio_system_get_delegated_balance' */

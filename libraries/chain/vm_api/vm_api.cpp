@@ -220,35 +220,6 @@ int _call_native(int main_type, int sub_type, const uint8_t *input, size_t input
    return 0;
 }
 
-extern "C" {
-
-   void token_create( uint64_t issuer, int64_t maximum_supply, uint64_t sym) {
-
-   }
-   void token_issue( uint64_t to, int64_t quantity, uint64_t sym, const char* memo, size_t size2 ) {
-      
-   }
-   void token_transfer( uint64_t from, uint64_t to, int64_t quantity, uint64_t sym, const char* memo, size_t size2) {
-      
-   }
-
-   void token_open( uint64_t owner, uint64_t _symbol, uint64_t ram_payer ) {
-      
-   }
-   void token_retire( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size ) {
-      
-   }
-   void token_close( uint64_t owner, uint64_t _symbol ) {
-      
-   }
-
-   bool system_contract_is_vm_activated( uint8_t vmtype, uint8_t vmversion ) {
-      
-   }
-
-}
-
-
 extern "C" void vm_api_init() {
    static bool s_init = false;
    if (!s_init){
