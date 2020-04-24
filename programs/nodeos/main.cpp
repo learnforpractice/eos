@@ -267,6 +267,7 @@ int app_exec_one() {
 int app_exec() {
    try {
       app().exec();
+      return SUCCESS;
    } catch( const extract_genesis_state_exception& e ) {
       return EXTRACTED_GENESIS;
    } catch( const fixed_reversible_db_exception& e ) {

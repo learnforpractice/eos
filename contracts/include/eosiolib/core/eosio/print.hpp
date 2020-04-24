@@ -5,7 +5,7 @@
 #pragma once
 #include <utility>
 #include <string>
-#include <eosio/types.h>
+
 
 
 namespace eosio {
