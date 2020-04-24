@@ -45,7 +45,7 @@ file(GLOB UNIT_TESTS "*.cpp") # find all unit test suites
 add_executable( unit_test
   abi_tests.cpp
   bootseq_tests.cpp
-  eosio.token_tests.v2.cpp
+  # eosio.token_tests.v2.cpp
   protocol_feature_tests.cpp
   special_accounts_tests.cpp
   api_tests.cpp

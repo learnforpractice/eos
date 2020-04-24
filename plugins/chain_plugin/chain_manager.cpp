@@ -274,12 +274,12 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _a
         if( !abi_serializer::to_abi( accnt.abi, abi )) {
             return false;
         }
-        auto serializer = abi_serializer( abi, fc::microseconds(150000) );
+        auto serializer = abi_serializer( abi, abi_serializer::create_yield_function( fc::microseconds(150000) ) );
         auto action_type = serializer.get_action_type(action_name(action));
         EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
 
         fc::variant args = fc::json::from_string(_args);
-        result = serializer.variant_to_binary(action_type, args, fc::microseconds(150000));
+        result = serializer.variant_to_binary(action_type, args, abi_serializer::create_yield_function(fc::microseconds(150000)));
         return true;
     } FC_LOG_AND_DROP();
     return false;
@@ -293,12 +293,12 @@ bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& 
         if( !abi_serializer::to_abi( accnt.abi, abi )) {
             return false;
         }
-        auto serializer = abi_serializer( abi, fc::microseconds(150000) );
+        auto serializer = abi_serializer( abi, abi_serializer::create_yield_function( fc::microseconds(150000) ) );
         auto action_type = serializer.get_action_type(action_name(action));
         EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
 
         bytes binargs = bytes(_binargs.data(), _binargs.data() + _binargs.size());
-        auto v = serializer.binary_to_variant(action_type, binargs, fc::microseconds(150000));
+        auto v = serializer.binary_to_variant(action_type, binargs, abi_serializer::create_yield_function(fc::microseconds(150000)));
         result = fc::json::to_string(v, fc::time_point::maximum());
         return true;
     } FC_LOG_AND_DROP();

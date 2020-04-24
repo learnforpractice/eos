@@ -2260,7 +2260,7 @@ int handle_transaction_trace(eosio::chain::controller& db, const fc::static_vari
 
       try {
          try {
-            output = db.to_variant_with_abi( *trx_trace_ptr, fc::microseconds(15*1000) );
+            output = db.to_variant_with_abi( *trx_trace_ptr, abi_serializer::create_yield_function(fc::microseconds(15*1000)) );
 
             // Create map of (closest_unnotified_ancestor_action_ordinal, global_sequence) with action trace
             std::map< std::pair<uint32_t, uint64_t>, fc::mutable_variant_object > act_traces_map;
