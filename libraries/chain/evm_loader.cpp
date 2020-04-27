@@ -30,7 +30,7 @@ void load_evm(const char *evm_path) {
     interface.call_native = (fn_evm_call_native)dlsym(handle, "evm_call_native");
     FC_ASSERT(interface.call_native, "evm_call_native not found!");
 
-    evm_path = "/Users/newworld/dev/uuos2/build/externals/evmone4eosio/lib/evmone/wasm2c/libethereum_vm.dylib";
+    evm_path = "/Users/newworld/dev/uuos2/build/externals/evmone4eosio/lib/evmone/wasm2c/libethereum_vm_wasm2c.dylib";
     handle = dlopen(evm_path, RTLD_LAZY | RTLD_LOCAL);
     FC_ASSERT(handle != NULL, "loading dll failed!");
 
