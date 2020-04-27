@@ -809,17 +809,15 @@ struct controller_impl {
 
       controller_index_set::add_indices(db);
       contract_database_index_set::add_indices(db);
-      if (conf.uuos_mainnet) {
-         db.add_index<key256_value_index>();
-      }
+
+      db.add_index<key256_value_index>();
       authorization.add_indices();
       resource_limits.add_indices();
 
       controller_index_set::add_indices(ro_db);
       contract_database_index_set::add_indices(ro_db);
-      if (conf.uuos_mainnet) {
-         ro_db.add_index<key256_value_index>();
-      }
+
+      ro_db.add_index<key256_value_index>();
       authorization.add_indices(ro_db);
       resource_limits.add_indices(ro_db);
 
