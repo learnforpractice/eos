@@ -30,6 +30,24 @@ void history_api_plugin::plugin_initialize(const variables_map&) {}
 #define CHAIN_RO_CALL(call_name) CALL(history, ro_api, history_apis::read_only, call_name)
 //#define CHAIN_RW_CALL(call_name) CALL(history, rw_api, history_apis::read_write, call_name)
 
+
+
+#define CALL2(api_name, api_handle, call_name, INVOKE, http_response_code) \
+{std::string("/v1/" #api_name "/" #call_name), \
+   [api_handle](string, string body, url_response_callback cb) mutable { \
+          try { \
+             if (body.empty()) body = "{}"; \
+             INVOKE \
+             cb(http_response_code, fc::variant(result)); \
+          } catch (...) { \
+             http_plugin::handle_exception(#api_name, #call_name, body, cb); \
+          } \
+       }}
+
+#define INVOKE_R_V(api_handle, call_name) \
+     auto result = api_handle.call_name();
+
+
 void history_api_plugin::plugin_startup() {
    ilog( "starting history_api_plugin" );
    auto ro_api = app().get_plugin<history_plugin>().get_read_only_api();
@@ -41,7 +59,8 @@ void history_api_plugin::plugin_startup() {
       CHAIN_RO_CALL(get_transaction),
       CHAIN_RO_CALL(get_key_accounts),
       CHAIN_RO_CALL(get_key_accounts_ex),
-      CHAIN_RO_CALL(get_controlled_accounts)
+      CHAIN_RO_CALL(get_controlled_accounts),
+      CALL2(history, ro_api, get_db_size, INVOKE_R_V(ro_api, get_db_size), 200),
    });
 }
 

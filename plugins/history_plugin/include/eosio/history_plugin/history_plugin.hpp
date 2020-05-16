@@ -16,6 +16,28 @@ namespace eosio {
    typedef shared_ptr<class history_plugin_impl> history_ptr;
    typedef shared_ptr<const class history_plugin_impl> history_const_ptr;
 
+
+
+   struct db_size_index_count {
+      string   index;
+      uint64_t row_count;
+   };
+
+   struct db_size_stats {
+      uint64_t                    free_bytes;
+      uint64_t                    used_bytes;
+      uint64_t                    size;
+      vector<db_size_index_count> indices;
+   };
+
+   struct history_plugin_options {
+      string db_dir;
+      uint64_t db_size_mb;
+      vector<string> filter_on;
+      vector<string> filter_out;
+      bool filter_transfer;   
+   };
+
 namespace history_apis {
 
 class read_only {
@@ -107,30 +129,13 @@ class read_only {
          vector<chain::account_name> controlled_accounts;
       };
       get_controlled_accounts_results get_controlled_accounts(const get_controlled_accounts_params& params) const;
+      db_size_stats get_db_size() const;
+
+
 };
 
 
 } // namespace history_apis
-
-struct db_size_index_count {
-   string   index;
-   uint64_t row_count;
-};
-
-struct db_size_stats {
-   uint64_t                    free_bytes;
-   uint64_t                    used_bytes;
-   uint64_t                    size;
-   vector<db_size_index_count> indices;
-};
-
-struct history_plugin_options {
-   string db_dir;
-   uint64_t db_size_mb;
-   vector<string> filter_on;
-   vector<string> filter_out;
-   bool filter_transfer;   
-};
 
 /**
  *  This plugin tracks all actions and keys associated with a set of configured accounts. It enables
@@ -156,7 +161,6 @@ class history_plugin : public plugin<history_plugin> {
 
       void plugin_startup();
       void plugin_shutdown();
-      db_size_stats get_db_size();
 
       history_apis::read_only  get_read_only_api()const { return history_apis::read_only(history_const_ptr(my)); }
 

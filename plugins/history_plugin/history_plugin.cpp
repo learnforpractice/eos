@@ -330,6 +330,10 @@ namespace eosio {
                auto& chain = chain_plug->chain();
                chainbase::database& db = const_cast<chainbase::database&>( chain_plug->db() ); // Override read-only access to state DB (highly unrecommended practice!)
 
+               auto itr = db.find<action_history_object, by_action_sequence_num>( at.receipt->global_sequence );
+               if (itr) {//remove dumplicated record, maybe caused by a fork
+                  db.remove<action_history_object>(*itr);
+               }
                db.create<action_history_object>( [&]( auto& aho ) {
                   auto ps = fc::raw::pack_size( at );
                   aho.packed_action_trace.resize(ps);
@@ -546,21 +550,6 @@ namespace eosio {
 
    void history_plugin::plugin_shutdown() {
       my->applied_transaction_connection.reset();
-   }
-
-   db_size_stats history_plugin::get_db_size() {
-      const chainbase::database& db = my->chain_plug->db();
-      db_size_stats ret;
-
-      ret.free_bytes = db.get_segment_manager()->get_free_memory();
-      ret.size = db.get_segment_manager()->get_size();
-      ret.used_bytes = ret.size - ret.free_bytes;
-
-      chainbase::database::database_index_row_count_multiset indices = db.row_count_per_index();
-      for(const auto& i : indices)
-         ret.indices.emplace_back(db_size_index_count{i.second, i.first});
-
-      return ret;
    }
 
    namespace history_apis {
@@ -806,6 +795,21 @@ namespace eosio {
          return {vector<account_name>(accounts.begin(), accounts.end())};
       }
 
+      db_size_stats read_only::get_db_size() const {
+         const chainbase::database& db = history->chain_plug->db();
+         db_size_stats ret;
+
+         ret.free_bytes = db.get_segment_manager()->get_free_memory();
+         ret.size = db.get_segment_manager()->get_size();
+         ret.used_bytes = ret.size - ret.free_bytes;
+
+         chainbase::database::database_index_row_count_multiset indices = db.row_count_per_index();
+         for(const auto& i : indices)
+            ret.indices.emplace_back(db_size_index_count{i.second, i.first});
+
+         return ret;
+      }
+
    } /// history_apis
 
 
@@ -910,7 +914,7 @@ void history_get_controlled_accounts_(void *ptr, const string& param, string& re
 void history_get_db_size_(void *ptr, string& result) {
    try {
       auto history = (eosio::history_plugin*)ptr;
-      result = fc::json::to_string(history->get_db_size(), fc::time_point::maximum());
+      result = fc::json::to_string(history->get_read_only_api().get_db_size(), fc::time_point::maximum());
    } CATCH_AND_LOG_EXCEPTION()
 }
 
