@@ -1,3 +1,5 @@
+#include "crypto.cpp"
+#include "eosiolib.cpp"
 #include "eosio.system/src/eosio.system.cpp"
 #include "eosio.system/src/delegate_bandwidth.cpp"
 #include "eosio.system/src/exchange_state.cpp"
@@ -10,4 +12,3 @@
 #include "eosio.token/src/eosio.token.cpp"
 #include "main_eosio_token.cpp"
 #include "main_eosio_contract.cpp"
-

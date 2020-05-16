@@ -20,6 +20,7 @@ namespace eosio {
 
      int64_t set_proposed_producers_ex( uint64_t producer_data_format, char *producer_data, uint32_t producer_data_size ) {
         check(false, "not implemented!");
+        return 0;
      }
 
    }
