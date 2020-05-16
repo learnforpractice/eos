@@ -2,7 +2,6 @@ import os
 import sys
 import shutil
 import logging
-import pathlib
 import subprocess
 
 logging.basicConfig(filename='logfile.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(lineno)d %(module)s %(message)s')
@@ -38,7 +37,10 @@ python3home = os.path.dirname(python3home)
 
 print(python3home, python3_shared_lib_path)
 
+pyeos = '/Users/newworld/dev/uuos2/programs/pyeos/_skbuild/macosx-10.9-x86_64-3.7/cmake-build/pyeos/pyeos'
+
 try:
-    subprocess.call(['./pyeos', python3home, python3_shared_lib_path])
+    subprocess.call([pyeos, python3home, python3_shared_lib_path])
 except Exception as e:
     print(e)
+

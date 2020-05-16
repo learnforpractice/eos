@@ -1,8 +1,12 @@
 import sys
 import json
-
+import logging
 import zmq
+
 from pyeoskit import eosapi
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(lineno)d %(module)s %(message)s')
+logger=logging.getLogger(__name__)
 
 eosapi.set_filter_on('eosio.token::')
 
@@ -46,6 +50,12 @@ while True:
     if a['act']['account'] == 'eosio' and a['act']['name'] == 'onblock':
         continue
     print(string, action)
+
+    logger.info((a['trx_id'], a['block_num']))
+    trx = eosapi.get_transaction(a['trx_id'], a['block_num'])
+    print(trx)
+    logger.info(trx['trx'])
+
     if a['act']['name'] == 'transfer':
         d = a['act']['data']
 #        print(d)
@@ -54,7 +64,7 @@ while True:
             s = eosapi.unpack_args('eosio.token', 'transfer', d)
             print(s)
         except Exception as e:
-            print(e)
+            logger.exception(e)
             try:
                 s = eosapi.unpack_args('eosio.token', 'transfer', d[:32]+b'\x00')
                 print(s)

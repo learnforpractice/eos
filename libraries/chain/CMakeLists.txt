@@ -119,6 +119,7 @@ add_library( eosio_chain
 
 #set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(WASM2C_ETHEREUM_VM_LIB ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/evmone/wasm2c/libethereum_vm_wasm2c${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(NATIVE_CONTRACTS_LIB ${CMAKE_BINARY_DIR}/contracts/native/native_contracts/libnative_contracts.a)
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt vm_api chain_api vm_manager
@@ -127,7 +128,8 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS}
                        ${CHAIN_RT_LINKAGE}
                        ${WASM2C_ETHEREUM_VM_LIB}
-                       )
+                       ${NATIVE_CONTRACTS_LIB}
+)
 
 target_include_directories( eosio_chain
                        PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
@@ -149,6 +151,8 @@ target_include_directories( eosio_chain
 )
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain evmone4eosio)
+add_dependencies(eosio_chain native_contracts_project)
+
 #add_dependencies(eosio_chain aleth)
 if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
    target_link_libraries(eosio_chain "-Wl,-wrap=main")

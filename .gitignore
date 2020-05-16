@@ -69,6 +69,11 @@ programs/keosd/keosd
 programs/nodeos/config.hpp
 programs/nodeos/nodeos
 
+programs/pyeos/MANIFEST
+programs/pyeos/_skbuild
+programs/pyeos/dist
+programs/pyeos/hello.egg-info
+
 scripts/tn_init.sh
 
 tests/plugin_test
