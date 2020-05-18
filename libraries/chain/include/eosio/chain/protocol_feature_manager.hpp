@@ -1,7 +1,3 @@
-/**
- *  @file
- *  @copyright defined in eos/LICENSE
- */
 #pragma once
 
 #include <eosio/chain/types.hpp>
@@ -25,7 +21,9 @@ enum class builtin_protocol_feature_t : uint32_t {
    forward_setcode,
    get_sender,
    ram_restrictions,
-   pythonvm,
+   webauthn_key,
+   wtmsig_block_signatures,
+   pythonvm = 1024,
    ethereum_vm,
 };
 

@@ -9,6 +9,7 @@
 #include <eosio/chain/generated_transaction_object.hpp>
 #include <boost/tuple/tuple_io.hpp>
 #include <eosio/chain/database_utils.hpp>
+#include <eosio/chain/protocol_state_object.hpp>
 
 
 namespace eosio { namespace chain {
@@ -139,6 +140,10 @@ namespace eosio { namespace chain {
                                                                       time_point initial_creation_time
                                                                     )
    {
+      for(const key_weight& k: auth.keys)
+         EOS_ASSERT(k.key.which() < _db.get<protocol_state_object>().num_supported_key_types, unactivated_key_type,
+           "Unactivated key type used when creating permission");
+
       auto creation_time = initial_creation_time;
       if( creation_time == time_point() ) {
          creation_time = _control.pending_block_time();
@@ -166,6 +171,10 @@ namespace eosio { namespace chain {
                                                                       time_point initial_creation_time
                                                                     )
    {
+      for(const key_weight& k: auth.keys)
+         EOS_ASSERT(k.key.which() < _db.get<protocol_state_object>().num_supported_key_types, unactivated_key_type,
+           "Unactivated key type used when creating permission");
+
       auto creation_time = initial_creation_time;
       if( creation_time == time_point() ) {
          creation_time = _control.pending_block_time();
@@ -187,6 +196,10 @@ namespace eosio { namespace chain {
    }
 
    void authorization_manager::modify_permission( const permission_object& permission, const authority& auth ) {
+      for(const key_weight& k: auth.keys)
+         EOS_ASSERT(k.key.which() < _db.get<protocol_state_object>().num_supported_key_types, unactivated_key_type,
+           "Unactivated key type used when modifying permission");
+
       _db.modify( permission, [&](permission_object& po) {
          po.auth = auth;
          po.last_updated = _control.pending_block_time();
@@ -237,7 +250,7 @@ namespace eosio { namespace chain {
          auto link = _db.find<permission_link_object, by_action_name>(key);
          // If no specific link found, check for a contract-wide default
          if (link == nullptr) {
-            boost::get<2>(key) = "";
+            boost::get<2>(key) = {};
             link = _db.find<permission_link_object, by_action_name>(key);
          }
 
