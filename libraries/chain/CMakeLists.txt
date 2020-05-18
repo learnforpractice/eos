@@ -68,7 +68,7 @@ add_library( eosio_chain
              ${HEADERS}
              )
 
-set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
+# set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt vm_api chain_api vm_manager
@@ -95,7 +95,7 @@ target_include_directories( eosio_chain
                               PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
                         )
 add_dependencies(eosio_chain contracts_project)
-add_dependencies(eosio_chain aleth)
+# add_dependencies(eosio_chain aleth)
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
