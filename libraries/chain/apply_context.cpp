@@ -36,19 +36,18 @@ static inline void print_debug(account_name receiver, const action_trace& ar) {
 //vm_api.cpp
 void set_apply_context(apply_context *ctx);
 
-apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth, bool ro)
+apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth)
 :control(con)
-,db(con.get_db(ro))
+,db(con.mutable_db())
 ,trx_context(trx_ctx)
-,read_only(ro)
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
-,idx64(*this, ro)
-,idx128(*this, false)
-,idx256(*this, ro)
-,idx_double(*this, ro)
-,idx_long_double(*this, ro)
+,idx64(*this)
+,idx128(*this)
+,idx256(*this)
+,idx_double(*this)
+,idx_long_double(*this)
 {
    action_trace& trace = trx_ctx.get_action_trace(action_ordinal);
    act = &trace.act;
@@ -107,7 +106,7 @@ void apply_context::exec_one()
             try {
                if (receiver_account->vm_type == 0) {
                   if (!get_chain_api()->is_debug_enabled()) {
-                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                     control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                   } else {
                      string contract_name = account_name(receiver).to_string();
                      fn_contract_apply apply = (fn_contract_apply)get_chain_api()->get_debug_contract_entry(contract_name);
@@ -119,7 +118,7 @@ void apply_context::exec_one()
                         });
                         apply(receiver.to_uint64_t(), act->account.to_uint64_t(), act->name.to_uint64_t());
                      } else {
-                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version);
+                        control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                      }
                   }
                } else if (receiver_account->vm_type == 1) {
@@ -698,8 +697,6 @@ int apply_context::db_store_i64( name scope, name table, const account_name& pay
 
 int apply_context::db_store_i64( name code, name scope, name table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
-   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
-
    const auto& tab = find_or_create_table( code, scope, table, payer );
    auto tableid = tab.id;
 
@@ -727,7 +724,6 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
-   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
    EOS_ASSERT( table_obj.code == receiver, table_access_violation, "db access violation" );
 
 //   require_write_lock( table_obj.scope );
@@ -755,8 +751,6 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
 }
 
 void apply_context::db_remove_i64( int iterator ) {
-   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
-
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
@@ -905,7 +899,6 @@ int apply_context::db_store_i256( uint64_t scope, uint64_t table, const account_
 
 int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
 //   require_write_lock( scope );
-   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
 
    const auto& tab = find_or_create_table( name(code), name(scope), name(table), name(payer) );
    auto tableid = tab.id;
@@ -932,7 +925,7 @@ int apply_context::db_store_i256( uint64_t code, uint64_t scope, uint64_t table,
 }
 
 void apply_context::db_update_i256( int iterator, account_name payer, const char* buffer, size_t buffer_size, bool check_code ) {
-   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const key256_value_object& obj = key256val_cache.get( iterator );
 
    const auto& table_obj = key256val_cache.get_table( obj.t_id );
@@ -966,7 +959,7 @@ void apply_context::db_update_i256( int iterator, account_name payer, const char
 }
 
 void apply_context::db_remove_i256( int iterator, bool check_code ) {
-   EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
+
    const key256_value_object& obj = key256val_cache.get( iterator );
 
    const auto& table_obj = key256val_cache.get_table( obj.t_id );
@@ -1106,29 +1099,23 @@ int apply_context::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) 
 
 uint64_t apply_context::next_global_sequence() {
    const auto& p = control.get_dynamic_global_properties();
-   if (!read_only) {
-      db.modify( p, [&]( auto& dgp ) {
-         ++dgp.global_action_sequence;
-      });
-   }
+   db.modify( p, [&]( auto& dgp ) {
+      ++dgp.global_action_sequence;
+   });
    return p.global_action_sequence;
 }
 
 uint64_t apply_context::next_recv_sequence( const account_metadata_object& receiver_account ) {
-   if (!read_only) {
-      db.modify( receiver_account, [&]( auto& ra ) {
-         ++ra.recv_sequence;
-      });
-   }
+   db.modify( receiver_account, [&]( auto& ra ) {
+      ++ra.recv_sequence;
+   });
    return receiver_account.recv_sequence;
 }
 uint64_t apply_context::next_auth_sequence( account_name actor ) {
    const auto& amo = db.get<account_metadata_object,by_name>( actor );
-   if (!read_only) {
-      db.modify( amo, [&](auto& am ){
-         ++am.auth_sequence;
-      });
-   }
+   db.modify( amo, [&](auto& am ){
+      ++am.auth_sequence;
+   });
    return amo.auth_sequence;
 }
 

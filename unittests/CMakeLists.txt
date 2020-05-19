@@ -40,19 +40,19 @@ file(GLOB UNIT_TESTS "*.cpp") # find all unit test suites
 add_executable( unit_test
   abi_tests.cpp
   bootseq_tests.cpp
-  eosio.token_tests.v2.cpp
+  # eosio.token_tests.v2.cpp
   protocol_feature_tests.cpp
   special_accounts_tests.cpp
   api_tests.cpp
   currency_tests.cpp
-  eth_account_tests.cpp
+  # eth_account_tests.cpp
   misc_tests.cpp
-  pythonvm_tests.cpp
-  uuos_mainnet_tests.cpp
+  # pythonvm_tests.cpp
+  # uuos_mainnet_tests.cpp
   auth_tests.cpp
   database_tests.cpp
   fork_test_utilities.cpp
-  native_contract_test.cpp
+  # native_contract_test.cpp
   ram_tests.cpp
   wasm_tests.cpp
   block_tests.cpp
@@ -66,7 +66,7 @@ add_executable( unit_test
   main.cpp
   producer_schedule_tests.cpp	snapshot_tests.cpp
 
-  ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
+#  ${CMAKE_CURRENT_BINARY_DIR}/test-contracts/native_contract_test/native_contract_test.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/wasm-rt-impl.c
 #  ${CMAKE_SOURCE_DIR}/libraries/vm/native_contracts/main.cpp
 ) # build unit tests as one executable
@@ -98,7 +98,7 @@ target_include_directories( unit_test PUBLIC
                             )
 
 add_dependencies(unit_test test_contracts_project)
-add_dependencies(unit_test wasm_injector)
+# add_dependencies(unit_test wasm_injector)
 
 ### MARK TEST SUITES FOR EXECUTION ###
 foreach(TEST_SUITE ${UNIT_TESTS}) # create an independent target for each test suite

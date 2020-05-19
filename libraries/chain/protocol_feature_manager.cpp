@@ -195,6 +195,7 @@ may use a new `set_proposed_producers_ex` intrinsic to access extended features.
             "ETHEREUM_VM",
             fc::variant("b04aa1418782fa67e4c4105706714dc4341c038d80441bf3a4cf0c6654e158b5").as<digest_type>(),
             {}
+         }
          )
    ;
 

@@ -76,7 +76,7 @@ add_library( eosio_chain
 #             block_trace.cpp
               wast_to_wasm.cpp
               wasm_interface.cpp
-              
+
               python_interface.cpp
               python_vm/vm_memory.cpp
 
@@ -116,8 +116,6 @@ add_library( eosio_chain
              db_api/db_api.cpp
              db_api/db_interface.cpp
              )
-
-# set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/aleth/evm4eos/libevm4uuos${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}

@@ -51,7 +51,7 @@ void db_interface::init_key_accounts() {
    if (key_accounts_map.size() > 0) {
       return;
    }
-   int itr = db_upperbound_i64(N(eosio), N(eosio), N(gaccounts), 0);
+   int itr = db_upperbound_i64(N(eosio).to_uint64_t(), N(eosio).to_uint64_t(), N(gaccounts).to_uint64_t(), 0);
    if (itr >= 0) {
       int i = 0;
       while (itr >= 0) {
@@ -100,7 +100,7 @@ string db_interface::exec_action(uint64_t code, uint64_t action, const vector<ch
    call_start = fc::time_point::now();
    _pending_console_output.clear();
 
-   receiver = code;
+   receiver = name(code);
 
    act.account = name(code);
    act.name = name(action);
@@ -214,7 +214,7 @@ int db_interface::db_store_i64( uint64_t code, uint64_t scope, uint64_t table, c
 }
 
 int db_interface::db_store_i64(  uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
-   return db_store_i64(get_receiver(),  scope, table, payer, id, buffer, buffer_size );
+   return db_store_i64(get_receiver().to_uint64_t(),  scope, table, payer, id, buffer, buffer_size );
 }
 
 void db_interface::db_update_i64( int iterator, account_name payer, const char* buffer, size_t buffer_size ) {
@@ -320,10 +320,10 @@ void db_interface::db_get_table_i64( int iterator, uint64_t& code, uint64_t& sco
    const key_value_object& obj = keyval_cache.get( iterator );
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
 
-   code = table_obj.code;
-   scope = table_obj.scope;
-   table = table_obj.table;
-   payer = table_obj.payer;
+   code = table_obj.code.to_uint64_t();
+   scope = table_obj.scope.to_uint64_t();
+   table = table_obj.table.to_uint64_t();
+   payer = table_obj.payer.to_uint64_t();
    id = obj.primary_key;
 }
 
@@ -698,7 +698,7 @@ void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
          key_accounts_map[pub_key].emplace_back(name);
       }
 //      elog("++++${n}", ("n", name(account)));
-      db_store_i64(N(eosio), N(eosio), N(gaccounts), N(eosio), account, (char *)&raw_data[i+8], 34);
+      db_store_i64(N(eosio).to_uint64_t(), N(eosio).to_uint64_t(), N(gaccounts).to_uint64_t(), N(eosio), account, (char *)&raw_data[i+8], 34);
       if ((i/42+1) % 100000 == 0) {
          vmilog("+++++initialize genesis accounts %d\n", i/42);
       }

@@ -171,12 +171,11 @@ class apply_context {
 
             using secondary_key_helper_t = secondary_key_helper<secondary_key_type, secondary_key_proxy_type, secondary_key_proxy_const_type>;
 
-            generic_index( apply_context& c, bool ro=false ):context(c), read_only(ro){}
+            generic_index( apply_context& c ):context(c){}
 
             int store( uint64_t scope, uint64_t table, const account_name& payer,
                        uint64_t id, secondary_key_proxy_const_type value )
             {
-               EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
                EOS_ASSERT( payer != account_name(), invalid_table_payer, "must specify a valid account to pay for new record" );
 
 //               context.require_write_lock( scope );
@@ -201,7 +200,6 @@ class apply_context {
             }
 
             void remove( int iterator ) {
-               EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
                const auto& obj = itr_cache.get( iterator );
                context.update_db_usage( obj.payer, -( config::billable_size_v<ObjectType> ) );
 
@@ -223,7 +221,6 @@ class apply_context {
             }
 
             void update( int iterator, account_name payer, secondary_key_proxy_const_type secondary ) {
-               EOS_ASSERT( !read_only, table_access_violation, "can not write to read only database" );
                const auto& obj = itr_cache.get( iterator );
 
                const auto& table_obj = itr_cache.get_table( obj.t_id );
@@ -446,13 +443,12 @@ class apply_context {
          private:
             apply_context&              context;
             iterator_cache<ObjectType>  itr_cache;
-            bool                        read_only;
       }; /// class generic_index
 
 
    /// Constructor
    public:
-      apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth=0, bool ro=false);
+      apply_context(controller& con, transaction_context& trx_ctx, uint32_t action_ordinal, uint32_t depth=0);
 
    /// Execution methods:
    public:
@@ -582,7 +578,7 @@ class apply_context {
       controller&                   control;
       chainbase::database&          db;  ///< database where state is stored
       transaction_context&          trx_context; ///< transaction context in which the action is running
-      bool                          read_only = false;
+
    private:
       const action*                 act = nullptr; ///< action being applied
       // act pointer may be invalidated on call to trx_context.schedule_action

@@ -201,7 +201,7 @@ namespace eosio { namespace testing {
 
          [[nodiscard]]
          action_result            push_action(action&& cert_act, uint64_t authorizer); // TODO/QUESTION: Is this needed?
-         transaction_trace_ptr    push_action(uint64_t account, uint64_t acttype, vector<uint8_t>& data, uint64_t authorizer);
+
          transaction_trace_ptr    push_action( const account_name& code,
                                                const action_name& acttype,
                                                const account_name& actor,
@@ -304,7 +304,6 @@ namespace eosio { namespace testing {
 
          void              set_code( account_name name, const char* wast, const private_key_type* signer = nullptr );
          void              set_code( account_name name, const vector<uint8_t> wasm, const private_key_type* signer = nullptr  );
-         void              set_code( account_name name, const vector<uint8_t> wasm, uint8_t vm_type, const private_key_type* signer = nullptr  );
          void              set_abi( account_name name, const char* abi_json, const private_key_type* signer = nullptr );
 
          bool                          chain_has_transaction( const transaction_id_type& txid ) const;
@@ -442,8 +441,8 @@ namespace eosio { namespace testing {
 
    class tester : public base_tester {
    public:
-      tester(setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE, bool uuos_mainnet=false) {
-         init(policy, read_mode, uuos_mainnet);
+      tester(setup_policy policy = setup_policy::full, db_read_mode read_mode = db_read_mode::SPECULATIVE) {
+         init(policy, read_mode);
       }
 
       tester(controller::config config, const genesis_state& genesis) {
@@ -526,13 +525,6 @@ namespace eosio { namespace testing {
          vcfg = def_conf.first;
          config_validator(vcfg);
          vcfg.trusted_producers = trusted_producers;
-         vcfg.uuos_mainnet = uuos_mainnet;
-         vcfg.genesis_accounts_file = genesis_accounts_file;
-         
-         if (uuos_mainnet) {
-            vcfg.state_size = 1024*1024*600;
-            vcfg.reversible_cache_size = 1024*1024*600;
-         }
 
          validating_node = create_validating_node(vcfg, def_conf.second, true);
 

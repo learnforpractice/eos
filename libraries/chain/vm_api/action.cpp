@@ -19,12 +19,12 @@ uint32_t action_data_size() {
 }
 
 void get_action_info(uint64_t* account, uint64_t* name) {
-   *account = ctx().get_action().account;
-   *name = ctx().get_action().name;
+   *account = ctx().get_action().account.to_uint64_t();
+   *name = ctx().get_action().name.to_uint64_t();
 }
 
 uint64_t current_receiver() {
-   return ctx().get_receiver();
+   return ctx().get_receiver().to_uint64_t();
 }
 
 void require_recipient( uint64_t account ) {
@@ -83,5 +83,5 @@ void preactivate_feature(const char *digest, size_t size) {
 
 
 uint64_t get_sender() {
-   return ctx().get_sender();
+   return ctx().get_sender().to_uint64_t();
 }

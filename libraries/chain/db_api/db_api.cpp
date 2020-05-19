@@ -106,7 +106,7 @@ string db_api::exec_action(uint64_t code, uint64_t action, const vector<char>& a
    call_start = fc::time_point::now();
    _pending_console_output.clear();
 
-   receiver = code;
+   receiver = name(code);
 
    act.account = name(code);
    act.name = name(action);
@@ -220,7 +220,7 @@ int db_api::db_store_i64( uint64_t code, uint64_t scope, uint64_t table, const a
 }
 
 int db_api::db_store_i64(  uint64_t scope, uint64_t table, const account_name& payer, uint64_t id, const char* buffer, size_t buffer_size ) {
-   return db_store_i64(get_receiver(),  scope, table,payer, id, buffer, buffer_size );
+   return db_store_i64(get_receiver().to_uint64_t(),  scope, table,payer, id, buffer, buffer_size );
 }
 
 void db_api::db_update_i64( int iterator, account_name payer, const char* buffer, size_t buffer_size ) {
@@ -326,10 +326,10 @@ void db_api::db_get_table_i64( int iterator, uint64_t& code, uint64_t& scope, ui
    const key_value_object& obj = keyval_cache.get( iterator );
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
 
-   code = table_obj.code;
-   scope = table_obj.scope;
-   table = table_obj.table;
-   payer = table_obj.payer;
+   code = table_obj.code.to_uint64_t();
+   scope = table_obj.scope.to_uint64_t();
+   table = table_obj.table.to_uint64_t();
+   payer = table_obj.payer.to_uint64_t();
    id = obj.primary_key;
 }
 
@@ -468,7 +468,7 @@ uint32_t db_api::db_get_table_count(uint64_t code, uint64_t scope, uint64_t tabl
 }
 
 int db_api::db_store_i256( uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
-   return db_store_i256( get_receiver(), scope, table, payer, id, buffer, buffer_size);
+   return db_store_i256( get_receiver().to_uint64_t(), scope, table, payer, id, buffer, buffer_size);
 }
 
 int db_api::db_store_i256( uint64_t code, uint64_t scope, uint64_t table, const account_name& payer, key256_t& id, const char* buffer, size_t buffer_size ) {
@@ -669,7 +669,7 @@ int db_api::db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
 }
 
 bool db_api::is_in_whitelist(uint64_t account) {
-   int itr = db_api::get().db_find_i64(N(credit), N(credit), N(credit), account);
+   int itr = db_api::get().db_find_i64(N(credit).to_uint64_t(), N(credit).to_uint64_t(), N(credit).to_uint64_t(), account);
    if (itr >= 0) {
       char c = 0;
       int ret = db_api::get().db_get_i64(itr, &c, sizeof(c));

@@ -60,7 +60,7 @@ static void n2str(uint64_t n, string& str_name) {
 
 static uint64_t str2n(string& str_name) {
    try {
-      return name(str_name).value;
+      return name(str_name).to_uint64_t();
    } catch (...) {
 
    }
@@ -188,9 +188,9 @@ static void pause_billing_timer() {
 }
 
 static void get_action(uint64_t& receiver, uint64_t& account, uint64_t action) {
-   receiver = ctx().get_receiver();
-   account = ctx().get_action().account;
-   action = ctx().get_action().name;
+   receiver = ctx().get_receiver().to_uint64_t();
+   account = ctx().get_action().account.to_uint64_t();
+   action = ctx().get_action().name.to_uint64_t();
 }
 
 static bool is_producing_block() {
@@ -294,10 +294,10 @@ static bool is_builtin_activated(uint32_t feature) {
 }
 
 static string call_contract_off_chain(uint64_t contract, uint64_t action, const vector<char>& binargs) {
-   auto trace = ctrl().call_contract(contract, action, binargs);
-   if (trace->action_traces.size() > 0) {
-      return trace->action_traces[0].console;
-   }
+   // auto trace = ctrl().call_contract(contract, action, binargs);
+   // if (trace->action_traces.size() > 0) {
+   //    return trace->action_traces[0].console;
+   // }
 //      return fc::json::to_string(trace);
    return "";
 }

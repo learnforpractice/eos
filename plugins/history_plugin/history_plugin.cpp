@@ -128,6 +128,19 @@ namespace eosio {
       }
    }
 
+   static void add(chainbase::database& db, const shared_vector<shared_key_weight>& keys, const account_name& name, const permission_name& permission)
+   {
+      for (auto pub_key_weight : keys ) {
+         try {
+            db.create<public_key_history_object>([&](public_key_history_object& obj) {
+               obj.public_key = pub_key_weight.key;
+               obj.name = name;
+               obj.permission = permission;
+            });
+         } FC_LOG_AND_DROP((name))
+      }
+   }
+
    static void add(chainbase::database& db, const vector<permission_level_weight>& controlling_accounts, const account_name& account_name, const permission_name& permission)
    {
       for (auto controlling_account : controlling_accounts ) {

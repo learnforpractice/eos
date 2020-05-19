@@ -98,7 +98,7 @@ int main(int argc, char** argv)
       }
    }
    try {
-      evm_init();
+      // evm_init();
       vm_api_init();
       vm_api_ro_init();
       chain_api_init();

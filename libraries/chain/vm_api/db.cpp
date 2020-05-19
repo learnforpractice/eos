@@ -200,7 +200,7 @@ int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int
    eosio_assert(size <= sizeof(key256_t), "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
-   return ctx().db_store_i256( name(scope), name(table), name(payer), key, buffer, buffer_size);
+   return ctx().db_store_i256( scope, table, name(payer), key, buffer, buffer_size);
 }
 
 void db_update_i256( int iterator, uint64_t payer, const char* buffer, size_t buffer_size ) {

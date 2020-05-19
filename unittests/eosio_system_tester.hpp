@@ -27,17 +27,10 @@ class eosio_system_tester : public TESTER {
 public:
 
    eosio_system_tester()
-   : eosio_system_tester([](TESTER& ) {}, false, ""){
-      
-   }
-
-   eosio_system_tester(bool uuos_mainnet, string genesis_file)
-   : eosio_system_tester([](TESTER& ) {}, uuos_mainnet, genesis_file){
-      
-   }
+   : eosio_system_tester([](TESTER& ) {}){}
 
    template<typename Lambda>
-    eosio_system_tester(Lambda setup, bool uuos_mainnet, string genesis_file) : TESTER(flat_set<account_name>(), uuos_mainnet, genesis_file) {
+   eosio_system_tester(Lambda setup) {
       setup(*this);
 
       produce_blocks( 2 );
@@ -139,7 +132,7 @@ public:
    }
 
    transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, asset ramfunds, bool multisig,
-                                                        asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000"), bool transfer = false ) {
+                                                        asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000") ) {
       signed_transaction trx;
       set_transaction_headers(trx);
 
@@ -157,41 +150,6 @@ public:
                                    .name     = a,
                                    .owner    = owner_auth,
                                    .active   = authority( get_public_key( a, "active" ) )
-                                });
-
-      trx.actions.emplace_back( get_action( config::system_account_name, N(buyram), vector<permission_level>{{creator,config::active_name}},
-                                            mvo()
-                                            ("payer", creator)
-                                            ("receiver", a)
-                                            ("quant", ramfunds) )
-                              );
-
-      trx.actions.emplace_back( get_action( config::system_account_name, N(delegatebw), vector<permission_level>{{creator,config::active_name}},
-                                            mvo()
-                                            ("from", creator)
-                                            ("receiver", a)
-                                            ("stake_net_quantity", net )
-                                            ("stake_cpu_quantity", cpu )
-                                            ("transfer", transfer )
-                                          )
-                                );
-
-      set_transaction_headers(trx);
-      trx.sign( get_private_key( creator, "active" ), control->get_chain_id()  );
-      return push_transaction( trx );
-   }
-
-   transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, authority owner_auth, authority active_auth, asset ramfunds = core_from_string("10.0000"),
-                                                        asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000") ) {
-      signed_transaction trx;
-      set_transaction_headers(trx);
-
-      trx.actions.emplace_back( vector<permission_level>{{creator,config::active_name}},
-                                newaccount{
-                                   .creator  = creator,
-                                   .name     = a,
-                                   .owner    = owner_auth,
-                                   .active   = active_auth,
                                 });
 
       trx.actions.emplace_back( get_action( config::system_account_name, N(buyram), vector<permission_level>{{creator,config::active_name}},
@@ -278,17 +236,6 @@ public:
 
          return base_tester::push_action( std::move(act), auth ? signer.to_uint64_t() :
                                                 signer == N(bob111111111) ? N(alice1111111).to_uint64_t() : N(bob111111111).to_uint64_t() );
-   }
-
-   transaction_trace_ptr push_action2( const account_name& code,
-                                                   const action_name& acttype,
-                                                   const account_name& actor,
-                                                   const variant_object& data,
-                                                   uint32_t expiration = 60,
-                                                   uint32_t delay_sec = 0
-                                                 )
-   {
-      return base_tester::push_action( code, acttype, actor, data, expiration, delay_sec );
    }
 
    action_result stake( const account_name& from, const account_name& to, const asset& net, const asset& cpu ) {

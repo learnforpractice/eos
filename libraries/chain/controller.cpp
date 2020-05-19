@@ -67,7 +67,6 @@ using contract_database_index_set = index_set<
    index256_index,
    index_double_index,
    index_long_double_index
-//   key256_value_index
 >;
 
 class maybe_session {
@@ -370,7 +369,6 @@ struct controller_impl {
 */
 
    SET_APP_HANDLER( eosio, eosio, canceldelay );
-//   SET_APP_HANDLER( eosio, eosio, addaccounts );
    }
 
    /**
@@ -802,7 +800,7 @@ struct controller_impl {
          ro_db.add_index<key256_value_index>();
       }
       authorization.add_indices(ro_db);
-      resource_limits.add_indices(ro_db);
+      resource_limits.add_indices(ro_db);   
    }
    void clear_all_undo() {
       // Rewind the database to the last irreversible block
@@ -1110,7 +1108,7 @@ struct controller_impl {
                                                                              config::minority_producers_permission_name,
                                                                              majority_permission.id,
                                                                              active_producers_authority,
-                                                                             conf.genesis.initial_timestamp );
+                                                                             genesis.initial_timestamp );
       if (conf.uuos_mainnet) {
          string s = conf.genesis_accounts_file.string();
          if (!s.empty()) {
@@ -1548,48 +1546,6 @@ struct controller_impl {
          return trace;
       } FC_CAPTURE_AND_RETHROW((trace))
    } /// push_transaction
-
-   transaction_trace_ptr call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs)
-   {
-      fc::time_point deadline = fc::time_point::maximum();
-      fc::time_point start = fc::time_point::now();
-      uint32_t cpu_time_to_bill_us = 0; // only set on failure
-      uint32_t billed_cpu_time_us = 100000;
-      bool explicit_billed_cpu_time = false;
-      bool enforce_whiteblacklist = true;
-
-      signed_transaction trx;
-      // Deliver onerror action containing the failed deferred transaction directly back to the sender.
-      trx.actions.emplace_back( vector<permission_level>{{name(contract), N(active)}}, name(contract), name(action), binargs );
-      trx.expiration = time_point_sec();
-      trx.ref_block_num = 0;
-      trx.ref_block_prefix = 0;
-
-//      transaction_checktime_timer trx_timer(timer);
-      transaction_context trx_context( self, trx, trx.id(), start, true );
-      trx_context.deadline = deadline;
-      trx_context.explicit_billed_cpu_time = explicit_billed_cpu_time;
-      trx_context.billed_cpu_time_us = billed_cpu_time_us;
-      trx_context.enforce_whiteblacklist = enforce_whiteblacklist;
-      transaction_trace_ptr trace = trx_context.trace;
-      try {
-         trx_context.init_for_implicit_trx();
-         trx_context.execute_action( trx_context.schedule_action( trx.actions.back(), name(contract), false, 0, 0 ), 0 );
-         trx_context.finalize(); // Automatically rounds up network and CPU usage in trace and bills payers if successful
-         return trace;
-      } catch( const disallowed_transaction_extensions_bad_block_exception& ) {
-         throw;
-      } catch( const protocol_feature_bad_block_exception& ) {
-         throw;
-      } catch( const fc::exception& e ) {
-         throw;
-         cpu_time_to_bill_us = trx_context.update_billed_cpu_time( fc::time_point::now() );
-         trace->error_code = controller::convert_exception_to_error_code( e );
-         trace->except = e;
-         trace->except_ptr = std::current_exception();
-      }
-      return trace;
-   }
 
    void start_block( block_timestamp_type when,
                      uint16_t confirm_block_count,
@@ -3349,10 +3305,6 @@ void controller::add_to_ram_correction( account_name account, uint64_t ram_bytes
          rco.ram_correction = ram_bytes;
       } );
    }
-}
-
-transaction_trace_ptr controller::call_contract(uint64_t contract, uint64_t action, const vector<char>& binargs) {
-   return my->call_contract(contract, action, binargs);
 }
 
 bool controller::all_subjective_mitigations_disabled()const {

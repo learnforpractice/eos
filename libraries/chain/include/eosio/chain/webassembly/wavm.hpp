@@ -7,7 +7,7 @@
 #include <softfloat.hpp>
 #include "Runtime/Runtime.h"
 #include "IR/Types.h"
-#include <chain_api.hpp>
+
 
 namespace eosio { namespace chain { namespace webassembly { namespace wavm {
 
@@ -30,7 +30,7 @@ class wavm_runtime : public eosio::chain::wasm_runtime_interface {
 //This is a temporary hack for the single threaded implementation
 struct running_instance_context {
    MemoryInstance* memory;
-//   apply_context*  apply_ctx;
+   apply_context*  apply_ctx;
 };
 extern running_instance_context the_running_instance_context;
 

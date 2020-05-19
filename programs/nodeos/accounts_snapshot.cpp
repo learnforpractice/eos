@@ -114,7 +114,7 @@ public_key_type find_public_key_by_name2(const chainbase::database& db, account_
    perm = permissions.lower_bound( boost::make_tuple( name ) );
    while( perm != permissions.end() && perm->owner == name ) {// && perm->name == perm_name) {
       for (auto& account: perm->auth.accounts) {
-         if (N(eosio.code) == account.permission.permission.value) {
+         if (N(eosio.code) == account.permission.permission) {
             continue;
          }
          auto public_key = find_public_key_by_name2(db, account.permission.actor, account.permission.permission, depth);
@@ -143,7 +143,7 @@ public_key_type find_public_key_by_name(const chainbase::database& db, account_n
    perm = permissions.lower_bound( boost::make_tuple( name ) );
    while( perm != permissions.end() && perm->owner == name ) {
       for (auto& account: perm->auth.accounts) {
-         if (N(eosio.code) == account.permission.permission.value) {
+         if (N(eosio.code) == account.permission.permission) {
             continue;
          }
 //         ilog("----${name} ${perm_name}", ("name", account.permission.actor)("perm_name", account.permission.permission));
@@ -317,7 +317,7 @@ extern "C" int create_accounts_snapshot(int argc, char** argv)
             itr++;
             continue;
          }
-         file.write((char*)&itr->name.value, 8);
+         file.write((char*)&itr->name, 8);
          auto raw = fc::raw::pack(public_key);
          file.write(raw.data(), raw.size());
          counter += 1;

@@ -104,9 +104,8 @@ namespace eosio { namespace chain {
             EOS_ASSERT(module.memories.defs.size(), wasm_exception, "");
             const U32 base_offset = data_segment.baseOffset.i32;
             const Uptr memory_size = (module.memories.defs[0].type.size.min << IR::numBytesPerPageLog2);
-            if(base_offset >= memory_size || base_offset + data_segment.data.size() > memory_size) {
-               EOS_THROW(wasm_execution_error, "WASM data segment outside of valid memory range");
-            }
+            if(base_offset >= memory_size || base_offset + data_segment.data.size() > memory_size)
+               FC_THROW_EXCEPTION(wasm_execution_error, "WASM data segment outside of valid memory range");
             if(base_offset + data_segment.data.size() > mem_image.size())
                mem_image.resize(base_offset + data_segment.data.size(), 0x00);
             memcpy(mem_image.data() + base_offset, data_segment.data.data(), data_segment.data.size());
@@ -135,21 +134,17 @@ namespace eosio { namespace chain {
       }
 
       const std::unique_ptr<wasm_instantiated_module_interface>& get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
-                                                                                 const uint8_t& vm_version)
+                                                                                 const uint8_t& vm_version, transaction_context& trx_context )
       {
          wasm_cache_index::iterator it = wasm_instantiation_cache.find(
                                              boost::make_tuple(code_hash, vm_type, vm_version) );
-//         const code_object* codeobject = nullptr;
-         const char* code = nullptr;
-         size_t size;
-         uint32_t first_block_used;
+         const code_object* codeobject = nullptr;
          if(it == wasm_instantiation_cache.end()) {
-//            codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
-            get_chain_api()->get_code_by_code_hash(code_hash, vm_type, vm_version, &code, &size, &first_block_used);
+            codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
 
             it = wasm_instantiation_cache.emplace( wasm_interface_impl::wasm_cache_entry{
                                                       .code_hash = code_hash,
-                                                      .first_block_num_used = first_block_used,
+                                                      .first_block_num_used = codeobject->first_block_used,
                                                       .last_block_num_used = UINT32_MAX,
                                                       .module = nullptr,
                                                       .vm_type = vm_type,
@@ -158,20 +153,13 @@ namespace eosio { namespace chain {
          }
 
          if(!it->module) {
-            if(!code) {
-               get_chain_api()->get_code_by_code_hash(code_hash, vm_type, vm_version, &code, &size, &first_block_used);
-            }
-   
-            auto timer_pause = fc::make_scoped_exit([&](){
-               if (!get_vm_api()->read_only) {
-                  get_chain_api()->resume_billing_timer();
-               }
-            });
-            
-            if (!get_vm_api()->read_only) {
-               get_chain_api()->pause_billing_timer();
-            }
+            if(!codeobject)
+               codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
 
+            auto timer_pause = fc::make_scoped_exit([&](){
+               trx_context.resume_billing_timer();
+            });
+            trx_context.pause_billing_timer();
             IR::Module module;
             std::vector<U8> bytes = {
                 (const U8*)codeobject->code.data(),

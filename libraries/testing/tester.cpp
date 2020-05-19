@@ -150,31 +150,10 @@ namespace eosio { namespace testing {
      return control->head_block_id() == other.control->head_block_id();
    }
 
-   void base_tester::init(const setup_policy policy, db_read_mode read_mode, bool uuos_mainnet, string genesis_accounts_file) {
-      cfg.blocks_dir      = tempdir.path() / config::default_blocks_dir_name;
-      cfg.state_dir  = tempdir.path() / config::default_state_dir_name;
-      if (uuos_mainnet) {
-         cfg.state_size = 1024*1024*600;
-      } else {
-         cfg.state_size = 1024*1024*8;
-      }
-      cfg.state_guard_size = 0;
-      cfg.reversible_cache_size = 1024*1024*8;
-      cfg.reversible_guard_size = 0;
-      cfg.contracts_console = true;
-      cfg.read_mode = read_mode;
-      cfg.uuos_mainnet = uuos_mainnet;
-      cfg.genesis_accounts_file = genesis_accounts_file;
-
-      cfg.genesis.initial_timestamp = fc::time_point::from_iso_string("2020-01-01T00:00:00.000");
-      cfg.genesis.initial_key = get_public_key( config::system_account_name, "active" );
-
-      for(int i = 0; i < boost::unit_test::framework::master_test_suite().argc; ++i) {
-         if(boost::unit_test::framework::master_test_suite().argv[i] == std::string("--wavm"))
-            cfg.wasm_runtime = chain::wasm_interface::vm_type::wavm;
-         else if(boost::unit_test::framework::master_test_suite().argv[i] == std::string("--wabt"))
-            cfg.wasm_runtime = chain::wasm_interface::vm_type::wabt;
-      }
+   void base_tester::init(const setup_policy policy, db_read_mode read_mode) {
+      auto def_conf = default_config(tempdir);
+      def_conf.first.read_mode = read_mode;
+      cfg = def_conf.first;
 
       open(def_conf.second);
       execute_setup_policy(policy);
@@ -624,27 +603,6 @@ namespace eosio { namespace testing {
       return success();
    }
 
-   transaction_trace_ptr base_tester::push_action(uint64_t account, uint64_t acttype, vector<uint8_t>& data, uint64_t authorizer) {
-      signed_transaction trx;
-      action act;
-      act.account = account;
-      act.name = acttype;
-      act.data.resize(data.size());
-      memcpy(act.data.data(), data.data(), data.size());
-
-      if (authorizer) {
-         act.authorization = vector<permission_level>{{authorizer, config::active_name}};
-      }
-      
-      trx.actions.emplace_back(std::move(act));
-      set_transaction_headers(trx);
-      if (authorizer) {
-         trx.sign(get_private_key(authorizer, "active"), control->get_chain_id());
-      }
-      return push_transaction(trx);
-
-   }
-
    transaction_trace_ptr base_tester::push_action( const account_name& code,
                                                    const action_name& acttype,
                                                    const account_name& actor,
@@ -947,24 +905,6 @@ namespace eosio { namespace testing {
       push_transaction( trx );
    } FC_CAPTURE_AND_RETHROW( (account) )
 
-   void base_tester::set_code( account_name account, const vector<uint8_t> wasm, uint8_t vm_type, const private_key_type* signer ) try {
-      signed_transaction trx;
-      trx.actions.emplace_back( vector<permission_level>{{account,config::active_name}},
-                                setcode{
-                                   .account    = account,
-                                   .vmtype     = vm_type,
-                                   .vmversion  = 0,
-                                   .code       = bytes(wasm.begin(), wasm.end())
-                                });
-
-      set_transaction_headers(trx);
-      if( signer ) {
-         trx.sign( *signer, control->get_chain_id()  );
-      } else {
-         trx.sign( get_private_key( account, "active" ), control->get_chain_id()  );
-      }
-      push_transaction( trx );
-   } FC_CAPTURE_AND_RETHROW( (account) )
 
    void base_tester::set_abi( account_name account, const char* abi_json, const private_key_type* signer ) {
       auto abi = fc::json::from_string(abi_json).template as<abi_def>();

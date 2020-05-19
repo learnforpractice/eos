@@ -11,8 +11,8 @@ bool is_nan( const float128_t& f ) {
 }
 
 int32_t db_store_i64(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len) {
-   CALL_NOT_ALLOWED(); \
-   return ctx().db_store_i64(name(scope), name(table), name(payer), id, data, len);
+   CALL_NOT_ALLOWED();
+   return -1;
 }
 
 #if 0
@@ -50,19 +50,19 @@ int32_t db_previous_i64(int32_t iterator, uint64_t* primary) {
 }
 
 int32_t db_find_i64(uint64_t code, uint64_t scope, uint64_t table, uint64_t id) {
-   return ctx().db_find_i64(name(code), name(scope), name(table), id);
+   return ctx().db_find_i64(code, scope, table, id);
 }
 
 int32_t db_lowerbound_i64(uint64_t code, uint64_t scope, uint64_t table, uint64_t id) {
-   return ctx().db_lowerbound_i64(name(code), name(scope), name(table), id);
+   return ctx().db_lowerbound_i64(code, scope, table, id);
 }
 
 int32_t db_upperbound_i64(uint64_t code, uint64_t scope, uint64_t table, uint64_t id) {
-   return ctx().db_upperbound_i64(name(code), name(scope), name(table), id);
+   return ctx().db_upperbound_i64(code, scope, table, id);
 }
 
 int32_t db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
-   return ctx().db_end_i64(name(code), name(scope), name(table));
+   return ctx().db_end_i64(code, scope, table);
 }
 
 #define DB_API_METHOD_WRAPPERS_SIMPLE_SECONDARY_(IDX, TYPE)\
