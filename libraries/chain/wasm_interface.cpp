@@ -1437,14 +1437,14 @@ class database_api : public context_aware_api {
          return context.db_get_table_count( code, scope, table );
       }
 
-      int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, array_ptr<char> id, size_t id_size, array_ptr<const char> buffer, size_t buffer_size ) {         
+      int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, array_ptr<char> id, uint32_t id_size, array_ptr<const char> buffer, uint32_t buffer_size ) {   
          EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
          key256_t _id;
          memcpy(_id.data(), id.value, 32);
          return context.db_store_i256( scope, table, name(payer), _id, buffer, buffer_size );
       }
 
-      void db_update_i256( int itr, uint64_t payer, array_ptr<const char> buffer, size_t buffer_size ) {
+      void db_update_i256( int itr, uint64_t payer, array_ptr<const char> buffer, uint32_t buffer_size ) {
          context.db_update_i256( itr, name(payer), buffer, buffer_size );
       }
 
@@ -1452,18 +1452,18 @@ class database_api : public context_aware_api {
          context.db_remove_i256( itr );
       }
 
-      int db_get_i256( int itr, array_ptr<char> buffer, size_t buffer_size ) {
+      int db_get_i256( int itr, array_ptr<char> buffer, uint32_t buffer_size ) {
          return context.db_get_i256( itr, buffer, buffer_size );
       }
 
-      int db_next_i256( int itr, array_ptr<char> id, size_t id_size ) {
+      int db_next_i256( int itr, array_ptr<char> id, uint32_t id_size ) {
          key256_t _id = {0, 0};
          int ret = context.db_next_i256(itr, _id);
          memcpy(id.value, _id.data(), 32);
          return ret;
       }
 
-      int db_previous_i256( int itr, array_ptr<char> primary, size_t id_size ) {
+      int db_previous_i256( int itr, array_ptr<char> primary, uint32_t id_size ) {
          EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
 
          key256_t _id = {0, 0};
@@ -1472,21 +1472,21 @@ class database_api : public context_aware_api {
          return ret;
       }
 
-      int db_find_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, size_t id_size ) {
+      int db_find_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, uint32_t id_size ) {
          EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
          key256_t _id;
          memcpy(_id.data(), id.value, 32);
          return context.db_find_i256( code, scope, table, _id );
       }
 
-      int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, size_t id_size ) {
+      int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, uint32_t id_size ) {
          EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
          key256_t _id;
          memcpy(_id.data(), id.value, 32);
          return context.db_lowerbound_i256( code, scope, table, _id );
       }
 
-      int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, size_t id_size ) {
+      int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, array_ptr<char> id, uint32_t id_size ) {
          EOS_ASSERT( id_size == 32, db_api_exception, "invalid size of secondary key array");
          key256_t _id;
          memcpy(_id.data(), id.value, 32);
@@ -1876,17 +1876,18 @@ class call_depth_api : public context_aware_api {
 
 class vm_apis : public context_aware_api {
    public:
-      using context_aware_api::context_aware_api;
+      vm_apis( apply_context& ctx )
+      :context_aware_api(ctx,true){}
 
       void token_create( uint64_t issuer, uint64_t maximum_supply, uint64_t symbol ) {
          get_vm_api()->token_create(issuer, maximum_supply, symbol);
       }
 
-      void token_issue( uint64_t to, uint64_t quantity, uint64_t symbol, array_ptr<const char> memo, size_t size2 ) {
+      void token_issue( uint64_t to, uint64_t quantity, uint64_t symbol, array_ptr<const char> memo, uint32_t size2 ) {
          get_vm_api()->token_issue(to, quantity, symbol, memo, size2);
       }
 
-      void token_transfer( uint64_t from, uint64_t to, uint64_t quantity, uint64_t symbol, array_ptr<const char> memo, size_t size2 ) {
+      void token_transfer( uint64_t from, uint64_t to, uint64_t quantity, uint64_t symbol, array_ptr<const char> memo, uint32_t size2 ) {
          get_vm_api()->token_transfer(from, to, quantity, symbol, memo, size2);
       }
 
@@ -1894,7 +1895,7 @@ class vm_apis : public context_aware_api {
          get_vm_api()->token_open(owner, _symbol, ram_payer);
       }
 
-      void token_retire( int64_t amount, uint64_t _symbol, array_ptr<const char> memo, size_t memo_size ) {
+      void token_retire( int64_t amount, uint64_t _symbol, array_ptr<const char> memo, uint32_t memo_size ) {
          get_vm_api()->token_retire(amount, _symbol, memo, memo_size);
       }
 
@@ -1902,58 +1903,37 @@ class vm_apis : public context_aware_api {
          get_vm_api()->token_close( owner, symbol );
       }
 
-      void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, size_t size1) {
+      void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, uint32_t size1) {
          get_vm_api()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
       }
 
-      int call_contract_get_extra_args(array_ptr<char> extra_args, size_t size1) {
+      int call_contract_get_extra_args(array_ptr<char> extra_args, uint32_t size1) {
          return get_vm_api()->call_contract_get_extra_args(extra_args, size1);
       }
 
-      int call_contract_set_results(array_ptr<const char> results, size_t size1) {
+      int call_contract_set_results(array_ptr<const char> results, uint32_t size1) {
          return get_vm_api()->call_contract_set_results(results, size1);
       }
 
-      int call_contract_get_results(array_ptr<char> results, size_t size1) {
+      int call_contract_get_results(array_ptr<char> results, uint32_t size1) {
          return get_vm_api()->call_contract_get_results(results, size1);
       }
-
-
-      // int to_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
-      //    std::vector<char> v(in.value, in.value+size1);
-      //    std::string s = fc::to_base58( v );
-      //    auto copy_size = std::min(size2, s.size());
-      //    ::memcpy(out, s.c_str(), copy_size);
-      //    return copy_size;
-      // }
-
-      // int from_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
-      //    string s(in.value, size1);
-      //    auto v = fc::from_base58(s);
-      //    auto copy_size = std::min(v.size(), size2);
-      //    ::memcpy(out, v.data(), copy_size);
-      //    return copy_size;
-      // }
 };
 
 
+REGISTER_INTRINSICS(vm_apis,
+   (token_create,    void(int64_t, int64_t, int64_t)  )
+   (token_issue,     void(int64_t, int64_t, int64_t, int, int)           )
+   (token_transfer,  void(int64_t, int64_t, int64_t, int64_t, int, int)  )
+   (token_open,      void(int64_t, int64_t, int64_t))
+   (token_retire,    void(int64_t, int64_t, int, int ))
+   (token_close,     void(int64_t, int64_t))
 
-// REGISTER_INTRINSICS(vm_apis,
-//    (token_create,    void(int64_t, int64_t, int64_t)  )
-//    (token_issue,     void(int64_t, int64_t, int64_t, int, int)           )
-//    (token_transfer,  void(int64_t, int64_t, int64_t, int64_t, int, int)  )
-//    (token_open,      void(int64_t, int64_t, int64_t))
-//    (token_retire,    void(int64_t, int64_t, int, int ))
-//    (token_close,     void(int64_t, int64_t))
-
-//    (call_contract,            void(int64_t, int64_t, int64_t, int64_t, int64_t, int, int)  )
-//    (call_contract_get_extra_args, int(int, int))
-//    (call_contract_set_results, int(int, int))
-//    (call_contract_get_results, int(int, int))
-//    (to_base58,       int(int, int, int, int))
-//    (from_base58,     int(int, int, int, int))
-// );
-
+   (call_contract,                  void(int64_t, int64_t, int64_t, int64_t, int64_t, int, int)  )
+   (call_contract_get_extra_args,   int(int, int))
+   (call_contract_set_results,      int(int, int))
+   (call_contract_get_results,      int(int, int))
+);
 
 REGISTER_INJECTED_INTRINSICS(call_depth_api,
    (call_depth_assert,  void() )
@@ -2064,16 +2044,16 @@ REGISTER_INTRINSICS( database_api,
    (db_end_i64,          int(int64_t,int64_t,int64_t)                 )
    (db_get_table_count,  int(int64_t,int64_t,int64_t))
 
-   // (db_store_i256,        int(int64_t,int64_t,int64_t,int, int,int,int))
-   // (db_update_i256,       void(int,int64_t,int,int))
-   // (db_remove_i256,       void(int))
-   // (db_get_i256,          int(int, int, int))
-   // (db_next_i256,         int(int, int, int))
-   // (db_previous_i256,     int(int, int, int))
-   // (db_find_i256,         int(int64_t,int64_t,int64_t,int,int))
-   // (db_lowerbound_i256,   int(int64_t,int64_t,int64_t,int,int))
-   // (db_upperbound_i256,   int(int64_t,int64_t,int64_t,int,int))
-   // (db_end_i256,          int(int64_t,int64_t,int64_t))
+   (db_store_i256,        int(int64_t,int64_t,int64_t,int, int,int,int))
+   (db_update_i256,       void(int,int64_t,int,int))
+   (db_remove_i256,       void(int))
+   (db_get_i256,          int(int, int, int))
+   (db_next_i256,         int(int, int, int))
+   (db_previous_i256,     int(int, int, int))
+   (db_find_i256,         int(int64_t,int64_t,int64_t,int,int))
+   (db_lowerbound_i256,   int(int64_t,int64_t,int64_t,int,int))
+   (db_upperbound_i256,   int(int64_t,int64_t,int64_t,int,int))
+   (db_end_i256,          int(int64_t,int64_t,int64_t))
 
    DB_SECONDARY_INDEX_METHODS_SIMPLE(idx64)
    DB_SECONDARY_INDEX_METHODS_SIMPLE(idx128)
@@ -2120,9 +2100,10 @@ REGISTER_INTRINSICS(context_free_system_api,
 );
 
 REGISTER_INTRINSICS(action_api,
-   (read_action_data,       int(int, int)  )
-   (action_data_size,       int()          )
-   (current_receiver,       int64_t()      )
+   (read_action_data,         int(int, int)  )
+   (action_data_size,         int()          )
+   (current_receiver,         int64_t()      )
+   (call_native,          int(int, int, int, int, int, int))
 );
 
 REGISTER_INTRINSICS(authorization_api,
