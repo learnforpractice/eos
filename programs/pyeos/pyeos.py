@@ -35,9 +35,11 @@ logger.info(python3_shared_lib_path)
 python3home = os.path.dirname(python3_shared_lib_path)
 python3home = os.path.dirname(python3home)
 
-print(python3home, python3_shared_lib_path)
+logger.info((python3home, python3_shared_lib_path))
+pyeos = os.path.dirname(__file__)
 
-pyeos = '/Users/newworld/dev/uuos2/programs/pyeos/_skbuild/macosx-10.9-x86_64-3.7/cmake-build/pyeos/pyeos'
+pyeos = os.path.join(pyeos, '_skbuild/macosx-10.9-x86_64-3.7/cmake-build/pyeos/pyeos')
+logger.info(pyeos)
 
 try:
     subprocess.call([pyeos, python3home, python3_shared_lib_path])
