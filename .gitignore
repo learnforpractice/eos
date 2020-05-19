@@ -62,6 +62,13 @@ programs/keosd/keosd
 programs/nodeos/config.hpp
 programs/nodeos/nodeos
 
+programs/pyeos/_skbuild
+programs/pyeos/_uuos.cpython-37m-darwin.so
+programs/pyeos/dist
+programs/pyeos/hello.egg-info
+programs/pyeos/logfile.log
+
+
 scripts/tn_init.sh
 
 tests/plugin_test
