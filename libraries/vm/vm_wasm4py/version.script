@@ -1,6 +1,0 @@
-CODEABI_1.0 {
-    global: wasm4py_init;wasm4py_deinit;wasm4py_validate;wasm4py_apply;wasm4py_call;register_vm_api_ro;
-    local: *;
-};
-
-
