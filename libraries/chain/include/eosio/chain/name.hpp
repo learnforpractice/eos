@@ -42,7 +42,6 @@ namespace eosio::chain {
    /// Immutable except for fc::from_variant.
    struct name {
    private:
-      uint64_t value = 0;
 
       friend struct fc::reflector<name>;
       friend void fc::from_variant(const fc::variant& v, eosio::chain::name& check);
@@ -64,6 +63,11 @@ namespace eosio::chain {
          return out << n.to_string();
       }
 
+      name& operator=( uint64_t v ) {
+         value = v;
+         return *this;
+      }
+
       friend constexpr bool operator < ( const name& a, const name& b ) { return a.value < b.value; }
       friend constexpr bool operator > ( const name& a, const name& b ) { return a.value > b.value; }
       friend constexpr bool operator <= ( const name& a, const name& b ) { return a.value <= b.value; }
@@ -75,6 +79,8 @@ namespace eosio::chain {
       friend constexpr bool operator != ( const name& a, uint64_t b ) { return a.value != b; }
 
       constexpr explicit operator bool()const { return value != 0; }
+      operator uint64_t()const        { return value; }
+      uint64_t value = 0;
    };
 
    // Each char of the string is encoded into 5-bit chunk and left-shifted
@@ -87,6 +93,7 @@ namespace eosio::chain {
    }
 
 #define N(X) eosio::chain::string_to_name(#X)
+#define NN(X) eosio::chain::string_to_name(X)
 
 } // eosio::chain
 
