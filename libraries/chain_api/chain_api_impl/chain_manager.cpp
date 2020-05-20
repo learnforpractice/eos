@@ -567,12 +567,16 @@ void chain_commit_block_(void *ptr) {
     chain.commit_block();
 }
 
-void chain_finalize_block_(void *ptr, string& _priv_key) {
+void chain_finalize_block_(void *ptr, string& _priv_keys) {
     auto& chain = chain_get_controller(ptr);
-    auto priv_key = private_key_type(_priv_key);
+    auto priv_keys = fc::json::from_string(_priv_keys).as<vector<string>>();
+
     chain.finalize_block( [&]( const digest_type d ) {
         vector<signature_type> sigs;
-        sigs.emplace_back(priv_key.sign(d));
+        for (auto& key: priv_keys) {
+            auto priv_key = private_key_type(key);
+            sigs.emplace_back(priv_key.sign(d));
+        }
         return sigs;
     } );
 }

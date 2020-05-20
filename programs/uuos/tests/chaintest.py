@@ -120,6 +120,7 @@ class ChainTest(object):
         uuos.set_log_level('default', 0)
         self.feature_digests = []
 
+        self.uuos_network = uuos_network
         self.feature_activated = False
         self.main_token = 'UUOS'
         logger.info(('++++++++++++pid:', os.getpid()))
@@ -237,13 +238,13 @@ class ChainTest(object):
             '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#'NO_DUPLICATE_DEFERRED_ID'
             '4e7bf348da00a945489b2a681749eb56f5de00b900014e137ddae39f48f69d67',#'RAM_RESTRICTIONS'
             '4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2',#'WEBAUTHN_KEY'
-            '626ff01727e783ac3597b10cb39aaf853c3ad5bb2a6b3a8f5fc3438fb362a6c8',#'PYTHONVM'
             '68dcaa34c0517d19666e6b33add67351d8c5f69e999ca1e37931bc410a297428',#'DISALLOW_EMPTY_PRODUCER_SCHEDULE'
-            '80f35049d9fb83ef812a19bbb07eaafdd135a09276ee9a7b8dcff930ef40ebca',#'ETHEREUM_VM'
             '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405',#'ONLY_BILL_FIRST_AUTHORIZER'
             'ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#'RESTRICT_ACTION_TO_SELF'
             'e0fb64b1085cc5538970158d05a009c24e276fb94e1a0bf6a528b48fbc4ff526',#'FIX_LINKAUTH_RESTRICTION'
             'f0af56d2c5a48d60a4a5b5c903edfb7db3a736a94ed589d0b797df33ff9d3e1d',#'GET_SENDER'
+            'f1aab764127d9319143327124d14bf1bbfbe001ead8d2f7c329cad891c8d951b',#'PYTHONVM'
+            '3dabae1906d16d6c1e72d6ce87574c2291ce5d5e4830d3b46589cbe96ce7af9c',#'ETHEREUM_VM'
         ]
 
         for digest in feature_digests: 
@@ -256,7 +257,10 @@ class ChainTest(object):
         self.produce_block()
 
         logger.info('deploy eosio.system...')
-        self.deploy_eosio_system()
+        if self.uuos_network:
+            self.deploy_eosio_system_uuos()
+        else:
+            self.deploy_eosio_system()
         self.produce_block()
 
         args = {"issuer":"eosio", "maximum_supply":f"11000000000.0000 {self.main_token}"}
@@ -269,8 +273,9 @@ class ChainTest(object):
         self.push_action('eosio', 'init', args, 'eosio', 'active')
         self.produce_block()
 
-        args = {'vmtype': 1, 'vmversion':0} #activate vm python
-        self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
+        if self.uuos_network:
+            args = {'vmtype': 1, 'vmversion':0} #activate vm python
+            self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
 
         self.produce_block()
 
@@ -385,7 +390,7 @@ class ChainTest(object):
 #        print(ret, result)
         result = json.loads(result)
         if not ret:
-            raise Exception(result['except'])
+            raise Exception(result)
         result = JsonObject(result)
         return result
 
@@ -495,10 +500,19 @@ class ChainTest(object):
             abi = f.read()
         self.deploy_contract('eosio.token', code, abi)
 
-    def deploy_eosio_system(self):
+    def deploy_eosio_system_uuos(self):
         contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
         code_path = os.path.join(contract_path, 'eosio.system/eosio.system.wasm')
         abi_path = os.path.join(contract_path, 'eosio.system/eosio.system.abi')
+        with open(code_path, 'rb') as f:
+            code = f.read()
+        with open(abi_path, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('eosio', code, abi)
+
+    def deploy_eosio_system(self):
+        code_path = os.path.join(test_dir, 'contracts/eosio.system.wasm')
+        abi_path = os.path.join(test_dir, 'contracts/eosio.system.abi')
         with open(code_path, 'rb') as f:
             code = f.read()
         with open(abi_path, 'rb') as f:
@@ -549,7 +563,7 @@ class ChainTest(object):
             print(ret, result)
             trxs = self.chain.get_unapplied_transactions()
             print(trxs)
-            self.chain.finalize_block('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
+            self.chain.finalize_block(['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'])
             self.chain.commit_block()
             print('head_block_num:', self.chain.head_block_num())
 
@@ -563,11 +577,11 @@ class ChainTest(object):
 
 
     def produce_block(self):
-        self.chain.finalize_block('5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
+        self.chain.finalize_block(['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'])
         self.chain.commit_block()
         self.start_block()
 
-    def test_create_account(self):
+    def test_create_account_uuos(self):
         # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         self.create_account('eosio', 'testtesttest1', key, key, 10*1024, 1, 10)
@@ -576,7 +590,17 @@ class ChainTest(object):
         ret, result = self.chain_api.get_account(params)
         assert ret, result
         result = JsonObject(result)
-        logger.info(result)
+        # logger.info(result)
+
+    def test_create_account(self):
+        # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        self.create_account('eosio', 'testtesttest', key, key, 10*1024, 1, 10)
+        params = {'account_name':'testtesttest'}
+        params = json.dumps(params)
+        ret, result = self.chain_api.get_account(params)
+        assert ret, result
+        result = JsonObject(result)
 
     def test1(self):
         logger.info('++++++++++++++test1+++++++++++++++')

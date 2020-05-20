@@ -380,8 +380,10 @@ class Chain(object):
             block_time = block_time.isoformat(timespec='milliseconds')
         return _uuos.chain_get_scheduled_producer(self.ptr, block_time)
 
-    def finalize_block(self, priv_key):
-        _uuos.chain_finalize_block(self.ptr, priv_key)
+    def finalize_block(self, priv_keys):
+        if isinstance(priv_keys, list):
+            priv_keys = json.dumps(priv_keys)
+        _uuos.chain_finalize_block(self.ptr, priv_keys)
 
     def pack_action_args(self, name, action, args):
         if isinstance(args, dict):

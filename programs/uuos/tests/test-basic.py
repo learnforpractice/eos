@@ -19,12 +19,12 @@ class UUOSTester2(unittest.TestCase):
         self.extra_args = extra_args
 #        UUOSTester.chain = self.chain
     def test_create_account(self):
-        UUOSTester2.chain.test_create_account_uuos()
+        UUOSTester2.chain.test_create_account()
 
     @classmethod
     def setUpClass(cls):
         logger.info('++++++++++++setUpClass++++++++++++')
-        cls.chain = ChainTest(True)
+        cls.chain = ChainTest(False)
 
     @classmethod
     def tearDownClass(cls):
