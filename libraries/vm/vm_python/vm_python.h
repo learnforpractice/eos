@@ -8,7 +8,9 @@
 extern "C" {
 #endif
 
-#define VM_PAGE_SIZE 65536U
+#ifndef VM_PAGE_SIZE
+    #define VM_PAGE_SIZE 65536U
+#endif
 
 typedef void (*fn_vm_load_memory)(uint32_t offset_start, uint32_t length);
 typedef void (*fn_python_vm_apply)(uint64_t receiver, uint64_t code, uint64_t action);

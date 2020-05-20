@@ -305,6 +305,108 @@ static string call_contract_off_chain(uint64_t contract, uint64_t action, const 
 //chain_exceptions.cpp
 void chain_throw_exception(int type, const char* fmt, ...);
 
+//chain api implemented in chain_manager;
+void *chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+bool chain_startup_(void* ptr, bool initdb);
+void chain_free_(void *ptr);
+void chain_id_(void *ptr, string& chain_id);
+void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features);
+int chain_abort_block_(void *ptr);
+void chain_get_preactivated_protocol_features_(void *ptr, string& result);
+void chain_get_unapplied_transactions_(void *ptr, string& result);
+bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _args, vector<char>& result);
+bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& _binargs, string& result);
+void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result);
+bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
+void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
+void chain_commit_block_(void *ptr);
+void chain_finalize_block_(void *ptr, string& _priv_key);
+void chain_pop_block_(void *ptr);
+void chain_get_account_(void *ptr, string& account, string& result);
+void chain_get_global_properties_(void *ptr, string& result);
+void chain_get_dynamic_global_properties_(void *ptr, string& result);
+void chain_get_actor_whitelist_(void *ptr, string& result);
+void chain_get_actor_blacklist_(void *ptr, string& result);
+void chain_get_contract_whitelist_(void *ptr, string& result);
+void chain_get_contract_blacklist_(void *ptr, string& result);
+void chain_get_action_blacklist_(void *ptr, string& result);
+void chain_get_key_blacklist_(void *ptr, string& result);
+void chain_set_actor_whitelist_(void *ptr, string& params);
+void chain_set_actor_blacklist_(void *ptr, string& params);
+void chain_set_contract_whitelist_(void *ptr, string& params);
+void chain_set_action_blacklist_(void *ptr, string& params);
+void chain_set_key_blacklist_(void *ptr, string& params);
+uint32_t chain_head_block_num_(void *ptr);
+void chain_head_block_time_(void *ptr, string& result);
+void chain_head_block_id_(void *ptr, string& result);
+void chain_head_block_producer_(void *ptr, string& result);
+void chain_head_block_header_(void *ptr, string& result);
+void chain_head_block_state_(void *ptr, string& result);
+uint32_t chain_fork_db_head_block_num_(void *ptr);
+void chain_fork_db_head_block_id_(void *ptr, string& result);
+void chain_fork_db_head_block_time_(void *ptr, string& result);
+void chain_fork_db_head_block_producer_(void *ptr, string& result);
+uint32_t chain_fork_db_pending_head_block_num_(void *ptr);
+void chain_fork_db_pending_head_block_id_(void *ptr, string& result);
+void chain_fork_db_pending_head_block_time_(void *ptr, string& result);
+void chain_fork_db_pending_head_block_producer_(void *ptr, string& result);
+void chain_pending_block_time_(void *ptr, string& result);
+void chain_pending_block_producer_(void *ptr, string& result);
+void chain_pending_block_signing_key_(void *ptr, string& result);
+void chain_pending_producer_block_id_(void *ptr, string& result);
+void chain_get_pending_trx_receipts_(void *ptr, string& result);
+void chain_active_producers_(void *ptr, string& result);
+void chain_pending_producers_(void *ptr, string& result);
+void chain_proposed_producers_(void *ptr, string& result);
+uint32_t chain_last_irreversible_block_num_(void *ptr);
+void chain_last_irreversible_block_id_(void *ptr, string& result);
+void chain_fetch_block_by_number_(void *ptr, uint32_t block_num, string& raw_block );
+void chain_fetch_block_by_id_(void *ptr, string& params, string& raw_block );
+void chain_fetch_block_state_by_number_(void *ptr, uint32_t block_num, string& raw_block_state );
+void chain_fetch_block_state_by_id_(void *ptr, string& params, string& raw_block_state );
+void chain_get_block_id_for_num_(void *ptr, uint32_t block_num, string& result );
+void chain_calculate_integrity_hash_(void *ptr, string& result );
+bool chain_sender_avoids_whitelist_blacklist_enforcement_(void *ptr, string& sender );
+bool chain_check_actor_list_(void *ptr, string& param, string& err);
+bool chain_check_contract_list_(void *ptr, string& param, string& err);
+bool chain_check_action_list_(void *ptr, string& code, string& action, string& err);
+bool chain_check_key_list_(void *ptr, string& param, string& err);
+bool chain_is_building_block_(void *ptr);
+bool chain_is_producing_block_(void *ptr);
+bool chain_is_ram_billing_in_notify_allowed_(void *ptr);
+void chain_add_resource_greylist_(void *ptr, string& param);
+void chain_remove_resource_greylist_(void *ptr, string& param);
+bool chain_is_resource_greylisted_(void *ptr, string& param);
+void chain_get_resource_greylist_(void *ptr, string& result);
+void chain_get_config_(void *ptr, string& result);
+bool chain_validate_expiration_(void *ptr, string& param, string& err);
+bool chain_validate_tapos_(void *ptr, string& param, string& err);
+bool chain_validate_db_available_size_(void *ptr, string& err);
+bool chain_validate_reversible_available_size_(void *ptr, string& err);
+bool chain_is_protocol_feature_activated_(void *ptr, string& param);
+bool chain_is_builtin_activated_(void *ptr, int feature);
+bool chain_is_known_unexpired_transaction_(void *ptr, string& param);
+int64_t chain_set_proposed_producers_(void *ptr, string& param);
+bool chain_light_validation_allowed_(void *ptr, bool replay_opts_disabled_by_policy);
+bool chain_skip_auth_check_(void *ptr);
+bool chain_skip_db_sessions_(void *ptr);
+
+bool chain_skip_trx_checks_(void *ptr);
+bool chain_contracts_console_(void *ptr);
+bool chain_is_uuos_mainnet_(void *ptr);
+
+void chain_get_chain_id_(void *ptr, string& result);
+int chain_get_read_mode_(void *ptr);
+int chain_get_validation_mode_(void *ptr);
+void chain_set_subjective_cpu_leeway_(void *ptr, uint64_t leeway);
+void chain_set_greylist_limit_(void *ptr, uint32_t limit);
+uint32_t chain_get_greylist_limit_(void *ptr);
+void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
+bool chain_all_subjective_mitigations_disabled_(void *ptr);
+void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
+
+
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -338,6 +440,103 @@ extern "C" void chain_api_init() {
       .get_debug_contract_entry = get_debug_contract_entry,
       .is_builtin_activated = is_builtin_activated,
       .call_contract_off_chain = call_contract_off_chain,
+
+      .chain_new = chain_new_,
+      .chain_startup = chain_startup_,
+      .chain_free = chain_free_,
+      .chain_id = chain_id_,
+      .chain_start_block = chain_start_block_,
+      .chain_abort_block = chain_abort_block_,
+      .chain_get_preactivated_protocol_features = chain_get_preactivated_protocol_features_,
+      .chain_get_unapplied_transactions = chain_get_unapplied_transactions_,
+      .chain_pack_action_args = chain_pack_action_args_,
+      .chain_unpack_action_args = chain_unpack_action_args_,
+      .chain_gen_transaction = chain_gen_transaction_,
+      .chain_push_transaction = chain_push_transaction_,
+      .chain_push_scheduled_transaction = chain_push_scheduled_transaction_,
+      .chain_commit_block = chain_commit_block_,
+      .chain_finalize_block = chain_finalize_block_,
+      .chain_pop_block = chain_pop_block_,
+      .chain_get_account = chain_get_account_,
+      .chain_get_global_properties = chain_get_global_properties_,
+      .chain_get_dynamic_global_properties = chain_get_dynamic_global_properties_,
+      .chain_get_actor_whitelist = chain_get_actor_whitelist_,
+      .chain_get_actor_blacklist = chain_get_actor_blacklist_,
+      .chain_get_contract_whitelist = chain_get_contract_whitelist_,
+      .chain_get_contract_blacklist = chain_get_contract_blacklist_,
+      .chain_get_action_blacklist = chain_get_action_blacklist_,
+      .chain_get_key_blacklist = chain_get_key_blacklist_,
+      .chain_set_actor_whitelist = chain_set_actor_whitelist_,
+      .chain_set_actor_blacklist = chain_set_actor_blacklist_,
+      .chain_set_contract_whitelist = chain_set_contract_whitelist_,
+      .chain_set_action_blacklist = chain_set_action_blacklist_,
+      .chain_set_key_blacklist = chain_set_key_blacklist_,
+      .chain_head_block_num = chain_head_block_num_,
+      .chain_head_block_time = chain_head_block_time_,
+      .chain_head_block_id = chain_head_block_id_,
+      .chain_head_block_producer = chain_head_block_producer_,
+      .chain_head_block_header = chain_head_block_header_,
+      .chain_head_block_state = chain_head_block_state_,
+      .chain_fork_db_head_block_num = chain_fork_db_head_block_num_,
+      .chain_fork_db_head_block_id = chain_fork_db_head_block_id_,
+      .chain_fork_db_head_block_time = chain_fork_db_head_block_time_,
+      .chain_fork_db_head_block_producer = chain_fork_db_head_block_producer_,
+      .chain_fork_db_pending_head_block_num = chain_fork_db_pending_head_block_num_,
+      .chain_fork_db_pending_head_block_id = chain_fork_db_pending_head_block_id_,
+      .chain_fork_db_pending_head_block_time = chain_fork_db_pending_head_block_time_,
+      .chain_fork_db_pending_head_block_producer = chain_fork_db_pending_head_block_producer_,
+      .chain_pending_block_time = chain_pending_block_time_,
+      .chain_pending_block_producer = chain_pending_block_producer_,
+      .chain_pending_block_signing_key = chain_pending_block_signing_key_,
+      .chain_pending_producer_block_id = chain_pending_producer_block_id_,
+      .chain_get_pending_trx_receipts = chain_get_pending_trx_receipts_,
+      .chain_active_producers = chain_active_producers_,
+      .chain_pending_producers = chain_pending_producers_,
+      .chain_proposed_producers = chain_proposed_producers_,
+      .chain_last_irreversible_block_num = chain_last_irreversible_block_num_,
+      .chain_last_irreversible_block_id = chain_last_irreversible_block_id_,
+      .chain_fetch_block_by_number = chain_fetch_block_by_number_,
+      .chain_fetch_block_by_id = chain_fetch_block_by_id_,
+      .chain_fetch_block_state_by_number = chain_fetch_block_state_by_number_,
+      .chain_fetch_block_state_by_id = chain_fetch_block_state_by_id_,
+      .chain_get_block_id_for_num = chain_get_block_id_for_num_,
+      .chain_calculate_integrity_hash = chain_calculate_integrity_hash_,
+      .chain_sender_avoids_whitelist_blacklist_enforcement = chain_sender_avoids_whitelist_blacklist_enforcement_,
+      .chain_check_actor_list = chain_check_actor_list_,
+      .chain_check_contract_list = chain_check_contract_list_,
+      .chain_check_action_list = chain_check_action_list_,
+      .chain_check_key_list = chain_check_key_list_,
+      .chain_is_building_block = chain_is_building_block_,
+      .chain_is_producing_block = chain_is_producing_block_,
+      .chain_is_ram_billing_in_notify_allowed = chain_is_ram_billing_in_notify_allowed_,
+      .chain_add_resource_greylist = chain_add_resource_greylist_,
+      .chain_remove_resource_greylist = chain_remove_resource_greylist_,
+      .chain_is_resource_greylisted = chain_is_resource_greylisted_,
+      .chain_get_resource_greylist = chain_get_resource_greylist_,
+      .chain_get_config = chain_get_config_,
+      .chain_validate_expiration = chain_validate_expiration_,
+      .chain_validate_tapos = chain_validate_tapos_,
+      .chain_validate_db_available_size = chain_validate_db_available_size_,
+      .chain_validate_reversible_available_size = chain_validate_reversible_available_size_,
+      .chain_is_protocol_feature_activated = chain_is_protocol_feature_activated_,
+      .chain_is_builtin_activated = chain_is_builtin_activated_,
+      .chain_is_known_unexpired_transaction = chain_is_known_unexpired_transaction_,
+      .chain_set_proposed_producers = chain_set_proposed_producers_,
+      .chain_light_validation_allowed = chain_light_validation_allowed_,
+      .chain_skip_auth_check = chain_skip_auth_check_,
+      .chain_skip_db_sessions = chain_skip_db_sessions_,
+      .chain_skip_trx_checks = chain_skip_trx_checks_,
+      .chain_contracts_console = chain_contracts_console_,
+      .chain_is_uuos_mainnet = chain_is_uuos_mainnet_,
+      .chain_get_chain_id = chain_get_chain_id_,
+      .chain_get_read_mode = chain_get_read_mode_,
+      .chain_get_validation_mode = chain_get_validation_mode_,
+      .chain_set_subjective_cpu_leeway = chain_set_subjective_cpu_leeway_,
+      .chain_set_greylist_limit = chain_set_greylist_limit_,
+      .chain_get_greylist_limit = chain_get_greylist_limit_,
+      .chain_add_to_ram_correction = chain_add_to_ram_correction_,
+      .chain_all_subjective_mitigations_disabled = chain_all_subjective_mitigations_disabled_,
+      .chain_get_scheduled_producer = chain_get_scheduled_producer_,
     };
     register_chain_api(&s_api);
 }

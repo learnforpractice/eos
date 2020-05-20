@@ -364,3 +364,49 @@ namespace eosio { namespace chain {
    };
 
 } }  /// eosio::chain
+
+
+FC_REFLECT(eosio::chain::controller::config, 
+                                    (sender_bypass_whiteblacklist)
+                                    (actor_whitelist)
+                                    (actor_blacklist)
+                                    (contract_whitelist)
+                                    (contract_blacklist)
+                                    (action_blacklist)
+                                    (key_blacklist)
+                                    (blocks_dir)
+                                    (state_dir)
+                                    (state_size)
+                                    (state_guard_size)
+                                    (reversible_cache_size)
+                                    (reversible_guard_size)
+                                    (sig_cpu_bill_pct)
+                                    (thread_pool_size)
+                                    (read_only)
+                                    (force_all_checks)
+                                    (disable_replay_opts)
+                                    (contracts_console)
+                                    (allow_ram_billing_in_notify)
+                                    (disable_all_subjective_mitigations)
+                                    (uuos_mainnet)
+                                    (genesis_accounts_file)
+                                    (wasm_runtime)
+                                    (read_mode)
+                                    (block_validation_mode)
+                                    (db_map_mode)
+                                    (db_hugepage_paths)
+                                    (resource_greylist)
+                                    (trusted_producers)
+                                    (greylist_limit)
+)
+
+FC_REFLECT_ENUM(eosio::chain::db_read_mode, 
+                              (SPECULATIVE)
+                              (HEAD)
+                              (READ_ONLY)
+                              (IRREVERSIBLE)
+)
+
+FC_REFLECT_ENUM(eosio::chain::validation_mode, (FULL)(LIGHT))
+
+FC_REFLECT_ENUM(chainbase::pinnable_mapped_file::map_mode, (mapped)(heap)(locked))

@@ -115,6 +115,7 @@ add_library( eosio_chain
              chain_api/chain_exceptions.cpp
              db_api/db_api.cpp
              db_api/db_interface.cpp
+             chain_manager.cpp
              )
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime

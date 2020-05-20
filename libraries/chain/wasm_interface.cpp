@@ -2103,7 +2103,6 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,         int(int, int)  )
    (action_data_size,         int()          )
    (current_receiver,         int64_t()      )
-   (call_native,          int(int, int, int, int, int, int))
 );
 
 REGISTER_INTRINSICS(authorization_api,
