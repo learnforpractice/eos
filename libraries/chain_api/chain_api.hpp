@@ -172,6 +172,9 @@ struct chain_api_cpp
    void (*chain_get_scheduled_producer)(void *ptr, string& _block_time, string& result);
 
 
+   void (*pack_native_object)(int type, string& msg, string& packed_message);
+   void (*unpack_native_object)(int type, string& packed_message, string& msg);
+
 };
 
 extern "C" void register_chain_api(struct chain_api_cpp* api);

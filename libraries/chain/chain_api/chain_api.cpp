@@ -406,6 +406,9 @@ bool chain_all_subjective_mitigations_disabled_(void *ptr);
 void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
 
 
+void pack_native_object_(int type, string& msg, string& packed_message);
+void unpack_native_object_(int type, string& packed_message, string& msg);
+
 
 extern "C" void chain_api_init() {
     static bool init = false;
@@ -537,6 +540,11 @@ extern "C" void chain_api_init() {
       .chain_add_to_ram_correction = chain_add_to_ram_correction_,
       .chain_all_subjective_mitigations_disabled = chain_all_subjective_mitigations_disabled_,
       .chain_get_scheduled_producer = chain_get_scheduled_producer_,
+
+
+      .pack_native_object = pack_native_object_,
+      .unpack_native_object_ = unpack_native_object_,
+
     };
     register_chain_api(&s_api);
 }
