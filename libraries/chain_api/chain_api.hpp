@@ -10,10 +10,13 @@
 
 #include <stdint.h>
 #include <string>
-#include <eosio/chain/types.hpp>
+// #include <eosio/chain/types.hpp>
+#include <fc/crypto/sha256.hpp>
 
 using namespace std;
-using namespace eosio::chain;
+
+using checksum_type       = fc::sha256;
+using digest_type         = checksum_type;
 
 enum class enum_builtin_protocol_feature : uint32_t {
    preactivate_feature,

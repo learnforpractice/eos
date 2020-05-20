@@ -37,10 +37,15 @@ extern "C" int init_python() {
     }
 
     Py_Initialize();
-    PyRun_SimpleString("import struct;print(struct)");
-    PyRun_SimpleString("import sys;sys.path.append('.')");
-    PyRun_SimpleString("print(sys.path)");
-
+    PyRun_SimpleString("import struct;print(struct)\n" \
+                        "import os;import sys;sys.path.append('.')\n" \
+                        "uuos_lib=os.getenv('UUOS_EXT_LIB')\n"
+                        "print(uuos_lib)\n"
+                        "sys.path.append(uuos_lib)\n"
+                        "import _uuos\n"
+                        "_uuos.say_hello()\n"
+    );
+    
     // PyRun_SimpleString("import _uuos;_uuos.say_hello()");
 
     return 0;

@@ -1,7 +1,4 @@
-#include <stdint.h>
-#include <dlfcn.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "uuos.hpp"
 
 using namespace std;
 
@@ -18,3 +15,23 @@ extern "C" void say_hello_() {
     fn_say_hello say_hello = (fn_say_hello)dlsym(handle, "say_hello");
     say_hello();
 }
+
+typedef struct chain_api_cpp* (*fn_get_chain_api)();
+
+chain_api_cpp* get_chain_api() {
+    static struct chain_api_cpp* chain_api;
+
+    if (!chain_api) {
+        const char * chain_api_lib = getenv("CHAIN_API_SHARED_LIB");
+        void *handle = dlopen(chain_api_lib, RTLD_LAZY | RTLD_LOCAL);
+        if (handle == 0) {
+            printf("loading %s failed!\n", chain_api_lib);
+            return nullptr;
+        }
+        fn_get_chain_api api = (fn_get_chain_api)dlsym(handle, "get_chain_api");
+        chain_api = api();
+    }
+    return chain_api;
+}
+
+
