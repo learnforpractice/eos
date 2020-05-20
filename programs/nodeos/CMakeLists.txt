@@ -70,7 +70,7 @@ target_link_libraries( ${NODE_EXECUTABLE_NAME}
         PRIVATE -Wl,${whole_archive_flag} action_publisher_plugin    -Wl,${no_whole_archive_flag}
         PRIVATE -Wl,${build_id_flag}
         PRIVATE chain_plugin http_plugin producer_plugin http_client_plugin
-        PRIVATE eosio_chain fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )
+        PRIVATE eosio_chain chain_api_impl fc ${CMAKE_DL_LIBS} ${PLATFORM_SPECIFIC_LIBS} )
 
 if(BUILD_MONGO_DB_PLUGIN)
   target_link_libraries( ${NODE_EXECUTABLE_NAME} PRIVATE -Wl,${whole_archive_flag} mongo_db_plugin -Wl,${no_whole_archive_flag} )

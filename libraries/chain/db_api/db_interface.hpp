@@ -551,6 +551,8 @@ class db_interface {
       void db_remove_i64_ex( int iterator );
 
       int  db_get_i64( int iterator, char* buffer, size_t buffer_size );
+      int db_get_i64( int iterator, string& buffer );
+
       int  db_get_i64_ex( int iterator, uint64_t& primary, char* buffer, size_t buffer_size );
       const char* db_get_i64_exex( int itr, size_t* buffer_size );
 

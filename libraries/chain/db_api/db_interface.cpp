@@ -344,6 +344,12 @@ int db_interface::db_get_i64( int iterator, char* buffer, size_t buffer_size ) {
    return obj.value.size();
 }
 
+int db_interface::db_get_i64( int iterator, string& buffer ) {
+   const key_value_object& obj = keyval_cache.get( iterator );
+   buffer = string(obj.value.data(), obj.value.size());
+   return buffer.size();
+}
+
 int db_interface::db_get_i64_ex( int iterator, uint64_t& primary, char* buffer, size_t buffer_size ) {
    const key_value_object& obj = keyval_cache.get( iterator );
    memcpy( buffer, obj.value.data(), std::min(obj.value.size(), buffer_size) );
@@ -732,9 +738,9 @@ void db_interface::init_accounts(const string& genesis_accounts_file) {
 
 using namespace eosio::chain;
 
-int db_interface_get_i64(void *ptr, int itr, char* buffer, size_t buffer_size ) {
+int db_interface_get_i64(void *ptr, int itr, string& buffer ) {
    db_interface& db = *(db_interface *)ptr;
-   return db.db_get_i64(itr, buffer, buffer_size);
+   return db.db_get_i64(itr, buffer);
 }
 
 int db_interface_next_i64(void *ptr, int itr, uint64_t* primary ) {

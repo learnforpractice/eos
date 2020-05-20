@@ -14,7 +14,6 @@
 #include <eosio/chain/code_object.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <fc/scoped_exit.hpp>
-#include <chain_api.hpp>
 #include <vm_api/vm_api.h>
 #include "IR/Module.h"
 #include "Runtime/Intrinsics.h"

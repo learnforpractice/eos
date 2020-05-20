@@ -37,6 +37,11 @@ enum class enum_builtin_protocol_feature : uint32_t {
 
 struct chain_api_cpp
 {
+   void (*uuos_set_log_level)(string& logger_name, int level);
+   void (*uuos_set_version)();
+   void (*uuos_set_default_data_dir)(string& dir);
+   void (*uuos_set_default_config_dir)(string& dir);
+
    int64_t (*get_current_exception)(std::string& what);
    void (*n2str)(uint64_t n, string& str_name);
    uint64_t (*str2n)(string& str_name);

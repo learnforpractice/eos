@@ -12,6 +12,7 @@
 
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+#include <chain_api.hpp>
 
 #include "config.hpp"
 
@@ -92,6 +93,17 @@ extern "C"
 
 }
 
+void uuos_set_version() {
+   app().set_version(eosio::nodeos::config::version);
+}
+
+void uuos_set_default_data_dir_(string& dir) {
+   app().set_default_data_dir(fc::path(dir));
+}
+
+void uuos_set_default_config_dir_(string& dir) {
+   app().set_default_config_dir(fc::path(dir));  
+}
 
 int main(int argc, char** argv)
 {
@@ -106,6 +118,12 @@ int main(int argc, char** argv)
       vm_api_ro_init();
       chain_api_init();
       sandboxed_contracts_init();
+      {
+         auto chain_api = get_chain_api();
+         chain_api->uuos_set_version = uuos_set_version;
+         chain_api->uuos_set_default_data_dir = uuos_set_default_data_dir_;
+         chain_api->uuos_set_default_config_dir = uuos_set_default_config_dir_;
+      }
       return init_python(argc, argv);
 
 //      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
