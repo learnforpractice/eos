@@ -20,6 +20,8 @@ cdef extern from "Python.h":
 cdef extern from "uuos.hpp":
     void say_hello_();
 #   void register_on_accepted_block_cb_()
+    void pack_native_object_(int _type, string& msg, string& packed_message)
+    void unpack_native_object_(int _type, string& packed_message, string& msg)
 
     void* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
     bool chain_startup_(void* ptr, bool initdb);
@@ -120,9 +122,467 @@ cdef extern from "uuos.hpp":
     bool chain_all_subjective_mitigations_disabled_(void *ptr);
     void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
 
+    void* chain_get_db_interface_(void *ptr);
+
+    int db_interface_get_i64(void *ptr, int itr, char* buffer, size_t buffer_size );
+    int db_interface_next_i64(void *ptr, int itr, uint64_t* primary );
+    int db_interface_previous_i64(void *ptr, int itr, uint64_t* primary );
+
+    int db_interface_find_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+    void db_interface_remove_i64(void *ptr,int itr);
+    int db_interface_lowerbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+    int db_interface_upperbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+    int db_interface_end_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
+
 
 def say_hello():
     return say_hello_()
 
+def pack_native_object(int _type, string& msg):
+    cdef string packed_message
+    pack_native_object_(_type, msg, packed_message)
+    return <bytes>packed_message
+
+def unpack_native_object(int _type, string& packed_message):
+    cdef string msg
+    unpack_native_object_(_type, packed_message, msg)
+    return <bytes>msg
+
 def chain_new(string& config, string& genesis, string& protocol_features_dir, string& snapshot_dir):
     return <uint64_t>chain_new_(config, genesis, protocol_features_dir, snapshot_dir)
+
+#def chain_set_apply_context(uint64_t ptr):
+#    chain_set_apply_context_(<void *>ptr);
+
+#def chain_clear_apply_context():
+#    chain_clear_apply_context_()
+
+def chain_startup(uint64_t ptr, bool initdb):
+    return chain_startup_(<void*> ptr, initdb);
+
+def chain_free(unsigned long long  ptr):
+    chain_free_(<void *>ptr);
+
+def chain_abort_block(uint64_t ptr):
+    return chain_abort_block_(<void *>ptr)
+
+def chain_get_global_properties(uint64_t ptr):
+    cdef string result
+    chain_get_global_properties_(<void *>ptr, result)
+    return result
+
+def chain_get_dynamic_global_properties(uint64_t ptr):
+    cdef string result
+    chain_get_dynamic_global_properties_(<void *>ptr, result)
+    return result
+
+def chain_get_actor_whitelist(uint64_t ptr):
+    cdef string result
+    chain_get_actor_whitelist_(<void *>ptr, result)
+    return result
+
+def chain_get_actor_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_actor_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_get_contract_whitelist(uint64_t ptr):
+    cdef string result
+    chain_get_contract_whitelist_(<void *>ptr, result)
+    return result
+
+def chain_get_contract_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_contract_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_get_action_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_action_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_get_key_blacklist(uint64_t ptr):
+    cdef string result
+    chain_get_key_blacklist_(<void *>ptr, result)
+    return result
+
+def chain_set_actor_whitelist(uint64_t ptr, string& params):
+    chain_set_actor_whitelist_(<void *>ptr, params)
+
+def chain_set_actor_blacklist(uint64_t ptr, string& params):
+    chain_set_actor_blacklist_(<void *>ptr, params)
+
+def chain_set_contract_whitelist(uint64_t ptr, string& params):
+    chain_set_contract_whitelist_(<void *>ptr, params)
+
+def chain_set_action_blacklist(uint64_t ptr, string& params):
+    chain_set_action_blacklist_(<void *>ptr, params)
+
+def chain_set_key_blacklist(uint64_t ptr, string& params):
+    chain_set_key_blacklist_(<void *>ptr, params)
+
+def chain_head_block_num(uint64_t ptr):
+    return chain_head_block_num_(<void *>ptr)
+
+def chain_head_block_time(uint64_t ptr):
+    cdef string result
+    chain_head_block_time_(<void *>ptr, result)
+    return result
+
+def chain_head_block_id(uint64_t ptr):
+    cdef string result
+    chain_head_block_id_(<void *>ptr, result)
+    return result
+
+def chain_head_block_producer(uint64_t ptr):
+    cdef string result
+    chain_head_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_head_block_header(uint64_t ptr):
+    cdef string result
+    chain_head_block_header_(<void *>ptr, result)
+    return result
+
+def chain_head_block_state(uint64_t ptr):
+    cdef string result
+    chain_head_block_state_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_head_block_num(uint64_t ptr):
+    return chain_fork_db_head_block_num_(<void *>ptr)
+
+def chain_fork_db_head_block_id(uint64_t ptr):
+    cdef string result
+    chain_fork_db_head_block_id_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_head_block_time(uint64_t ptr):
+    cdef string result
+    chain_fork_db_head_block_time_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_head_block_producer(uint64_t ptr):
+    cdef string result
+    chain_fork_db_head_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_pending_head_block_num(uint64_t ptr):
+    return chain_fork_db_pending_head_block_num_(<void *>ptr)
+
+def chain_fork_db_pending_head_block_id(uint64_t ptr):
+    cdef string result
+    chain_fork_db_pending_head_block_id_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_pending_head_block_time(uint64_t ptr):
+    cdef string result
+    chain_fork_db_pending_head_block_time_(<void *>ptr, result)
+    return result
+
+def chain_fork_db_pending_head_block_producer(uint64_t ptr):
+    cdef string result
+    chain_fork_db_pending_head_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_pending_block_time(uint64_t ptr):
+    cdef string result
+    chain_pending_block_time_(<void *>ptr, result)
+    return result
+
+def chain_pending_block_producer(uint64_t ptr):
+    cdef string result
+    chain_pending_block_producer_(<void *>ptr, result)
+    return result
+
+def chain_pending_block_signing_key(uint64_t ptr):
+    cdef string result
+    ret = chain_pending_block_signing_key_(<void *>ptr, result)
+    return result
+
+def chain_pending_producer_block_id(uint64_t ptr):
+    cdef string result
+    chain_pending_producer_block_id_(<void *>ptr, result)
+    return result
+
+def chain_get_pending_trx_receipts(uint64_t ptr):
+    cdef string result
+    chain_get_pending_trx_receipts_(<void *>ptr, result)
+    return result
+
+def chain_active_producers(uint64_t ptr):
+    cdef string result
+    chain_active_producers_(<void *>ptr, result)
+    return result
+
+def chain_pending_producers(uint64_t ptr):
+    cdef string result
+    chain_pending_producers_(<void *>ptr, result)
+    return result
+
+def chain_proposed_producers(uint64_t ptr):
+    cdef string result
+    chain_proposed_producers_(<void *>ptr, result)
+    return result
+
+def chain_last_irreversible_block_num(uint64_t ptr):
+    return chain_last_irreversible_block_num_(<void *>ptr)
+
+def chain_last_irreversible_block_id(uint64_t ptr):
+    cdef string result
+    chain_last_irreversible_block_id_(<void *>ptr, result)
+    return result
+
+def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num):
+    cdef string raw_block
+    chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
+    return <bytes>raw_block
+
+def chain_fetch_block_by_id(uint64_t ptr, string& block_id):
+    cdef string raw_block
+    chain_fetch_block_by_id_(<void *>ptr, block_id, raw_block)
+    return <bytes>raw_block
+
+def chain_fetch_block_state_by_number(uint64_t ptr, uint32_t block_num):
+    cdef string raw_block_state
+    chain_fetch_block_state_by_number_(<void *>ptr, block_num, raw_block_state)
+    return <bytes>raw_block_state
+
+def chain_fetch_block_state_by_id(uint64_t ptr, string& block_id):
+    cdef string raw_block_state
+    chain_fetch_block_state_by_id_(<void *>ptr, block_id, raw_block_state)
+    return <bytes>raw_block_state
+
+def chain_get_block_id_for_num(uint64_t ptr, uint32_t block_num):
+    cdef string result
+    chain_get_block_id_for_num_(<void *>ptr, block_num, result)
+    return result
+
+def chain_calculate_integrity_hash(uint64_t ptr):
+    cdef string result
+    chain_calculate_integrity_hash_(<void *>ptr, result)
+    return result
+
+def chain_sender_avoids_whitelist_blacklist_enforcement(uint64_t ptr, string& sender):
+    cdef string result
+    return chain_sender_avoids_whitelist_blacklist_enforcement_(<void *>ptr, sender)
+
+def chain_check_actor_list(uint64_t ptr, string& param):
+    cdef string err
+    ret = chain_check_actor_list_(<void *>ptr, param, err)
+    return ret, err
+
+def chain_check_contract_list(uint64_t ptr, string& param):
+    cdef string err
+    ret = chain_check_contract_list_(<void *>ptr, param, err)
+    return ret, err
+
+def chain_check_action_list(uint64_t ptr, string& code, string& action):
+    cdef string err
+    ret = chain_check_action_list_(<void *>ptr, code, action, err)
+    return ret, err
+
+def chain_check_key_list(uint64_t ptr, string& param):
+    cdef string err
+    ret = chain_check_key_list_(<void *>ptr, param, err)
+    return ret, err
+
+def chain_is_building_block(uint64_t ptr):
+    return chain_is_building_block_(<void *>ptr)
+
+def chain_is_producing_block(uint64_t ptr):
+    return chain_is_producing_block_(<void *>ptr)
+
+def chain_is_ram_billing_in_notify_allowed(uint64_t ptr):
+    return chain_is_ram_billing_in_notify_allowed_(<void *>ptr)
+
+def chain_add_resource_greylist(uint64_t ptr, string& param):
+    chain_add_resource_greylist_(<void *>ptr, param)
+
+def chain_remove_resource_greylist(uint64_t ptr, string& param):
+    chain_remove_resource_greylist_(<void *>ptr, param)
+
+def chain_is_resource_greylisted(uint64_t ptr, string& param):
+    return chain_is_resource_greylisted_(<void *>ptr, param)
+
+def chain_get_resource_greylist(uint64_t ptr):
+    cdef string result
+    chain_get_resource_greylist_(<void *>ptr, result)
+    return result
+
+def chain_get_config(uint64_t ptr):
+    cdef string result
+    chain_get_config_(<void *>ptr, result)
+    return result
+
+def chain_validate_expiration(uint64_t ptr, string& trx):
+    cdef string err
+    ret = chain_validate_expiration_(<void *>ptr, trx, err)
+    return ret, err
+
+def chain_validate_tapos(uint64_t ptr, string& trx):
+    cdef string err
+    ret = chain_validate_tapos_(<void *>ptr, trx, err)
+    return ret, err
+
+def chain_validate_db_available_size(uint64_t ptr):
+    cdef string err
+    ret = chain_validate_db_available_size_(<void *>ptr, err)
+    return ret, err
+
+def chain_validate_reversible_available_size(uint64_t ptr):
+    cdef string err
+    ret = chain_validate_reversible_available_size_(<void *>ptr, err)
+    return ret, err
+
+def chain_is_protocol_feature_activated(uint64_t ptr, string& digest):
+    return chain_is_protocol_feature_activated_(<void *>ptr, digest)
+
+def chain_is_builtin_activated(uint64_t ptr, int feature):
+    return chain_is_builtin_activated_(<void *>ptr, feature)
+
+def chain_is_known_unexpired_transaction(uint64_t ptr, string& trx):
+    return chain_is_known_unexpired_transaction_(<void *>ptr, trx)
+
+def chain_set_proposed_producers(uint64_t ptr, string& param):
+    return chain_set_proposed_producers_(<void *>ptr, param)
+
+def chain_light_validation_allowed(uint64_t ptr, bool replay_opts_disabled_by_policy):
+    return chain_light_validation_allowed_(<void *>ptr, replay_opts_disabled_by_policy)
+
+def chain_skip_auth_check(uint64_t ptr):
+    return chain_skip_auth_check_(<void *>ptr)
+
+def chain_skip_db_sessions(uint64_t ptr):
+    return chain_skip_db_sessions_(<void *>ptr)
+
+def chain_skip_trx_checks(uint64_t ptr):
+    return chain_skip_trx_checks_(<void *>ptr)
+
+def chain_contracts_console(uint64_t ptr):
+    return chain_contracts_console_(<void *>ptr)
+
+def chain_is_uuos_mainnet(uint64_t ptr):
+    return chain_is_uuos_mainnet_(<void *>ptr)
+
+def chain_get_chain_id(uint64_t ptr):
+    cdef string chain_id
+    chain_get_chain_id_(<void *>ptr, chain_id)
+    return chain_id
+
+def chain_get_read_mode(uint64_t ptr):
+    return chain_get_read_mode_(<void *>ptr)
+
+def chain_get_validation_mode(uint64_t ptr):
+    return chain_get_validation_mode_(<void *>ptr)
+
+def chain_set_subjective_cpu_leeway(uint64_t ptr, leeway):
+    chain_set_subjective_cpu_leeway_(<void *>ptr, leeway)
+
+def chain_set_greylist_limit(uint64_t ptr, limit):
+    chain_set_greylist_limit_(<void *>ptr, limit)
+
+def chain_get_greylist_limit(uint64_t ptr):
+    return chain_get_greylist_limit_(<void *>ptr)
+
+def chain_add_to_ram_correction(uint64_t ptr, string& account, uint64_t ram_bytes):
+    return chain_add_to_ram_correction_(<void *>ptr, account, ram_bytes)
+
+def chain_all_subjective_mitigations_disabled(uint64_t ptr):
+    return chain_all_subjective_mitigations_disabled_(<void *>ptr)
+
+def chain_fork_db_pending_head_block_num(uint64_t ptr):
+    return chain_fork_db_pending_head_block_num_(<void *>ptr)
+
+def chain_last_irreversible_block_num(uint64_t ptr):
+    return chain_last_irreversible_block_num_(<void *>ptr)
+
+def chain_get_block_id_for_num(uint64_t ptr, uint32_t num):
+    cdef string block_id
+    chain_get_block_id_for_num_(<void *>ptr, num, block_id)
+    return block_id
+
+def chain_id(uint64_t ptr):
+    cdef string chain_id
+    chain_get_chain_id_(<void *>ptr, chain_id)
+    return chain_id
+
+def chain_fetch_block_by_number(uint64_t ptr, uint32_t block_num ):
+    cdef string raw_block
+    chain_fetch_block_by_number_(<void *>ptr, block_num, raw_block)
+    return <bytes>raw_block
+
+def chain_start_block(uint64_t ptr, string& time, uint16_t confirm_block_count, string& new_features):
+    chain_start_block_(<void *>ptr, time, confirm_block_count, new_features)
+
+def chain_get_unapplied_transactions(uint64_t ptr):
+    cdef string result
+    chain_get_unapplied_transactions_(<void *>ptr, result)
+    return result
+
+def chain_push_transaction(uint64_t ptr, string& packed_trx, string& deadline, uint32_t billed_cpu_time_us):
+    cdef string _result
+    ret = chain_push_transaction_(<void *>ptr, packed_trx, deadline, billed_cpu_time_us, _result)
+    result = <bytes>_result
+    result = result.decode('utf8')
+    return ret, result
+
+def chain_push_scheduled_transaction(uint64_t ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us):
+    cdef string result
+    chain_push_scheduled_transaction_(<void *>ptr, scheduled_tx_id, deadline, billed_cpu_time_us, result)
+    return result
+
+def chain_commit_block(uint64_t ptr):
+    return chain_commit_block_(<void *>ptr)
+
+def chain_pop_block(uint64_t ptr):
+    chain_pop_block_(<void *>ptr)
+
+def chain_get_account(uint64_t ptr, string& account):
+    cdef string result
+    chain_get_account_(<void *>ptr, account, result)
+    return result
+
+def chain_get_scheduled_producer(uint64_t ptr, string& block_time):
+    cdef string result
+    chain_get_scheduled_producer_(<void *>ptr, block_time, result)
+    return result
+
+def chain_finalize_block(uint64_t ptr, string& _priv_key):
+    chain_finalize_block_(<void *>ptr, _priv_key)
+
+def chain_pack_action_args(uint64_t ptr, string& name, string& action, string& args):
+    cdef vector[char] result
+    cdef bool ret
+    ret = chain_pack_action_args_(<void *>ptr, name, action, args, result)
+    return PyBytes_FromStringAndSize(result.data(), result.size())
+
+def chain_unpack_action_args(uint64_t ptr, string& name, string& action, string& binargs):
+    cdef string result
+    cdef bool ret
+    ret = chain_unpack_action_args_(<void *>ptr, name, action, binargs, result)
+    return result
+
+def chain_gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key):
+    cdef vector[char] result
+    chain_gen_transaction_(_actions, expiration, reference_block_id, _chain_id, compress, _private_key, result)
+    return PyBytes_FromStringAndSize(result.data(), result.size())
+
+def db_get_ptr(uint64_t chain_ptr):
+    return <uint64_t>chain_get_db_interface_(<void *>chain_ptr);
+
+def db_find_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
+   return db_interface_find_i64(<void *>ptr, code, scope, table, id )
+
+
+def db_remove_i64(uint64_t ptr, int itr):
+    db_interface_remove_i64(<void *>ptr, itr)
+
+def db_lowerbound_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
+    return db_interface_lowerbound_i64(<void *>ptr, code, scope, table, id )
+
+def db_upperbound_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
+    return db_interface_upperbound_i64(<void *>ptr, code, scope, table, id )
+
+def db_end_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table ):
+   return db_interface_end_i64(<void *>ptr, code, scope, table )

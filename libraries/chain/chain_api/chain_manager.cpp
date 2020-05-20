@@ -1087,6 +1087,11 @@ void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& resul
     result = fc::json::to_string(producer, fc::time_point::maximum());
 }
 
+void* chain_get_db_interface_(void *ptr) {
+    auto& chain = chain_get_controller(ptr);
+    return &chain.get_db_interface();
+}
+
 /*
          bool skip_db_sessions( block_status bs )const;
 */

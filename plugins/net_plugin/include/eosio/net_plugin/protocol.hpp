@@ -55,10 +55,10 @@ namespace eosio {
     validation, ///< the peer sent a block that failed validation
     benign_other, ///< reasons such as a timeout. not fatal but warrant resetting
     fatal_other, ///< a catch-all for errors we don't have discriminated
-    authentication ///< peer failed authenicatio
+    authentication ///< peer failed authenication
   };
 
-  constexpr auto reason_str( go_away_reason rsn ) {
+  constexpr auto reason_str( uint32_t rsn ) {
     switch (rsn ) {
     case no_reason : return "no reason";
     case self : return "self connect";
@@ -77,8 +77,9 @@ namespace eosio {
   }
 
   struct go_away_message {
-    go_away_message(go_away_reason r = no_reason) : reason(r), node_id() {}
-    go_away_reason reason{no_reason};
+    go_away_message(go_away_reason r = no_reason) : reason(uint32_t(r)), node_id() {}
+//    go_away_reason reason{no_reason};
+    uint32_t reason = uint32_t(no_reason);
     fc::sha256 node_id; ///< for duplicate notification
   };
 
@@ -96,7 +97,7 @@ namespace eosio {
     normal
   };
 
-  constexpr auto modes_str( id_list_modes m ) {
+  constexpr auto modes_str( uint32_t m ) {
     switch( m ) {
     case none : return "none";
     case catch_up : return "catch up";
@@ -108,8 +109,9 @@ namespace eosio {
 
   template<typename T>
   struct select_ids {
-    select_ids() : mode(none),pending(0),ids() {}
-    id_list_modes  mode{none};
+    select_ids() : mode(uint32_t(none)),pending(0),ids() {}
+//    id_list_modes  mode{none};
+    uint32_t       mode{uint32_t(none)};
     uint32_t       pending{0};
     vector<T>      ids;
     bool           empty () const { return (mode == none || ids.empty()); }

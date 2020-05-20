@@ -117,13 +117,17 @@ string db_api::exec_action(uint64_t code, uint64_t action, const vector<char>& a
    return _pending_console_output;
 }
 
+void db_api::get_code( uint64_t account, string& code ) {
+   const auto& accnt_obj          = db.get<account_object,by_name>( name(account) );
+   const auto& accnt_metadata_obj = db.get<account_metadata_object,by_name>( name(account) );
 
-#if 0
-void db_api::get_code(uint64_t account, string& code) {
-   const auto &a = db.get<account_object, by_name>(account);
-   code = string(a.code.data(), a.code.size());
+   if( accnt_metadata_obj.code_hash != digest_type() ) {
+      const auto& code_obj = db.get<code_object, by_code_hash>(accnt_metadata_obj.code_hash);
+      code = string(code_obj.code.begin(), code_obj.code.end());
+   }
 }
 
+#if 0
 const shared_string& db_api::get_code(uint64_t account) {
    const auto &a = db.get<account_object, by_name>(account);
    return a.code;
@@ -692,16 +696,6 @@ int mp_is_account2(string& account) {
    return eosio::chain::db_api::get().is_account(_account);
 }
 
-extern "C" {
-
-
-void mp_db_get_table_i64( int itr, uint64_t *code, uint64_t *scope, uint64_t *payer, uint64_t *table, uint64_t *id) {
-   db_api::get().db_get_table_i64( itr, *code, *scope, *payer, *table, *id );
-}
-
-void db_api_remove_i64(int itr) {
-   db_api::get().db_remove_i64( itr );
-}
 
 int db_api_get_i64( int itr, char* buffer, size_t buffer_size ) {
    return db_api::get().db_get_i64(itr, buffer, buffer_size);
@@ -725,6 +719,10 @@ int db_api_previous_i64( int itr, uint64_t* primary ) {
 
 int db_api_find_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
    return db_api::get().db_find_i64(code, scope, table, id);
+}
+
+void db_api_remove_i64(int itr) {
+   db_api::get().db_remove_i64( itr );
 }
 
 int db_api_lowerbound_i64( uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
@@ -758,6 +756,5 @@ int db_api_find_i256( uint64_t code, uint64_t scope, uint64_t table, const void*
    return db_api::get().db_find_i256(code, scope, table, key);
 }
 
-}
 
 

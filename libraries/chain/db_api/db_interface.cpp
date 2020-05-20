@@ -111,12 +111,17 @@ string db_interface::exec_action(uint64_t code, uint64_t action, const vector<ch
    return _pending_console_output;
 }
 
+void db_interface::get_code( uint64_t account, string& code ) {
+   const auto& accnt_obj          = db.get<account_object,by_name>( name(account) );
+   const auto& accnt_metadata_obj = db.get<account_metadata_object,by_name>( name(account) );
+
+   if( accnt_metadata_obj.code_hash != digest_type() ) {
+      const auto& code_obj = db.get<code_object, by_code_hash>(accnt_metadata_obj.code_hash);
+      code = string(code_obj.code.begin(), code_obj.code.end());
+   }
+}
 
 #if 0
-void db_interface::get_code(uint64_t account, string& code) {
-   const auto &a = db.get<account_object, by_name>(account);
-   code = string(a.code.data(), a.code.size());
-}
 
 const shared_string& db_interface::get_code(uint64_t account) {
    const auto &a = db.get<account_object, by_name>(account);
@@ -725,5 +730,45 @@ void db_interface::init_accounts(const string& genesis_accounts_file) {
 
 } } /// eosio::chain
 
+using namespace eosio::chain;
 
+int db_interface_get_i64(void *ptr, int itr, char* buffer, size_t buffer_size ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_get_i64(itr, buffer, buffer_size);
+}
+
+int db_interface_next_i64(void *ptr, int itr, uint64_t* primary ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_next_i64(itr, *primary);
+}
+
+int db_interface_previous_i64(void *ptr, int itr, uint64_t* primary ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_previous_i64(itr, *primary);
+}
+
+int db_interface_find_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_find_i64(code, scope, table, id);
+}
+
+void db_interface_remove_i64(void *ptr,int itr) {
+   db_interface& db = *(db_interface *)ptr;
+   db.db_remove_i64( itr );
+}
+
+int db_interface_lowerbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_lowerbound_i64(code, scope, table, id);
+}
+
+int db_interface_upperbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_upperbound_i64(code, scope, table, id);
+}
+
+int db_interface_end_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.db_end_i64(code, scope, table);
+}
 

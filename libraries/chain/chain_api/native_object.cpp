@@ -1,12 +1,12 @@
 #include <eosio/net_plugin/protocol.hpp>
-#include <Python.h>
+// #include <Python.h>
 #include <string>
 #include <vector>
 #include <fc/io/json.hpp>
 #include <fc/io/raw.hpp>
 #include <fc/variant.hpp>
 #include <eosio/chain/controller.hpp>
-#include <eosio/producer_plugin/producer_plugin.hpp>
+// #include <eosio/producer_plugin/producer_plugin.hpp>
 #include <eosio/chain/genesis_state.hpp>
 
 #include "native_object.hpp"
@@ -47,7 +47,7 @@ static void unpack_cpp_object(string& packed_message, string& msg) {
         break;
 
 using controller_config = eosio::chain::controller::config;
-using producer_params = producer_plugin::producer_params;
+//using producer_params = producer_plugin::producer_params;
 
 void pack_native_object_(int type, string& msg, string& packed_message) {
     switch(type) {
@@ -61,7 +61,7 @@ void pack_native_object_(int type, string& msg, string& packed_message) {
         PACK_CPP_OBJECT(signed_block)
         PACK_CPP_OBJECT(packed_transaction)
         PACK_CPP_OBJECT(controller_config)
-        PACK_CPP_OBJECT(producer_params)
+//        PACK_CPP_OBJECT(producer_params)
         PACK_CPP_OBJECT(genesis_state)
         PACK_CPP_OBJECT(abi_def)
         PACK_CPP_OBJECT(transaction)
@@ -81,7 +81,7 @@ void unpack_native_object_(int type, string& packed_message, string& msg) {
         UNPACK_CPP_OBJECT(signed_block)
         UNPACK_CPP_OBJECT(packed_transaction)
         UNPACK_CPP_OBJECT(controller_config)
-        UNPACK_CPP_OBJECT(producer_params)
+//        UNPACK_CPP_OBJECT(producer_params)
         UNPACK_CPP_OBJECT(genesis_state)
         UNPACK_CPP_OBJECT(abi_def)
         UNPACK_CPP_OBJECT(transaction)

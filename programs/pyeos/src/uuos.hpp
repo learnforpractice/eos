@@ -8,6 +8,10 @@ extern "C" void say_hello_();
 
 chain_api_cpp* get_chain_api();
 
+#define pack_native_object_ get_chain_api()->pack_native_object
+#define unpack_native_object_ get_chain_api()->unpack_native_object
+
+
 #define chain_new_ get_chain_api()->chain_new
 #define chain_startup_ get_chain_api()->chain_startup
 #define chain_free_ get_chain_api()->chain_free
@@ -104,4 +108,6 @@ chain_api_cpp* get_chain_api();
 #define chain_add_to_ram_correction_ get_chain_api()->chain_add_to_ram_correction
 #define chain_all_subjective_mitigations_disabled_ get_chain_api()->chain_all_subjective_mitigations_disabled
 #define chain_get_scheduled_producer_ get_chain_api()->chain_get_scheduled_producer
+#define chain_get_db_interface_ get_chain_api()->chain_get_db_interface
+
 

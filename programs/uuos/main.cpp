@@ -88,7 +88,7 @@ extern "C"
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
 
-   int init_python();
+   int init_python(int argc, char **argv);
 
 }
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
       vm_api_ro_init();
       chain_api_init();
       sandboxed_contracts_init();
-      init_python();
+      return init_python(argc, argv);
 
 //      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 

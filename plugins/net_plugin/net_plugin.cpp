@@ -1205,7 +1205,7 @@ namespace eosio {
       verify_strand_in_this_thread( strand, __func__, __LINE__ );
       go_away_reason close_after_send = no_reason;
       if (m.contains<go_away_message>()) {
-         close_after_send = m.get<go_away_message>().reason;
+         close_after_send = (go_away_reason)m.get<go_away_message>().reason;
       }
 
       const uint32_t payload_size = fc::raw::pack_size( m );
@@ -2672,7 +2672,7 @@ namespace eosio {
    void connection::handle_message( const go_away_message& msg ) {
       peer_wlog( this, "received go_away_message, reason = ${r}", ("r", reason_str( msg.reason )) );
       bool retry = no_retry == no_reason; // if no previous go away message
-      no_retry = msg.reason;
+      no_retry = (eosio::go_away_reason)msg.reason;
       if( msg.reason == duplicate ) {
          std::lock_guard<std::mutex> g_conn( conn_mtx );
          conn_node_id = msg.node_id;

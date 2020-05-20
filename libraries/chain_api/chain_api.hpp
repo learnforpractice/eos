@@ -170,10 +170,21 @@ struct chain_api_cpp
    void (*chain_add_to_ram_correction)(void *ptr, string& account, uint64_t ram_bytes);
    bool (*chain_all_subjective_mitigations_disabled)(void *ptr);
    void (*chain_get_scheduled_producer)(void *ptr, string& _block_time, string& result);
-
+   void* (*chain_get_db_interface)(void *ptr);
 
    void (*pack_native_object)(int type, string& msg, string& packed_message);
    void (*unpack_native_object)(int type, string& packed_message, string& msg);
+
+
+   int (*db_interface_get_i64)(void *ptr, int itr, char* buffer, size_t buffer_size );
+   int (*db_interface_next_i64)(void *ptr, int itr, uint64_t* primary );
+   int (*db_interface_previous_i64)(void *ptr, int itr, uint64_t* primary );
+
+   int (*db_interface_find_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+   void (*db_interface_remove_i64)(void *ptr,int itr);
+   int (*db_interface_lowerbound_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+   int (*db_interface_upperbound_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+   int (*db_interface_end_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
 
 };
 

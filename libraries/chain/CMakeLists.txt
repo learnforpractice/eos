@@ -144,6 +144,7 @@ target_include_directories( eosio_chain
                               PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
                               PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
                               PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
+                              PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
                         )
 add_dependencies(eosio_chain contracts_project)
 # add_dependencies(eosio_chain aleth)

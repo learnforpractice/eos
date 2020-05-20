@@ -404,6 +404,7 @@ uint32_t chain_get_greylist_limit_(void *ptr);
 void chain_add_to_ram_correction_(void *ptr, string& account, uint64_t ram_bytes);
 bool chain_all_subjective_mitigations_disabled_(void *ptr);
 void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
+void* chain_get_db_interface_(void *ptr);
 
 
 void pack_native_object_(int type, string& msg, string& packed_message);
@@ -540,10 +541,10 @@ extern "C" void chain_api_init() {
       .chain_add_to_ram_correction = chain_add_to_ram_correction_,
       .chain_all_subjective_mitigations_disabled = chain_all_subjective_mitigations_disabled_,
       .chain_get_scheduled_producer = chain_get_scheduled_producer_,
-
+      .chain_get_db_interface = chain_get_db_interface_,
 
       .pack_native_object = pack_native_object_,
-      .unpack_native_object_ = unpack_native_object_,
+      .unpack_native_object = unpack_native_object_,
 
     };
     register_chain_api(&s_api);
