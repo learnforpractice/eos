@@ -184,7 +184,7 @@ class ChainTest(object):
         genesis = json.dumps(genesis)
         logger.debug(genesis)
         uuos.set_default_log_level(10)
-        self._chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
+        self.chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
 
         self.init()
 
@@ -277,6 +277,10 @@ class ChainTest(object):
     @property
     def chain(self):
         return self._chain
+
+    @chain.setter
+    def chain(self, c):
+        self._chain = c
 
     def on_accepted_block(self, block, num, block_id):
         pass
@@ -570,6 +574,7 @@ class ChainTest(object):
         params = {'account_name':'testtesttest1'}
         params = json.dumps(params)
         ret, result = self.chain_api.get_account(params)
+        assert ret, result
         result = JsonObject(result)
         logger.info(result)
 

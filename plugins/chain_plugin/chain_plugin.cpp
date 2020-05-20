@@ -2314,7 +2314,7 @@ read_only::get_code_results read_only::get_code( const get_code_params& params )
 
    if( accnt_metadata_obj.code_hash != digest_type() ) {
       const auto& code_obj = d.get<code_object, by_code_hash>(accnt_metadata_obj.code_hash);
-      result.wasm = string(code_obj.code.begin(), code_obj.code.end());
+      result.wasm = blob{{code_obj.code.begin(), code_obj.code.end()}};
       result.code_hash = code_obj.code_hash;
    }
 
@@ -2602,3 +2602,141 @@ chain::symbol read_only::extract_core_symbol()const {
 } // namespace eosio
 
 FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ignore2)(ignore3)(core_symbol)(ignore4) )
+
+#include <fc/variant.hpp>
+
+#define max_abi_time (10000)
+using namespace eosio::chain_apis;
+using namespace eosio;
+eosio::chain::controller& chain_get_controller(void *ptr);
+
+int chain_api_get_info_(void *ptr, string& result) {
+   auto next = [&result](const fc::exception_ptr& ex) {
+      result = ex->to_detail_string();
+   };
+   try {
+      read_only::get_info_params params;
+      read_only::get_info_results results;
+      auto& cc = chain_get_controller(ptr);
+
+      results = read_only(cc, fc::microseconds(max_abi_time)).get_info(params);
+      result = fc::json::to_string(fc::variant(results), fc::time_point::maximum());
+      return 1;
+    } CATCH_AND_CALL(next);
+    return 0;
+}
+
+#define CHAIN_API_RO(api_name) \
+int chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
+   auto next = [&result](const fc::exception_ptr& ex) { \
+      result = ex->to_detail_string(); \
+   }; \
+   try { \
+      auto& cc = chain_get_controller(ptr); \
+      auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
+      auto _result = read_only(cc, fc::microseconds(max_abi_time)).api_name(_params); \
+      result = fc::json::to_string(fc::variant(_result), fc::time_point::maximum()); \
+      return 1;\
+   } CATCH_AND_CALL(next); \
+   return 0; \
+}
+
+
+CHAIN_API_RO(get_activated_protocol_features)
+CHAIN_API_RO(get_block)
+CHAIN_API_RO(get_block_header_state)
+CHAIN_API_RO(get_account)
+CHAIN_API_RO(get_code)
+CHAIN_API_RO(get_code_hash)
+CHAIN_API_RO(get_abi)
+CHAIN_API_RO(get_raw_code_and_abi)
+CHAIN_API_RO(get_raw_abi)
+CHAIN_API_RO(get_table_rows)
+CHAIN_API_RO(get_table_by_scope)
+CHAIN_API_RO(get_currency_balance)
+CHAIN_API_RO(get_currency_stats)
+CHAIN_API_RO(get_producers)
+CHAIN_API_RO(get_producer_schedule)
+
+CHAIN_API_RO(get_scheduled_transactions)
+CHAIN_API_RO(abi_json_to_bin)
+CHAIN_API_RO(abi_bin_to_json)
+CHAIN_API_RO(get_required_keys)
+CHAIN_API_RO(get_transaction_id)
+
+void uuos_on_error(const fc::exception_ptr& ex);
+
+int chain_api_push_transaction_(void *ptr, string& params, string& result) {
+   auto next = [](const fc::exception_ptr& ex) {
+      uuos_on_error(ex);
+   };
+   try {
+      auto& cc = chain_get_controller(ptr);
+      auto _params = fc::json::from_string(params).as<read_write::push_transaction_params>();
+      read_write(cc, fc::microseconds(max_abi_time), true).push_transaction(_params,
+         [&result](const fc::static_variant<fc::exception_ptr, chain_apis::read_write::push_transaction_results>& results){
+            if (results.contains<fc::exception_ptr>()) {
+               try {
+                  result = fc::json::to_string(fc::variant(results.get<fc::exception_ptr>()), fc::time_point::maximum());
+               } catch (...) {
+//                  http_plugin::handle_exception(#api_name, #call_name, body, cb);
+               }
+            } else {
+               result = fc::json::to_string(fc::variant(results.get<read_write::push_transaction_results>()), fc::time_point::maximum()); 
+//               cb(http_response_code, result.visit(async_result_visitor()));
+            }
+         }
+      );
+      return 1;
+//      result = fc::json::to_string(fc::variant(_result));
+   } CATCH_AND_CALL(next);
+   return 0;
+}
+
+int chain_api_recover_reversible_blocks_(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block) {
+//   auto& cc = chain_get_controller(ptr);
+//   uint32_t cache_size = cc.get_config().reversible_cache_size;
+   fc::optional<fc::path> new_db_dir;
+   if (new_reversible_blocks_dir.size()) {
+      new_db_dir.emplace(fc::path(new_reversible_blocks_dir));
+   }
+   return eosio::chain_plugin().recover_reversible_blocks( fc::path(old_reversible_blocks_dir), reversible_cache_size, new_db_dir, truncate_at_block );
+}
+
+void chain_api_repair_log_(string& blocks_dir, uint32_t truncate_at_block, string& backup_blocks_dir) {
+   backup_blocks_dir = block_log::repair_log( blocks_dir, truncate_at_block).string();
+}
+
+
+namespace eosio {
+   struct db_size_index_count {
+      string   index;
+      uint64_t row_count;
+   };
+
+   struct db_size_stats {
+      uint64_t                    free_bytes;
+      uint64_t                    used_bytes;
+      uint64_t                    size;
+      vector<db_size_index_count> indices;
+   };
+}
+
+FC_REFLECT( eosio::db_size_index_count, (index)(row_count) )
+FC_REFLECT( eosio::db_size_stats, (free_bytes)(used_bytes)(size)(indices) )
+
+
+void db_size_api_get_(void *ptr, string& result) {
+   auto& cc = chain_get_controller(ptr);
+   const chainbase::database& db = cc.db();
+   db_size_stats ret;
+
+   ret.free_bytes = db.get_segment_manager()->get_free_memory();
+   ret.size = db.get_segment_manager()->get_size();
+   ret.used_bytes = ret.size - ret.free_bytes;
+
+   chainbase::database::database_index_row_count_multiset indices = db.row_count_per_index();
+   for(const auto& i : indices)
+      ret.indices.emplace_back(db_size_index_count{i.second, i.first});
+   result = fc::json::to_string(ret, fc::time_point::maximum());
+}

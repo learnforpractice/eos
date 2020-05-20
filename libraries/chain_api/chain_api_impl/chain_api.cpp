@@ -410,7 +410,30 @@ void* chain_get_db_interface_(void *ptr);
 void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
 void uuos_set_log_level_(string& logger_name, int level);
+void uuos_shutdown_();
 
+int chain_api_get_info_(void *ptr, string& result);
+int chain_api_get_info_(void *ptr, string& result);
+int chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result);
+int chain_api_get_block_(void *ptr, string& params, string& result);
+int chain_api_get_block_header_state_(void *ptr, string& params, string& result);
+int chain_api_get_account_(void *ptr, string& params, string& result);
+int chain_api_get_code_(void *ptr, string& params, string& result);
+int chain_api_get_code_hash_(void *ptr, string& params, string& result);
+int chain_api_get_abi_(void *ptr, string& params, string& result);
+int chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& result);
+int chain_api_get_raw_abi_(void *ptr, string& params, string& result);
+int chain_api_get_table_rows_(void *ptr, string& params, string& result);
+int chain_api_get_table_by_scope_(void *ptr, string& params, string& result);
+int chain_api_get_currency_balance_(void *ptr, string& params, string& result);
+int chain_api_get_currency_stats_(void *ptr, string& params, string& result);
+int chain_api_get_producers_(void *ptr, string& params, string& result);
+int chain_api_get_producer_schedule_(void *ptr, string& params, string& result);
+int chain_api_get_scheduled_transactions_(void *ptr, string& params, string& result);
+int chain_api_abi_json_to_bin_(void *ptr, string& params, string& result);
+int chain_api_abi_bin_to_json_(void *ptr, string& params, string& result);
+int chain_api_get_required_keys_(void *ptr, string& params, string& result);
+int chain_api_get_transaction_id_(void *ptr, string& params, string& result);
 
 extern "C" void chain_api_init() {
     static bool init = false;
@@ -547,7 +570,30 @@ extern "C" void chain_api_init() {
       .pack_native_object = pack_native_object_,
       .unpack_native_object = unpack_native_object_,
 
-      .uuos_set_log_level = uuos_set_log_level_
+      .uuos_set_log_level = uuos_set_log_level_,
+      .uuos_shutdown = uuos_shutdown_,
+
+      .chain_api_get_activated_protocol_features = chain_api_get_activated_protocol_features_,
+      .chain_api_get_block = chain_api_get_block_,
+      .chain_api_get_block_header_state = chain_api_get_block_header_state_,
+      .chain_api_get_account = chain_api_get_account_,
+      .chain_api_get_code = chain_api_get_code_,
+      .chain_api_get_code_hash = chain_api_get_code_hash_,
+      .chain_api_get_abi = chain_api_get_abi_,
+      .chain_api_get_raw_code_and_abi = chain_api_get_raw_code_and_abi_,
+      .chain_api_get_raw_abi = chain_api_get_raw_abi_,
+      .chain_api_get_table_rows = chain_api_get_table_rows_,
+      .chain_api_get_table_by_scope = chain_api_get_table_by_scope_,
+      .chain_api_get_currency_balance = chain_api_get_currency_balance_,
+      .chain_api_get_currency_stats = chain_api_get_currency_stats_,
+      .chain_api_get_producers = chain_api_get_producers_,
+      .chain_api_get_producer_schedule = chain_api_get_producer_schedule_,
+
+      .chain_api_get_scheduled_transactions = chain_api_get_scheduled_transactions_,
+      .chain_api_abi_json_to_bin = chain_api_abi_json_to_bin_,
+      .chain_api_abi_bin_to_json = chain_api_abi_bin_to_json_,
+      .chain_api_get_required_keys = chain_api_get_required_keys_,
+      .chain_api_get_transaction_id = chain_api_get_transaction_id_
     };
 
     register_chain_api(&s_api);

@@ -176,7 +176,7 @@ public:
    struct get_code_results {
       name                   account_name;
       string                 wast;
-      string                 wasm;
+      fc::blob               wasm;
       fc::sha256             code_hash;
       optional<abi_def>      abi;
    };

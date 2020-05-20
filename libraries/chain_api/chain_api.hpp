@@ -41,6 +41,7 @@ struct chain_api_cpp
    void (*uuos_set_version)();
    void (*uuos_set_default_data_dir)(string& dir);
    void (*uuos_set_default_config_dir)(string& dir);
+   void (*uuos_shutdown)();
 
    int64_t (*get_current_exception)(std::string& what);
    void (*n2str)(uint64_t n, string& str_name);
@@ -190,6 +191,28 @@ struct chain_api_cpp
    int (*db_interface_lowerbound_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
    int (*db_interface_upperbound_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
    int (*db_interface_end_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
+
+   int (*chain_api_get_info)(void *ptr, string& result);
+   int (*chain_api_get_activated_protocol_features)(void *ptr, string& params, string& result);
+   int (*chain_api_get_block)(void *ptr, string& params, string& result);
+   int (*chain_api_get_block_header_state)(void *ptr, string& params, string& result);
+   int (*chain_api_get_account)(void *ptr, string& params, string& result);
+   int (*chain_api_get_code)(void *ptr, string& params, string& result);
+   int (*chain_api_get_code_hash)(void *ptr, string& params, string& result);
+   int (*chain_api_get_abi)(void *ptr, string& params, string& result);
+   int (*chain_api_get_raw_code_and_abi)(void *ptr, string& params, string& result);
+   int (*chain_api_get_raw_abi)(void *ptr, string& params, string& result);
+   int (*chain_api_get_table_rows)(void *ptr, string& params, string& result);
+   int (*chain_api_get_table_by_scope)(void *ptr, string& params, string& result);
+   int (*chain_api_get_currency_balance)(void *ptr, string& params, string& result);
+   int (*chain_api_get_currency_stats)(void *ptr, string& params, string& result);
+   int (*chain_api_get_producers)(void *ptr, string& params, string& result);
+   int (*chain_api_get_producer_schedule)(void *ptr, string& params, string& result);
+   int (*chain_api_get_scheduled_transactions)(void *ptr, string& params, string& result);
+   int (*chain_api_abi_json_to_bin)(void *ptr, string& params, string& result);
+   int (*chain_api_abi_bin_to_json)(void *ptr, string& params, string& result);
+   int (*chain_api_get_required_keys)(void *ptr, string& params, string& result);
+   int (*chain_api_get_transaction_id)(void *ptr, string& params, string& result);
 
 };
 

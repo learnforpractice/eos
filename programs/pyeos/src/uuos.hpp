@@ -110,4 +110,41 @@ chain_api_cpp* get_chain_api();
 #define chain_get_scheduled_producer_ get_chain_api()->chain_get_scheduled_producer
 #define chain_get_db_interface_ get_chain_api()->chain_get_db_interface
 
+#define db_interface_get_i64_ get_chain_api()->db_interface_get_i64
+#define db_interface_next_i64_ get_chain_api()->db_interface_next_i64
+#define db_interface_previous_i64_ get_chain_api()->db_interface_previous_i64
+#define db_interface_find_i64_ get_chain_api()->db_interface_find_i64
+#define db_interface_remove_i64_ get_chain_api()->db_interface_remove_i64
+#define db_interface_lowerbound_i64_ get_chain_api()->db_interface_lowerbound_i64
+#define db_interface_upperbound_i64_ get_chain_api()->db_interface_upperbound_i64
+#define db_interface_end_i64_ get_chain_api()->db_interface_end_i64
 
+#define uuos_set_log_level_ get_chain_api()->uuos_set_log_level
+#define uuos_set_version_ get_chain_api()->uuos_set_version
+#define uuos_set_default_data_dir_ get_chain_api()->uuos_set_default_data_dir
+#define uuos_set_default_config_dir_ get_chain_api()->uuos_set_default_config_dir
+#define uuos_shutdown_ get_chain_api()->uuos_shutdown
+
+//+++++++++++++++++chain api++++++++++++++
+#define chain_api_get_info_ get_chain_api()->chain_api_get_info
+#define chain_api_get_activated_protocol_features_ get_chain_api()->chain_api_get_activated_protocol_features
+#define chain_api_get_block_ get_chain_api()->chain_api_get_block
+#define chain_api_get_block_header_state_ get_chain_api()->chain_api_get_block_header_state
+#define chain_api_get_account_ get_chain_api()->chain_api_get_account
+#define chain_api_get_code_ get_chain_api()->chain_api_get_code
+#define chain_api_get_code_hash_ get_chain_api()->chain_api_get_code_hash
+#define chain_api_get_abi_ get_chain_api()->chain_api_get_abi
+#define chain_api_get_raw_code_and_abi_ get_chain_api()->chain_api_get_raw_code_and_abi
+#define chain_api_get_raw_abi_ get_chain_api()->chain_api_get_raw_abi
+#define chain_api_get_table_rows_ get_chain_api()->chain_api_get_table_rows
+#define chain_api_get_table_by_scope_ get_chain_api()->chain_api_get_table_by_scope
+#define chain_api_get_currency_balance_ get_chain_api()->chain_api_get_currency_balance
+#define chain_api_get_currency_stats_ get_chain_api()->chain_api_get_currency_stats
+#define chain_api_get_producers_ get_chain_api()->chain_api_get_producers
+#define chain_api_get_producer_schedule_ get_chain_api()->chain_api_get_producer_schedule
+
+#define chain_api_get_scheduled_transactions_ get_chain_api()->chain_api_get_scheduled_transactions
+#define chain_api_abi_json_to_bin_ get_chain_api()->chain_api_abi_json_to_bin
+#define chain_api_abi_bin_to_json_ get_chain_api()->chain_api_abi_bin_to_json
+#define chain_api_get_required_keys_ get_chain_api()->chain_api_get_required_keys
+#define chain_api_get_transaction_id_ get_chain_api()->chain_api_get_transaction_id

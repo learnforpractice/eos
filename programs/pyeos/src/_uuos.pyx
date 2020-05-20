@@ -124,19 +124,76 @@ cdef extern from "uuos.hpp":
 
     void* chain_get_db_interface_(void *ptr);
 
-    int db_interface_get_i64(void *ptr, int itr, char* buffer, size_t buffer_size );
-    int db_interface_next_i64(void *ptr, int itr, uint64_t* primary );
-    int db_interface_previous_i64(void *ptr, int itr, uint64_t* primary );
+    int db_interface_get_i64_(void *ptr, int itr, string& buffer);
+    int db_interface_next_i64_(void *ptr, int itr, uint64_t* primary );
+    int db_interface_previous_i64_(void *ptr, int itr, uint64_t* primary );
 
-    int db_interface_find_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
-    void db_interface_remove_i64(void *ptr,int itr);
-    int db_interface_lowerbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
-    int db_interface_upperbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
-    int db_interface_end_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
+    int db_interface_find_i64_(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+    void db_interface_remove_i64_(void *ptr,int itr);
+    int db_interface_lowerbound_i64_(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+    int db_interface_upperbound_i64_(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+    int db_interface_end_i64_(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
+
+    void uuos_set_log_level_(string& logger_name, int level)
+    void uuos_set_version_()
+    void uuos_set_default_data_dir_(string& dir)
+    void uuos_set_default_config_dir_(string& dir)
+    void uuos_shutdown_()
+
+    int chain_api_get_info_(void *ptr, string& result);
+    int chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result);
+    int chain_api_get_block_(void *ptr, string& params, string& result);
+    int chain_api_get_block_header_state_(void *ptr, string& params, string& result);
+    int chain_api_get_account_(void *ptr, string& params, string& result);
+    int chain_api_get_code_(void *ptr, string& params, string& result);
+    int chain_api_get_code_hash_(void *ptr, string& params, string& result);
+    int chain_api_get_abi_(void *ptr, string& params, string& result);
+    int chain_api_get_raw_code_and_abi_(void *ptr, string& params, string& result);
+    int chain_api_get_raw_abi_(void *ptr, string& params, string& result);
+    int chain_api_get_table_rows_(void *ptr, string& params, string& result);
+    int chain_api_get_table_by_scope_(void *ptr, string& params, string& result);
+    int chain_api_get_currency_balance_(void *ptr, string& params, string& result);
+    int chain_api_get_currency_stats_(void *ptr, string& params, string& result);
+    int chain_api_get_producers_(void *ptr, string& params, string& result);
+    int chain_api_get_producer_schedule_(void *ptr, string& params, string& result);
+
+    int chain_api_get_scheduled_transactions_(void *ptr, string& params, string& result);
+    int chain_api_abi_json_to_bin_(void *ptr, string& params, string& result);
+    int chain_api_abi_bin_to_json_(void *ptr, string& params, string& result);
+    int chain_api_get_required_keys_(void *ptr, string& params, string& result);
+    int chain_api_get_transaction_id_(void *ptr, string& params, string& result);
 
 
 def say_hello():
     return say_hello_()
+
+g_accepted_block_cb = None
+cdef int on_accepted_block(string& packed_block, uint32_t block_num, string& block_id):
+    global g_accepted_block_cb
+    try:
+        if g_accepted_block_cb:
+            block = PyBytes_FromStringAndSize(packed_block.c_str(), packed_block.size())
+            id = PyBytes_FromStringAndSize(block_id.c_str(), block_id.size())
+            g_accepted_block_cb(block, block_num, id)
+    except KeyboardInterrupt:
+        uuos_shutdown_()
+    return 1
+
+def set_accepted_block_callback(cb):
+    global g_accepted_block_cb
+    g_accepted_block_cb = cb
+
+def set_log_level(string& logger_name, int level):
+    uuos_set_log_level_(logger_name, level)
+
+def set_version():
+    uuos_set_version_()
+
+def set_default_data_dir(string& dir):
+    uuos_set_default_data_dir_(dir)
+
+def set_default_config_dir(string& dir):
+    uuos_set_default_config_dir_(dir)
 
 def pack_native_object(int _type, string& msg):
     cdef string packed_message
@@ -568,21 +625,157 @@ def chain_gen_transaction(string& _actions, string& expiration, string& referenc
     chain_gen_transaction_(_actions, expiration, reference_block_id, _chain_id, compress, _private_key, result)
     return PyBytes_FromStringAndSize(result.data(), result.size())
 
+
+#------------chain api begin----------------
+
+def chain_api_get_info(uint64_t chain_ptr):
+    cdef string info
+    err = chain_api_get_info_(<void *>chain_ptr, info)
+    return err, info
+
+def chain_api_get_activated_protocol_features(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_activated_protocol_features_(<void *>chain_ptr, params, result)
+    return err, result
+
+def chain_api_get_block(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_block_(<void *>chain_ptr, params, result)
+    return err, result
+
+def chain_api_get_block_header_state(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_block_header_state_(<void *>chain_ptr, params, result)
+    return err, result
+
+def chain_api_get_account(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_account_(<void *>chain_ptr, params, result)
+    return err, result
+
+def chain_api_get_code(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_code_(<void *>chain_ptr, params, result)
+    r = PyBytes_FromStringAndSize(result.c_str(), result.size())
+#    print(r)
+    return err, r.decode('utf8')
+
+def chain_api_get_code_hash(uint64_t chain_ptr, string& params):
+    cdef string code_hash
+    err = chain_api_get_code_hash_(<void *>chain_ptr, params, code_hash)
+    return err, code_hash
+
+def chain_api_get_abi(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_abi_(<void *>chain_ptr, params, result)
+    r = PyBytes_FromStringAndSize(result.c_str(), result.size())
+    return err, r.decode('utf8')
+
+def chain_api_get_raw_code_and_abi(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_raw_code_and_abi_(<void *>chain_ptr, params, result)
+    return err, result
+
+def chain_api_get_raw_abi(uint64_t chain_ptr, string& params):
+    cdef string result
+    err = chain_api_get_raw_abi_(<void *>chain_ptr, params, result)
+    r = PyBytes_FromStringAndSize(result.c_str(), result.size())
+    return err, r.decode('utf8')
+
+def chain_api_get_table_rows(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_table_rows_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_table_by_scope(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_table_by_scope_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_currency_balance(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_currency_balance_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_currency_stats(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_currency_stats_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_producers(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_producers_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_producer_schedule(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_producer_schedule_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_scheduled_transactions(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_scheduled_transactions_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_abi_json_to_bin(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_abi_json_to_bin_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_abi_bin_to_json(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_abi_bin_to_json_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_required_keys(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_required_keys_(<void *>chain_ptr, params, results)
+    return err, results
+
+def chain_api_get_transaction_id(uint64_t chain_ptr, string& params):
+    cdef string results
+    err = chain_api_get_transaction_id_(<void *>chain_ptr, params, results)
+    return err, results
+
+#def chain_api_recover_reversible_blocks(string& old_reversible_blocks_dir, string& new_reversible_blocks_dir, uint32_t reversible_cache_size, uint32_t truncate_at_block):
+#    return chain_api_recover_reversible_blocks_(old_reversible_blocks_dir, new_reversible_blocks_dir, reversible_cache_size, truncate_at_block)
+
+#def chain_api_repair_log(string& blocks_dir, uint32_t truncate_at_block):
+#    cdef string backup_blocks_dir
+#    chain_api_repair_log_(blocks_dir, truncate_at_block, backup_blocks_dir)
+#    return backup_blocks_dir
+
+#------------chain api end----------------
+
+#++++++++++++++db api begin+++++++++++++++++++
 def db_get_ptr(uint64_t chain_ptr):
     return <uint64_t>chain_get_db_interface_(<void *>chain_ptr);
 
-def db_find_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
-   return db_interface_find_i64(<void *>ptr, code, scope, table, id )
+def db_get_i64(uint64_t ptr, int itr):
+    cdef string buffer
+    return db_interface_get_i64_(<void *>ptr, itr, buffer)
 
+def db_next_i64(uint64_t ptr, int itr):
+    cdef uint64_t primary = 0
+    return db_interface_next_i64_(<void *>ptr, itr, &primary)
+
+def db_previous_i64(uint64_t ptr, int itr):
+    cdef uint64_t primary = 0
+    return db_interface_previous_i64_(<void *>ptr, itr, &primary );
+
+def db_find_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
+   return db_interface_find_i64_(<void *>ptr, code, scope, table, id )
 
 def db_remove_i64(uint64_t ptr, int itr):
-    db_interface_remove_i64(<void *>ptr, itr)
+    db_interface_remove_i64_(<void *>ptr, itr)
 
 def db_lowerbound_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
-    return db_interface_lowerbound_i64(<void *>ptr, code, scope, table, id )
+    return db_interface_lowerbound_i64_(<void *>ptr, code, scope, table, id )
 
 def db_upperbound_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id ):
-    return db_interface_upperbound_i64(<void *>ptr, code, scope, table, id )
+    return db_interface_upperbound_i64_(<void *>ptr, code, scope, table, id )
 
 def db_end_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table ):
-   return db_interface_end_i64(<void *>ptr, code, scope, table )
+   return db_interface_end_i64_(<void *>ptr, code, scope, table )
+
+#++++++++++++++db api end+++++++++++++++++++
