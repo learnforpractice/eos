@@ -175,8 +175,8 @@ struct chain_api_cpp
    void (*pack_native_object)(int type, string& msg, string& packed_message);
    void (*unpack_native_object)(int type, string& packed_message, string& msg);
 
+   int (*db_interface_get_i64)(void *ptr, int itr, string& buffer );
 
-   int (*db_interface_get_i64)(void *ptr, int itr, char* buffer, size_t buffer_size );
    int (*db_interface_next_i64)(void *ptr, int itr, uint64_t* primary );
    int (*db_interface_previous_i64)(void *ptr, int itr, uint64_t* primary );
 

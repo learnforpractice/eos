@@ -409,6 +409,7 @@ void* chain_get_db_interface_(void *ptr);
 
 void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
+void uuos_set_log_level_(string& logger_name, int level);
 
 
 extern "C" void chain_api_init() {
@@ -546,7 +547,9 @@ extern "C" void chain_api_init() {
       .pack_native_object = pack_native_object_,
       .unpack_native_object = unpack_native_object_,
 
+      .uuos_set_log_level = uuos_set_log_level_
     };
+
     register_chain_api(&s_api);
 }
 

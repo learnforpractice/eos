@@ -1,3 +1,4 @@
+add_subdirectory(chain_api_impl)
 
 set( HEADERS
     ${CMAKE_SOURCE_DIR}/libraries/fc/include
