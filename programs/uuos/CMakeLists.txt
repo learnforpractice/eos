@@ -2,6 +2,7 @@ set(NODE_EXECUTABLE_NAME uuos)
 
 add_executable( ${NODE_EXECUTABLE_NAME}
   main.cpp
+  python.cpp
   accounts_snapshot.cpp
 )
 
