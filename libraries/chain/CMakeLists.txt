@@ -99,7 +99,7 @@ add_library( eosio_chain
              transaction_metadata.cpp
              vm_api/vm_api.cpp
 #             vm_api/vm_exceptions.cpp
-             vm_api_ro/vm_api_ro.cpp
+            #  vm_api_ro/vm_api_ro.cpp
 #             "${CMAKE_SOURCE_DIR}/contracts/eosio.token/eosio.token.cpp"
              protocol_state_object.cpp
              protocol_feature_activation.cpp

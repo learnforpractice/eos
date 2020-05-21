@@ -36,8 +36,6 @@
 
 #include "db_interface.hpp"
 
-void chain_api_set_controller(eosio::chain::controller *_ctrl, eosio::chain::controller::config _cfg);
-
 namespace eosio { namespace chain {
 
 void apply_eosio_addaccounts(apply_context&);
@@ -2465,13 +2463,11 @@ const protocol_feature_manager& controller::get_protocol_feature_manager()const
 controller::controller( const controller::config& cfg, const chain_id_type& chain_id )
 :my( new controller_impl( cfg, *this, protocol_feature_set{}, chain_id ) )
 {
-   chain_api_set_controller(this, cfg);
 }
 
 controller::controller( const config& cfg, protocol_feature_set&& pfs, const chain_id_type& chain_id )
 :my( new controller_impl( cfg, *this, std::move(pfs), chain_id ) )
 {
-   chain_api_set_controller(this, cfg);
 }
 
 controller::~controller() {
