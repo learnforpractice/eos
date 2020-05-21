@@ -284,51 +284,6 @@ static PyObject *py_assert_recover_key(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-static PyObject *py_to_base58(PyObject *self, PyObject *args)
-{
-    PyObject *o;
-    char *in;
-    Py_ssize_t in_size;
-
-    if (PyTuple_GET_SIZE(args) != 1) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
-
-    o = PyTuple_GetItem(args, 0);    
-    if (-1 == PyBytes_AsStringAndSize(o, &in, &in_size)) {
-        return NULL;
-    }
-    char *out = (char *)malloc(in_size*2);
-    int out_size = to_base58(in, in_size, out, in_size*2);
-    o = PyBytes_FromStringAndSize(out, out_size);
-    free(out);
-    return o;
-}
-
-static PyObject *py_from_base58(PyObject *self, PyObject *args)
-{
-    PyObject *o;
-    char *in;
-    Py_ssize_t in_size;
-
-    if (PyTuple_GET_SIZE(args) != 1) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
-
-    o = PyTuple_GetItem(args, 0);    
-    if (-1 == PyBytes_AsStringAndSize(o, &in, &in_size)) {
-        return NULL;
-    }
-    char *out = (char *)malloc(in_size);
-    int out_size = from_base58(in, in_size, out, in_size);
-
-    o = PyBytes_FromStringAndSize(out, out_size);
-    free(out);
-    return o;
-}
-
 #include "../xxhash.h"
 static PyObject *py_xxhash(PyObject *self, PyObject *args)
 {
@@ -375,6 +330,4 @@ static PyObject *py_xxhash(PyObject *self, PyObject *args)
     {"ripemd160",            (PyCFunction)py_ripemd160, METH_VARARGS, NULL}, \
     {"recover_key",          (PyCFunction)py_recover_key, METH_VARARGS, NULL}, \
     {"assert_recover_key",   (PyCFunction)py_assert_recover_key, METH_VARARGS, NULL}, \
-    {"to_base58",            (PyCFunction)py_to_base58, METH_VARARGS, NULL}, \
-    {"from_base58",          (PyCFunction)py_from_base58, METH_VARARGS, NULL}, \
     {"xxhash",               (PyCFunction)py_xxhash, METH_VARARGS, NULL},

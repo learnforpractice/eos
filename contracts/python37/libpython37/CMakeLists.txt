@@ -185,6 +185,7 @@ SET(SRC_FILES
 
 ./python37/Modules/config-wasm.c
 ./eosiolib_wrapper/db.c
+./eosiolib_wrapper/float128.c
 ./eosiolib_wrapper/utility.c
 #./python37/pyconfig.h
 

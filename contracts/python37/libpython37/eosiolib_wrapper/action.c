@@ -1,4 +1,3 @@
-
 //uint32_t read_action_data( void* msg, uint32_t len );
 static PyObject *py_read_action_data(PyObject *self, PyObject *args)
 {
