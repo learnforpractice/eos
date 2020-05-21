@@ -5,3 +5,4 @@ export PYTHONPATH=$UUOS_EXT_LIB:$PROJECT_DIR/programs/uuos:'/usr/lib/python37.zi
 
 export PYTHONHOME="/usr/lib/python3.7"
 export PYTHON_SHARED_LIB_PATH="/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so"
+$PROJECT_DIR/build/programs/uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
