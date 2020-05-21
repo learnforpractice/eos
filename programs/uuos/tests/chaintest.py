@@ -148,7 +148,10 @@ class ChainTest(object):
         chain_cfg.contracts_console = options.contracts_console
         chain_cfg.blocks_dir = os.path.join(options.data_dir, 'blocks')
         chain_cfg.state_dir = os.path.join(options.data_dir, 'state')
-#
+
+        if uuos_network:
+            chain_cfg.genesis_accounts_file = os.path.join(test_dir, 'test_genesis_accounts.bin')
+
         chain_cfg.state_guard_size = 5*1024*1024
         chain_cfg.reversible_cache_size = 50*1024*1024
         chain_cfg.reversible_guard_size = 5*1024*1024
@@ -184,7 +187,7 @@ class ChainTest(object):
 #        logger.info(chain_cfg)
         genesis = json.dumps(genesis)
         logger.debug(genesis)
-        uuos.set_default_log_level(10)
+        uuos.set_default_log_level(0)
         self.chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
 
         self.init()
