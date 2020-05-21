@@ -12,22 +12,26 @@ namespace eosio {
     }
 }
 void chain_api_set_controller(controller *_ctrl);
+void uuos_on_error_(string& ex);
 
 #define CATCH_AND_LOG_EXCEPTION()\
-   catch ( const fc::exception& err ) {\
-      uuos_on_error(err.dynamic_copy_exception());\
+   catch ( const fc::exception& e ) {\
+      string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
+      uuos_on_error_(ex);\
    } catch ( const std::exception& e ) {\
       fc::exception fce( \
          FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
          fc::std_exception_code,\
          BOOST_CORE_TYPEID(e).name(),\
          e.what() ) ;\
-      uuos_on_error(fce.dynamic_copy_exception());\
+        string ex = fc::json::to_string(*fce.dynamic_copy_exception(), fc::time_point::maximum()); \
+        uuos_on_error_(ex);\
    } catch( ... ) {\
       fc::unhandled_exception e(\
          FC_LOG_MESSAGE(warn, "rethrow"),\
          std::current_exception());\
-      uuos_on_error(e.dynamic_copy_exception());\
+        string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
+        uuos_on_error_(ex);\
    }
 
 static string s_last_error;
@@ -41,9 +45,8 @@ void uuos_set_last_error_(string& error) {
     s_last_error = error;
 }
 
-void uuos_on_error(const fc::exception_ptr& ex) {
-//    s_last_error = ex->to_detail_string();
-    s_last_error = fc::json::to_string(*ex, fc::time_point::maximum());
+void uuos_on_error_(string& ex) {
+    s_last_error = ex;
 }
 
 static fc::optional<builtin_protocol_feature> read_builtin_protocol_feature( const fc::path& p  ) {

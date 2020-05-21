@@ -43,6 +43,10 @@ struct chain_api_cpp
    void (*uuos_set_default_config_dir)(string& dir);
    void (*uuos_shutdown)();
 
+   string& (*uuos_get_last_error)();
+   void (*uuos_set_last_error)(string& error);
+   void (*uuos_on_error)(string& _ex);
+
    int64_t (*get_current_exception)(std::string& what);
    void (*n2str)(uint64_t n, string& str_name);
    uint64_t (*str2n)(string& str_name);

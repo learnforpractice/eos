@@ -412,6 +412,10 @@ void unpack_native_object_(int type, string& packed_message, string& msg);
 void uuos_set_log_level_(string& logger_name, int level);
 void uuos_shutdown_();
 
+string& uuos_get_last_error_();
+void uuos_set_last_error_(string& error);
+void uuos_on_error_(string& _ex);
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -549,6 +553,10 @@ extern "C" void chain_api_init() {
 
       .uuos_set_log_level = uuos_set_log_level_,
       .uuos_shutdown = uuos_shutdown_,
+
+      .uuos_get_last_error = uuos_get_last_error_,
+      .uuos_set_last_error = uuos_set_last_error_,
+      .uuos_on_error = uuos_on_error_,
     };
 
     register_chain_api(&s_api);

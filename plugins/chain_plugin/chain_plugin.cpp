@@ -2669,11 +2669,10 @@ CHAIN_API_RO(abi_bin_to_json)
 CHAIN_API_RO(get_required_keys)
 CHAIN_API_RO(get_transaction_id)
 
-void uuos_on_error(const fc::exception_ptr& ex);
-
 int chain_api_push_transaction_(void *ptr, string& params, string& result) {
    auto next = [](const fc::exception_ptr& ex) {
-      uuos_on_error(ex);
+      string err = fc::json::to_string(*ex, fc::time_point::maximum());
+      get_chain_api()->uuos_on_error(err);
    };
    try {
       auto& cc = chain_get_controller(ptr);
@@ -2745,8 +2744,6 @@ void db_size_api_get_(void *ptr, string& result) {
       ret.indices.emplace_back(db_size_index_count{i.second, i.first});
    result = fc::json::to_string(ret, fc::time_point::maximum());
 }
-
-struct chain_api_cpp* get_chain_api(void);
 
 extern "C" void init_chain_api_callback() {
    chain_api_cpp* api = get_chain_api();
