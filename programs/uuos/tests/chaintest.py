@@ -491,9 +491,11 @@ class ChainTest(object):
         return ret
 
     def deploy_eosio_token(self):
-        contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
-        code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
-        abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
+        # contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
+        # code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
+        # abi_path = os.path.join(contract_path, 'eosio.token/eosio.token.abi')
+        code_path = os.path.join(test_dir, 'contracts/eosio.token.wasm')
+        abi_path = os.path.join(test_dir, 'contracts/eosio.token.abi')
         with open(code_path, 'rb') as f:
             code = f.read()
         with open(abi_path, 'rb') as f:
