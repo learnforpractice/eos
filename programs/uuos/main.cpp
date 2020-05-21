@@ -84,12 +84,12 @@ extern "C"
 {
    void evm_init();
    void chain_api_init();
+   void init_chain_api_callback();
    void vm_api_init();
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
 
    int init_python(int argc, char **argv);
-
 }
 
 void uuos_set_version() {
@@ -115,6 +115,7 @@ int main(int argc, char** argv)
       // evm_init();
       vm_api_init();
       chain_api_init();
+      init_chain_api_callback();
       sandboxed_contracts_init();
       {
          auto chain_api = get_chain_api();

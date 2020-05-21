@@ -28,6 +28,8 @@
 #include <signal.h>
 #include <cstdlib>
 
+#include <chain_api.hpp>
+
 // reflect chainbase::environment for --print-build-info option
 FC_REFLECT_ENUM( chainbase::environment::os_t,
                  (OS_LINUX)(OS_MACOS)(OS_WINDOWS)(OS_OTHER) )
@@ -2608,7 +2610,10 @@ FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ig
 #define max_abi_time (10000)
 using namespace eosio::chain_apis;
 using namespace eosio;
-eosio::chain::controller& chain_get_controller(void *ptr);
+
+static eosio::chain::controller& chain_get_controller(void *ptr) {
+    return *(eosio::chain::controller*)ptr;
+}
 
 int chain_api_get_info_(void *ptr, string& result) {
    auto next = [&result](const fc::exception_ptr& ex) {
@@ -2739,4 +2744,31 @@ void db_size_api_get_(void *ptr, string& result) {
    for(const auto& i : indices)
       ret.indices.emplace_back(db_size_index_count{i.second, i.first});
    result = fc::json::to_string(ret, fc::time_point::maximum());
+}
+
+struct chain_api_cpp* get_chain_api(void);
+
+extern "C" void init_chain_api_callback() {
+   chain_api_cpp* api = get_chain_api();
+   api->chain_api_get_activated_protocol_features = chain_api_get_activated_protocol_features_;
+   api->chain_api_get_block = chain_api_get_block_;
+   api->chain_api_get_block_header_state = chain_api_get_block_header_state_;
+   api->chain_api_get_account = chain_api_get_account_;
+   api->chain_api_get_code = chain_api_get_code_;
+   api->chain_api_get_code_hash = chain_api_get_code_hash_;
+   api->chain_api_get_abi = chain_api_get_abi_;
+   api->chain_api_get_raw_code_and_abi = chain_api_get_raw_code_and_abi_;
+   api->chain_api_get_raw_abi = chain_api_get_raw_abi_;
+   api->chain_api_get_table_rows = chain_api_get_table_rows_;
+   api->chain_api_get_table_by_scope = chain_api_get_table_by_scope_;
+   api->chain_api_get_currency_balance = chain_api_get_currency_balance_;
+   api->chain_api_get_currency_stats = chain_api_get_currency_stats_;
+   api->chain_api_get_producers = chain_api_get_producers_;
+   api->chain_api_get_producer_schedule = chain_api_get_producer_schedule_;
+
+   api->chain_api_get_scheduled_transactions = chain_api_get_scheduled_transactions_;
+   api->chain_api_abi_json_to_bin = chain_api_abi_json_to_bin_;
+   api->chain_api_abi_bin_to_json = chain_api_abi_bin_to_json_;
+   api->chain_api_get_required_keys = chain_api_get_required_keys_;
+   api->chain_api_get_transaction_id = chain_api_get_transaction_id_;
 }
