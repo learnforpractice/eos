@@ -590,7 +590,7 @@ class ChainTest(object):
         ret, result = self.chain_api.get_account(params)
         assert ret, result
         result = JsonObject(result)
-        # logger.info(result)
+        logger.info(result)
 
     def test_create_account(self):
         # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
@@ -601,6 +601,7 @@ class ChainTest(object):
         ret, result = self.chain_api.get_account(params)
         assert ret, result
         result = JsonObject(result)
+        logger.info(result)
 
     def test1(self):
         logger.info('++++++++++++++test1+++++++++++++++')
