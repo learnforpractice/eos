@@ -47,50 +47,6 @@ typedef double f64;
 
 extern void WASM_RT_ADD_PREFIX(init)(void);
 
-/* import: 'eosio_injection' 'checktime' */
-extern void (*Z_eosio_injectionZ_checktimeZ_vv)(void);
-/* import: 'eosio_injection' '_eosio_f64_sub' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_subZ_ddd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_lt' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_ltZ_idd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_trunc' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_truncZ_dd)(f64);
-/* import: 'eosio_injection' '_eosio_f64_mul' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_gt' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_gtZ_idd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_ge' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_geZ_idd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_trunc_i32u' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_trunc_i32uZ_id)(f64);
-/* import: 'eosio_injection' '_eosio_f64_abs' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_absZ_dd)(f64);
-/* import: 'eosio_injection' '_eosio_f64_trunc_i32s' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_trunc_i32sZ_id)(f64);
-/* import: 'eosio_injection' '_eosio_f64_le' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_leZ_idd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_ne' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_neZ_idd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_eq' */
-extern u32 (*Z_eosio_injectionZ__eosio_f64_eqZ_idd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_add' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_div' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_divZ_ddd)(f64, f64);
-/* import: 'eosio_injection' '_eosio_f64_neg' */
-extern f64 (*Z_eosio_injectionZ__eosio_f64_negZ_dd)(f64);
-/* import: 'eosio_injection' '_eosio_f64_demote' */
-extern f32 (*Z_eosio_injectionZ__eosio_f64_demoteZ_fd)(f64);
-/* import: 'eosio_injection' '_eosio_f32_eq' */
-extern u32 (*Z_eosio_injectionZ__eosio_f32_eqZ_iff)(f32, f32);
-/* import: 'eosio_injection' '_eosio_f32_promote' */
-extern f64 (*Z_eosio_injectionZ__eosio_f32_promoteZ_df)(f32);
-/* import: 'eosio_injection' '_eosio_f32_div' */
-extern f32 (*Z_eosio_injectionZ__eosio_f32_divZ_fff)(f32, f32);
-/* import: 'eosio_injection' '_eosio_f32_gt' */
-extern u32 (*Z_eosio_injectionZ__eosio_f32_gtZ_iff)(f32, f32);
-/* import: 'eosio_injection' '_eosio_f32_ne' */
-extern u32 (*Z_eosio_injectionZ__eosio_f32_neZ_iff)(f32, f32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' 'prints' */
@@ -175,10 +131,6 @@ extern void (*Z_envZ_ripemd160Z_viii)(u32, u32, u32);
 extern u32 (*Z_envZ_recover_keyZ_iiiiii)(u32, u32, u32, u32, u32);
 /* import: 'env' 'assert_recover_key' */
 extern void (*Z_envZ_assert_recover_keyZ_viiiii)(u32, u32, u32, u32, u32);
-/* import: 'env' 'to_base58' */
-extern u32 (*Z_envZ_to_base58Z_iiiii)(u32, u32, u32, u32);
-/* import: 'env' 'from_base58' */
-extern u32 (*Z_envZ_from_base58Z_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'check_transaction_authorization' */
 extern u32 (*Z_envZ_check_transaction_authorizationZ_iiiiiii)(u32, u32, u32, u32, u32, u32);
 /* import: 'env' 'check_permission_authorization' */
@@ -217,6 +169,12 @@ extern void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
 extern void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'token_transfer' */
 extern void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+extern void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+extern void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+extern void (*Z_envZ_token_closeZ_vjj)(u64, u64);
 /* import: 'env' 'read_transaction' */
 extern u32 (*Z_envZ_read_transactionZ_iii)(u32, u32);
 /* import: 'env' 'transaction_size' */
@@ -367,6 +325,8 @@ extern u32 (*Z_envZ_db_idx_long_double_lowerboundZ_ijjjii)(u64, u64, u64, u32, u
 extern u32 (*Z_envZ_db_idx_long_double_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'db_idx_long_double_end' */
 extern u32 (*Z_envZ_db_idx_long_double_endZ_ijjj)(u64, u64, u64);
+/* import: 'env' '__divtf3' */
+extern void (*Z_envZ___divtf3Z_vijjjj)(u32, u64, u64, u64, u64);
 /* import: 'env' 'db_idx256_store' */
 extern u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
 
