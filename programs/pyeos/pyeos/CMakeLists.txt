@@ -1,1 +1,5 @@
 add_executable( pyeos main.cpp )
+if (APPLE)
+else()
+target_link_libraries(pyeos -ldl)
+endif()
