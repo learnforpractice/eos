@@ -122,6 +122,12 @@ u32 (*Z_envZ_db_previous_i64Z_iii)(u32, u32);
 
 u32 (*Z_envZ_db_get_table_countZ_ijjj)(u64, u64, u64);
 
+u32 (*Z_envZ_db_find_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+void (*Z_envZ_db_update_i256Z_vijii)(u32, u64, u32, u32);
+u32 (*Z_envZ_db_store_i256Z_ijjjiiii)(u64, u64, u64, u32, u32, u32, u32);
+u32 (*Z_envZ_db_get_i256Z_iiii)(u32, u32, u32);
+void (*Z_envZ_db_remove_i256Z_vi)(u32);
+
 
 static u32 db_store_i64(u64 scope, u64 table, u64 payer, u64 id,  u32 data_offset, u32 len) {
    const void* data = (void *)offset_to_ptr(data_offset, len);
@@ -431,38 +437,40 @@ static u32 db_get_table_count(u64 code, u64 scope, u64 table) {
    return get_vm_api()->db_get_table_count(code, scope, table);
 }
 
-
-#if 0
-int db_store_i256( u64 scope, u64 table, u64 payer, void* id, int size, const char* buffer, size_t buffer_size ) {
-   return get_vm_api()->db_store_i256(scope, table, payer, id, size, buffer, buffer_size);
+static u32 db_find_i256( u64 code, u64 scope, u64 table, u32 id_offset, u32 id_size ) {
+   void *id = (void *)offset_to_ptr(id_offset, id_size);
+   return get_vm_api()->db_find_i256(code, scope, table, id, id_size);
 }
 
-static void db_update_i256( int iterator, u64 payer, const char* buffer, size_t buffer_size ) {
+static u32 db_store_i256( u64 scope, u64 table, u64 payer, u32 id_offset, u32 id_size, u32 buffer_offset, u32 buffer_size ) {
+   void *id = (void *)offset_to_ptr(id_offset, id_size);
+   const char *buffer = (const char *)offset_to_ptr(buffer_offset, buffer_size);
+   return get_vm_api()->db_store_i256(scope, table, payer, id, id_size, buffer, buffer_size);
+}
+
+static void db_update_i256( u32 iterator, u64 payer, u32 buffer_offset, u32 buffer_size ) {
+   const char *buffer = (const char *)offset_to_ptr(buffer_offset, buffer_size);
    return get_vm_api()->db_update_i256(iterator, payer, buffer, buffer_size);
 }
 
-static void db_remove_i256( int iterator ) {
+static void db_remove_i256( u32 iterator ) {
    return get_vm_api()->db_remove_i256(iterator);
 }
 
-int db_get_i256( int iterator, char* buffer, size_t buffer_size ) {
+static u32 db_get_i256( u32 iterator, u32 buffer_offset, u32 buffer_size ) {
+   char *buffer = (char *)offset_to_ptr(buffer_offset, buffer_size);
    return get_vm_api()->db_get_i256(iterator, buffer, buffer_size);
 }
 
-int db_find_i256( u64 code, u64 scope, u64 table, void* id, int size ) {
-   return get_vm_api()->db_find_i256(code, scope, table, id, size);
+static u32 db_upperbound_i256( u64 code, u64 scope, u64 table, u32 id_offset, u32 id_size ) {
+   void *id = offset_to_ptr(id_offset, id_size);
+   return get_vm_api()->db_upperbound_i256(code, scope, table, id, id_size);
 }
 
-int db_upperbound_i256( u64 code, u64 scope, u64 table, char* id, int size ) {
-   return get_vm_api()->db_upperbound_i256(code, scope, table, id, size);
+static u32 db_lowerbound_i256( u64 code, u64 scope, u64 table, u32 id_offset, u32 id_size ) {
+   void *id = offset_to_ptr(id_offset, id_size);
+   return get_vm_api()->db_lowerbound_i256(code, scope, table, id, id_size);
 }
-
-int db_lowerbound_i256( u64 code, u64 scope, u64 table, char* id, int size ) {
-   return get_vm_api()->db_lowerbound_i256(code, scope, table, id, size);
-}
-
-#endif
-
 
 static void init_db() {
    Z_envZ_db_lowerbound_i64Z_ijjjj = db_lowerbound_i64 ;
@@ -535,4 +543,11 @@ static void init_db() {
    Z_envZ_db_previous_i64Z_iii = db_previous_i64;
 
    Z_envZ_db_get_table_countZ_ijjj = db_get_table_count;
+
+
+   Z_envZ_db_find_i256Z_ijjjii = db_find_i256;
+   Z_envZ_db_update_i256Z_vijii = db_update_i256;
+   Z_envZ_db_store_i256Z_ijjjiiii = db_store_i256;
+   Z_envZ_db_get_i256Z_iiii = db_get_i256;
+   Z_envZ_db_remove_i256Z_vi = db_remove_i256;
 }

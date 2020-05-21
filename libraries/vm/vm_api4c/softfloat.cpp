@@ -2,6 +2,7 @@
 #include "vm_api4c.h"
 #include <string.h>
 #include <softfloat.hpp>
+#include <stdio.h>
 
 /* import: 'env' '__addtf3' */
 void (*Z_envZ___addtf3Z_vijjjj)(u32, u64, u64, u64, u64);
@@ -26,6 +27,8 @@ void (*Z_envZ___subtf3Z_vijjjj)(u32, u64, u64, u64, u64);
 /* import: 'env' '__unordtf2' */
 u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
 
+/* import: 'env' '__divtf3' */
+void (*Z_envZ___divtf3Z_vijjjj)(u32, u64, u64, u64, u64);
 
 static bool is_nan( const float32_t f ) {
     return f32_is_nan( f );
@@ -113,6 +116,14 @@ static void __subtf3( u32 ret_offset, u64 la, u64 ha, u64 lb, u64 hb ) {
     *ret = f128_sub( a, b );
 }
 
+/* import: 'env' '__divtf3' */
+extern void __divtf3(u32 ret_offset, u64 la, u64 ha, u64 lb, u64 hb) {
+    float128_t *ret = (float128_t *)offset_to_ptr(ret_offset, sizeof(float128_t));
+    float128_t a = {{ la, ha }};
+    float128_t b = {{ lb, hb }};
+    *ret = f128_div( a, b );
+}
+
 extern "C" void init_softfloat() {
     Z_envZ___addtf3Z_vijjjj = __addtf3;
     Z_envZ___eqtf2Z_ijjjj = __eqtf2;
@@ -125,4 +136,6 @@ extern "C" void init_softfloat() {
     Z_envZ___netf2Z_ijjjj = __netf2;
     Z_envZ___subtf3Z_vijjjj = __subtf3;
     Z_envZ___unordtf2Z_ijjjj = __unordtf2;
+    Z_envZ___divtf3Z_vijjjj = __divtf3;
 }
+

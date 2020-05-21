@@ -5,7 +5,7 @@
 #include "wasm-rt.h"
 #include <eosiolib/types.h>
 #include <vm_api/vm_api.h>
-#include <chain_api.hpp>
+//#include <chain_api.hpp>
 
 #include "src/interp.h"
 #include "vm_api4c.h"
@@ -237,6 +237,13 @@ void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
 void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'token_transfer' */
 void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+void (*Z_envZ_token_closeZ_vjj)(u64, u64);
+
 #include "token.cpp"
 
 
@@ -293,9 +300,6 @@ void init_vm_api4c() {
     Z_envZ_assert_recover_keyZ_viiiii = assert_recover_key;
     Z_envZ_recover_keyZ_iiiiii = recover_key;
 
-    Z_envZ_from_base58Z_iiiii = from_base58;
-    Z_envZ_to_base58Z_iiiii = to_base58;
-
 
 //permission.cpp
     Z_envZ_check_transaction_authorizationZ_iiiiiii = check_transaction_authorization;
@@ -333,6 +337,9 @@ void init_vm_api4c() {
     Z_envZ_token_issueZ_vjjjii = token_issue;
     Z_envZ_token_transferZ_vjjjjii = token_transfer;
 
+    Z_envZ_token_openZ_vjjj = token_open;
+    Z_envZ_token_retireZ_vjjii = token_retire;
+    Z_envZ_token_closeZ_vjj = token_close;
 
     Z_envZ_abortZ_vv = _abort;
     Z_envZ_memcpyZ_iiii = _memcpy;

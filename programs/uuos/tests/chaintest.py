@@ -366,13 +366,16 @@ class ChainTest(object):
                 raise Exception(f'pack error for {args}')
             args = _args
             # logger.error(f'++++{args}')
-        action = {
+        a = {
             'account': account,
             'name': action,
             'data': args.hex(),
             'authorization':[{'actor': actor, 'permission': perm}]
         }
-        return self.push_actions([action])
+        ret = self.push_actions([a])
+        elapsed = ret.elapsed
+        logger.info(f'+++++{account} {action} {elapsed}')
+        return ret
 
     def push_actions(self, actions):
         chain_id = self.chain.id()
