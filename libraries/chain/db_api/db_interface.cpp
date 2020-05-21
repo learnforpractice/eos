@@ -121,6 +121,25 @@ void db_interface::get_code( uint64_t account, string& code ) {
    }
 }
 
+const char* db_interface::get_code_ex(uint64_t receiver, size_t* size ) {
+
+   if (!is_account(account_name(receiver))) {
+      *size = 0;
+      return nullptr;
+   }
+   try {
+      const auto& account = db.get<account_metadata_object,by_name>(name(receiver));
+      bool existing_code = (account.code_hash != digest_type());
+      if( existing_code ) {
+         const code_object& code_entry = db.get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
+         *size = code_entry.code.size();
+         return code_entry.code.data();
+      }
+   } catch (...) {
+   }
+   return nullptr;
+}
+
 #if 0
 
 const shared_string& db_interface::get_code(uint64_t account) {
@@ -778,3 +797,12 @@ int db_interface_end_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t tabl
    return db.db_end_i64(code, scope, table);
 }
 
+bool db_interface_is_account(void *ptr, uint64_t account) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.is_account(account_name(account));
+}
+
+const char* db_interface_get_code_ex(void *ptr, uint64_t receiver, size_t* size ) {
+   db_interface& db = *(db_interface *)ptr;
+   return db.get_code_ex(receiver, size);
+}

@@ -401,6 +401,7 @@ void chain_free_(void *ptr) {
         return;
     }
     delete (chain_manager*)itr->second;
+    chain_map.erase(itr);
 }
 
 eosio::chain::controller& chain_get_controller(void *ptr) {

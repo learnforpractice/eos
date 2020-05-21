@@ -37,6 +37,8 @@ enum class enum_builtin_protocol_feature : uint32_t {
 
 struct chain_api_cpp
 {
+   void *chain_ptr;
+
    void (*uuos_set_log_level)(string& logger_name, int level);
    void (*uuos_set_version)();
    void (*uuos_set_default_data_dir)(string& dir);
@@ -52,7 +54,6 @@ struct chain_api_cpp
    uint64_t (*str2n)(string& str_name);
 
    bool (*get_code)(uint64_t contract, digest_type& code_id, const char** code, size_t* size);
-   bool (*get_account_info)(uint64_t contract, digest_type& code_id, uint8_t& vmtype, uint8_t& vmversion);
    const char* (*get_code_ex)( uint64_t contract, size_t* size );
    bool (*get_code_id)( uint64_t receiver, uint8_t* code_id, size_t size);
    int (*get_code_type)( uint64_t receiver);
@@ -82,6 +83,8 @@ struct chain_api_cpp
    bool (*is_builtin_activated)(uint32_t feature);
    string (*call_contract_off_chain)(uint64_t contract, uint64_t action, const vector<char>& binargs);
 
+   void *(*chain_get_current_ptr)();
+   void (*chain_set_current_ptr)(void *ptr);
    void* (*chain_new)(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
    bool (*chain_startup)(void* ptr, bool initdb);
    void (*chain_free)(void *ptr);
@@ -195,6 +198,9 @@ struct chain_api_cpp
    int (*db_interface_lowerbound_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
    int (*db_interface_upperbound_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
    int (*db_interface_end_i64)(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
+
+   bool (*db_interface_is_account)(void *ptr, uint64_t account);
+   const char* (*db_interface_get_code_ex)(void *ptr, uint64_t receiver, size_t* size);
 
    int (*chain_api_get_info)(void *ptr, string& result);
    int (*chain_api_get_activated_protocol_features)(void *ptr, string& params, string& result);

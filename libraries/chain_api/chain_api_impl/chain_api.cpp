@@ -10,6 +10,7 @@
 #include <eosio/chain/db_api.hpp>
 
 #include <vm_api/vm_api.h>
+#include <stacktrace.h>
 
 using namespace fc;
 using namespace eosio::chain;
@@ -37,6 +38,7 @@ static inline apply_context& ctx() {
 
 static inline controller& ctrl() {
    if (!s_ctrl) {
+      print_stacktrace();
       throw std::runtime_error("controller not specified!");
    }
    return *s_ctrl;
@@ -47,7 +49,8 @@ static inline controller::config& cfg() {
 }
 
 bool is_account(uint64_t account) {
-   return nullptr != ctrl().db().find<account_object,by_name>( name(account) );
+   void* ptr = s_api.chain_get_db_interface(s_api.chain_ptr);
+   return s_api.db_interface_is_account(ptr, account);
 }
 
 static void n2str(uint64_t n, string& str_name) {
@@ -84,33 +87,8 @@ static bool get_code(uint64_t contract, digest_type& code_id, const char** code,
 }
 
 static const char* get_code_ex( uint64_t receiver, size_t* size ) {
-   if (!is_account(receiver)) {
-      *size = 0;
-      return nullptr;
-   }
-   try {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(receiver));
-      bool existing_code = (account.code_hash != digest_type());
-      if( existing_code ) {
-         const code_object& code_entry = ctrl().db().get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
-         *size = code_entry.code.size();
-         return code_entry.code.data();
-      }
-   } catch (...) {
-   }
-   return nullptr;
-}
-
-static bool get_account_info(uint64_t contract, digest_type& code_id, uint8_t& vmtype, uint8_t& vmversion) {
-      const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(contract));
-      bool existing_code = (account.code_hash != digest_type());
-      if( existing_code ) {
-         code_id = account.code_hash;
-         vmtype = account.vm_type;
-         vmversion = account.vm_version;
-         return true;
-      }
-      return false;
+   void *db_ptr = s_api.chain_get_db_interface(s_api.chain_ptr);
+   return s_api.db_interface_get_code_ex(db_ptr, receiver, size);
 }
 
 static uint32_t get_code_first_block_used(uint64_t contract) {
@@ -416,6 +394,25 @@ string& uuos_get_last_error_();
 void uuos_set_last_error_(string& error);
 void uuos_on_error_(string& _ex);
 
+int db_interface_get_i64(void *ptr, int itr, string& buffer );
+int db_interface_next_i64(void *ptr, int itr, uint64_t* primary );
+int db_interface_previous_i64(void *ptr, int itr, uint64_t* primary );
+int db_interface_find_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+void db_interface_remove_i64(void *ptr,int itr);
+int db_interface_lowerbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+int db_interface_upperbound_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table, uint64_t id );
+int db_interface_end_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t table );
+bool db_interface_is_account(void *ptr, uint64_t account);
+const char* db_interface_get_code_ex(void *ptr, uint64_t receiver, size_t* size );
+
+void *chain_get_current_ptr() {
+   return s_api.chain_ptr;
+}
+
+void chain_set_current_ptr(void *ptr) {
+   s_api.chain_ptr = ptr;
+}
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -430,7 +427,6 @@ extern "C" void chain_api_init() {
       .get_code_ex = get_code_ex,
       .get_code_id = get_code_id,
       .get_code_type = get_code_type,
-      .get_account_info = get_account_info,
 
       .get_state_dir = get_state_dir,
       .contracts_console = contracts_console,
@@ -449,6 +445,9 @@ extern "C" void chain_api_init() {
       .get_debug_contract_entry = get_debug_contract_entry,
       .is_builtin_activated = is_builtin_activated,
       .call_contract_off_chain = call_contract_off_chain,
+
+      .chain_get_current_ptr = chain_get_current_ptr,
+      .chain_set_current_ptr = chain_set_current_ptr,
 
       .chain_new = chain_new_,
       .chain_startup = chain_startup_,
@@ -557,6 +556,17 @@ extern "C" void chain_api_init() {
       .uuos_get_last_error = uuos_get_last_error_,
       .uuos_set_last_error = uuos_set_last_error_,
       .uuos_on_error = uuos_on_error_,
+
+      .db_interface_get_i64 = db_interface_get_i64,
+      .db_interface_next_i64 = db_interface_next_i64,
+      .db_interface_previous_i64 = db_interface_previous_i64,
+      .db_interface_find_i64 = db_interface_find_i64,
+      .db_interface_remove_i64 = db_interface_remove_i64,
+      .db_interface_lowerbound_i64 = db_interface_lowerbound_i64,
+      .db_interface_upperbound_i64 = db_interface_upperbound_i64,
+      .db_interface_end_i64 = db_interface_end_i64,
+      .db_interface_is_account = db_interface_is_account,
+      .db_interface_get_code_ex = db_interface_get_code_ex,
     };
 
     register_chain_api(&s_api);

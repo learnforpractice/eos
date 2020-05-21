@@ -23,6 +23,9 @@ cdef extern from "uuos.hpp":
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
 
+    void *chain_get_current_ptr_();
+    void chain_set_current_ptr_(void *ptr);
+
     void* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
     bool chain_startup_(void* ptr, bool initdb);
     void chain_free_(void *ptr);
@@ -204,6 +207,12 @@ def unpack_native_object(int _type, string& packed_message):
     cdef string msg
     unpack_native_object_(_type, packed_message, msg)
     return <bytes>msg
+
+def chain_get_current_ptr():
+    return <uint64_t>chain_get_current_ptr_();
+
+def chain_set_current_ptr(uint64_t ptr):
+    chain_set_current_ptr_(<void *>ptr);
 
 def chain_new(string& config, string& genesis, string& protocol_features_dir, string& snapshot_dir):
     return <uint64_t>chain_new_(config, genesis, protocol_features_dir, snapshot_dir)

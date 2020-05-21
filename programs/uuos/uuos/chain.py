@@ -11,6 +11,7 @@ class Chain(object):
         self.ptr = _uuos.chain_new(config, genesis, protocol_features_dir, snapshot_dir)
         if not self.ptr:
             raise Exception('chain initialization failture!')
+        _uuos.set_current_chain_ptr(self.ptr)
 
     def startup(self, initdb):
         return _uuos.chain_startup(self.ptr, initdb)
@@ -34,6 +35,7 @@ class Chain(object):
         if self.ptr:
             _uuos.chain_free(self.ptr)
             self.ptr = 0
+        _uuos.set_current_chain_ptr(0)
 
     def id(self):
         return _uuos.chain_id(self.ptr)

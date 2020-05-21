@@ -481,6 +481,7 @@ class db_interface {
 
       void get_code(uint64_t account, string& code);
       const shared_string& get_code(uint64_t account);
+      const char* get_code_ex(uint64_t receiver, size_t* size );
 
       int get_code_type(uint64_t account);
       digest_type get_code_id(uint64_t account);
