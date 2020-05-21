@@ -21,7 +21,6 @@ extern "C"
 {
    void evm_init();
    void chain_api_init();
-   void vm_api_ro_init();
    void vm_api_init();
    int Py_FrozenMain(int argc, char **argv);
    int run_python(int argc, char **argv);
@@ -37,7 +36,6 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
 //   return nullptr;
    // evm_init();
    vm_api_init();
-   vm_api_ro_init();
    chain_api_init();
 
    // Py_InitFrozenMain(argc, argv);

@@ -84,7 +84,6 @@ extern "C"
 {
    void evm_init();
    void chain_api_init();
-   void vm_api_ro_init();
    void vm_api_init();
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
@@ -115,7 +114,6 @@ int main(int argc, char** argv)
    try {
       // evm_init();
       vm_api_init();
-      vm_api_ro_init();
       chain_api_init();
       sandboxed_contracts_init();
       {

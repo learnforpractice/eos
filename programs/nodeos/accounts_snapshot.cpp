@@ -88,7 +88,6 @@ enum return_codes {
 extern "C"
 {
    void chain_api_init();
-   void vm_api_ro_init();
    void vm_api_init();
 //   void vm_python2_init();
    void sandboxed_contracts_init();
@@ -264,7 +263,6 @@ void init_ignore_accounts() {
 extern "C" int create_accounts_snapshot(int argc, char** argv)
 {
    vm_api_init();
-   vm_api_ro_init();
    chain_api_init();
 //   vm_python2_init();
 //   wasmc2_contracts_init();

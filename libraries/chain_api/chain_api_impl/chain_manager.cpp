@@ -250,7 +250,6 @@ extern "C"
 {
    void evm_init(){}
    void chain_api_init();
-   void vm_api_ro_init();
    void vm_api_init();
    void sandboxed_contracts_init();
 }
@@ -292,7 +291,6 @@ bool chain_manager::init(string& config, string& _genesis, string& protocol_feat
     try {
         evm_init();
         vm_api_init();
-        vm_api_ro_init();
         chain_api_init();
         sandboxed_contracts_init();
         if (_genesis.size()) {
