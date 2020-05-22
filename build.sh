@@ -6,7 +6,7 @@ function build_project() {
 
 function build_pyeos() {
 	pushd programs/pyeos
-	if [[ $ARCH == "Linux" ]]; then
+	if [[ $( uname ) == "Linux" ]]; then
 		./build-linux.sh
 	else
 		./build-mac.sh

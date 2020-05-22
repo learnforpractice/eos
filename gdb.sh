@@ -9,7 +9,4 @@ export PYTHON_SHARED_LIB_PATH="/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/l
 #$PROJECT_DIR/build/programs/uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
 
 
-#./build/programs/uuos/uuos -m pytest -s programs/uuos/tests/pytest
-
-./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest
-
+gdb --args ./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest
