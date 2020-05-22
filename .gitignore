@@ -24,9 +24,10 @@ compile_commands.json
 moc_*
 *.moc
 *.o
+*.so
 externals/Python-3.7.4/dist
 externals/Python-3.7.4/build
-
+logfile.log
 
 genesis.json
 hardfork.hpp
