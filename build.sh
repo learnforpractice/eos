@@ -1,12 +1,25 @@
+declare ARCH=$( uname )
+
+if [[ $ARCH == "Linux" ]]; then
+	declare NPROC=$( nproc )
+else
+	declare NPROC=$( sysctl -n hw.logicalcpu )
+fi
+
+
 function build_project() {
-	pushd build
-	make -j$(nproc)
-	popd
+	if [ -d "$(pwd)/build" ]; then
+        	pushd build
+        	make -j$NPROC
+	        popd
+	else
+		./scripts/eosio_build.sh
+	fi
 }
 
 function build_pyeos() {
 	pushd programs/pyeos
-	if [[ $( uname ) == "Linux" ]]; then
+	if [[ $ARCH == "Linux" ]]; then
 		./build-linux.sh
 	else
 		./build-mac.sh
