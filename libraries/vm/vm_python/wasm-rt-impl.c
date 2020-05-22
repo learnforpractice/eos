@@ -133,9 +133,10 @@ static wasm_rt_memory_t* g_memory = NULL;
 void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
                              uint32_t initial_pages,
                              uint32_t max_pages) {
-  if (g_memory) {
-    return;
-  }
+//  if (g_memory) {
+//    return;
+//  }
+
   vmdlog("initial_pages %d, max_pages %d\n", initial_pages, max_pages);
 //  initial_pages = 160;//10M
   size_t memory_size = python_vm_get_memory_size();
