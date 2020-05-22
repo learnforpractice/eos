@@ -34,8 +34,6 @@ struct vm_api *debug_get_vm_api(const char * func_name, int line_num) {
    return get_vm_api();
 }
 
-extern "C" int evm_execute(const unsigned char *raw_trx, int raw_trx_size);
-
 //#define API() debug_get_vm_api(__FUNCTION__, __LINE__)
 
 #define API() get_vm_api()
@@ -884,11 +882,7 @@ class action_api : public context_aware_api {
       name current_receiver() {
          return API()->current_receiver();
       }
-#if 0
-      int evm_execute(array_ptr<unsigned char> trx, size_t size) {
-         return ::evm_execute(trx.value, size);
-      }
-#endif
+
       int get_code_size(int64_t account) {
          size_t size = 0;
          get_chain_api()->get_code_ex( account, &size );
@@ -1659,14 +1653,6 @@ class vm_apis : public context_aware_api {
       int call_contract_get_results(array_ptr<char> results, size_t size1) {
          return API()->call_contract_get_results(results, size1);
       }
-
-      int to_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
-         return API()->to_base58(in, size1, out, size2);
-      }
-
-      int from_base58( array_ptr<const char> in, size_t size1, array_ptr<char> out, size_t size2 ) {
-         return API()->from_base58(in, size1, out, size2);
-      }
 };
 
 REGISTER_INTRINSICS(vm_apis,
@@ -1682,9 +1668,6 @@ REGISTER_INTRINSICS(vm_apis,
    (call_contract_get_extra_args, int(int, int))
    (call_contract_set_results, int(int, int))
    (call_contract_get_results, int(int, int))
-
-   (to_base58,       int(int, int, int, int))
-   (from_base58,     int(int, int, int, int))
 );
 
 class transaction_context_ {

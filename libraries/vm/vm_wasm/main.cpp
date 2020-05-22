@@ -16,6 +16,7 @@
 #include "WAST/WAST.h"
 #include "IR/Validate.h"
 
+using namespace eosio::chain;
 using namespace fc;
 using namespace eosio::chain::webassembly;
 using namespace IR;
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
     } EOS_CAPTURE_AND_RETHROW(fc::exception)
 
     try {
-        wasm_injections::wasm_binary_injection injector(module);
+        wasm_injections::wasm_binary_injection<true> injector(module);
         injector.inject();
     } EOS_CAPTURE_AND_RETHROW(fc::exception)
 

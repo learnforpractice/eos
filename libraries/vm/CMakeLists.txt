@@ -1,5 +1,5 @@
 add_subdirectory( vm_api4c )
-# add_subdirectory( vm_wasm )
+add_subdirectory( vm_wasm )
 if (APPLE)
 # add_subdirectory( vm_wasm4py )
 endif()
