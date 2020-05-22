@@ -1,5 +1,12 @@
 #include <stdint.h>
 
+#ifndef ENV_H_
+#define ENV_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef uint8_t u8;
 typedef int8_t s8;
 typedef uint16_t u16;
@@ -309,3 +316,65 @@ extern void (*Z_envZ_db_remove_i256Z_vi)(u32);
 extern void (*Z_envZ_printnZ_vj)(u64);
 extern void (*Z_envZ_printiZ_vj)(u64);
 extern void (*Z_envZ_printuiZ_vj)(u64);
+
+
+/* import: 'eosio_injection' 'checktime' */
+extern void (*Z_eosio_injectionZ_checktimeZ_vv)(void);
+/* import: 'eosio_injection' 'call_depth_assert' */
+extern void (*Z_eosio_injectionZ_call_depth_assertZ_vv)(void);
+/* import: 'eosio_injection' '_eosio_f64_sub' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_subZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_lt' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_ltZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_trunc' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_truncZ_dd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_mul' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_gt' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_gtZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_ge' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_geZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_trunc_i32u' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_trunc_i32uZ_id)(f64);
+/* import: 'eosio_injection' '_eosio_f64_abs' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_absZ_dd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_trunc_i32s' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_trunc_i32sZ_id)(f64);
+/* import: 'eosio_injection' '_eosio_f64_le' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_leZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_ne' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_neZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_eq' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_eqZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_add' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_div' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_divZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_neg' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_negZ_dd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_demote' */
+extern f32 (*Z_eosio_injectionZ__eosio_f64_demoteZ_fd)(f64);
+/* import: 'eosio_injection' '_eosio_f32_eq' */
+extern u32 (*Z_eosio_injectionZ__eosio_f32_eqZ_iff)(f32, f32);
+/* import: 'eosio_injection' '_eosio_f32_promote' */
+extern f64 (*Z_eosio_injectionZ__eosio_f32_promoteZ_df)(f32);
+/* import: 'eosio_injection' '_eosio_f32_div' */
+extern f32 (*Z_eosio_injectionZ__eosio_f32_divZ_fff)(f32, f32);
+/* import: 'eosio_injection' '_eosio_f32_gt' */
+extern u32 (*Z_eosio_injectionZ__eosio_f32_gtZ_iff)(f32, f32);
+/* import: 'eosio_injection' '_eosio_f32_ne' */
+extern u32 (*Z_eosio_injectionZ__eosio_f32_neZ_iff)(f32, f32);
+/* import: 'eosio_injection' '_eosio_f64_trunc_i64s' */
+extern u64 (*Z_eosio_injectionZ__eosio_f64_trunc_i64sZ_jd)(f64);
+/* import: 'eosio_injection' '_eosio_f32_le' */
+extern u32 (*Z_eosio_injectionZ__eosio_f32_leZ_iff)(f32, f32);
+/* import: 'eosio_injection' '_eosio_f64_max' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_maxZ_ddd)(f64, f64);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+

@@ -133,9 +133,9 @@ class ChainTest(object):
 
         logger.debug(f'{options.data_dir}, {options.config_dir}')
         if uuos_network:
-            options.chain_state_db_size_mb = 350
+            options.chain_state_db_size_mb = 50 #350
         else:
-            options.chain_state_db_size_mb = 50
+            options.chain_state_db_size_mb = 30
 
         options.contracts_console = True
         options.uuos_mainnet = uuos_network
