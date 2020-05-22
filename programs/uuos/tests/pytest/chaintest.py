@@ -296,19 +296,18 @@ class ChainTest(object):
         # logger.info(msg)
 
     def get_balance(self, account, token_account='eosio.token', token_name='UUOS'):
-        with self.chain:
-            symbol = b'\x04'+token_name.encode('utf8')
-            symbol = symbol.ljust(8, b'\x00')
-            symbol = int.from_bytes(symbol, 'little')
-            symbol >>= 8
-            itr = db.find_i64(token_account, account, 'accounts', symbol)
-            if itr < 0:
-                return 0.0
-            value = db.get_i64(itr)
-            amount, symbol = struct.unpack('q8s', value)
-            amount /=10000
-            # logger.info(f'{amount}, {symbol}')
-            return amount
+        # symbol = b'\x04'+token_name.encode('utf8')
+        # symbol = symbol.ljust(8, b'\x00')
+        # symbol = int.from_bytes(symbol, 'little')
+        # symbol >>= 8
+        # itr = db.find_i64(token_account, account, 'accounts', symbol)
+        # if itr < 0:
+        #     return 0.0
+        # value = db.get_i64(itr)
+        # amount, symbol = struct.unpack('q8s', value)
+        # amount /=10000
+        # # logger.info(f'{amount}, {symbol}')
+        # return amount
 
         params = {
             'code': token_account,
@@ -509,7 +508,7 @@ class ChainTest(object):
         self.deploy_contract('eosio.token', code, abi)
 
     def deploy_eosio_system_uuos(self):
-        contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
+        contract_path = os.path.join(test_dir, '../../../..', 'build/externals/eosio.contracts/contracts')
         code_path = os.path.join(contract_path, 'eosio.system/eosio.system.wasm')
         abi_path = os.path.join(contract_path, 'eosio.system/eosio.system.abi')
         with open(code_path, 'rb') as f:
@@ -742,7 +741,7 @@ def apply(receiver, code, action):
             self.produce_block()
 
     def compile_py_code_from_file(self, code_file):
-        db_test = os.path.join(test_dir, 'test_contracts', code_file)
+        db_test = os.path.join(test_dir, '..', 'test_contracts', code_file)
         with open(db_test, 'r') as f:
             code = f.read()
         code = compile(code, "contract", 'exec')

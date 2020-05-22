@@ -9,6 +9,7 @@
 
 #include "src/interp.h"
 #include "vm_api4c.h"
+#include <env.h>
 
 using namespace wabt::interp;
 
@@ -22,39 +23,10 @@ using namespace wabt::interp;
 #define WASM_RT_PASTE(x, y) WASM_RT_PASTE_(x, y)
 #define WASM_RT_ADD_PREFIX(x) WASM_RT_PASTE(WASM_RT_MODULE_PREFIX, x)
 
-typedef uint8_t u8;
-typedef int8_t s8;
-typedef uint16_t u16;
-typedef int16_t s16;
-typedef uint32_t u32;
-typedef int32_t s32;
-typedef uint64_t u64;
-typedef int64_t s64;
-typedef float f32;
-typedef double f64;
-
 extern "C" {
 void *offset_to_ptr(u32 offset, u32 size);
 void *offset_to_char_ptr(u32 offset);
 
-/* import: 'env' 'abort' */
-void (*Z_envZ_abortZ_vv)(void);
-/* import: 'env' 'memcpy' */
-u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
-/* import: 'env' 'memmove' */
-u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
-/* import: 'env' 'memset' */
-u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
-/* import: 'env' 'printi' */
-void (*Z_envZ_printiZ_vj)(u64);
-/* import: 'env' 'printn' */
-void (*Z_envZ_printnZ_vj)(u64);
-/* import: 'env' 'prints' */
-void (*Z_envZ_printsZ_vi)(u32);
-/* import: 'env' 'prints_l' */
-void (*Z_envZ_prints_lZ_vii)(u32, u32);
-/* import: 'env' 'printui' */
-void (*Z_envZ_printuiZ_vj)(u64);
 
 static void _abort() {
     get_vm_api()->eosio_abort();
@@ -124,126 +96,16 @@ u32 _n2s(u64 n, u32 out_offset, u32 length);
 
 #include "db.cpp"
 
-/* import: 'env' 'get_code' */
-u32 (*Z_envZ_get_codeZ_ijii)(u64, u32, u32);
-/* import: 'env' 'get_code_size' */
-u32 (*Z_envZ_get_code_sizeZ_ij)(u64);
-
 static void _set_copy_memory_range(u32 start, u32 end) {
     get_vm_api()->set_copy_memory_range((int)start, (int)end);
 }
 
-void (*Z_envZ_set_copy_memory_rangeZ_vii)(u32, u32);
-u64 (*Z_envZ_s2nZ_jii)(u32, u32);
-
 #include "action.cpp"
 #include "chain.cpp"
-
-u32 (*Z_envZ_read_action_dataZ_iii)(u32, u32);
-u32 (*Z_envZ_action_data_sizeZ_iv)(void);
-void (*Z_envZ_require_recipientZ_vj)(u64);
-void (*Z_envZ_require_authZ_vj)(u64);
-void (*Z_envZ_require_auth2Z_vjj)(u64, u64);
-u32 (*Z_envZ_has_authZ_ij)(u64);
-u32 (*Z_envZ_is_accountZ_ij)(u64);
-void (*Z_envZ_send_inlineZ_vii)(u32, u32);
-void (*Z_envZ_send_context_free_inlineZ_vii)(u32, u32);
-u64 (*Z_envZ_publication_timeZ_jv)(void);
-u64 (*Z_envZ_current_receiverZ_jv)(void);
-
-/* import: 'env' 'get_active_producers' */
-u32 (*Z_envZ_get_active_producersZ_iii)(u32, u32);
-
-//crypto.cpp
-/* import: 'env' 'assert_sha256' */
-void (*Z_envZ_assert_sha256Z_viii)(u32, u32, u32);
-/* import: 'env' 'assert_sha1' */
-void (*Z_envZ_assert_sha1Z_viii)(u32, u32, u32);
-/* import: 'env' 'assert_sha512' */
-void (*Z_envZ_assert_sha512Z_viii)(u32, u32, u32);
-/* import: 'env' 'assert_ripemd160' */
-void (*Z_envZ_assert_ripemd160Z_viii)(u32, u32, u32);
-/* import: 'env' 'sha256' */
-void (*Z_envZ_sha256Z_viii)(u32, u32, u32);
-/* import: 'env' 'sha1' */
-void (*Z_envZ_sha1Z_viii)(u32, u32, u32);
-/* import: 'env' 'sha512' */
-void (*Z_envZ_sha512Z_viii)(u32, u32, u32);
-/* import: 'env' 'ripemd160' */
-void (*Z_envZ_ripemd160Z_viii)(u32, u32, u32);
-/* import: 'env' 'assert_recover_key' */
-void (*Z_envZ_assert_recover_keyZ_viiiii)(u32, u32, u32, u32, u32);
-/* import: 'env' 'recover_key' */
-u32 (*Z_envZ_recover_keyZ_iiiiii)(u32, u32, u32, u32, u32);
-
-u32 (*Z_envZ_from_base58Z_iiiii)(u32, u32, u32, u32);
-u32 (*Z_envZ_to_base58Z_iiiii)(u32, u32, u32, u32);
-
-
 #include "crypto.cpp"
-
-/* import: 'env' 'check_transaction_authorization' */
-u32 (*Z_envZ_check_transaction_authorizationZ_iiiiiii)(u32, u32, u32, u32, u32, u32);
-/* import: 'env' 'check_permission_authorization' */
-u32 (*Z_envZ_check_permission_authorizationZ_ijjiiiij)(u64, u64, u32, u32, u32, u32, u64);
-/* import: 'env' 'get_permission_last_used' */
-u64 (*Z_envZ_get_permission_last_usedZ_jjj)(u64, u64);
-/* import: 'env' 'get_account_creation_time' */
-u64 (*Z_envZ_get_account_creation_timeZ_jj)(u64);
 #include "permission.cpp"
-
-//system.cpp
-/* import: 'env' 'eosio_assert' */
-void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
-/* import: 'env' 'eosio_assert_code' */
-void (*Z_envZ_eosio_assert_codeZ_vij)(u32, u64);
-/* import: 'env' 'eosio_assert_message' */
-void (*Z_envZ_eosio_assert_messageZ_viii)(u32, u32, u32);
-/* import: 'env' 'current_time' */
-u64 (*Z_envZ_current_timeZ_jv)(void);
-/* import: 'env' 'call_contract' */
-void (*Z_envZ_call_contractZ_vjjjjjii)(u64, u64, u64, u64, u64, u32, u32);
-/* import: 'env' 'call_contract_get_results' */
-u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
-
 #include "system.cpp"
-
-
-
-/* import: 'env' 'send_deferred' */
-void (*Z_envZ_send_deferredZ_vijiii)(u32, u64, u32, u32, u32);
-/* import: 'env' 'cancel_deferred' */
-u32 (*Z_envZ_cancel_deferredZ_ii)(u32);
-/* import: 'env' 'read_transaction' */
-u32 (*Z_envZ_read_transactionZ_iii)(u32, u32);
-/* import: 'env' 'transaction_size' */
-u32 (*Z_envZ_transaction_sizeZ_iv)(void);
-/* import: 'env' 'tapos_block_num' */
-u32 (*Z_envZ_tapos_block_numZ_iv)(void);
-/* import: 'env' 'tapos_block_prefix' */
-u32 (*Z_envZ_tapos_block_prefixZ_iv)(void);
-/* import: 'env' 'expiration' */
-u32 (*Z_envZ_expirationZ_iv)(void);
-/* import: 'env' 'get_action' */
-u32 (*Z_envZ_get_actionZ_iiiii)(u32, u32, u32, u32);
-/* import: 'env' 'get_context_free_data' */
-u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
 #include "transaction.cpp"
-
-//token.cpp
-/* import: 'env' 'token_create' */
-void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
-/* import: 'env' 'token_issue' */
-void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
-/* import: 'env' 'token_transfer' */
-void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
-/* import: 'env' 'token_open' */
-void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
-/* import: 'env' 'token_retire' */
-void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
-/* import: 'env' 'token_close' */
-void (*Z_envZ_token_closeZ_vjj)(u64, u64);
-
 #include "token.cpp"
 
 
@@ -253,9 +115,6 @@ void init_eosio_injection();
 
 void init_privileged();
 void init_compiler_builtins();
-
-void (*Z_envZ_wasm_syscallZ_vv)(void);
-u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 
 void init_vm_api4c() {
     static bool initialized = false;
@@ -267,7 +126,6 @@ void init_vm_api4c() {
     Z_envZ_printiZ_vj = _printi;
     Z_envZ_printsZ_vi = _prints;
     Z_envZ_n2sZ_ijii = _n2s;
-    Z_envZ_wasm_syscallZ_vv = wasm_syscall;
 
     Z_envZ_get_codeZ_ijii = _get_code;
     Z_envZ_get_code_sizeZ_ij = _get_code_size;

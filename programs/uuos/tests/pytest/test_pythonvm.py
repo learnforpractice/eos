@@ -24,9 +24,6 @@ class Test(object):
     def teardown_method(self, method):
         logger.info("Ending execution of tc: {}".format(method.__name__))
 
-    def test_create_account(self):
-        self.chain.test_create_account()
-
     def test_hello_world(self):
         logger.info('hello,world')
 

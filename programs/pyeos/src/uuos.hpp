@@ -12,7 +12,7 @@ chain_api_cpp* get_chain_api();
 #define unpack_native_object_ get_chain_api()->unpack_native_object
 
 #define chain_get_current_ptr_ get_chain_api()->chain_get_current_ptr
-#define chain_set_current_ptr get_chain_api()->chain_set_current_ptr
+#define chain_set_current_ptr_ get_chain_api()->chain_set_current_ptr
 
 #define chain_new_ get_chain_api()->chain_new
 #define chain_startup_ get_chain_api()->chain_startup
