@@ -72,7 +72,7 @@ extern "C" {
    void *offset_to_char_ptr(u32 offset);
    
    /* import: 'env' 'find_frozen_code' */
-   u32 (*Z_envZ_find_frozen_codeZ_iiiii)(u32, u32, u32, u32);
+   extern u32 (*Z_envZ_find_frozen_codeZ_iiiii)(u32, u32, u32, u32);
 
    void export_vm_apply(uint64_t receiver, uint64_t code, uint64_t action);
    void export_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action);
@@ -169,7 +169,7 @@ int vm_python2_setcode(uint64_t account) {
 
 
 void vm_python2_init(struct vm_python_info *python_info) {
-   printf("+++++++vm_python2_init\n");
+//   printf("+++++++vm_python2_init\n");
    EOSIO_ASSERT(python_info->memory_size%VM_PAGE_SIZE == 0, "wrong memory size");
 
    python_info->apply = wasm2c_python_vm_apply;
