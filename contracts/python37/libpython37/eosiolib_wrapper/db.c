@@ -960,7 +960,7 @@ static PyObject *py_db_idx256_lowerbound(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    if (-1 == long_as_byte_array(args, 3, (char *)&secondary, 16)) {
+    if (-1 == long_as_byte_array(args, 3, (char *)&secondary, 32)) {
         PyErr_SetString(PyExc_ValueError, "secondary should be a int type");
         return NULL;
     }
@@ -988,7 +988,7 @@ static PyObject *py_db_idx256_upperbound(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    if (-1 == long_as_byte_array(args, 3, (char *)&secondary, 16)) {
+    if (-1 == long_as_byte_array(args, 3, (char *)&secondary, 32)) {
         PyErr_SetString(PyExc_ValueError, "secondary should be a int type");
         return NULL;
     }
@@ -996,10 +996,8 @@ static PyObject *py_db_idx256_upperbound(PyObject *self, PyObject *args)
     iterator = db_idx256_upperbound(code, scope, table, secondary, 2, &primary);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
-    PyTuple_SetItem(ret, 1, PyBytes_FromStringAndSize((char *)&secondary, sizeof(secondary)));
+    PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
 
-    PyObject *_secondary = long_from_byte_array((char *)&secondary, 16);
-    PyTuple_SetItem(ret, 2, _secondary);
     return ret;
 }
 
@@ -1554,6 +1552,7 @@ static PyMethodDef db_methods[] = {
     {"idx128_upperbound",            (PyCFunction)py_db_idx128_upperbound,               METH_VARARGS, NULL},
     {"idx128_end",                   (PyCFunction)py_db_idx128_end,                      METH_VARARGS, NULL},
  
+    {"idx256_store",                (PyCFunction)py_db_idx256_store,                   METH_VARARGS, NULL},
     {"idx256_update",                (PyCFunction)py_db_idx256_update,                   METH_VARARGS, NULL},
     {"idx256_remove",                (PyCFunction)py_db_idx256_remove,                   METH_VARARGS, NULL},
     {"idx256_next",                  (PyCFunction)py_db_idx256_next,                     METH_VARARGS, NULL},
