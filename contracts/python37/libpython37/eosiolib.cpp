@@ -13,7 +13,7 @@
 #include <eosiolib/system.h>
 #include <eosiolib/print.h>
 
-#define PAGE_SIZE 65536U
+#define VM_PAGE_SIZE 65536U
 
 extern "C" {
 
@@ -49,6 +49,10 @@ void *get_frozen_code_memory(void) {
    return (void *)(MAX_MEMORY_SIZE+MAX_CODE_SIZE);
 }
 
+inline char* align(char* ptr, uint8_t align_amt) {
+   return (char*)((((size_t)ptr) + align_amt-1) & ~(align_amt-1));
+}
+
 void* malloc(size_t size)
 {
 //   prints("+++malloc");printi(size);prints("\n");
@@ -59,7 +63,9 @@ void* malloc(size_t size)
          __builtin_wasm_grow_memory(48 - current_pages);
       }
 //      const uint32_t current_pages = __builtin_wasm_current_memory();
-      memory_start = (char *)(8*PAGE_SIZE);
+      volatile uintptr_t heap_base = 0;
+      memory_start = align(*(char**)heap_base, 8); // address zero store the address of free memory start point
+      // memory_start = (char *)(8*VM_PAGE_SIZE);
    }
    if (size % sizeof(uint32_t) == 0) {
    } else {

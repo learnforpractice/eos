@@ -77,11 +77,16 @@ static void init_exports(void) {
 }
 
 void WASM_RT_ADD_PREFIX(python_vm_init)(void) {
-  init_func_types();
+  static int init = 0;
+  if (!init) {
+    init_func_types();
+    init_table();
+    init_exports();
+    init = 1;
+  }
   init_globals();
   init_memory();
-  init_table();
-  init_exports();
+  memcpy(&(M0.data[0]), &g1, 4);
   %s();
 }
 '''
