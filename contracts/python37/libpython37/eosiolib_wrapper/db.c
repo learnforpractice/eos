@@ -127,7 +127,9 @@ static PyObject *py_db_update_i64(PyObject *self, PyObject *args)
     payer = to_name(o);
 
     o = PyTuple_GetItem(args, 2);
-    parse_db_data(o, &data, &len);
+    if (!parse_db_data(o, &data, &len)) {
+        return NULL;
+    }
 
     db_update_i64(iterator, payer, data, len);
     Py_RETURN_NONE;

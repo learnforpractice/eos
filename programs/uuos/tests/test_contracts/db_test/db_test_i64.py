@@ -60,10 +60,22 @@ def apply(receiver, code, action):
         assert itr != -1
         data = db.get_i64(itr)
         print(data)
+        expect_values = [b'1', b'3', b'5', b'7']
         while True:
             itr, primary = db.next_i64(itr)
             if itr < 0:
                 break
             data = db.get_i64(itr)
             print(primary, data)
+            assert expect_values[itr] == data, 'bad value'
+    elif action == N('test3'):
+        itr = db.find_i64(code, scope, table, 1)
+        assert itr >= 0, 'value not found'
+        value = db.get_i64(itr)
+        assert value == b'1', 'bad value'
+        db.update_i64(itr, payer, b'88')
+        itr = db.find_i64(code, scope, table, 1)
+        value = db.get_i64(itr)
+        assert value == b'88', 'bad value'
 
+        
