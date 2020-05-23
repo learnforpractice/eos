@@ -55,18 +55,34 @@ def apply(receiver, code, action):
         print('+++++++++test1')
         itr = db.idx_double_end(code, scope, table)
         assert itr != -1
+        expected_values = [7, 5, 3, 1]
         while True:
             itr, primary = db.idx_double_previous(itr)
             if itr < 0:
                 break
             print(itr, primary)
+            assert expected_values[itr] == primary
     elif action == N('test2'):
         print('+++++++++test2')
         itr, primary = db.idx_double_lowerbound(code, scope, table, 1.0)
         assert itr != -1
         print(itr, primary)
+        expected_values = [1, 3, 5, 7]
         while True:
             itr, primary = db.idx_double_next(itr)
             if itr < 0:
                 break
             print(itr, primary)
+            assert expected_values[itr] == primary
+    elif action == N('test3'):
+        itr, primary = db.idx_double_find_secondary(code, scope, table, 3.0)
+        assert itr >= 0
+        assert primary == 3
+
+        db.idx_double_update(itr, payer, 88.0)
+        itr, primary = db.idx_double_find_secondary(code, scope, table, 3.0)
+        assert itr < 0
+
+        itr, primary = db.idx_double_find_secondary(code, scope, table, 88.0)
+        assert itr >= 0
+        assert primary == 3

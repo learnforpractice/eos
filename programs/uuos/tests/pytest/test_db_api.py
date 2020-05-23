@@ -55,6 +55,7 @@ class Test(object):
         self.chain.push_action(name, 'test', b'')
         self.chain.push_action(name, 'test1', b'')
         self.chain.push_action(name, 'test2', b'')
+        self.chain.push_action(name, 'test3', b'')
         self.chain.produce_block()
 
         r = self.chain.push_action(name, 'destroy', b'')
