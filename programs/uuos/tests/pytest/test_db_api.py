@@ -17,17 +17,18 @@ class Test(object):
     @classmethod
     def setup_class(cls):
         cls.main_token = 'UUOS'
-        cls.chain = chain = ChainTest(uuos_network=True)
 
     @classmethod
     def teardown_class(cls):
-        cls.chain.free()
+        pass
 
     def setup_method(self, method):
         logger.info("starting execution of tc: {}".format(method.__name__))
+        self.chain = ChainTest(uuos_network=True)
 
     def teardown_method(self, method):
         logger.info("Ending execution of tc: {}".format(method.__name__))
+        self.chain.free()
 
     def test_db_i64(self):
         name = 'helloworld11'
@@ -124,4 +125,34 @@ class Test(object):
         self.chain.produce_block()
 
         r = self.chain.push_action(name, 'destroy', b'')
+        self.chain.produce_block()
+    
+    def test_db_mi(self):
+        name = 'helloworld11'
+        code = self.chain.compile_py_code_from_file('db_test/db_test.py')
+        self.chain.deploy_contract(name, code, b'', vmtype=1)
+
+        self.chain.push_action(name, 'test', b'')
+        self.chain.produce_block()
+
+    def test_db_mi2(self):
+        name = 'helloworld11'
+        code = self.chain.compile_py_code_from_file('db_test/db_test2.py')
+        self.chain.deploy_contract(name, code, b'', vmtype=1)
+
+        self.chain.push_action(name, 'store', b'')
+        self.chain.push_action(name, 'get', b'')
+        self.chain.push_action(name, 'update', b'')
+
+        self.chain.produce_block()
+    
+    def test_db_mi3(self):
+        name = 'helloworld11'
+        code = self.chain.compile_py_code_from_file('db_test/db_test3.py')
+        self.chain.deploy_contract(name, code, b'', vmtype=1)
+
+        self.chain.push_action(name, 'store', b'')
+        self.chain.push_action(name, 'get', b'')
+        self.chain.push_action(name, 'update', b'')
+
         self.chain.produce_block()
