@@ -18,8 +18,8 @@ uint64_t parse_name_arg(PyObject *args, int index) {
 }
 
 int parse_db_args3(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3) {
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+    if (PyTuple_GET_SIZE(args) < 3) {
+        PyErr_SetString(PyExc_ValueError, "parse_db_args3:wrong arguments count");
         return 0;
     }
     *arg1 = parse_name_arg(args, 0);
@@ -29,8 +29,8 @@ int parse_db_args3(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg
 }
 
 int parse_db_args4(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3, uint64_t *arg4) {
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+    if (PyTuple_GET_SIZE(args) < 4) {
+        PyErr_SetString(PyExc_ValueError, "parse_db_args4:wrong arguments count");
         return 0;
     }
     *arg1 = parse_name_arg(args, 0);
@@ -41,8 +41,8 @@ int parse_db_args4(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg
 }
 
 int parse_db_args5(PyObject *args, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3, uint64_t *arg4, uint64_t *arg5) {
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
+    if (PyTuple_GET_SIZE(args) < 5) {
+        PyErr_SetString(PyExc_ValueError, "parse_db_args5:wrong arguments count");
         return 0;
     }
     *arg1 = parse_name_arg(args, 0);
