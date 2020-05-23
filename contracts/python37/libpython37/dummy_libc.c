@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <string.h>
+#include <memory.h>
 
 #include "eosiolib.h"
 
@@ -201,9 +203,11 @@ int fprintf(FILE *restrict f, const char *restrict fmt, ...) {
 
 int _fstat(int fd, struct stat *statbuf);
 int fstat(int fd, struct stat *statbuf) {
+    memset(statbuf, 0, sizeof(struct stat));
     prints(__FUNCTION__);prints("\n");
     return 0;
 }
+
 #define off_t int
 int ftruncate(int fd, off_t length) {
     prints(__FUNCTION__);prints("\n");
