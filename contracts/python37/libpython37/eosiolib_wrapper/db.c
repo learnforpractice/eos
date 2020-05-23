@@ -8,6 +8,13 @@ typedef unsigned __int128 uint128_t;
 
 uint64_t to_name(PyObject *o);
 
+#define CHECK_ARG_COUNT(N) \
+    if (PyTuple_GET_SIZE(args) != N) { \
+        PyErr_SetString(PyExc_ValueError, "wrong arguments count"); \
+        return NULL; \
+    }
+
+
 uint64_t parse_name_arg(PyObject *args, int index) {
     PyObject *o;
     o = PyTuple_GetItem(args, index);
@@ -81,10 +88,7 @@ static PyObject *py_db_store_i64(PyObject *self, PyObject *args)
     const char* data;
     Py_ssize_t len;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(5);
 
     if (!parse_db_args4(args, &scope, &table, &payer, &id)) {
         return NULL;
@@ -108,10 +112,7 @@ static PyObject *py_db_update_i64(PyObject *self, PyObject *args)
     Py_ssize_t len;
     PyObject *o;
     
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(3);
 
     o = PyTuple_GetItem(args, 0);
     if (o == NULL) {
@@ -140,10 +141,7 @@ static PyObject *py_db_find_i64(PyObject *self, PyObject *args)
     uint64_t table;
     uint64_t id;
     
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args4(args, &code, &scope, &table, &id)) {
         return NULL;
@@ -160,7 +158,9 @@ static PyObject *py_db_get_i64(PyObject *self, PyObject *args)
     char* data;
     Py_ssize_t len;
 
-    if (!PyArg_ParseTuple(args, "L", &iterator)) {
+    CHECK_ARG_COUNT(1);
+
+    if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
     }
@@ -180,7 +180,9 @@ static PyObject *py_db_remove_i64(PyObject *self, PyObject *args)
 {
     int32_t iterator;
 
-    if (!PyArg_ParseTuple(args, "l", &iterator)) {
+    CHECK_ARG_COUNT(1);
+
+    if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
     }
@@ -195,7 +197,9 @@ static PyObject *py_db_next_i64(PyObject *self, PyObject *args)
     uint64_t primary = 0;
     int32_t iterator;
 
-    if (!PyArg_ParseTuple(args, "l", &iterator)) {
+    CHECK_ARG_COUNT(1);
+
+    if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
     }
@@ -209,7 +213,9 @@ static PyObject *py_db_previous_i64(PyObject *self, PyObject *args)
     uint64_t primary = 0;
     int32_t iterator;
 
-    if (!PyArg_ParseTuple(args, "l", &iterator)) {
+    CHECK_ARG_COUNT(1);
+
+    if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
     }
@@ -230,6 +236,8 @@ static PyObject *py_db_lowerbound_i64(PyObject *self, PyObject *args)
     uint64_t id;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &id)) {
         return NULL;
     }
@@ -247,6 +255,8 @@ static PyObject *py_db_upperbound_i64(PyObject *self, PyObject *args)
     uint64_t id;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &id)) {
         return NULL;
     }
@@ -263,10 +273,7 @@ static PyObject *py_db_end_i64(PyObject *self, PyObject *args)
     uint64_t scope;
     uint64_t table;
 
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(3);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -282,6 +289,8 @@ static PyObject *py_db_get_count(PyObject *self, PyObject *args)
     uint64_t code;
     uint64_t scope;
     uint64_t table;
+
+    CHECK_ARG_COUNT(3);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -307,6 +316,8 @@ static PyObject *py_db_idx64_store(PyObject *self, PyObject *args)
     uint64_t id;
     uint64_t secondary;
 
+    CHECK_ARG_COUNT(5);
+
     if (!parse_db_args5(args, &scope, &table, &payer, &id, &secondary)) {
         return NULL;
     }
@@ -323,10 +334,7 @@ static PyObject *py_db_idx64_update(PyObject *self, PyObject *args)
     uint64_t secondary;
     PyObject *o;
 
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(3);
 
     o = PyTuple_GetItem(args, 0);
     if (o == NULL) {
@@ -361,6 +369,8 @@ static PyObject *py_db_idx64_remove(PyObject *self, PyObject *args)
 {
     int32_t iterator;
 
+    CHECK_ARG_COUNT(1);
+
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
@@ -375,6 +385,8 @@ static PyObject *py_db_idx64_next(PyObject *self, PyObject *args)
     int32_t iterator;
     uint64_t primary;
 
+    CHECK_ARG_COUNT(1);
+    
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
@@ -391,6 +403,8 @@ static PyObject *py_db_idx64_previous(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -414,6 +428,8 @@ static PyObject *py_db_idx64_find_primary(PyObject *self, PyObject *args)
     uint64_t secondary = 0;
     uint64_t primary;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
         return NULL;
     }
@@ -434,6 +450,8 @@ static PyObject *py_db_idx64_find_secondary(PyObject *self, PyObject *args)
     uint64_t secondary = 0;
     uint64_t primary = 0;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args4(args, &code, &scope, &table, &secondary)) {
         return NULL;
@@ -456,7 +474,9 @@ static PyObject *py_db_idx64_lowerbound(PyObject *self, PyObject *args)
     uint64_t secondary = 0;
     uint64_t primary = 0;
     int32_t iterator;
-    
+
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &secondary)) {
         return NULL;
     }
@@ -478,7 +498,9 @@ static PyObject *py_db_idx64_upperbound(PyObject *self, PyObject *args)
     uint64_t secondary;
     uint64_t primary = 0;
     int32_t iterator;
-    
+
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &secondary)) {
         return NULL;
     }
@@ -498,6 +520,8 @@ static PyObject *py_db_idx64_end(PyObject *self, PyObject *args)
     uint64_t scope;
     uint64_t table;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(3);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -519,10 +543,7 @@ static PyObject *py_db_idx128_store(PyObject *self, PyObject *args)
     char secondary[16];
     Py_ssize_t secondary_len;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(5);
 
     if (!parse_db_args4(args, &scope, &table, &payer, &id)) {
         return NULL;
@@ -545,10 +566,7 @@ static PyObject *py_db_idx128_update(PyObject *self, PyObject *args)
     Py_ssize_t secondary_len;
     PyObject *o;
 
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(3);
 
     o = PyTuple_GetItem(args, 0);
     if (!PyLong_Check(o)) {
@@ -575,6 +593,8 @@ static PyObject *py_db_idx128_remove(PyObject *self, PyObject *args)
 {
     int32_t iterator;
 
+    CHECK_ARG_COUNT(1);
+
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
@@ -588,6 +608,8 @@ static PyObject *py_db_idx128_next(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -605,6 +627,8 @@ static PyObject *py_db_idx128_previous(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -628,10 +652,7 @@ static PyObject *py_db_idx128_find_primary(PyObject *self, PyObject *args)
     uint128_t secondary = 0;
     uint64_t primary;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
         return NULL;
@@ -655,6 +676,8 @@ static PyObject *py_db_idx128_find_secondary(PyObject *self, PyObject *args)
     Py_ssize_t secondary_len;
     uint64_t primary = 0;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -682,10 +705,7 @@ static PyObject *py_db_idx128_lowerbound(PyObject *self, PyObject *args)
     uint64_t primary;
     int32_t iterator;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -713,10 +733,7 @@ static PyObject *py_db_idx128_upperbound(PyObject *self, PyObject *args)
     uint64_t primary;
     int32_t iterator;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -742,6 +759,8 @@ static PyObject *py_db_idx128_end(PyObject *self, PyObject *args)
     uint64_t table;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(3);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -763,10 +782,7 @@ static PyObject *py_db_idx256_store(PyObject *self, PyObject *args)
     uint128_t secondary[2];
     Py_ssize_t secondary_len;
 
-    if (PyTuple_GET_SIZE(args) != 5) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(5);
 
     if (!parse_db_args4(args, &scope, &table, &payer, &id)) {
         return NULL;
@@ -790,10 +806,7 @@ static PyObject *py_db_idx256_update(PyObject *self, PyObject *args)
     uint128_t secondary[2];
     PyObject *o;
 
-    if (PyTuple_GET_SIZE(args) != 3) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(3);
 
     o = PyTuple_GetItem(args, 0);    
     iterator = PyLong_AsLong(o);
@@ -823,6 +836,8 @@ static PyObject *py_db_idx256_remove(PyObject *self, PyObject *args)
 {
     int32_t iterator;
 
+    CHECK_ARG_COUNT(1);
+
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
@@ -836,6 +851,8 @@ static PyObject *py_db_idx256_next(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -853,6 +870,8 @@ static PyObject *py_db_idx256_previous(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -878,10 +897,7 @@ static PyObject *py_db_idx256_find_primary(PyObject *self, PyObject *args)
     secondary[0] = 0;
     secondary[1] = 0;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
         return NULL;
@@ -906,6 +922,8 @@ static PyObject *py_db_idx256_find_secondary(PyObject *self, PyObject *args)
     Py_ssize_t secondary_len;
     uint64_t primary = 0;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -934,10 +952,7 @@ static PyObject *py_db_idx256_lowerbound(PyObject *self, PyObject *args)
     uint64_t primary;
     int32_t iterator;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -965,10 +980,7 @@ static PyObject *py_db_idx256_upperbound(PyObject *self, PyObject *args)
     uint64_t primary;
     int32_t iterator;
 
-    if (PyTuple_GET_SIZE(args) != 4) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments count");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -997,6 +1009,8 @@ static PyObject *py_db_idx256_end(PyObject *self, PyObject *args)
     uint64_t table;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(3);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -1016,10 +1030,7 @@ static PyObject *py_db_idx_double_store(PyObject *self, PyObject *args)
     uint64_t id;
     double secondary;
 
-    if (!PyArg_ParseTuple(args, "KKKKd", &scope, &table, &payer, &id, &secondary)) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments");
-        return NULL;
-    }
+    CHECK_ARG_COUNT(5);
 
     if (!parse_db_args4(args, &scope, &table, &payer, &id)) {
         return NULL;
@@ -1044,10 +1055,26 @@ static PyObject *py_db_idx_double_update(PyObject *self, PyObject *args)
     uint64_t payer;
     double secondary;
 
-    if (!PyArg_ParseTuple(args, "iKd", &iterator, &payer, &secondary)) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments");
+    CHECK_ARG_COUNT(3);
+
+    PyObject *o = PyTuple_GetItem(args, 0);
+    if (!PyLong_Check(o)) {
+        PyErr_SetString(PyExc_ValueError, "iterator should be an int type");
         return NULL;
     }
+    iterator = PyLong_AsLong(o);
+
+    o = PyTuple_GetItem(args, 1);
+    payer = to_name(o);
+
+    o = PyTuple_GetItem(args, 2);
+    if (!PyFloat_Check(o)) {
+        PyErr_SetString(PyExc_ValueError, "wrong argument type");
+        return NULL;
+    }
+
+    secondary = PyFloat_AsDouble(o);
+
 
     db_idx_double_update(iterator, payer, &secondary);
     Py_RETURN_NONE;
@@ -1057,6 +1084,8 @@ static PyObject *py_db_idx_double_update(PyObject *self, PyObject *args)
 static PyObject *py_db_idx_double_remove(PyObject *self, PyObject *args)
 {
     int32_t iterator;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -1071,6 +1100,8 @@ static PyObject *py_db_idx_double_next(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -1088,6 +1119,8 @@ static PyObject *py_db_idx_double_previous(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -1111,6 +1144,8 @@ static PyObject *py_db_idx_double_find_primary(PyObject *self, PyObject *args)
     double secondary = 0.0;
     uint64_t primary;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
         return NULL;
     }
@@ -1131,6 +1166,8 @@ static PyObject *py_db_idx_double_find_secondary(PyObject *self, PyObject *args)
     double secondary;
     uint64_t primary = 0;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -1161,6 +1198,8 @@ static PyObject *py_db_idx_double_lowerbound(PyObject *self, PyObject *args)
     uint64_t primary;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -1189,6 +1228,8 @@ static PyObject *py_db_idx_double_upperbound(PyObject *self, PyObject *args)
     uint64_t primary;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -1215,6 +1256,8 @@ static PyObject *py_db_idx_double_end(PyObject *self, PyObject *args)
     uint64_t table;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(3);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -1234,6 +1277,8 @@ static PyObject *py_db_idx_long_double_store(PyObject *self, PyObject *args)
     uint64_t id;
     long double *secondary;
     Py_ssize_t secondary_len;
+
+    CHECK_ARG_COUNT(5);
 
     if (!parse_db_args4(args, &scope, &table, &payer, &id)) {
         return NULL;
@@ -1261,6 +1306,18 @@ static PyObject *py_db_idx_long_double_update(PyObject *self, PyObject *args)
     long double secondary;
     Py_ssize_t secondary_len;
 
+    CHECK_ARG_COUNT(3);
+
+    PyObject *o = PyTuple_GetItem(args, 0);
+    if (!PyLong_Check(o)) {
+        PyErr_SetString(PyExc_ValueError, "iterator should be an int type");
+        return NULL;
+    }
+    iterator = PyLong_AsLong(o);
+
+    o = PyTuple_GetItem(args, 1);
+    payer = to_name(o);
+
     if (!PyArg_ParseTuple(args, "iKs#", &iterator, &payer, &secondary, &secondary_len)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
@@ -1278,6 +1335,8 @@ static PyObject *py_db_idx_long_double_remove(PyObject *self, PyObject *args)
 {
     int32_t iterator;
 
+    CHECK_ARG_COUNT(1);
+
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
         return NULL;
@@ -1291,6 +1350,8 @@ static PyObject *py_db_idx_long_double_next(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -1308,6 +1369,8 @@ static PyObject *py_db_idx_long_double_previous(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t primary;
+
+    CHECK_ARG_COUNT(1);
 
     if (!PyArg_ParseTuple(args, "i", &iterator)) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments");
@@ -1331,6 +1394,8 @@ static PyObject *py_db_idx_long_double_find_primary(PyObject *self, PyObject *ar
     long double secondary = 0.0;
     uint64_t primary;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args4(args, &code, &scope, &table, &primary)) {
         return NULL;
     }
@@ -1353,6 +1418,8 @@ static PyObject *py_db_idx_long_double_find_secondary(PyObject *self, PyObject *
     Py_ssize_t secondary_len;
     uint64_t primary = 0;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(4);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
@@ -1385,6 +1452,8 @@ static PyObject *py_db_idx_long_double_lowerbound(PyObject *self, PyObject *args
     uint64_t primary;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -1412,6 +1481,8 @@ static PyObject *py_db_idx_long_double_upperbound(PyObject *self, PyObject *args
     uint64_t primary;
     int32_t iterator;
 
+    CHECK_ARG_COUNT(4);
+
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
     }
@@ -1435,6 +1506,8 @@ static PyObject *py_db_idx_long_double_end(PyObject *self, PyObject *args)
     uint64_t scope;
     uint64_t table;
     int32_t iterator;
+
+    CHECK_ARG_COUNT(3);
 
     if (!parse_db_args3(args, &code, &scope, &table)) {
         return NULL;
