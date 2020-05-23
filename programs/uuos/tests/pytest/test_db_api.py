@@ -141,6 +141,8 @@ class Test(object):
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
         self.chain.push_action(name, 'store', b'')
+        self.chain.push_action(name, 'store', b'a')
+
         self.chain.push_action(name, 'get', b'')
         self.chain.push_action(name, 'update', b'')
 

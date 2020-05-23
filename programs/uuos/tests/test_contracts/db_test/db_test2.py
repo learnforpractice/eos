@@ -48,18 +48,21 @@ class MyData(object):
     def get_secondary_indexes(self):
         return (db.idx64, db.idx128, db.idx256, db.idx_double)
 
+code = N('helloworld11')
+scope = N('scopee')
+table = N('tableee')
+mi = db.MultiIndex(code, scope, table, MyData)
+
 def apply(receiver, code, action):
     payer = receiver
-    code = N('helloworld11')
-    scope = N('scopee')
-    table = N('tableee')
-    mi = db.MultiIndex(code, scope, table, MyData)
-
     if action == N('store'):
-        primary_key = 112
-        d = MyData(primary_key, 2, 3, 5.0)
-        d.payer = receiver
-        mi.store(d)
+        for i in range(112, 113):
+            primary_key = i
+            d = MyData(primary_key, 2+i, 3+i, 5.0+i)
+            d.payer = receiver
+            mi.store(d)
+        for d in mi:
+            print(d.a, d.b, d.c)
     elif action == N('get'):
         itr = mi.find(112)
         print(itr)

@@ -15,6 +15,7 @@ class MyData(object):
         self.b = b
         self.c = c
         self.d = d
+        self.payer = 0
 
     def pack(self):
         b = int.to_bytes(self.b, 16, 'little')
