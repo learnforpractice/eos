@@ -1303,7 +1303,7 @@ static PyObject *py_db_idx_long_double_update(PyObject *self, PyObject *args)
 {
     int32_t iterator;
     uint64_t payer;
-    long double secondary;
+    long double *secondary;
     Py_ssize_t secondary_len;
 
     CHECK_ARG_COUNT(3);
@@ -1318,15 +1318,16 @@ static PyObject *py_db_idx_long_double_update(PyObject *self, PyObject *args)
     o = PyTuple_GetItem(args, 1);
     payer = to_name(o);
 
-    if (!PyArg_ParseTuple(args, "iKs#", &iterator, &payer, &secondary, &secondary_len)) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments");
+    o = PyTuple_GetItem(args, 2);
+    if (!parse_db_data(o, (const char **)&secondary, &secondary_len)) {
         return NULL;
     }
-    if (secondary_len !=sizeof(uint128_t)) {
+
+    if (secondary_len !=sizeof(long double)) {
         PyErr_SetString(PyExc_ValueError, "secondary_len should be 16 bytes long");
         return NULL;
     }
-    db_idx_long_double_update(iterator, payer, &secondary);
+    db_idx_long_double_update(iterator, payer, secondary);
     Py_RETURN_NONE;
 }
 
@@ -1447,7 +1448,7 @@ static PyObject *py_db_idx_long_double_lowerbound(PyObject *self, PyObject *args
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary = 0.0;
+    long double *secondary;
     Py_ssize_t secondary_len;
     uint64_t primary;
     int32_t iterator;
@@ -1463,7 +1464,7 @@ static PyObject *py_db_idx_long_double_lowerbound(PyObject *self, PyObject *args
         return NULL;
     }
 
-    iterator = db_idx_long_double_lowerbound(code, scope, table, &secondary, &primary);
+    iterator = db_idx_long_double_lowerbound(code, scope, table, secondary, &primary);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
     PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));
@@ -1476,7 +1477,7 @@ static PyObject *py_db_idx_long_double_upperbound(PyObject *self, PyObject *args
     uint64_t code;
     uint64_t scope;
     uint64_t table;
-    long double secondary = 0.0;
+    long double *secondary;
     Py_ssize_t secondary_len;
     uint64_t primary;
     int32_t iterator;
@@ -1492,7 +1493,7 @@ static PyObject *py_db_idx_long_double_upperbound(PyObject *self, PyObject *args
         return NULL;
     }
 
-    iterator = db_idx_long_double_upperbound(code, scope, table, &secondary, &primary);
+    iterator = db_idx_long_double_upperbound(code, scope, table, secondary, &primary);
     PyObject *ret = PyTuple_New(2);
     PyTuple_SetItem(ret, 0, PyLong_FromLong(iterator));
     PyTuple_SetItem(ret, 1, PyLong_FromUnsignedLongLong(primary));

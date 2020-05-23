@@ -109,3 +109,19 @@ class Test(object):
 
         r = self.chain.push_action(name, 'destroy', b'')
         self.chain.produce_block()
+
+    def test_db_idx_long_double(self):
+        name = 'helloworld11'
+        code = self.chain.compile_py_code_from_file('db_test/db_test_idx_long_double.py')
+        self.chain.deploy_contract(name, code, b'', vmtype=1)
+
+        r = self.chain.push_action(name, 'destroy', b'')
+        r = self.chain.push_action(name, 'init', b'hello,world')
+        self.chain.push_action(name, 'test', b'')
+        self.chain.push_action(name, 'test1', b'')
+        self.chain.push_action(name, 'test2', b'')
+        self.chain.push_action(name, 'test3', b'')
+        self.chain.produce_block()
+
+        r = self.chain.push_action(name, 'destroy', b'')
+        self.chain.produce_block()
