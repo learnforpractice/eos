@@ -2,7 +2,7 @@
 static void eosio_assert( u32 test, u32 msg_offset ) {
    if (test) {
    } else {
-      print_stacktrace();
+      // print_stacktrace();
       const char* msg = (char *)offset_to_char_ptr(msg_offset);
       EOSIO_ASSERT( test, msg );
    }

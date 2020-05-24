@@ -231,9 +231,9 @@ void db_api::db_update_i64( int iterator, account_name payer, const char* buffer
    const key_value_object& obj = keyval_cache.get( iterator );
 
    const auto& table_obj = keyval_cache.get_table( obj.t_id );
-   if (table_obj.code != receiver) {
-      print_stacktrace();
-   }
+   // if (table_obj.code != receiver) {
+   //    print_stacktrace();
+   // }
    FC_ASSERT( table_obj.code == receiver, "db access violation" );
 
 //   require_write_lock( table_obj.scope );
