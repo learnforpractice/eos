@@ -16,5 +16,10 @@ else
     export PYTHON_SHARED_LIB_PATH="/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7.so"
 fi
 
-./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest
+#./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest/test_basic.py
+if [[ "$1" == "" ]]; then
+    ./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest
+else
+    ./build/programs/uuos/uuos -m pytest -s $1
+fi
 

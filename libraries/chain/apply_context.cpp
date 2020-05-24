@@ -1144,14 +1144,17 @@ void apply_context::call_contract(uint64_t contract, uint64_t func_name, const c
       EOS_THROW( eosio_assert_message_exception, "only call wasm code supported!" );
    }
 
-   call_args.resize(args_size);
-   memcpy(call_args.data(), args, args_size);
+   call_args.resize(args_size+sizeof(uint64_t));
+   memcpy(call_args.data(), &func_name, sizeof(uint64_t));
+   memcpy(call_args.data()+sizeof(uint64_t), args, args_size);
    call_returns.resize(0);
 
    control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 }
 
 int apply_context::call_contract_get_args(void* args, size_t size) {
+   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)args)("n2", size));
+
     if (!args || size == 0) {
         return call_args.size();
     }
@@ -1161,12 +1164,14 @@ int apply_context::call_contract_get_args(void* args, size_t size) {
 }
 
 int apply_context::call_contract_set_results(const void* result, size_t size) {
+   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)result)("n2", size));
     call_returns.resize(size);
     memcpy(call_returns.data(), result, size);
     return size;
 }
 
 int apply_context::call_contract_get_results(void* result, size_t size) {
+   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)result)("n2", size));
     if (!result || size == 0) {
         return call_returns.size();
     }

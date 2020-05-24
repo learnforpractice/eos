@@ -36,7 +36,6 @@ using namespace eosio::chain;
 #include "xxhash.h"
 
 #include <chain_api.hpp>
-#include "call_contract.hpp"
 
 static apply_context *s_ctx = nullptr;
 
