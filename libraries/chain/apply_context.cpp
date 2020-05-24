@@ -60,7 +60,6 @@ extern "C" {
    void eosio_token_apply( uint64_t receiver, uint64_t code, uint64_t action );
    typedef void (*fn_contract_apply)(uint64_t receiver, uint64_t first_receiver, uint64_t action);
    void* get_native_eosio_system_apply_entry(uint8_t *hash, size_t size);
-   void native_eosio_token_apply(uint64_t receiver, uint64_t first_receiver, uint64_t action);
    void *get_apply_entry(std::array<uint8_t, 32> hash);
    bool native_contract_apply(std::array<uint8_t, 32>& hash, uint64_t receiver, uint64_t first_receiver, uint64_t action);
 }

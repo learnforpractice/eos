@@ -199,6 +199,13 @@ int call_contract_get_results(void* result, size_t size) {
     return ctx().call_contract_get_results(result, size);
 }
 
+int _call_native(int main_type, int sub_type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size) {
+   if (main_type == 0) {
+//      return evm_get_interface().call_native(sub_type, (uint8_t*)input, input_size, (uint8_t*)output, output_size);
+   }
+   eosio_assert(0, "bad native call" );
+   return 0;
+}
 
 using namespace eosio;
 
@@ -398,6 +405,7 @@ extern "C" void vm_api_init() {
       _vm_api.__lshrti3 = __lshrti3;
 
       _vm_api.get_code_version = get_code_version;
+      _vm_api.call_native = _call_native;
 
       _vm_api.log = log_;
       _vm_api.is_in_apply_context = false;

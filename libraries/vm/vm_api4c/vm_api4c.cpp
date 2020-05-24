@@ -116,12 +116,26 @@ void init_eosio_injection();
 void init_privileged();
 void init_compiler_builtins();
 
+void _printhex(u32 data_offset, u32 data_len) {
+    uint8_t *data = (uint8_t *)offset_to_ptr(data_offset, data_len);
+    get_vm_api()->printhex(data, data_len);
+}
+
+u32 _call_native(u32 main_type, u32 sub_type, u32 input_offset, u32 input_size, u32 output_offset, u32 output_size) {
+    uint8_t *input = (uint8_t *)offset_to_ptr(input_offset, input_size);
+    uint8_t *output = (uint8_t *)offset_to_ptr(output_offset, output_size);
+    // return get_vm_api()->call_native(main_type, sub_type, input, input_size, output, output_size);
+}
+
 void init_vm_api4c() {
     static bool initialized = false;
     if (initialized) {
         return;
     }
     initialized = true;
+
+    Z_envZ_call_nativeZ_iiiiiii = _call_native;
+    Z_envZ_printhexZ_vii = _printhex;
 
     Z_envZ_printiZ_vj = _printi;
     Z_envZ_printsZ_vi = _prints;

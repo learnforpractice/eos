@@ -143,6 +143,8 @@ target_include_directories( eosio_chain
                               PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
                         )
 add_dependencies(eosio_chain contracts_project)
+add_dependencies(eosio_chain evmone4eosio)
+
 # add_dependencies(eosio_chain aleth)
 
 if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
