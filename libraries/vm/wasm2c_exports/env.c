@@ -353,3 +353,9 @@ u64 (*Z_eosio_injectionZ__eosio_f64_trunc_i64sZ_jd)(f64);
 u32 (*Z_eosio_injectionZ__eosio_f32_leZ_iff)(f32, f32);
 /* import: 'eosio_injection' '_eosio_f64_max' */
 f64 (*Z_eosio_injectionZ__eosio_f64_maxZ_ddd)(f64, f64);
+
+/* import: 'env' 'printhex' */
+void (*Z_envZ_printhexZ_vii)(u32, u32);
+
+/* import: 'env' 'call_native' */
+u32 (*Z_envZ_call_nativeZ_iiiiiii)(u32, u32, u32, u32, u32, u32);

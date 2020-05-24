@@ -1,8 +1,6 @@
 add_library(wasm2c_contracts STATIC
     main.cpp
     wasm-rt-impl.c
-    eosio.system.c
-#    eosio.token.c
     native_contracts.cpp
 
     contracts/eosio-047c7e09c81da6dec89ab970603696268049d1cc3ded37987ff9b8d89dedd371-1722535.c

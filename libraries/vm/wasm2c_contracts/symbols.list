@@ -1,6 +1,4 @@
 _native_contracts_init
-_get_native_eosio_system_apply_entry
-_native_eosio_token_apply
 _get_apply_entry
 _get_contract_memory
 _native_contract_apply
