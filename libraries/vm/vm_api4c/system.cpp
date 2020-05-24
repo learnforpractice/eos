@@ -27,7 +27,7 @@ static u64  current_time() {
 
 static void call_contract(u64 contract, u64 func_name, u32 args_offset, u32 size1) {
    const char *args = (char *)offset_to_ptr(args_offset, size1);
-   get_vm_api()->vm_call(contract, func_name, args, size1);
+   get_vm_api()->call_contract(contract, func_name, args, size1);
 }
 
 static u32 call_contract_get_args(u32 extra_args_offset, u32 size1) {

@@ -1137,4 +1137,43 @@ action_name apply_context::get_sender() const {
    return action_name();
 }
 
+void apply_context::call_contract(uint64_t contract, uint64_t func_name, const char *args, size_t args_size) {
+   auto& contract_account = control.db().get<account_metadata_object,by_name>( name(contract) );
+   if (contract_account.vm_type == 0) {
+   } else {
+      EOS_THROW( eosio_assert_message_exception, "only call wasm code supported!" );
+   }
+
+   call_args.resize(args_size);
+   memcpy(call_args.data(), args, args_size);
+   call_returns.resize(0);
+
+   control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
+}
+
+int apply_context::call_contract_get_args(void* args, size_t size) {
+    if (!args || size == 0) {
+        return call_args.size();
+    }
+    int copy_size = std::min(size, call_args.size());
+    memcpy(args, call_args.data(), copy_size);
+    return copy_size;
+}
+
+int apply_context::call_contract_set_results(const void* result, size_t size) {
+    call_returns.resize(size);
+    memcpy(call_returns.data(), result, size);
+    return size;
+}
+
+int apply_context::call_contract_get_results(void* result, size_t size) {
+    if (!result || size == 0) {
+        return call_returns.size();
+    }
+    int copy_size = std::min(size, call_returns.size());
+    memcpy(result, call_returns.data(), copy_size);
+    return copy_size;
+}
+
+
 } } /// eosio::chain

@@ -98,7 +98,6 @@ add_library( eosio_chain
              trace.cpp
              transaction_metadata.cpp
              vm_api/vm_api.cpp
-             vm_api/call_contract.cpp
 #             vm_api/vm_exceptions.cpp
             #  vm_api_ro/vm_api_ro.cpp
 #             "${CMAKE_SOURCE_DIR}/contracts/eosio.token/eosio.token.cpp"

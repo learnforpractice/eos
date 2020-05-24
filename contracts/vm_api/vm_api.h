@@ -219,8 +219,7 @@ struct vm_api {
    int (*call_contract_set_results)(const void *result, size_t size1);
    int (*call_contract_get_results)(void *result, size_t size1);
 
-   void (*vm_call)(uint64_t contract, uint64_t func_name, const char *args, size_t args_size);
-   void (*wasm_call)(uint64_t contract, uint64_t func_name, const char *args, size_t args_size);
+   void (*call_contract)(uint64_t contract, uint64_t func_name, const char *args, size_t args_size);
 
    int (*evm_execute)(const char *raw_trx, size_t raw_trx_size);
 

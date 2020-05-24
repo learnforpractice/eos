@@ -571,6 +571,10 @@ class apply_context {
 
       uint32_t db_get_table_count(uint64_t code, uint64_t scope, uint64_t table);
 
+      void call_contract(uint64_t contract, uint64_t func_name, const char *args, size_t args_size);
+      int call_contract_get_args(void* args, size_t size);
+      int call_contract_set_results(const void* result, size_t size);
+      int call_contract_get_results(void* result, size_t size);
 
    /// Fields:
    public:
@@ -588,6 +592,9 @@ class apply_context {
       uint32_t                      action_ordinal = 0;
       bool                          privileged   = false;
       bool                          context_free = false;
+
+      vector<char> call_args;
+      vector<char> call_returns;
 
    public:
       generic_index<index64_object>                                  idx64;

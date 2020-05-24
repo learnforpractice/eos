@@ -72,7 +72,6 @@ void set_apply_context(apply_context *ctx) {
    if (ctx == nullptr) {
       _vm_api.is_in_apply_context = false;
       _vm_api.allow_access_apply_context = false;
-      call_contract_cleanup();
    } else {
       _vm_api.is_in_apply_context = true;
       _vm_api.allow_access_apply_context = true;
@@ -183,6 +182,24 @@ static bool get_code_version(uint64_t contract, char *hash, size_t size) {
    }
    return false;
 }
+
+
+void call_contract(uint64_t contract, uint64_t func_name, const char *args, size_t args_size) {
+   ctx().call_contract(contract, func_name, args, args_size);
+}
+
+int call_contract_get_args(void* args, size_t size) {
+    return ctx().call_contract_get_args(args, size);
+}
+
+int call_contract_set_results(const void* result, size_t size) {
+    return ctx().call_contract_set_results(result, size);
+}
+
+int call_contract_get_results(void* result, size_t size) {
+    return ctx().call_contract_get_results(result, size);
+}
+
 
 using namespace eosio;
 
@@ -355,9 +372,7 @@ extern "C" void vm_api_init() {
 
 
 
-      _vm_api.vm_call = vm_call;
-      _vm_api.wasm_call = wasm_call;
-
+      _vm_api.call_contract = call_contract;
       _vm_api.call_contract_get_args = call_contract_get_args;
       _vm_api.call_contract_set_results = call_contract_set_results;
       _vm_api.call_contract_get_results = call_contract_get_results;
