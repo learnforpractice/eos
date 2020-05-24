@@ -531,7 +531,7 @@ static PyObject *py_transaction_free(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, void* extra_args, size_t size1);
+void call_contract(uint64_t contract, uint64_t func_name, void* extra_args, size_t size1);
 int call_contract_get_results(void* result, size_t size1);
 
 static PyObject *py_call_contract(PyObject *self, PyObject *args)
@@ -539,15 +539,12 @@ static PyObject *py_call_contract(PyObject *self, PyObject *args)
     PyObject *o;
     uint64_t contract;
     uint64_t func_name;
-    uint64_t arg1;
-    uint64_t arg2; 
-    uint64_t arg3;
     char* extra_args;
     Py_ssize_t size1;
     char* results;
     size_t size2;
 
-    if (PyTuple_GET_SIZE(args) != 6) {
+    if (PyTuple_GET_SIZE(args) != 3) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
@@ -557,31 +554,10 @@ static PyObject *py_call_contract(PyObject *self, PyObject *args)
     o = PyTuple_GetItem(args, 1);
     func_name = to_name(o);
 
-    o = PyTuple_GetItem(args, 2);
-    if (!PyLong_Check(o)) {
-        PyErr_SetString(PyExc_ValueError, "3th parameter should be a int type.");
-        return NULL;
-    }
-    arg1 = PyLong_AsUnsignedLongLong(o);
-
-    o = PyTuple_GetItem(args, 3);
-    if (!PyLong_Check(o)) {
-        PyErr_SetString(PyExc_ValueError, "4th parameter should be a int type.");
-        return NULL;
-    }
-    arg2 = PyLong_AsUnsignedLongLong(o);
-
-    o = PyTuple_GetItem(args, 4);
-    if (!PyLong_Check(o)) {
-        PyErr_SetString(PyExc_ValueError, "5th parameter should be a int type.");
-        return NULL;
-    }
-    arg3 = PyLong_AsUnsignedLongLong(o);
-
     o = PyTuple_GetItem(args, 5);
     PyBytes_AsStringAndSize(o, &extra_args, &size1);
 
-    call_contract(contract, func_name, arg1, arg2, arg3, extra_args, size1);
+    call_contract(contract, func_name, extra_args, size1);
 
     int results_size = call_contract_get_results(NULL, 0);
     if (results_size) {

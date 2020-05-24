@@ -106,7 +106,7 @@ extern u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'n2s' */
 extern u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 /* import: 'env' 'call_contract' */
-extern void (*Z_envZ_call_contractZ_vjjjjjii)(u64, u64, u64, u64, u64, u32, u32);
+extern void (*Z_envZ_call_contractZ_vjjii)(u64, u64, u32, u32);
 /* import: 'env' 'call_contract_get_results' */
 extern u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
 /* import: 'env' 'get_active_producers' */
@@ -267,6 +267,8 @@ extern u32 (*Z_envZ_db_idx128_lowerboundZ_ijjjii)(u64, u64, u64, u32, u32);
 extern u32 (*Z_envZ_db_idx128_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'db_idx128_end' */
 extern u32 (*Z_envZ_db_idx128_endZ_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_idx256_store' */
+extern u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
 /* import: 'env' 'db_idx256_update' */
 extern void (*Z_envZ_db_idx256_updateZ_vijii)(u32, u64, u32, u32);
 /* import: 'env' 'db_idx256_remove' */
@@ -327,8 +329,6 @@ extern u32 (*Z_envZ_db_idx_long_double_upperboundZ_ijjjii)(u64, u64, u64, u32, u
 extern u32 (*Z_envZ_db_idx_long_double_endZ_ijjj)(u64, u64, u64);
 /* import: 'env' '__divtf3' */
 extern void (*Z_envZ___divtf3Z_vijjjj)(u32, u64, u64, u64, u64);
-/* import: 'env' 'db_idx256_store' */
-extern u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);

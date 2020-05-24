@@ -26,14 +26,17 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 
-#include <vm_manager.hpp>
-
 #include <eosio/chain/protocol_state_object.hpp>
+#include <eosio/chain/account_object.hpp>
+#include <eosio/chain/code_object.hpp>
 
 using namespace eosio::chain;
 #include <fstream>
 #include <dlfcn.h>
 #include "xxhash.h"
+
+#include <chain_api.hpp>
+#include "call_contract.hpp"
 
 static apply_context *s_ctx = nullptr;
 
@@ -69,6 +72,7 @@ void set_apply_context(apply_context *ctx) {
    if (ctx == nullptr) {
       _vm_api.is_in_apply_context = false;
       _vm_api.allow_access_apply_context = false;
+      call_contract_cleanup();
    } else {
       _vm_api.is_in_apply_context = true;
       _vm_api.allow_access_apply_context = true;
@@ -80,7 +84,7 @@ apply_context *get_apply_context() {
    return s_ctx;
 }
 
-static inline apply_context& ctx() {
+apply_context& ctx() {
    if (!_vm_api.allow_access_apply_context) {
       print_stacktrace();
       _vm_api.eosio_assert(0, "access apply context not allowed!");
@@ -151,26 +155,6 @@ int is_contracts_console_enabled() {
    return options::get().is_contracts_console_enabled();
 }
 #endif
-
-void wasm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
-//   ctx().control.get_wasm_interface().apply(contract, func_name, arg1, arg2, arg3, ctx());
-}
-
-void vm_call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char* extra_args, size_t in_size) {
-   vm_manager::get().call(contract, func_name, arg1, arg2, arg3, extra_args, in_size);
-}
-
-int call_contract_get_extra_args(void* extra_args, size_t size1) {
-   return vm_manager::get().get_extra_args((char*)extra_args, size1);
-}
-
-int call_contract_set_results(const void* result, size_t size1) {
-   return vm_manager::get().set_result((const char*)result, size1);
-}
-
-int call_contract_get_results(void* result, size_t size1) {
-   return vm_manager::get().get_result((char*)result, size1);
-}
 
 static void __ashlti3(__int128* ret, uint64_t low, uint64_t high, uint32_t shift) {
     fc::uint128_t i(high, low);
@@ -374,7 +358,7 @@ extern "C" void vm_api_init() {
       _vm_api.vm_call = vm_call;
       _vm_api.wasm_call = wasm_call;
 
-      _vm_api.call_contract_get_extra_args = call_contract_get_extra_args;
+      _vm_api.call_contract_get_args = call_contract_get_args;
       _vm_api.call_contract_set_results = call_contract_set_results;
       _vm_api.call_contract_get_results = call_contract_get_results;
 

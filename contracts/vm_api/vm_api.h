@@ -215,11 +215,12 @@ struct vm_api {
    void (*token_retire)( int64_t amount, uint64_t _symbol, const char *memo, size_t memo_size );
    void (*token_close)( uint64_t owner, uint64_t _symbol );
 
-   int (*call_contract_get_extra_args)(void *extra_args, size_t size1);
+   int (*call_contract_get_args)(void *extra_args, size_t size1);
    int (*call_contract_set_results)(const void *result, size_t size1);
    int (*call_contract_get_results)(void *result, size_t size1);
-   void (*vm_call)(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, const char *extra_args, size_t in_size);
-   void (*wasm_call)(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3);
+
+   void (*vm_call)(uint64_t contract, uint64_t func_name, const char *args, size_t args_size);
+   void (*wasm_call)(uint64_t contract, uint64_t func_name, const char *args, size_t args_size);
 
    int (*evm_execute)(const char *raw_trx, size_t raw_trx_size);
 
@@ -275,14 +276,10 @@ void vm_deinit(void);
 
 int vm_setcode(uint64_t account);
 int vm_apply(uint64_t receiver, uint64_t account, uint64_t act);
-int vm_call(uint64_t account, uint64_t func, uint64_t arg1, uint64_t arg2, uint64_t arg3, void* extra_args, size_t extra_args_size);
 
 int vm_preload(uint64_t account);
 int vm_load(uint64_t account);
 int vm_unload(uint64_t account);
-
-
-uint64_t wasm_call(const char* act, uint64_t* args, int argc);
 
 int has_option(const char* _option);
 int get_option(const char* option, char *result, int size);

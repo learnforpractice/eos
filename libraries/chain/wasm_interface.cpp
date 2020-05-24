@@ -1903,12 +1903,13 @@ class vm_apis : public context_aware_api {
          get_vm_api()->token_close( owner, symbol );
       }
 
-      void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, uint32_t size1) {
-         get_vm_api()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
+      void call_contract(uint64_t contract, uint64_t func_name, array_ptr<const char> extra_args, uint32_t size1) {
+         FC_THROW_EXCEPTION(wasm_execution_error, "call_contract not implemented yet");
+         //get_vm_api()->vm_call(contract, func_name, extra_args, size1);
       }
 
-      int call_contract_get_extra_args(array_ptr<char> extra_args, uint32_t size1) {
-         return get_vm_api()->call_contract_get_extra_args(extra_args, size1);
+      int call_contract_get_args(array_ptr<char> extra_args, uint32_t size1) {
+         return get_vm_api()->call_contract_get_args(extra_args, size1);
       }
 
       int call_contract_set_results(array_ptr<const char> results, uint32_t size1) {
@@ -1930,7 +1931,7 @@ REGISTER_INTRINSICS(vm_apis,
    (token_close,     void(int64_t, int64_t))
 
    (call_contract,                  void(int64_t, int64_t, int64_t, int64_t, int64_t, int, int)  )
-   (call_contract_get_extra_args,   int(int, int))
+   (call_contract_get_args,   int(int, int))
    (call_contract_set_results,      int(int, int))
    (call_contract_get_results,      int(int, int))
 );

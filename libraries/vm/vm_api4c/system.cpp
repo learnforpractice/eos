@@ -25,14 +25,14 @@ static u64  current_time() {
    return get_vm_api()->current_time();
 }
 
-static void call_contract(u64 contract, u64 func_name, u64 arg1, u64 arg2, u64 arg3, u32 extra_args_offset, u32 size1) {
-   const char *extra_args = (char *)offset_to_ptr(extra_args_offset, size1);
-   get_vm_api()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
+static void call_contract(u64 contract, u64 func_name, u32 args_offset, u32 size1) {
+   const char *args = (char *)offset_to_ptr(args_offset, size1);
+   get_vm_api()->vm_call(contract, func_name, args, size1);
 }
 
-static u32 call_contract_get_extra_args(u32 extra_args_offset, u32 size1) {
+static u32 call_contract_get_args(u32 extra_args_offset, u32 size1) {
    char *extra_args = (char *)offset_to_ptr(extra_args_offset, size1);
-   return get_vm_api()->call_contract_get_extra_args(extra_args, size1);
+   return get_vm_api()->call_contract_get_args(extra_args, size1);
 }
 
 static u32 call_contract_set_results(u32 results_offset, u32 size1) {

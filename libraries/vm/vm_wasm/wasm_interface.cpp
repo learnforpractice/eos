@@ -1642,8 +1642,8 @@ class vm_apis : public context_aware_api {
 //         API()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
       }
 
-      int call_contract_get_extra_args(array_ptr<char> extra_args, size_t size1) {
-         return API()->call_contract_get_extra_args(extra_args, size1);
+      int call_contract_get_args(array_ptr<char> extra_args, size_t size1) {
+         return API()->call_contract_get_args(extra_args, size1);
       }
 
       int call_contract_set_results(array_ptr<const char> results, size_t size1) {
@@ -1665,7 +1665,7 @@ REGISTER_INTRINSICS(vm_apis,
 
    (call_contract,            void(int64_t, int64_t, int64_t, int64_t, int64_t, int, int)  )
 
-   (call_contract_get_extra_args, int(int, int))
+   (call_contract_get_args, int(int, int))
    (call_contract_set_results, int(int, int))
    (call_contract_get_results, int(int, int))
 );
