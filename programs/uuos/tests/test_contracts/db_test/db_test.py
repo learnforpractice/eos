@@ -317,3 +317,10 @@ def apply(receiver, code, action):
 
     itr, secondary_key = db.idx_double_find_primary(code, scope, table+3, primary_key)    
     print(itr, secondary_key)
+
+    itr = mi.lowerbound(0)
+    while itr >= 0:
+        data = mi.get(itr)
+        print(data.a, data.b, data.c)
+        del mi[data.a]
+        itr = mi.lowerbound(0)

@@ -77,3 +77,10 @@ def apply(receiver, code, action):
         data.payer = payer
         data.b += 1
         mi.store(data)
+    elif action == N('destory'):
+        itr = mi.lowerbound(0)
+        while itr >= 0:
+            data = mi.get(itr)
+            print(data.a, data.b, data.c)
+            del mi[data.a]
+            itr = mi.lowerbound(0)

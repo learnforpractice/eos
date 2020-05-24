@@ -145,6 +145,7 @@ class Test(object):
 
         self.chain.push_action(name, 'get', b'')
         self.chain.push_action(name, 'update', b'')
+        self.chain.push_action(name, 'destory', b'')
 
         self.chain.produce_block()
     
