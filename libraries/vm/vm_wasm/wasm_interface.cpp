@@ -1663,8 +1663,6 @@ REGISTER_INTRINSICS(vm_apis,
    (token_retire,    void(int64_t, int64_t, int, int ))
    (token_close,     void(int64_t, int64_t))
 
-   (call_contract,            void(int64_t, int64_t, int64_t, int64_t, int64_t, int, int)  )
-
    (call_contract_get_args, int(int, int))
    (call_contract_set_results, int(int, int))
    (call_contract_get_results, int(int, int))

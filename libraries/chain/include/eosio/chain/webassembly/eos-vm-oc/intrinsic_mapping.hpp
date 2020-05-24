@@ -269,11 +269,9 @@ constexpr auto intrinsic_table = boost::hana::make_tuple(
    "env.token_retire"_s,
    "env.token_close"_s,
 
-   "env.call_contract"_s,
    "env.call_contract_get_args"_s,
    "env.call_contract_set_results"_s,
    "env.call_contract_get_results"_s,
-   "env.call_native"_s
 );
 
 }}}

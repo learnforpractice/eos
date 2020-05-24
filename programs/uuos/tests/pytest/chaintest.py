@@ -187,7 +187,7 @@ class ChainTest(object):
 #        logger.info(chain_cfg)
         genesis = json.dumps(genesis)
         logger.debug(genesis)
-        uuos.set_default_log_level(0)
+        uuos.set_default_log_level(10)
         self.chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
 
         self.init()
@@ -492,6 +492,8 @@ class ChainTest(object):
         actions.append(setabi)
         # logger.info(actions)
         ret = self.push_actions(actions)
+        elapsed = ret.elapsed
+        logger.info(f'+++++deploy contract: {account} {elapsed}')
         # logger.info(ret)
         return ret
 
