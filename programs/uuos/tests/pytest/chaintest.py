@@ -114,6 +114,23 @@ class Object():
 # print('>>>')
 # input()
 
+key_map = {
+    'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV':'5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',
+    'EOS61MgZLN7Frbc2J7giU7JdYjy2TqnfWFjZuLXvpHJoKzWAj7Nst':'5JEcwbckBCdmji5j8ZoMHLEUS8TqQiqBG1DRx1X9DN124GUok9s',
+    'EOS5JuNfuZPATy8oPz9KMZV2asKf9m8fb2bSzftvhW55FKQFakzFL':'5JbDP55GXN7MLcNYKCnJtfKi9aD2HvHAdY7g8m67zFTAFkY1uBB',
+    'EOS8Znrtgwt8TfpmbVpTKvA2oB8Nqey625CLN8bCN3TEbgx86Dsvr':'5K463ynhZoCDDa4RDcr63cUwWLTnKqmdcoTKTHBjqoKfv4u5V7p',
+    'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV':'5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',
+    'EOS8Ep2idd8FkvapNfgUwFCjHBG4EVNAjfUsRRqeghvq9E91tkDaj':'5KT26sGXAywAeUSrQjaRiX9uk9uDGNqC1CSojKByLMp7KRp8Ncw',
+
+    'EOS6AjF6hvF7GSuSd4sCgfPKq5uWaXvGM2aQtEUCwmEHygQaqxBSV':'5JRYimgLBrRLCBAcjHUWCYRv3asNedTYYzVgmiU4q2ZVxMBiJXL',
+    'EOS7sPDxfw5yx5SZgQcVb57zS1XeSWLNpQKhaGjjy2qe61BrAQ49o':'5Jbb4wuwz8MAzTB9FJNmrVYGXo4ABb7wqPVoWGcZ6x8V2FwNeDo',
+    'EOS89jesRgvvnFVuNtLg4rkFXcBg2Qq26wjzppssdHj2a8PSoWMhx':'5JHRxntHapUryUetZgWdd3cg6BrpZLMJdqhhXnMaZiiT4qdJPhv',
+    'EOS73ECcVHVWvuxJVm5ATnqBTCFMtA6WUsdDovdWH5NFHaXNq1hw1':'5Jbh1Dn57DKPUHQ6F6eExX55S2nSFNxZhpZUxNYFjJ1arKGK9Q3',
+    'EOS8h8TmXCU7Pzo5XQKqyWwXAqLpPj4DPZCv5Wx9Y4yjRrB6R64ok':'5JJYrXzjt47UjHyo3ud5rVnNEPTCqWvf73yWHtVHtB1gsxtComG',
+    'EOS65jj8NPh2EzLwje3YRy4utVAATthteZyhQabpQubxHNJ44mem9':'5J9PozRVudGYf2D4b8JzvGxPBswYbtJioiuvYaiXWDYaihNFGKP',
+    'EOS5fVw435RSwW3YYWAX9qz548JFTWuFiBcHT3PGLryWaAMmxgjp1':'5K9AZWR2wEwtZii52vHigrxcSwCzLhhJbNpdXpVFKHP5fgFG5Tx'
+}
+
 class ChainTest(object):
 
     def __init__(self, uuos_network=False, jit=False):
@@ -189,10 +206,9 @@ class ChainTest(object):
         logger.debug(genesis)
         uuos.set_default_log_level(10)
         self.chain = Chain(chain_cfg, genesis, options.config_dir, options.snapshot)
+        self.chain_api = ChainApi(self.chain.ptr)
 
         self.init()
-
-        self.chain_api = ChainApi(self.chain.ptr)
 
     def init(self):
         self.chain.startup(True)
@@ -376,10 +392,36 @@ class ChainTest(object):
         logger.info(f'+++++{account} {action} {elapsed}')
         return ret
 
+    def find_private_key(self, actor, perm_name):
+        params = {'account_name': actor}
+        params = json.dumps(params)
+        ret, result = self.chain_api.get_account(params)
+        if not ret:
+            return None
+        result = JsonObject(result)
+        keys = []
+        for permission in result.permissions:
+            if permission['perm_name'] == perm_name:
+                for key in permission['required_auth']['keys']:
+                    pub_key = key['key']
+                    if pub_key in key_map:
+                        priv_key = key_map[pub_key]
+                        keys.append(priv_key)
+        return keys
+
     def push_actions(self, actions):
         chain_id = self.chain.id()
         ref_block_id = self.chain.last_irreversible_block_id()
-        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
+        priv_keys = []
+        for act in actions:
+            for author in act['authorization']:
+                keys = self.find_private_key(author['actor'], author['permission'])
+                if keys:
+                    priv_keys.extend(keys)
+        assert len(priv_keys) >= 1
+        priv_key = priv_keys[0]
+#        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
+
         actions = json.dumps(actions)
         expiration = datetime.utcnow() + timedelta(seconds=60)
         expiration = isoformat(expiration)
