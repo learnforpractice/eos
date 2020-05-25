@@ -141,7 +141,7 @@ class Test(object):
         test for account exists on EOS network, but with the wrong active key
         '''
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
-        account = 'helloworld12'
+        account = 'helloworld13'
         self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
 
     def create_account_test3(self):
@@ -149,7 +149,7 @@ class Test(object):
         test for account exists on EOS network
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
-        account = 'helloworld12'
+        account = 'helloworld13'
         self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
 
     def create_account_test4(self):
@@ -157,7 +157,7 @@ class Test(object):
         testcase for account with 13 charactors
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
-        account = 'helloworld123'
+        account = 'helloworld133'
         self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
 
     def test_create_account(self):
@@ -170,12 +170,12 @@ class Test(object):
     def activate_account_test1(self):
     # '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',#EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
         h = hashlib.sha256()
-        h.update(b'activate helloworld13')
+        h.update(b'activate helloworld14')
         private_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
         sign = uuos.sign_digest(h.digest(), private_key)
         args = {
             "activator":"alice",
-            "account":"helloworld13",
+            "account":"helloworld14",
             "sign": sign
         }
         self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
@@ -183,12 +183,12 @@ class Test(object):
     def activate_account_test2(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         h = hashlib.sha256()
-        h.update(b'activate helloworld13')
+        h.update(b'activate helloworld14')
         private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
         sign = uuos.sign_digest(h.digest(), private_key)
         args = {
             "activator":"alice",
-            "account":"helloworld13",
+            "account":"helloworld14",
             "sign": sign
         }
         self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
@@ -197,7 +197,7 @@ class Test(object):
     def activate_account_test3(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         h = hashlib.sha256()
-        h.update(b'activate helloworld13')
+        h.update(b'activate helloworld14')
         private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
         sign = uuos.sign_digest(h.digest(), private_key)
         args = {
@@ -223,9 +223,13 @@ class Test(object):
 
         self.chain.push_action('eosio', 'regproducer', args, 'alice', 'active')
 
+    @check_error('no enough staking')
     def reg_producer_test2(self):
+        '''
+        stake less than 1000_000 tokens
+        '''
         self.chain.buy_ram_bytes('eosio', 'alice', 60*1024)
-        self.chain.delegatebw('eosio', 'alice', 1.0, 1000000.0, transfer=0)
+        self.chain.delegatebw('eosio', 'alice', 1.0, 999998.0, transfer=0)
         args = {
             "producer": "alice",
             "producer_key": "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV",
@@ -235,8 +239,24 @@ class Test(object):
 
         self.chain.push_action('eosio', 'regproducer', args, 'alice', 'active')
 
+    def reg_producer_test3(self):
+        '''
+        stake tokens equal to 1000000
+        '''
+        self.chain.buy_ram_bytes('eosio', 'bob', 60*1024)
+        self.chain.delegatebw('eosio', 'bob', 1.0, 999999.0, transfer=0)
+        args = {
+            "producer": "bob",
+            "producer_key": "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV",
+            "url": "https://uuos.io",
+            "location": 1
+        }
+
+        self.chain.push_action('eosio', 'regproducer', args, 'bob', 'active')
+
     def test_reg_producer(self):
         self.reg_producer_test1()
         self.reg_producer_test2()
+        self.reg_producer_test3()
 
 
