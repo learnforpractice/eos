@@ -34,9 +34,9 @@ else()
 endif()
 
 configure_file(config.hpp.in config.hpp ESCAPE_QUOTES)
-configure_file(uuos.py uuos.py COPY_ONLY)
-configure_file(uuos-mac.sh uuos-mac.sh COPY_ONLY)
-configure_file(uuos-linux.sh uuos-linux.sh COPY_ONLY)
+configure_file(uuos.py uuos.py COPYONLY)
+configure_file(uuos-mac.sh uuos-mac.sh COPYONLY)
+configure_file(uuos-linux.sh uuos-linux.sh COPYONLY)
 
 target_include_directories(${NODE_EXECUTABLE_NAME}
     PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
