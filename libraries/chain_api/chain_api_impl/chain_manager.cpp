@@ -405,6 +405,7 @@ void chain_free_(void *ptr) {
 }
 
 eosio::chain::controller& chain_get_controller(void *ptr) {
+    EOS_ASSERT(ptr != nullptr, eosio_assert_message_exception, "controller pointer should not be null");
     return *(eosio::chain::controller*)ptr;
 }
 
