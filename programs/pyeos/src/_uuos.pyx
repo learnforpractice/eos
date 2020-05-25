@@ -142,6 +142,7 @@ cdef extern from "uuos.hpp":
     void uuos_set_default_data_dir_(string& dir)
     void uuos_set_default_config_dir_(string& dir)
     void uuos_shutdown_()
+    void uuos_sign_digest_(string& _digest, string& _priv_key, string& out)
 
     int chain_api_get_info_(void *ptr, string& result);
     int chain_api_get_activated_protocol_features_(void *ptr, string& params, string& result);
@@ -207,6 +208,11 @@ def unpack_native_object(int _type, string& packed_message):
     cdef string msg
     unpack_native_object_(_type, packed_message, msg)
     return <bytes>msg
+
+def sign_digest(string& _digest, string& _priv_key):
+    cdef string out
+    uuos_sign_digest_(_digest, _priv_key, out)
+    return out
 
 def chain_get_current_ptr():
     return <uint64_t>chain_get_current_ptr_();

@@ -1125,7 +1125,7 @@ uint64_t uuos_current_time_nano_() {
    return uint64_t(ns);
 }
 
-void uuos_sign_digest_(string& _priv_key, string& _digest, string& out) {
+void uuos_sign_digest_(string& _digest, string& _priv_key, string& out) {
     try {
         chain::private_key_type priv_key(_priv_key);
         chain::digest_type digest(_digest.c_str(), _digest.size());

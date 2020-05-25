@@ -44,6 +44,7 @@ struct chain_api_cpp
    void (*uuos_set_default_data_dir)(string& dir);
    void (*uuos_set_default_config_dir)(string& dir);
    void (*uuos_shutdown)();
+   void (*uuos_sign_digest)(string& _priv_key, string& _digest, string& out);
 
    string& (*uuos_get_last_error)();
    void (*uuos_set_last_error)(string& error);

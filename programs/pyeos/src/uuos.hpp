@@ -126,6 +126,7 @@ chain_api_cpp* get_chain_api();
 #define uuos_set_default_data_dir_ get_chain_api()->uuos_set_default_data_dir
 #define uuos_set_default_config_dir_ get_chain_api()->uuos_set_default_config_dir
 #define uuos_shutdown_ get_chain_api()->uuos_shutdown
+#define uuos_sign_digest_ get_chain_api()->uuos_sign_digest
 
 //+++++++++++++++++chain api++++++++++++++
 #define chain_api_get_info_ get_chain_api()->chain_api_get_info
@@ -150,3 +151,4 @@ chain_api_cpp* get_chain_api();
 #define chain_api_abi_bin_to_json_ get_chain_api()->chain_api_abi_bin_to_json
 #define chain_api_get_required_keys_ get_chain_api()->chain_api_get_required_keys
 #define chain_api_get_transaction_id_ get_chain_api()->chain_api_get_transaction_id
+

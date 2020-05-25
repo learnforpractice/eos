@@ -218,7 +218,7 @@ class ChainTest(object):
                 'eosio.jitfee',
                 'uuos',
                 'hello',
-                'helloworld12',
+                # 'helloworld12',
                 'helloworld11',
                 'alice',
                 'bob'

@@ -55,8 +55,8 @@ def recover_key(digest, sign):
 def current_time_nano():
     return _uuos.uuos_current_time_nano()
 
-def sign_digest(priv_key, digest):
-    return _uuos.uuos_sign_digest(priv_key, digest)
+def sign_digest(digest, priv_key):
+    return _uuos.sign_digest(digest, priv_key)
 
 def set_log_level(logger_name='default', level=10):
     return _uuos.set_log_level(logger_name, level)

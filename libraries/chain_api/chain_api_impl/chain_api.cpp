@@ -389,6 +389,7 @@ void pack_native_object_(int type, string& msg, string& packed_message);
 void unpack_native_object_(int type, string& packed_message, string& msg);
 void uuos_set_log_level_(string& logger_name, int level);
 void uuos_shutdown_();
+void uuos_sign_digest_(string& _digest, string& _priv_key, string& out);
 
 string& uuos_get_last_error_();
 void uuos_set_last_error_(string& error);
@@ -552,6 +553,7 @@ extern "C" void chain_api_init() {
 
       .uuos_set_log_level = uuos_set_log_level_,
       .uuos_shutdown = uuos_shutdown_,
+      .uuos_sign_digest = uuos_sign_digest_,
 
       .uuos_get_last_error = uuos_get_last_error_,
       .uuos_set_last_error = uuos_set_last_error_,
