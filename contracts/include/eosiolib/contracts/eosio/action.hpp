@@ -459,11 +459,11 @@ namespace eosio {
 
       template <typename Code>
       constexpr action_wrapper(Code&& code, eosio::permission_level&& perm)
-         : code_name(std::forward<Code>(code)), permissions({1, std::move(perm)}) {}
+         : code_name(std::forward<Code>(code)), permissions(1, std::move(perm)) {}
 
       template <typename Code>
       constexpr action_wrapper(Code&& code, const eosio::permission_level& perm)
-         : code_name(std::forward<Code>(code)), permissions({1, perm}) {}
+         : code_name(std::forward<Code>(code)), permissions(1, perm) {}
 
       template <typename Code>
       constexpr action_wrapper(Code&& code)
