@@ -1248,7 +1248,7 @@ find_frozen(PyObject *name)
 #else
 
 #define FROZEN_MEMORY_SIZE (64*1024)
-void *get_frozen_code_memory(void);
+void *get_temp_memory(void);
 
 __attribute__((eosio_wasm_import))
 int find_frozen_code(const char *name, size_t length, char *code, size_t code_size);
@@ -1260,7 +1260,7 @@ static const struct _frozen *find_frozen(PyObject *name)
         return NULL;
 
     const char *module_name = PyUnicode_AsUTF8(name);
-    char *frozen_memory = get_frozen_code_memory();
+    char *frozen_memory = get_temp_memory();
     int code_size = find_frozen_code(module_name, strlen(module_name), frozen_memory, FROZEN_MEMORY_SIZE);
     if (code_size == 0) {
         return NULL;

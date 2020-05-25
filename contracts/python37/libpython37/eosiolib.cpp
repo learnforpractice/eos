@@ -34,19 +34,15 @@ static int pos = 0;
 static char *memory_start = nullptr;
 static char *code_buffer = nullptr;
 #define MAX_CODE_SIZE (PYTHON_VM_MAX_CODE_SIZE)
-#define MAX_FROZEN_CODE_SIZE (PYTHON_VM_MAX_FROZEN_CODE_SIZE)
-#define MAX_MEMORY_SIZE (PYTHON_VM_MAX_MEMORY_SIZE-PYTHON_VM_MAX_FROZEN_CODE_SIZE-PYTHON_VM_MAX_CODE_SIZE)
+// #define PYTHON_VM_MAX_TEMP_MEMORY_SIZE (PYTHON_VM_MAX_TEMP_MEMORY_SIZE)
+#define MAX_MEMORY_SIZE (PYTHON_VM_MAX_MEMORY_SIZE-PYTHON_VM_MAX_TEMP_MEMORY_SIZE)
 
 void *get_current_memory(void) {
    return memory_start+pos;
 }
 
-void *get_code_memory(void) {
+void *get_temp_memory(void) {
    return (void *)(MAX_MEMORY_SIZE);
-}
-
-void *get_frozen_code_memory(void) {
-   return (void *)(MAX_MEMORY_SIZE+MAX_CODE_SIZE);
 }
 
 inline char* align(char* ptr, uint8_t align_amt) {

@@ -78,7 +78,7 @@ extern void *python_load_module(const char *code, int size);
 extern void python_call_module(void *m, uint64_t receiver, uint64_t code, uint64_t action);
 
 void *get_current_memory(void);
-void *get_code_memory(void);
+void *get_temp_memory(void);
 
 __attribute__((eosio_wasm_import))
 void set_copy_memory_range(int start, int end);

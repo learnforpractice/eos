@@ -204,8 +204,7 @@ set(PYTHON_FLAGS -D__WASM -DNDEBUG -DPYTHON_SS -DPy_BUILD_CORE -DPREFIX="" -DEXE
 
 set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_STACK_SIZE=${PYTHON_VM_STACK_SIZE})
 set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_MEMORY_SIZE=${PYTHON_VM_MAX_MEMORY_SIZE})
-set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_CODE_SIZE=${PYTHON_VM_MAX_CODE_SIZE})
-set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_FROZEN_CODE_SIZE=${PYTHON_VM_MAX_FROZEN_CODE_SIZE})
+set(PYTHON_FLAGS ${PYTHON_FLAGS} -DPYTHON_VM_MAX_TEMP_MEMORY_SIZE=${PYTHON_VM_MAX_TEMP_MEMORY_SIZE})
 
 set(PYTHON_INC_FOLDERS
     ${CMAKE_SOURCE_DIR}/include/libcxx
@@ -217,7 +216,7 @@ set(PYTHON_INC_FOLDERS
 )
 
 set(CMAKE_C_COMPILER "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/clang-7")
-set(CMAKE_C_FLAGS " -O3 --target=wasm32 -ffreestanding -nostdlib -fno-builtin -fno-threadsafe-statics -D__WASM -DBOOST_DISABLE_ASSERTS -DBOOST_EXCEPTION_DISABLE -Xclang -load -Xclang ${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/LLVMEosioApply.dylib -fplugin=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio_plugin.dylib -mllvm -use-cfl-aa-in-codegen=both --sysroot=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../")
+set(CMAKE_C_FLAGS "-O3 --target=wasm32 -ffreestanding -nostdlib -fno-builtin -fno-threadsafe-statics -D__WASM -DBOOST_DISABLE_ASSERTS -DBOOST_EXCEPTION_DISABLE -Xclang -load -Xclang ${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/LLVMEosioApply.dylib -fplugin=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio_plugin.dylib -mllvm -use-cfl-aa-in-codegen=both --sysroot=${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/../")
 
 set(CMAKE_AR "/usr/bin/ar")
 set(CMAKE_AR "${EOSIO_CDT_ROOT}/opt/eosio.cdt/bin/eosio-ar")
