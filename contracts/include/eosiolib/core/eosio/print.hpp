@@ -234,13 +234,6 @@ namespace eosio {
       print(std::forward<Args>(args)...);
    }
 
-   template<typename Arg, typename... Args>
-   void println( Arg&& a, Args&&... args ) {
-      print(std::forward<Arg>(a));
-      print(std::forward<Args>(args)...);
-      print("\n");
-   }
-
    /**
     * Simulate C++ style streams
     *
