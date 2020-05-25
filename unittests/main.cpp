@@ -8,7 +8,6 @@
 
 #include <boost/test/included/unit_test.hpp>
 
-#include <Python.h>
 
 //extern uint32_t EOS_TESTING_GENESIS_TIMESTAMP;
 
