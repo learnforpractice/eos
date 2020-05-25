@@ -115,11 +115,13 @@ add_library( eosio_chain
              db_api/db_interface.cpp
              )
 
+set(NATIVE_CONTRACTS ${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/native_contracts/libnative_contracts.a)
+
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
                        vm_api chain_api vm_manager
-                       native_contracts
                        wasm2c_contracts
+                       ${NATIVE_CONTRACTS}
                        ${LIBEVM4EOS}
                        )
 
