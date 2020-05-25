@@ -16,7 +16,9 @@ add_library(native_contracts SHARED
     main_eosio_contract.cpp
 )
 
-target_link_libraries( native_contracts PRIVATE eosiolib.native vm_api )
+set(EOSIOLIB_NATIVE ${CMAKE_BINARY_DIR}/externals/eosio.contracts/contracts/eosiolib/libeosiolib.a)
+target_link_libraries( native_contracts PRIVATE ${EOSIOLIB_NATIVE} vm_api )
+add_dependencies(native_contracts contracts_project)
 
 target_include_directories( native_contracts
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include

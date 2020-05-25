@@ -177,6 +177,7 @@ struct vm_api {
    void (*set_resource_limits)( uint64_t account, int64_t ram_bytes, int64_t net_weight, int64_t cpu_weight );
    void (*get_resource_limits)( uint64_t account, int64_t* ram_bytes, int64_t* net_weight, int64_t* cpu_weight );
    int64_t (*set_proposed_producers)( char *producer_data, uint32_t producer_data_size );
+   int64_t (*set_proposed_producers_ex)( uint64_t packed_producer_format, char* packed_producer_schedule, uint32_t datalen );
    bool (*is_privileged)( uint64_t account );
    void (*set_privileged)( uint64_t account, bool is_priv );
    void (*set_blockchain_parameters_packed)(char* data, uint32_t datalen);

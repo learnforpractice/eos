@@ -134,6 +134,7 @@ _set_blockchain_parameters_packed
 _set_last_error
 _set_privileged
 _set_proposed_producers
+_set_proposed_producers_ex
 _set_resource_limits
 _sha1
 _sha256

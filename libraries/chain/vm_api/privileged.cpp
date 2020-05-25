@@ -76,6 +76,20 @@ int64_t set_proposed_producers( char* packed_producer_schedule, uint32_t datalen
    return set_proposed_producers_common(std::move(producers), true);
 }
 
+int64_t set_proposed_producers_ex( uint64_t packed_producer_format, char* packed_producer_schedule, uint32_t datalen ) {
+   if (packed_producer_format == 0) {
+      return set_proposed_producers(packed_producer_schedule, datalen);
+   } else if (packed_producer_format == 1) {
+      datastream<const char*> ds( packed_producer_schedule, datalen );
+      vector<producer_authority> producers;
+
+      fc::raw::unpack(ds, producers);
+      return set_proposed_producers_common(std::move(producers), false);
+   } else {
+      EOS_THROW(wasm_execution_error, "Producer schedule is in an unknown format!");
+   }
+}
+
 bool is_privileged( uint64_t account )  {
    return ctx().db.get<account_metadata_object, by_name>( name(account) ).is_privileged();
 }

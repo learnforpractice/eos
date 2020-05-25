@@ -47,6 +47,8 @@ extern "C" {
     */
    WASM_IMPORT int64_t set_proposed_producers( char *producer_data, uint32_t producer_data_size );
 
+   WASM_IMPORT int64_t set_proposed_producers_ex( uint64_t packed_producer_format, char* packed_producer_schedule, uint32_t datalen );
+
    /**
     * @brief Set new active producers
     * Set new active producers. Producers will only be activated once the block which starts the next round is irrreversible

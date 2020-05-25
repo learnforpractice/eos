@@ -19,6 +19,10 @@ int64_t set_proposed_producers( char *producer_data, uint32_t producer_data_size
    return get_vm_api()->set_proposed_producers( producer_data, producer_data_size );
 }
 
+int64_t set_proposed_producers_ex( uint64_t packed_producer_format, char* packed_producer_schedule, uint32_t datalen ) {
+   return get_vm_api()->set_proposed_producers_ex( packed_producer_format, packed_producer_schedule, datalen );
+}
+
 bool is_privileged( uint64_t account )  {
    return get_vm_api()->is_privileged( account );
 }

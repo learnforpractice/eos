@@ -345,6 +345,7 @@ extern "C" void vm_api_init() {
       _vm_api.set_resource_limits = set_resource_limits;
       _vm_api.get_resource_limits = get_resource_limits;
       _vm_api.set_proposed_producers = set_proposed_producers;
+      _vm_api.set_proposed_producers_ex = set_proposed_producers_ex;
       _vm_api.is_privileged = is_privileged;
       _vm_api.set_privileged = set_privileged;
       _vm_api.set_blockchain_parameters_packed = set_blockchain_parameters_packed;
