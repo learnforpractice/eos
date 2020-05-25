@@ -34,7 +34,14 @@ class cpp_compiler(object):
         else:
             dl_sufix = 'so'
         eosio_cdt_path = find_eosio_cdt_path()
-        clang_7_args = [f'{eosio_cdt_path}/bin/clang-7',
+
+        clang_7 = f'{eosio_cdt_path}/bin/clang-7.bk'
+        if os.path.exists(clang_7):
+            pass
+        else:
+            clang_7 = f'{eosio_cdt_path}/bin/clang-7'
+
+        clang_7_args = [clang_7,
         '-o',
         f'{tmp_path}.obj',
         f'{tmp_path}.cpp',
