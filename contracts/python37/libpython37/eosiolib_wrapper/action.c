@@ -156,11 +156,6 @@ static PyObject *py_send_inline(PyObject *self, PyObject *args)
     char *data;
     Py_ssize_t len;
 
-    if (!PyTuple_Check(args)) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments");
-        return NULL;
-    }
-
     if (PyTuple_GET_SIZE(args) != 5) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;

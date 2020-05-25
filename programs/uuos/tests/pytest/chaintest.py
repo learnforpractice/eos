@@ -497,6 +497,21 @@ class ChainTest(object):
         # logger.info(ret)
         return ret
 
+    def update_auth(self, account, accounts, keys, perm='active', parent='owner'):
+        a = {
+            "account": account,
+            "permission": perm,
+            "parent": parent,
+            "auth": {
+                "threshold": 1,
+                "keys": keys,
+                "accounts": accounts,
+                "waits": []
+            }
+        }
+
+        self.push_action('eosio', 'updateauth', a, actor=account, perm='owner')
+
     def deploy_eosio_token(self):
         # contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
         # code_path = os.path.join(contract_path, 'eosio.token/eosio.token.wasm')
