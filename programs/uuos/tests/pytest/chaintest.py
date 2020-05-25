@@ -505,6 +505,23 @@ class ChainTest(object):
 
         return self.push_actions(actions)
 
+    def buy_ram_bytes(self, payer, receiver, _bytes):
+        args = {'payer': payer, 'receiver': receiver, 'bytes': _bytes}
+        act = self.gen_action('eosio', 'buyrambytes', args, payer, perm='active')
+        return self.push_actions([act])
+
+    def delegatebw(self, _from, receiver, stake_net, stake_cpu, transfer=0):
+        args = {
+            'from': _from,
+            'receiver': receiver,
+            'stake_net_quantity': '%0.4f %s'%(stake_net, self.main_token),
+            'stake_cpu_quantity': '%0.4f %s'%(stake_cpu, self.main_token),
+            'transfer': transfer
+        }
+        act = self.gen_action('eosio', 'delegatebw', args, _from, perm='active')
+
+        return self.push_actions([act])
+
     def deploy_contract(self, account, code, abi, vmtype=0):
         actions = []
         setcode = {"account": account,

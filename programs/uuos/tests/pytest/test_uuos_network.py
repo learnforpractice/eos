@@ -166,7 +166,21 @@ class Test(object):
         self.create_account_test3()
         self.create_account_test4()
 
-    def test_activate_account(self):
+    @check_error('public key mismatch')
+    def activate_account_test1(self):
+    # '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',#EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
+        h = hashlib.sha256()
+        h.update(b'activate helloworld13')
+        private_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
+        sign = uuos.sign_digest(h.digest(), private_key)
+        args = {
+            "activator":"alice",
+            "account":"helloworld13",
+            "sign": sign
+        }
+        self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+
+    def activate_account_test2(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         h = hashlib.sha256()
         h.update(b'activate helloworld13')
@@ -178,3 +192,51 @@ class Test(object):
             "sign": sign
         }
         self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+
+    @check_error('account not registered')
+    def activate_account_test3(self):
+# '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
+        h = hashlib.sha256()
+        h.update(b'activate helloworld13')
+        private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
+        sign = uuos.sign_digest(h.digest(), private_key)
+        args = {
+            "activator":"alice",
+            "account":"helloworld51",
+            "sign": sign
+        }
+        self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+
+    def test_activate_account(self):
+        self.activate_account_test1()
+        self.activate_account_test2()
+        self.activate_account_test3()
+
+    @check_error('no res found')
+    def reg_producer_test1(self):
+        args = {
+            "producer": "alice",
+            "producer_key": "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV",
+            "url": "https://uuos.io",
+            "location": 1
+        }
+
+        self.chain.push_action('eosio', 'regproducer', args, 'alice', 'active')
+
+    def reg_producer_test2(self):
+        self.chain.buy_ram_bytes('eosio', 'alice', 60*1024)
+        self.chain.delegatebw('eosio', 'alice', 1.0, 1000000.0, transfer=0)
+        args = {
+            "producer": "alice",
+            "producer_key": "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV",
+            "url": "https://uuos.io",
+            "location": 1
+        }
+
+        self.chain.push_action('eosio', 'regproducer', args, 'alice', 'active')
+
+    def test_reg_producer(self):
+        self.reg_producer_test1()
+        self.reg_producer_test2()
+
+
