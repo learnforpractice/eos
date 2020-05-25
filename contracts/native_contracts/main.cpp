@@ -1,3 +1,4 @@
+#include <memory.h>
 #include "eosio.system/src/eosio.system.cpp"
 #include "eosio.system/src/delegate_bandwidth.cpp"
 #include "eosio.system/src/exchange_state.cpp"

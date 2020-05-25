@@ -1,3 +1,4 @@
+#include <memory.h>
 #include <eosio/datastream.hpp>
 #include <eosio/powers.hpp>
 #include <eosio/system.hpp>
