@@ -297,27 +297,34 @@ static PyObject *py_action_new(PyObject *self, PyObject *args)
     char *data;
     Py_ssize_t len;
 
-    if (!PyTuple_Check(args)) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments");
-        return NULL;
-    }
-
     if (PyTuple_GET_SIZE(args) != 5) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
 
     o = PyTuple_GetItem(args, 0);
-    account = PyLong_AsUnsignedLongLong(o);
+    account = to_name(o);
+    if (account == 0) {
+        return NULL;
+    }
 
     o = PyTuple_GetItem(args, 1);
-    action_name = PyLong_AsUnsignedLongLong(o);
+    action_name = to_name(o);
+    if (action_name == 0) {
+        return NULL;
+    }
 
     o = PyTuple_GetItem(args, 2);
-    actor = PyLong_AsUnsignedLongLong(o);
+    actor = to_name(o);
+    if (actor == 0) {
+        return NULL;
+    }
 
     o = PyTuple_GetItem(args, 3);
-    permission = PyLong_AsUnsignedLongLong(o);
+    permission = to_name(o);
+    if (permission == 0) {
+        return NULL;
+    }
 
     o = PyTuple_GetItem(args, 4);
     if (!PyBytes_Check(o)) {
@@ -340,11 +347,6 @@ static PyObject *py_action_add_permission(PyObject *self, PyObject *args)
     void *a;
     uint64_t actor;
     uint64_t permission;
-    
-    if (!PyTuple_Check(args)) {
-        PyErr_SetString(PyExc_ValueError, "wrong arguments");
-        return NULL;
-    }
 
     if (PyTuple_GET_SIZE(args) != 3) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
@@ -355,10 +357,10 @@ static PyObject *py_action_add_permission(PyObject *self, PyObject *args)
     a  = (void *)PyLong_AsUnsignedLongLong(o);
 
     o = PyTuple_GetItem(args, 1);
-    actor = PyLong_AsUnsignedLongLong(o);
+    actor = to_name(o);
 
     o = PyTuple_GetItem(args, 2);
-    permission = PyLong_AsUnsignedLongLong(o);
+    permission = to_name(o);
     pythonvm_action_add_permission(a, actor, permission);
     Py_RETURN_NONE;
 }
@@ -368,7 +370,8 @@ static PyObject *py_send_inline2(PyObject *self, PyObject *args)
 {
     PyObject *o;
     void *a;
-    if (PyTuple_GET_SIZE(args) != 3) {
+
+    if (PyTuple_GET_SIZE(args) != 1) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
@@ -489,6 +492,8 @@ static PyObject *py_transaction_send(PyObject *self, PyObject *args)
     uint64_t payer;
     int _replace_existing;
 
+    _sender_id = 0;
+
     if (PyTuple_GET_SIZE(args) != 4) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
@@ -501,7 +506,7 @@ static PyObject *py_transaction_send(PyObject *self, PyObject *args)
     _PyLong_AsByteArray((PyLongObject *)o, (unsigned char *)&_sender_id, sizeof(uint128_t), 1, 0);
 
     o = PyTuple_GetItem(args, 2);
-    payer  = PyLong_AsUnsignedLongLong(o);
+    payer  = to_name(o);
 
     o = PyTuple_GetItem(args, 3);
     _replace_existing = PyLong_AsLong(o);

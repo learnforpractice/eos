@@ -28,6 +28,13 @@ class Test(object):
                 },
                 "weight": 1
             },
+            {
+                "permission": {
+                    "actor": "bob",
+                    "permission": "eosio.code"
+                },
+                "weight": 1
+            },
         ]
 
         keys = [{
@@ -56,14 +63,13 @@ class Test(object):
 
     @classmethod
     def teardown_class(cls):
-        pass
+        cls.chain.free()
 
     def setup_method(self, method):
         logger.info("starting execution of tc: {}".format(method.__name__))
 
     def teardown_method(self, method):
         logger.info("Ending execution of tc: {}".format(method.__name__))
-        self.chain.free()
 
     def test_send_inline1(self):
         code = '''
@@ -121,3 +127,46 @@ def apply(receiver, code, action):
         r = self.chain.push_action(name, 'test', b'')
         r = self.chain.push_action(name, 'test', b'a')
         self.chain.produce_block()
+
+    def test_send_inline3(self):
+        code = '''
+def apply(receiver, code, action):
+    if action == N('test'):
+        a = action_new('alice', 'test2', 'alice', 'active', b'hello,world from test')
+        send_inline2(a)
+    elif action == N('test2'):
+        a = read_action_data()
+        print(a)
+        '''
+        name = 'alice'
+        code = self.chain.compile_py_code(code)
+        self.chain.deploy_contract(name, code, b'', vmtype=1)
+
+        r = self.chain.push_action(name, 'test', b'')
+        r = self.chain.push_action(name, 'test', b'a')
+        self.chain.produce_block()
+
+    def test_send_deffer(self):
+        code = '''
+def apply(receiver, code, action):
+    if action == N('test'):
+        trx = transaction_new(1, 1, 1, 0, 0, 1)
+        a = action_new('alice', 'test2', 'alice', 'active', b'hello,world from test')
+        transaction_add_action(trx, a)
+        transaction_send(trx, 1, N('alice'), True)
+        print('hello,worldddd')
+    elif action == N('test2'):
+        a = read_action_data()
+        print(a)
+        '''
+        name = 'alice'
+        code = self.chain.compile_py_code(code)
+        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.push_action(name, 'test', b'')
+
+        self.chain.produce_block()
+        self.chain.produce_block()
+        self.chain.produce_block()
+
+
+
