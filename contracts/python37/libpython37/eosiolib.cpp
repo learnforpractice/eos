@@ -33,8 +33,7 @@ int _cancel_deferred(const uint128_t *sender_id) {
 static int pos = 0;
 static char *memory_start = nullptr;
 static char *code_buffer = nullptr;
-#define MAX_CODE_SIZE (PYTHON_VM_MAX_CODE_SIZE)
-// #define PYTHON_VM_MAX_TEMP_MEMORY_SIZE (PYTHON_VM_MAX_TEMP_MEMORY_SIZE)
+
 #define MAX_MEMORY_SIZE (PYTHON_VM_MAX_MEMORY_SIZE-PYTHON_VM_MAX_TEMP_MEMORY_SIZE)
 
 void *get_current_memory(void) {
