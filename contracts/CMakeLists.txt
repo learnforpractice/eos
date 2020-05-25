@@ -1,4 +1,5 @@
 add_subdirectory( eosiolib )
+add_subdirectory( native_contracts )
 add_subdirectory( vm_api )
 add_subdirectory( test )
 
