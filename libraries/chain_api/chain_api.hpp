@@ -225,6 +225,14 @@ struct chain_api_cpp
    int (*chain_api_get_required_keys)(void *ptr, string& params, string& result);
    int (*chain_api_get_transaction_id)(void *ptr, string& params, string& result);
 
+   void* (*history_new)(void *ptr, string& cfg);
+   void (*history_free)(void *ptr);
+   void (*history_get_actions)(void *ptr, const string& param, string& result);
+   void (*history_get_transaction)(void *ptr, const string& param, string& result);
+   void (*history_get_key_accounts)(void *ptr, const string& param, string& result);
+   void (*history_get_key_accounts_ex)(void *ptr, const string& param, string& result);
+   void (*history_get_controlled_accounts)(void *ptr, const string& param, string& result);
+
 };
 
 extern "C" void register_chain_api(struct chain_api_cpp* api);

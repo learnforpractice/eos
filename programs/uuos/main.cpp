@@ -85,6 +85,7 @@ extern "C"
    void evm_init();
    void chain_api_init();
    void init_chain_api_callback();
+   void init_history_callback();
    void vm_api_init();
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
@@ -116,6 +117,7 @@ int main(int argc, char** argv)
       vm_api_init();
       chain_api_init();
       init_chain_api_callback();
+      init_history_callback();
       sandboxed_contracts_init();
       {
          auto chain_api = get_chain_api();

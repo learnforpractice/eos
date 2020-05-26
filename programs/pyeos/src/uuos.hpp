@@ -152,3 +152,12 @@ chain_api_cpp* get_chain_api();
 #define chain_api_get_required_keys_ get_chain_api()->chain_api_get_required_keys
 #define chain_api_get_transaction_id_ get_chain_api()->chain_api_get_transaction_id
 
+#define chain_api_get_transaction_id_ get_chain_api()->chain_api_get_transaction_id
+
+#define history_new_ get_chain_api()->history_new
+#define history_free_ get_chain_api()->history_free
+#define history_get_actions_ get_chain_api()->history_get_actions
+#define history_get_transaction_ get_chain_api()->history_get_transaction
+#define history_get_key_accounts_ get_chain_api()->history_get_key_accounts
+#define history_get_key_accounts_ex_ get_chain_api()->history_get_key_accounts_ex
+#define history_get_controlled_accounts_ get_chain_api()->history_get_controlled_accounts

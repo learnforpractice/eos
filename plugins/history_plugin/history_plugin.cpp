@@ -12,6 +12,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/signals2/connection.hpp>
 #include <db_interface.hpp>
+#include <chain_api.hpp>
 
 namespace eosio {
    using namespace chain;
@@ -82,6 +83,25 @@ CHAINBASE_SET_INDEX_TYPE(eosio::account_history_object, eosio::account_history_i
 CHAINBASE_SET_INDEX_TYPE(eosio::action_history_object, eosio::action_history_index)
 
 namespace eosio {
+   struct fake_chain_plugin {
+      fake_chain_plugin(eosio::chain::controller& ctrl): ctrl(ctrl) {
+
+      }
+      
+      eosio::chain::controller& chain()const {
+         return ctrl;
+      }
+
+      fc::microseconds get_abi_serializer_max_time() const {
+         return fc::microseconds(150000);
+      }
+
+      chainbase::database& db() const {
+         return const_cast<chainbase::database&>(ctrl.db());
+      }
+
+      eosio::chain::controller& ctrl;
+   };
 
    template<typename MultiIndex, typename LookupType>
    static void remove(chainbase::database& db, const account_name& account_name, const permission_name& permission)
@@ -173,7 +193,9 @@ namespace eosio {
          std::set<filter_entry> filter_out;
          bool filter_transfer = false;
 
-         chain_plugin*          chain_plug = nullptr;
+         // chain_plugin*          chain_plug = nullptr;
+         fc::optional<fake_chain_plugin>          chain_plug;
+
          fc::optional<scoped_connection> applied_transaction_connection;
          map<chain::public_key_type, vector<chain::account_name>> key_accounts_map;
 
@@ -394,11 +416,69 @@ namespace eosio {
          my->filter_transfer = options.at( "filter-transfer" ).as<bool>();
 
 
-         my->chain_plug = app().find_plugin<chain_plugin>();
+//         my->chain_plug = app().find_plugin<chain_plugin>();
+         my->chain_plug.emplace(app().find_plugin<chain_plugin>()->chain());
+
          EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
          auto& chain = my->chain_plug->chain();
 
          chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+         // TODO: Use separate chainbase database for managing the state of the history_plugin (or remove deprecated history_plugin entirely)
+         db.add_index<account_history_index>();
+         db.add_index<action_history_index>();
+         db.add_index<account_control_history_multi_index>();
+         db.add_index<public_key_history_multi_index>();
+
+         my->applied_transaction_connection.emplace(
+               chain.applied_transaction.connect( [&]( std::tuple<const transaction_trace_ptr&, const signed_transaction&> t ) {
+                  my->on_applied_transaction( std::get<0>(t) );
+               } ));
+      } FC_LOG_AND_RETHROW()
+   }
+
+   void history_plugin::plugin_initialize(chain::controller& chain, history_plugin_options& options)
+    {
+      try {
+
+         if( options.filter_on.size()) {
+            auto fo = options.filter_on;//options.at( "filter-on" ).as<vector<string>>();
+            for( auto& s : fo ) {
+               if( s == "*" || s == "\"*\"" ) {
+                  my->bypass_filter = true;
+                  wlog( "--filter-on * enabled. This can fill shared_mem, causing nodeos to stop." );
+                  break;
+               }
+               std::vector<std::string> v;
+               boost::split( v, s, boost::is_any_of( ":" ));
+               EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-on", ("s", s));
+               filter_entry fe{eosio::chain::name(v[0]), eosio::chain::name(v[1]), eosio::chain::name(v[2])};
+               EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
+                           "Invalid value ${s} for --filter-on", ("s", s));
+               my->filter_on.insert( fe );
+            }
+         }
+         if( options.filter_out.size()) {
+            auto fo = options.filter_out;//options.at( "filter-out" ).as<vector<string>>();
+            for( auto& s : fo ) {
+               std::vector<std::string> v;
+               boost::split( v, s, boost::is_any_of( ":" ));
+               EOS_ASSERT( v.size() == 3, fc::invalid_arg_exception, "Invalid value ${s} for --filter-out", ("s", s));
+               filter_entry fe{eosio::chain::name(v[0]), eosio::chain::name(v[1]), eosio::chain::name(v[2])};
+               EOS_ASSERT( fe.receiver.value, fc::invalid_arg_exception,
+                           "Invalid value ${s} for --filter-out", ("s", s));
+               my->filter_out.insert( fe );
+            }
+         }
+
+         my->filter_transfer = options.filter_transfer;
+
+
+         my->chain_plug.emplace(chain);
+         EOS_ASSERT( my->chain_plug, chain::missing_chain_plugin_exception, ""  );
+         auto& chain = my->chain_plug->chain();
+
+//         chainbase::database& db = const_cast<chainbase::database&>( chain.db() ); // Override read-only access to state DB (highly unrecommended practice!)
+         chainbase::database& db = my->chain_plug->db();
          // TODO: Use separate chainbase database for managing the state of the history_plugin (or remove deprecated history_plugin entirely)
          db.add_index<account_history_index>();
          db.add_index<action_history_index>();
@@ -705,3 +785,100 @@ namespace eosio {
 
 
 } /// namespace eosio
+
+using namespace eosio;
+
+#define CATCH_AND_LOG_EXCEPTION()\
+   catch ( const fc::exception& e ) {\
+      string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
+      get_chain_api()->uuos_on_error(ex);\
+   } catch ( const std::exception& e ) {\
+      fc::exception fce( \
+         FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
+         fc::std_exception_code,\
+         BOOST_CORE_TYPEID(e).name(),\
+         e.what() ) ;\
+        string ex = fc::json::to_string(*fce.dynamic_copy_exception(), fc::time_point::maximum()); \
+        get_chain_api()->uuos_on_error(ex);\
+   } catch( ... ) {\
+      fc::unhandled_exception e(\
+         FC_LOG_MESSAGE(warn, "rethrow"),\
+         std::current_exception());\
+        string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
+        get_chain_api()->uuos_on_error(ex);\
+   }
+
+void* history_new_(void *ptr, string& cfg) {
+   history_plugin* history = nullptr;
+   try {
+      auto _cfg = fc::json::from_string(cfg).as<eosio::history_plugin_options>();
+      history = new history_plugin();
+      auto& chain = *((eosio::chain::controller*)ptr);
+      history->plugin_initialize(chain, _cfg);
+      history->plugin_startup();
+      return (void *)history;
+   } catch ( boost::interprocess::bad_alloc& ) {
+      elog("bad_alloc");
+   } CATCH_AND_LOG_EXCEPTION();
+   if (history) {
+      delete history;
+   }
+   return (void *)0;
+}
+
+void history_free_(void *ptr) {
+   if (ptr) {
+      delete (history_plugin*)ptr;
+   }
+}
+
+void history_get_actions_(void *ptr, const string& param, string& result) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_actions_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_actions(_param), fc::time_point::maximum());
+   } CATCH_AND_LOG_EXCEPTION()
+}
+
+void history_get_transaction_(void *ptr, const string& param, string& result) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_transaction_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_transaction(_param), fc::time_point::maximum());
+   } CATCH_AND_LOG_EXCEPTION()
+}
+
+void history_get_key_accounts_(void *ptr, const string& param, string& result) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_key_accounts(_param), fc::time_point::maximum());
+   } CATCH_AND_LOG_EXCEPTION()
+}
+
+void history_get_key_accounts_ex_(void *ptr, const string& param, string& result) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_key_accounts_ex_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_key_accounts_ex(_param), fc::time_point::maximum());
+   } CATCH_AND_LOG_EXCEPTION()
+}
+
+void history_get_controlled_accounts_(void *ptr, const string& param, string& result) {
+   try {
+      auto history = (eosio::history_plugin*)ptr;
+      auto _param = fc::json::from_string(param).as<eosio::history_apis::read_only::get_controlled_accounts_params>();
+      result = fc::json::to_string(history->get_read_only_api().get_controlled_accounts(_param), fc::time_point::maximum());
+   } CATCH_AND_LOG_EXCEPTION()
+}
+
+extern "C" void init_history_callback() {
+   auto* api = get_chain_api();
+   api->history_new = history_new_;
+   api->history_free = history_free_;
+   api->history_get_actions = history_get_actions_;
+   api->history_get_transaction = history_get_transaction_;
+   api->history_get_key_accounts = history_get_key_accounts_;
+   api->history_get_key_accounts_ex = history_get_key_accounts_ex_;
+   api->history_get_controlled_accounts = history_get_controlled_accounts_;
+}

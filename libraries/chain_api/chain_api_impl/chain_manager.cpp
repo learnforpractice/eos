@@ -3,21 +3,14 @@
 #include <eosio/chain/apply_context.hpp>
 
 #include "chain_manager.hpp"
+#include <chain_api.hpp>
 
 using namespace eosio::chain;
-
-namespace eosio {
-    namespace chain {
-        void set_apply_context(apply_context *ctx);
-    }
-}
-void chain_api_set_controller(controller *_ctrl);
-void uuos_on_error_(string& ex);
 
 #define CATCH_AND_LOG_EXCEPTION()\
    catch ( const fc::exception& e ) {\
       string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
-      uuos_on_error_(ex);\
+      get_chain_api()->uuos_on_error(ex);\
    } catch ( const std::exception& e ) {\
       fc::exception fce( \
          FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
@@ -25,13 +18,13 @@ void uuos_on_error_(string& ex);
          BOOST_CORE_TYPEID(e).name(),\
          e.what() ) ;\
         string ex = fc::json::to_string(*fce.dynamic_copy_exception(), fc::time_point::maximum()); \
-        uuos_on_error_(ex);\
+        get_chain_api()->uuos_on_error(ex);\
    } catch( ... ) {\
       fc::unhandled_exception e(\
          FC_LOG_MESSAGE(warn, "rethrow"),\
          std::current_exception());\
         string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
-        uuos_on_error_(ex);\
+        get_chain_api()->uuos_on_error(ex);\
    }
 
 static string s_last_error;
@@ -408,18 +401,6 @@ eosio::chain::controller& chain_get_controller(void *ptr) {
     EOS_ASSERT(ptr != nullptr, eosio_assert_message_exception, "controller pointer should not be null");
     return *(eosio::chain::controller*)ptr;
 }
-
-// void chain_set_apply_context_(void *ptr) {
-//     auto& chain = chain_get_controller(ptr);
-//     auto& ctx = chain.get_context().get_apply_context();
-//     set_apply_context(&ctx);
-//     chain_api_set_controller(&chain);
-// }
-
-// void chain_clear_apply_context_() {
-//     set_apply_context(nullptr);
-//     chain_api_set_controller(nullptr);
-// }
 
 void chain_id_(void *ptr, string& chain_id) {
     try {

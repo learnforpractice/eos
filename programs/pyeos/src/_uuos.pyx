@@ -167,6 +167,13 @@ cdef extern from "uuos.hpp":
     int chain_api_get_required_keys_(void *ptr, string& params, string& result);
     int chain_api_get_transaction_id_(void *ptr, string& params, string& result);
 
+    void* history_new_(void *ptr, string& cfg);
+    void history_free_(void *ptr);
+    void history_get_actions_(void *ptr, const string& param, string& result);
+    void history_get_transaction_(void *ptr, const string& param, string& result);
+    void history_get_key_accounts_(void *ptr, const string& param, string& result);
+    void history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
+    void history_get_controlled_accounts_(void *ptr, const string& param, string& result);
 
 def say_hello():
     return say_hello_()
@@ -794,3 +801,37 @@ def db_end_i64(uint64_t ptr, uint64_t code, uint64_t scope, uint64_t table ):
    return db_interface_end_i64_(<void *>ptr, code, scope, table )
 
 #++++++++++++++db api end+++++++++++++++++++
+
+#+++++++++++++history api begin++++++++++++++
+def history_new(uint64_t ptr, string& cfg):
+    return <uint64_t>history_new_(<void *>ptr, cfg)
+
+def history_free(uint64_t ptr):
+    history_free_(<void *>ptr)
+
+def history_get_actions(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_actions_(<void *>ptr, param, result)
+    return result
+
+def history_get_transaction(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_transaction_(<void *>ptr, param, result)
+    return result
+
+def history_get_key_accounts(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_key_accounts_(<void *>ptr, param, result)
+    return result
+
+def history_get_key_accounts_ex(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_key_accounts_ex_(<void *>ptr, param, result)
+    return result
+
+def history_get_controlled_accounts(uint64_t ptr, const string& param):
+    cdef string result
+    history_get_controlled_accounts_(<void *>ptr, param, result)
+    return result
+
+#+++++++++++++history api end++++++++++++++

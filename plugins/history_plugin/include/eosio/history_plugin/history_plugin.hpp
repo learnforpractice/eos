@@ -16,6 +16,12 @@ namespace eosio {
    typedef shared_ptr<class history_plugin_impl> history_ptr;
    typedef shared_ptr<const class history_plugin_impl> history_const_ptr;
 
+   struct history_plugin_options {
+      vector<string> filter_on;
+      vector<string> filter_out;
+      bool filter_transfer;   
+   };
+
 namespace history_apis {
 
 class read_only {
@@ -133,6 +139,8 @@ class history_plugin : public plugin<history_plugin> {
       virtual void set_program_options(options_description& cli, options_description& cfg) override;
 
       void plugin_initialize(const variables_map& options);
+      void plugin_initialize(chain::controller& chain, history_plugin_options& options);
+
       void plugin_startup();
       void plugin_shutdown();
 
@@ -163,3 +171,5 @@ FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_ex_params, (public_k
 FC_REFLECT(eosio::history_apis::read_only::get_key_accounts_ex_results, (account_names)(active_flags) )
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_params, (controlling_account) )
 FC_REFLECT(eosio::history_apis::read_only::get_controlled_accounts_results, (controlled_accounts) )
+
+FC_REFLECT(eosio::history_plugin_options, (filter_on)(filter_out)(filter_transfer) )

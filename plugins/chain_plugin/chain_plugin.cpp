@@ -2747,6 +2747,7 @@ void db_size_api_get_(void *ptr, string& result) {
 
 extern "C" void init_chain_api_callback() {
    chain_api_cpp* api = get_chain_api();
+   api->chain_api_get_info = chain_api_get_info_;
    api->chain_api_get_activated_protocol_features = chain_api_get_activated_protocol_features_;
    api->chain_api_get_block = chain_api_get_block_;
    api->chain_api_get_block_header_state = chain_api_get_block_header_state_;
