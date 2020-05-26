@@ -12,6 +12,7 @@ using namespace eosio::chain;
 extern "C" {
     int vm_python2_apply(uint64_t receiver, uint64_t account, uint64_t act);
     void vm_python2_init(struct vm_python_info *python_info);
+    uint16_t vm_python_get_version();
 }
 
 python_instantiated_module::python_instantiated_module()
@@ -106,10 +107,17 @@ static void vm_load_memory(uint32_t offset_start, uint32_t length) {
     g_vm_memory->load_data_to_writable_memory(offset_start, length);
 }
 
+std::map<uint16_t, struct vm_python_info> python_interface::vm_python_map;
+std::map<uint16_t, std::shared_ptr<vm_memory>> python_interface::vm_python_memory_map;
+
 python_interface::python_interface(const chainbase::database& d): db(d) {
     runtime_interface = std::make_unique<python_runtime>();
     struct vm_python_info info;
-
+    uint16_t version = vm_python_get_version();
+    auto itr = vm_python_memory_map.find(version);
+    if (itr != vm_python_memory_map.end()) {
+        return;
+    }
     auto memory = std::make_shared<vm_memory>(PYTHON_VM_PAGES, PYTHON_VM_PAGES);
     info.memory_start = (uint8_t *)memory->data.data();
     info.memory_size = memory->data.size();
@@ -118,13 +126,11 @@ python_interface::python_interface(const chainbase::database& d): db(d) {
     g_vm_memory = memory.get();
 
     vm_python2_init(&info);
-    uint16_t version = (uint16_t)(info.vmtype<<8) | (uint16_t)info.vmversion;
 //    elog("+++++++++++${n1}, ${n2}", ("n1", info.vmtype)("n2", info.vmversion));
     vm_python_memory_map[version] = memory;
     vm_python_map[version] = info;
 
     memory->backup_memory();
-    memory->init_cache();
 }
 
 python_interface::~python_interface() {}

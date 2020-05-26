@@ -665,6 +665,15 @@ class ChainTest(object):
         self.chain.commit_block()
         self.start_block()
 
+    def get_account(self, account):
+        params = {'account_name':account}
+        params = json.dumps(params)
+        ret, result = self.chain_api.get_account(params)
+        if not ret:
+            return None
+        result = JsonObject(result)
+        return result
+
     def test_create_account_uuos(self):
         # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'

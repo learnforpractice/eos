@@ -407,6 +407,10 @@ bool db_interface_is_account(void *ptr, uint64_t account);
 const char* db_interface_get_code_ex(void *ptr, uint64_t receiver, size_t* size );
 
 void *chain_get_current_ptr() {
+   if (!s_api.chain_ptr) {
+      print_stacktrace();
+      EOSIO_ASSERT(false, "current chain ptr is null!");
+   }
    return s_api.chain_ptr;
 }
 
@@ -422,6 +426,7 @@ extern "C" void chain_api_init() {
     init = true;
 
     s_api = chain_api_cpp {
+      .chain_ptr = nullptr,
       .n2str = n2str,
       .str2n = str2n,
       .get_code = get_code,

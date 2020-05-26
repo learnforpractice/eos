@@ -53,10 +53,10 @@ void* malloc(size_t size)
 //   prints("+++malloc");printi(size);prints("\n");
    void *ptr;
    if (!memory_start) {
-      const uint32_t current_pages = __builtin_wasm_current_memory();
-      if (current_pages < 48) {
-         __builtin_wasm_grow_memory(48 - current_pages);
-      }
+      // const uint32_t current_pages = __builtin_wasm_current_memory();
+      // if (current_pages < 48) {
+      //    __builtin_wasm_grow_memory(48 - current_pages);
+      // }
 //      const uint32_t current_pages = __builtin_wasm_current_memory();
       volatile uintptr_t heap_base = 0;
       memory_start = align(*(char**)heap_base, 8); // address zero store the address of free memory start point

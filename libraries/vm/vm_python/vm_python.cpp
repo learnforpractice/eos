@@ -51,13 +51,13 @@ extern "C" {
 
    void init_globals(void);
 
-   void wasm2c_python_vm_apply(uint64_t receiver, uint64_t code, uint64_t action) {
+   void python_vm_apply(uint64_t receiver, uint64_t code, uint64_t action) {
        wasm_rt_call_stack_depth = 0;
        init_globals();
       (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(receiver, code, action);
    }
 
-   void wasm2c_python_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action) {
+   void python_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action) {
        wasm_rt_call_stack_depth = 0;
         init_globals();
       (*WASM_RT_ADD_PREFIX(Z_callZ_vjjjj))(func_name, receiver, code, action);
@@ -76,7 +76,6 @@ extern "C" {
 
    void export_vm_apply(uint64_t receiver, uint64_t code, uint64_t action);
    void export_vm_call(uint64_t func_name, uint64_t receiver, uint64_t code, uint64_t action);
-   void pythonvm_get_memory(char **start, uint32_t *size);
    
    uint8_t *vm_grow_memory(uint32_t delta);
    void vm_load_memory(uint32_t offset_start, uint32_t length);
@@ -125,6 +124,7 @@ static void *offset_to_ptr_s(u32 offset, u32 size) {
     vm_load_memory(offset, size);
     return memory->data + offset;
 }
+
 #define MAX_C_STRING_SIZE 4096
 static void *offset_to_char_ptr_s(u32 offset) {
     wasm_rt_memory_t *memory = get_wasm_rt_memory();
@@ -139,12 +139,6 @@ static void *offset_to_char_ptr_s(u32 offset) {
     }
     EOSIO_ASSERT(0, "not a valid c string!");
     return NULL;
-}
-
-void pythonvm_get_memory(char **start, uint32_t *size) {
-    wasm_rt_memory_t *memory = get_wasm_rt_memory();
-    *start = (char *)memory->data;
-    *size = memory->size;
 }
 
 u32 _find_frozen_code(u32 name_offset, u32 name_length, u32 code_offset, u32 code_size) {
@@ -167,13 +161,16 @@ int vm_python2_setcode(uint64_t account) {
    return 0;
 }
 
+uint16_t vm_python_get_version() {
+    return (uint16_t)(1<<8) | (uint16_t)0;
+}
 
 void vm_python2_init(struct vm_python_info *python_info) {
 //   printf("+++++++vm_python2_init\n");
    EOSIO_ASSERT(python_info->memory_size%VM_PAGE_SIZE == 0, "wrong memory size");
 
-   python_info->apply = wasm2c_python_vm_apply;
-   python_info->call = wasm2c_python_vm_call;
+   python_info->apply = python_vm_apply;
+   python_info->call = python_vm_call;
    python_info->vmtype = 1;
    python_info->vmversion = 0;
 

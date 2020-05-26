@@ -16,6 +16,8 @@ initial_pages(initial_pages)
     data.resize(initial_pages * VM_PAGE_SIZE, 0x00);
     base_address = data.data();
     malloc_memory_start = 0;
+
+    init_cache();
 }
 
 void vm_memory::backup_memory() {

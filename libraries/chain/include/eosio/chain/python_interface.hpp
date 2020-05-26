@@ -109,8 +109,8 @@ namespace eosio { namespace chain {
          std::unique_ptr<python_runtime> runtime_interface;
          python_cache_index python_instantiation_cache;
          const chainbase::database& db;
-         std::map<uint16_t, struct vm_python_info> vm_python_map;
-         std::map<uint16_t, std::shared_ptr<vm_memory>> vm_python_memory_map;
+         static std::map<uint16_t, struct vm_python_info> vm_python_map;
+         static std::map<uint16_t, std::shared_ptr<vm_memory>> vm_python_memory_map;
    };
 
 } } // eosio::chain

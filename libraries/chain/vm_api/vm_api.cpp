@@ -71,9 +71,11 @@ void set_apply_context(apply_context *ctx) {
    if (ctx == nullptr) {
       _vm_api.is_in_apply_context = false;
       _vm_api.allow_access_apply_context = false;
+      get_chain_api()->chain_set_current_ptr(nullptr);
    } else {
       _vm_api.is_in_apply_context = true;
       _vm_api.allow_access_apply_context = true;
+      get_chain_api()->chain_set_current_ptr(&ctx->control);
    }
 }
 
