@@ -393,37 +393,38 @@ async def rpc_server(producer, loop, http_server_address):
         ("/v1/db_size/get",                        get_post_method, db_get_size),
     ]
 
-    if 'eosio::chain_api_plugin' in producer.config.plugin:
+    config = get_app().config
+    if 'eosio::chain_api_plugin' in config.plugin:
         for route, method, view_func in chain_api_routes:
             supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
-    if 'eosio::history_api_plugin' in producer.config.plugin:
+    if 'eosio::history_api_plugin' in config.plugin:
         for route, method, view_func in history_api_routes:
             supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
-    if 'eosio::net_api_plugin' in producer.config.plugin:
+    if 'eosio::net_api_plugin' in config.plugin:
         for route, method, view_func in net_api_routes:
             supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
-    if 'eosio::producer_api_plugin' in producer.config.plugin:
+    if 'eosio::producer_api_plugin' in config.plugin:
         for route, method, view_func in producer_api_routes:
             supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
-    if 'eosio::db_size_api_plugin' in producer.config.plugin:
+    if 'eosio::db_size_api_plugin' in config.plugin:
         for route, method, view_func in db_size_api_routers:
             supported_apis.append(route)
             logger.info(f'add api url {route}')
             app.route(route, methods=method)(view_func)
 
-    if 'eosio::contract_api_plugin' in producer.config.plugin:
+    if 'eosio::contract_api_plugin' in config.plugin:
         for route, method, view_func in contract_api_routes:
             supported_apis.append(route)
             logger.info(f'add api url {route}')
