@@ -133,7 +133,7 @@ key_map = {
 
 class ChainTest(object):
 
-    def __init__(self, uuos_network=False, jit=False):
+    def __init__(self, uuos_network=False, jit=True):
         uuos.set_log_level('default', 0)
         self.feature_digests = []
 
@@ -437,6 +437,7 @@ class ChainTest(object):
 #        print(ret, result)
         result = json.loads(result)
         if not ret:
+            logger.info(result['action_traces'][0]['console'])
             raise Exception(result)
         result = JsonObject(result)
         return result
@@ -923,3 +924,35 @@ def apply(receiver, code, action):
         self.chain.free()
         shutil.rmtree(self.options.config_dir)
         shutil.rmtree(self.options.data_dir)
+
+    def get_table_rows(self, _json, code, scope, table, table_key, lower_bound,
+                       upper_bound, limit, encode_type='dec') -> dict:
+        """ Fetch smart contract data from an account. """
+        params = dict(
+            json=_json,
+            code=code,
+            scope=scope,
+            table=table,
+            table_key=table_key,
+            lower_bound=lower_bound,
+            upper_bound=upper_bound,
+            limit=limit,
+            encode_type=encode_type
+        )
+        # struct get_table_rows_params {
+        #     bool        json = false;
+        #     name        code;
+        #     string      scope;
+        #     name        table;
+        #     string      table_key;
+        #     string      lower_bound;
+        #     string      upper_bound;
+        #     uint32_t    limit = 10;
+        #     string      key_type;  // type of key specified by index_position
+        #     string      index_position; // 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
+        #     string      encode_type{"dec"}; //dec, hex , default=dec
+        #     optional<bool>  reverse;
+        #     optional<bool>  show_payer; // show RAM pyer
+        # };
+        return self.chain_api.get_table_rows(json.dumps(params))
+
