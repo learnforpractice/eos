@@ -775,7 +775,8 @@ def db_get_ptr(uint64_t chain_ptr):
 
 def db_get_i64(uint64_t ptr, int itr):
     cdef string buffer
-    return db_interface_get_i64_(<void *>ptr, itr, buffer)
+    db_interface_get_i64_(<void *>ptr, itr, buffer)
+    return <bytes>buffer
 
 def db_next_i64(uint64_t ptr, int itr):
     cdef uint64_t primary = 0

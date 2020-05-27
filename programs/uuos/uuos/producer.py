@@ -156,6 +156,7 @@ class RawTransactionMessage(Message):
 
 class Producer(object):
     def __init__(self, config):
+        return
         print('+++producer:', config.enable_stale_production)
         g_producer_config['production_enabled'] = config.enable_stale_production
         g_producer_config['producers'] = config.producer_name
@@ -271,6 +272,7 @@ class Producer(object):
             logger.exception(e)
 
     async def run(self):
+        return
         # if not self.config.producer_name:
         #     return
         while True:
