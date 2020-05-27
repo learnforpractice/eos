@@ -119,7 +119,6 @@ class UserInfo(object):
         self.game_data = Game()
 
     def pack(self):
-        print(self.username)
         if not isinstance(self.username, int):
             username = N(self.username)
         else:
@@ -204,7 +203,7 @@ def draw_one_card(deck, hand):
         if card_dict[id]._type == EMPTY:
             first_empty_slot = i
             break
-    eosio_assert(first_empty_slot != -1, "No empty slot in the player's hand")
+    assert first_empty_slot != -1, "No empty slot in the player's hand"
     hand[first_empty_slot] = deck[deck_card_idx]
   
     # Remove the card from the deck
@@ -464,11 +463,10 @@ def nextround(username):
     game_data.life_lost_ai = 0
 
     # Draw card for the player and the AI
-    if game_data.deck_player.size() > 0:
+    if len(game_data.deck_player) > 0:
         draw_one_card(game_data.deck_player, game_data.hand_player)
-    if game_data.deck_ai.size() > 0:
+    if len(game_data.deck_ai) > 0:
         draw_one_card(game_data.deck_ai, game_data.hand_ai)
-
     user.payer = username
     users.store(user)
 
@@ -504,7 +502,12 @@ def apply(receiver, code, action):
         data = read_action_data()
         username, card_idx = struct.unpack('QB', data)
         playcard(username, card_idx)
+    elif action == N('nextround'):
+        username = read_action_data()
+        username, = struct.unpack('Q', username)
+        nextround(username)
     else:
+        assert 0, 'unknow action!'
         payer = receiver
         itr = users.find('helloo')
         print(itr)
