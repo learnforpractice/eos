@@ -531,7 +531,7 @@ static PyObject *py_transaction_free(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-void call_contract(uint64_t contract, uint64_t func_name, void* call_args, size_t size1);
+void call_contract(uint64_t contract, void* call_args, size_t size1);
 int call_contract_get_results(void* result, size_t size1);
 
 static PyObject *py_call_contract(PyObject *self, PyObject *args)
@@ -543,7 +543,7 @@ static PyObject *py_call_contract(PyObject *self, PyObject *args)
     Py_ssize_t size1;
     char* results;
 
-    if (PyTuple_GET_SIZE(args) != 3) {
+    if (PyTuple_GET_SIZE(args) != 2) {
         PyErr_SetString(PyExc_ValueError, "wrong arguments count");
         return NULL;
     }
@@ -551,12 +551,9 @@ static PyObject *py_call_contract(PyObject *self, PyObject *args)
     contract = to_name(o);
 
     o = PyTuple_GetItem(args, 1);
-    func_name = to_name(o);
-
-    o = PyTuple_GetItem(args, 2);
     PyBytes_AsStringAndSize(o, &call_args, &size1);
 
-    call_contract(contract, func_name, call_args, size1);
+    call_contract(contract, call_args, size1);
 
     int results_size = call_contract_get_results(NULL, 0);
     if (results_size) {

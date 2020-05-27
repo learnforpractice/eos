@@ -185,8 +185,8 @@ static bool get_code_version(uint64_t contract, char *hash, size_t size) {
 }
 
 
-void call_contract(uint64_t contract, uint64_t func_name, const char *args, size_t args_size) {
-   ctx().call_contract(contract, func_name, args, args_size);
+void call_contract(uint64_t contract, const char *args, size_t args_size) {
+   ctx().call_contract(contract, args, args_size);
 }
 
 int call_contract_get_args(void* args, size_t size) {

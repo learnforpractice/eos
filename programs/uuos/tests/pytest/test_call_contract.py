@@ -64,8 +64,11 @@ extern "C" {
         self.chain.produce_block()
 
         code = '''
+import struct
 def apply(receiver, code, action):
-    ret = call_contract('helloworld12', 'calltest1', int.to_bytes(1, 8, 'little'))
+    calltest1 = N('calltest1')
+    args = struct.pack('QQ', calltest1, 1)
+    ret = call_contract('helloworld12', args)
     print('+++call contract return:', len(ret), ret)
     ret = int.from_bytes(ret, 'little')
     print(ret)

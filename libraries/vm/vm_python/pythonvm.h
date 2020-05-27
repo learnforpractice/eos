@@ -106,7 +106,7 @@ extern u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'n2s' */
 extern u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 /* import: 'env' 'call_contract' */
-extern void (*Z_envZ_call_contractZ_vjjii)(u64, u64, u32, u32);
+extern void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
 /* import: 'env' 'call_contract_get_results' */
 extern u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
 /* import: 'env' 'get_active_producers' */

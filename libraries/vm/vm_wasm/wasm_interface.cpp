@@ -1637,7 +1637,7 @@ class vm_apis : public context_aware_api {
          get_vm_api()->token_close( owner, symbol );
       }
 
-      void call_contract(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, size_t size1) {
+      void call_contract(uint64_t contract, uint64_t arg1, uint64_t arg2, uint64_t arg3, array_ptr<const char> extra_args, size_t size1) {
          EOSIO_THROW("call contract depth exceeded!");
 //         API()->vm_call(contract, func_name, arg1, arg2, arg3, extra_args, size1);
       }

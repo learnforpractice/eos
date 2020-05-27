@@ -1903,7 +1903,7 @@ class vm_apis : public context_aware_api {
          get_vm_api()->token_close( owner, symbol );
       }
 
-      void call_contract(uint64_t contract, uint64_t func_name, array_ptr<const char> extra_args, uint32_t size1) {
+      void call_contract(uint64_t contract, array_ptr<const char> extra_args, uint32_t size1) {
          FC_THROW_EXCEPTION(wasm_execution_error, "call_contract not implemented yet");
          //get_vm_api()->vm_call(contract, func_name, extra_args, size1);
       }

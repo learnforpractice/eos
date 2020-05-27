@@ -190,7 +190,7 @@ void init_vm_api4c() {
     Z_envZ_eosio_assert_codeZ_vij = eosio_assert_code;
     Z_envZ_eosio_assert_messageZ_viii = eosio_assert_message;
     Z_envZ_current_timeZ_jv = current_time;
-    Z_envZ_call_contractZ_vjjii = call_contract;
+    Z_envZ_call_contractZ_vjii = call_contract;
     Z_envZ_call_contract_get_resultsZ_iii = call_contract_get_results;
 
 //transaction.cpp

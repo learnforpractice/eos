@@ -173,7 +173,7 @@ extern "C" {
 
    WASM_IMPORT account_name current_receiver( void );
 
-   WASM_IMPORT void call_contract(uint64_t contract, uint64_t func_name, void* args, size_t size1);
+   WASM_IMPORT void call_contract(uint64_t contract, void* args, size_t size1);
 
    WASM_IMPORT int call_contract_get_args(void* extra_args, size_t size1);
    WASM_IMPORT int call_contract_set_results(void* result, size_t size1);

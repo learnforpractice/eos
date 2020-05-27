@@ -66,6 +66,7 @@ add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
 add_dependencies(cppzmq libzmq)
 add_dependencies(evmone4eosio wasm2c_exports)
+add_dependencies(evmone4eosio vm_api4c)
 
 # add_dependencies(aleth eth_account)
 # add_dependencies(aleth vm_api)

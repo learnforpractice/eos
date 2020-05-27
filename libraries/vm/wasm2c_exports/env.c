@@ -59,7 +59,7 @@ u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'n2s' */
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 /* import: 'env' 'call_contract' */
-void (*Z_envZ_call_contractZ_vjjii)(u64, u64, u32, u32);
+void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
 /* import: 'env' 'call_contract_get_results' */
 u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
 /* import: 'env' 'get_active_producers' */

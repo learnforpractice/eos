@@ -25,7 +25,7 @@ class Test(object):
     def setup_method(self, method):
         logger.info("starting execution of tc: {}".format(method.__name__))
         # self.chain = ChainTest(uuos_network=True, jit=True)
-        self.chain = ChainTest(uuos_network=True, jit=False)
+        self.chain = ChainTest(uuos_network=True, jit=True)
 
     def teardown_method(self, method):
         logger.info("Ending execution of tc: {}".format(method.__name__))
@@ -73,13 +73,13 @@ class Test(object):
         code = '''
 def apply(receiver, code, action):
     if action == N('login'):
-        call_contract('helloworld12', 'login', b'')
+        call_contract('helloworld12', b'')
     elif action == N('startgame'):
-        call_contract('helloworld12', 'startgame', b'')
+        call_contract('helloworld12', b'')
     elif action == N('endgame'):
-        call_contract('helloworld12', 'endgame', b'')
+        call_contract('helloworld12', b'')
     elif action == N('playcard'):
-        call_contract('helloworld12', 'playcard', b'')
+        call_contract('helloworld12', b'')
         '''
         code = self.chain.compile_py_code(code)
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
