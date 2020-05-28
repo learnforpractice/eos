@@ -38,7 +38,10 @@ const memory_segment* vm_memory::find_memory_segment(uint32_t offset) {
         return nullptr;
     }
 
-    auto itr = segments->upper_bound(offset);
+    auto itr = segments->upper_bound({offset, {}});
+    if (itr == segments->begin()) {
+        return nullptr;
+    }
     --itr;
     if (offset >=itr->offset && offset < itr->offset+itr->data.size()) {
         return &*itr;
