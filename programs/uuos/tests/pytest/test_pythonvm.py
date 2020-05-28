@@ -59,5 +59,13 @@ class Test(object):
                 self.chain.produce_block()
             start += 10*1024
 
+        try:
+            self.chain.push_action(contract_name, 'test52', b'')
+        except Exception as e:
+            assert e.args[0]['except']['code'] == 3050003 #eosio_assert_message_exception
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'vm error out of bounds'
+        self.chain.produce_block()
+
+
 #./uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
 

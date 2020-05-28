@@ -1,6 +1,7 @@
 #include <python_vm_config.h>
 #include <string.h>
 #include <eosio/chain/python_vm/vm_memory.h>
+#include <vm_api/vm_api.h>
 
 #define COPY_UNIT (8) //8 bytes alignment
 
@@ -64,21 +65,55 @@ void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
 
     uint32_t copy_offset = write_index*COPY_UNIT;
 
-    if (write_index < PYTHON_VM_STACK_SIZE/COPY_UNIT) {
-        memset(base_address+copy_offset, 0, COPY_UNIT);
-        in_use[write_index] = counter;
+    if (copy_offset < PYTHON_VM_STACK_SIZE) {
+        if (copy_offset == 0) {
+            get_vm_api()->eosio_assert(false, "load_data_to_writable_memory: vm stack overflow!");
+        }
+        int count = 8;
+        for (int i=write_index;i>=1;i--) {
+            if (in_use[i] == counter) {
+                break;
+            } else {
+                memset(base_address+i*COPY_UNIT, 0, COPY_UNIT);
+                in_use[i] = counter;
+                count -= 1;
+                if (count <= 0) {
+                    break;
+                }
+            }
+        }
         return;
     }
 
     if (malloc_memory_start > 0 && copy_offset >= malloc_memory_start) {
-        memset(base_address+copy_offset, 0, COPY_UNIT);
+        //try to init the neighbor memory 
+        // memset(base_address+copy_offset, 0, COPY_UNIT);
+
+        int max_reset_size  = 256; // must be 8 bytes aligned
+        if (copy_offset + max_reset_size  > data.size()) {
+            max_reset_size  = data.size() - copy_offset;
+        }
+        int end_index = write_index+max_reset_size/COPY_UNIT;
+        //initilize memory as much as possible
+        for (int i=write_index;i<end_index;i++) {
+            if (in_use[i] == counter) {
+                break;
+            } else {
+                in_use[i] = counter;
+                memset(base_address+i*COPY_UNIT, 0, COPY_UNIT);
+            }
+        }
     } else {
         const memory_segment *segment = find_memory_segment(copy_offset);
         if (segment) {
+#if 0
+            memcpy(base_address+copy_offset, segment->data.data()+(copy_offset-segment->offset), COPY_UNIT);
+#else
             memcpy(base_address+segment->offset, segment->data.data(), segment->data.size());
             for (int i=segment->offset;i<segment->offset+segment->data.size();i+=COPY_UNIT) {
                 in_use[i/COPY_UNIT] = counter;
             }
+#endif
         } else {
             memcpy(base_address+copy_offset, data_backup.data()+copy_offset, COPY_UNIT);
         }

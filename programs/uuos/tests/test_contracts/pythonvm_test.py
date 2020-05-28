@@ -1,5 +1,8 @@
 #-*- encoding: utf8
 import struct
+def recursive_call():
+    recursive_call()
+
 def apply(receiver, code, action):
     if action == N('test1'):
         print('hello,world!')
@@ -21,4 +24,5 @@ def apply(receiver, code, action):
             assert a[i] == 0
             a[i] = i % 256
             assert a[i] == i % 256
-
+    elif action == N('test52'):
+        recursive_call()
