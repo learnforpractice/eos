@@ -481,8 +481,15 @@ scope = N('scopee')
 table = N('seed')
 seeds = db.MultiIndex(code, scope, table, UserInfo)
 
+action_login = N('login')
+action_game = N('startgame')
+action_startgame = N('startgame')
+action_endgame = N('endgame')
+action_playcard = N('playcard')
+action_nextround = N('nextround')
+
 def apply(receiver, code, action):
-    if action == N('login'):
+    if action == action_login:
         username = read_action_data()
         username, = struct.unpack('Q', username)
         # print(username)
@@ -490,19 +497,19 @@ def apply(receiver, code, action):
         # import _db
         # itr = _db.find_i64('helloworld11', 'scopee', 'users', 'helloworld11')
         # print(itr, _db.get_i64(itr))
-    elif action == N('startgame'):
+    elif action == action_startgame:
         username = read_action_data()
         username, = struct.unpack('Q', username)
         startgame(username)
-    elif action == N('endgame'):
+    elif action == action_endgame:
         username = read_action_data()
         username, = struct.unpack('Q', username)
         endgame(username)
-    elif action == N('playcard'):
+    elif action == action_playcard:
         data = read_action_data()
         username, card_idx = struct.unpack('QB', data)
         playcard(username, card_idx)
-    elif action == N('nextround'):
+    elif action == action_nextround:
         username = read_action_data()
         username, = struct.unpack('Q', username)
         nextround(username)
