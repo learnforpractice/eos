@@ -23,8 +23,7 @@ namespace eosio { namespace chain {
    class controller;
 
    struct vm_python_state {
-//      std::vector<memory_segment>                                 memory_backup;
-      memory_segment_index memory_backup;
+      memory_segment_set memory_backup;
       int contract_memory_start;
       int contract_memory_end;
       vm_python_info python_info;
