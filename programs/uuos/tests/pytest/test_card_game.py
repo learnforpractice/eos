@@ -107,6 +107,7 @@ def apply(receiver, code, action):
     def test_cardgame3(self):
         name = 'helloworld11'
         code = self.chain.compile_py_code_from_file('cardgame/cardgame.py')
+        logger.info(f'+++++++code size: {len(code)}')
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()

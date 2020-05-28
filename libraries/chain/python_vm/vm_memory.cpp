@@ -27,37 +27,21 @@ void vm_memory::backup_memory() {
 void vm_memory::init_cache() {
     uint32_t memory_size = data.size();
     in_use.resize(memory_size/(sizeof(uint64_t)), {});
-    segments_cache.resize(memory_size/(sizeof(uint64_t)), {});
 }
 
-memory_segment* vm_memory::find_memory_segment(uint32_t offset) {
+const memory_segment* vm_memory::find_memory_segment(uint32_t offset) {
     if (segments == nullptr) {
       return nullptr;
     }
-    uint32_t cache_index = offset/COPY_UNIT;
-  #if 1
-  //  printf("offset %u, cache_index %u, memory->segments_cache.size() %lu\n", offset, cache_index, memory->segments_cache.size());
-    if (segments_cache[cache_index].counter == counter) {
-        uint32_t segment_index = segments_cache[cache_index].index;
-        return &segments->at(segment_index);
+    
+    if (segments->begin() == segments->end()) {
+        return nullptr;
     }
-  #endif
-    int size = segments->size();
-    int low = 0;
-    int high = size - 1;
-    while (low <= high)
-    {
-        int mid = low + (high - low) / 2; 
-        auto& segment = segments->at(mid);
-        if (offset >= segment.offset + segment.data.size()) {
-            low = mid + 1;
-        }
-        else if ( offset < segment.offset) {
-            high = mid - 1;
-        } else {
-            segments_cache[cache_index] = {counter, uint32_t(mid)};
-            return &segment;
-        }
+
+    auto itr = segments->upper_bound(offset);
+    --itr;
+    if (offset >=itr->offset && offset < itr->offset+itr->data.size()) {
+        return &*itr;
     }
     return nullptr;
 }
@@ -86,10 +70,12 @@ void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
     if (malloc_memory_start > 0 && copy_offset >= malloc_memory_start) {
         memset(base_address+copy_offset, 0, COPY_UNIT);
     } else {
-        memory_segment *segment = find_memory_segment(copy_offset);
+        const memory_segment *segment = find_memory_segment(copy_offset);
         if (segment) {
-            //no need to handle segment overflow, as the offset is 8 bytes aligned, it will never overflow under this situation
-            memcpy(base_address+copy_offset, segment->data.data()+(copy_offset-segment->offset), COPY_UNIT);
+            memcpy(base_address+segment->offset, segment->data.data(), segment->data.size());
+            for (int i=segment->offset;i<segment->offset+segment->data.size();i+=COPY_UNIT) {
+                in_use[i/COPY_UNIT] = counter;
+            }
         } else {
             memcpy(base_address+copy_offset, data_backup.data()+copy_offset, COPY_UNIT);
         }

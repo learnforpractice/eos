@@ -74,8 +74,9 @@ void python_instantiated_module::take_snapshoot() {
         memory_segment segment;
         segment.offset = start*sizeof(uint64_t);
         segment.data.resize((pos-start)*sizeof(uint64_t));
+        // ilog("++++++++++${n1} ${n2}", ("n1", segment.offset)("n2", segment.data.size()));
         memcpy(segment.data.data(), &ptr2[start], (pos-start)*sizeof(uint64_t));
-        backup.memory_backup.emplace_back(std::move(segment));
+        backup.memory_backup.emplace(std::move(segment));
         pos += 1;
     }
 
@@ -83,7 +84,8 @@ void python_instantiated_module::take_snapshoot() {
     segment.offset = contract_mem_start;
     segment.data.resize(contract_mem_end-contract_mem_start, 0x00);
     memcpy(segment.data.data(), (char *)ptr2 + contract_mem_start, contract_mem_end-contract_mem_start);
-    backup.memory_backup.emplace_back(std::move(segment));
+    backup.memory_backup.emplace(std::move(segment));
+    elog("+++++++++++++++++contract memory ${n}", ("n", contract_mem_end-contract_mem_start));
 
     backup.contract_memory_start = contract_mem_start;
     backup.contract_memory_end = contract_mem_end;
