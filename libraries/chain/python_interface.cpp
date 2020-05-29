@@ -177,7 +177,7 @@ void python_interface::apply(const digest_type& code_hash, const uint8_t& vm_typ
 //    elog("+++++++++++${n1}, ${n2}", ("n1", vm_type)("n2", vm_version));
     auto itr = vm_python_memory_map.find(version);
     EOS_ASSERT( vm_python_memory_map.end() != itr, wasm_execution_error, "vm memory not found!" );
-    itr->second->counter += 1;
+    itr->second->inc_counter();
     g_vm_memory = itr->second.get();
     get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
 }

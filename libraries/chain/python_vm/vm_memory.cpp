@@ -54,6 +54,15 @@ bool vm_memory::is_write_memory_in_use(uint32_t write_index) {
   return in_use[write_index] == counter;
 }
 
+void vm_memory::inc_counter() {
+    counter += 1;
+    if (counter == 0) {//overflow, reset use flags
+        counter = 1;
+        memset(in_use.data(), 0, in_use.size());
+    }
+}
+
+
 void vm_memory::restore_memory() {
     if (segments == nullptr) {
         return;
