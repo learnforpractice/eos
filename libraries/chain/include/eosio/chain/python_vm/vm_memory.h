@@ -35,7 +35,8 @@ struct vm_memory {
     void load_data_to_writable_memory(uint32_t offset_start, uint32_t length);
     inline void load_data_to_writable_memory(uint32_t write_index);
     inline const memory_segment* find_memory_segment(uint32_t offset);
-    
+    void restore_memory();
+
     uint32_t initial_pages;
     uint32_t max_pages;
     uint32_t malloc_memory_start;

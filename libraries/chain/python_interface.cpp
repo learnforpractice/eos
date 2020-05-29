@@ -15,6 +15,8 @@ extern "C" {
     uint16_t vm_python_get_version();
 }
 
+static struct vm_memory *g_vm_memory = nullptr;
+
 python_instantiated_module::python_instantiated_module()
 {
 
@@ -24,7 +26,7 @@ void python_instantiated_module::apply(apply_context& context) {
     auto receiver = context.get_receiver().to_uint64_t();
     auto account = context.get_action().account.to_uint64_t();
     auto act = context.get_action().name.to_uint64_t();
-
+    g_vm_memory->restore_memory();
     backup.python_info.apply(receiver, account, act);
 }
 
@@ -85,7 +87,7 @@ void python_instantiated_module::take_snapshoot() {
     segment.data.resize(contract_mem_end-contract_mem_start, 0x00);
     memcpy(segment.data.data(), (char *)ptr2 + contract_mem_start, contract_mem_end-contract_mem_start);
     backup.memory_backup.emplace(std::move(segment));
-    elog("+++++++++++++++++contract memory ${n}", ("n", contract_mem_end-contract_mem_start));
+    elog("+++++++++++++++++contract memory， contract_mem_start ${n1},  size: ${n2}", ("n1", contract_mem_start)("n2", contract_mem_end-contract_mem_start));
 
     backup.contract_memory_start = contract_mem_start;
     backup.contract_memory_end = contract_mem_end;
@@ -102,8 +104,6 @@ std::unique_ptr<python_instantiated_module> python_runtime::instantiate_module(c
 void python_runtime::immediately_exit_currently_running_module() {
    throw wasm_exit();
 }
-
-static struct vm_memory *g_vm_memory = nullptr;
 
 static void vm_load_memory(uint32_t offset_start, uint32_t length) {
     g_vm_memory->load_data_to_writable_memory(offset_start, length);

@@ -54,6 +54,20 @@ bool vm_memory::is_write_memory_in_use(uint32_t write_index) {
   return in_use[write_index] == counter;
 }
 
+void vm_memory::restore_memory() {
+    if (segments == nullptr) {
+        return;
+    }
+    for (auto itr=segments->begin();itr!=segments->end();itr++) {
+        memcpy(base_address+itr->offset, itr->data.data(), itr->data.size());
+        int start_index = itr->offset/COPY_UNIT;
+        int end_index = (itr->offset+itr->data.size())/COPY_UNIT;
+        for (int i=start_index;i<end_index;i+=1) {
+            in_use[i] = counter;
+        }
+    }
+}
+
 void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
     if (init_smart_contract) {
         return;
@@ -69,7 +83,7 @@ void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
         if (copy_offset == 0) {
             get_vm_api()->eosio_assert(false, "load_data_to_writable_memory: vm stack overflow!");
         }
-        int count = 8;
+        int count = 2;
         for (int i=write_index;i>=1;i--) {
             if (in_use[i] == counter) {
                 break;
@@ -86,10 +100,7 @@ void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
     }
 
     if (malloc_memory_start > 0 && copy_offset >= malloc_memory_start) {
-        //try to init the neighbor memory 
-        // memset(base_address+copy_offset, 0, COPY_UNIT);
-
-        int max_reset_size  = 256; // must be 8 bytes aligned
+        int max_reset_size  = 64; // must be 8 bytes aligned
         if (copy_offset + max_reset_size  > data.size()) {
             max_reset_size  = data.size() - copy_offset;
         }
@@ -104,19 +115,8 @@ void vm_memory::load_data_to_writable_memory(uint32_t write_index) {
             }
         }
     } else {
-        const memory_segment *segment = find_memory_segment(copy_offset);
-        if (segment) {
-#if 0
-            memcpy(base_address+copy_offset, segment->data.data()+(copy_offset-segment->offset), COPY_UNIT);
-#else
-            memcpy(base_address+segment->offset, segment->data.data(), segment->data.size());
-            for (int i=segment->offset;i<segment->offset+segment->data.size();i+=COPY_UNIT) {
-                in_use[i/COPY_UNIT] = counter;
-            }
-#endif
-        } else {
-            memcpy(base_address+copy_offset, data_backup.data()+copy_offset, COPY_UNIT);
-        }
+//        printf("++++++++++copy_offset %d\n", copy_offset);
+        memcpy(base_address+copy_offset, data_backup.data()+copy_offset, COPY_UNIT);
     }
     in_use[write_index] = counter;
 }
