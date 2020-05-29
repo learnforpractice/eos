@@ -24,6 +24,8 @@ set(SRCS
     pythonvm.c
     wasm-rt-impl.c
     vm_python.cpp
+    ../wasm2c_exports/env.c
+    ../wasm2c_exports/env.h
     ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c
 )
 
