@@ -1,4 +1,5 @@
 declare ARCH=$( uname )
+export PROJECT_DIR=$( pwd )
 
 if [[ $ARCH == "Linux" ]]; then
 	declare NPROC=$( nproc )
@@ -22,7 +23,10 @@ function build_project() {
 }
 
 function build_pyeos() {
-	pushd programs/pyeos
+#	rsync -av --delete programs/pyeos build/programs
+	rsync -av programs/pyeos build/programs
+    pushd build/programs/pyeos
+
 	if [[ $ARCH == "Linux" ]]; then
 		./build-linux.sh
 	else

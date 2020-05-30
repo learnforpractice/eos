@@ -1,7 +1,7 @@
 if [[ $( uname ) == 'Darwin' ]]; then
     export PROJECT_DIR="/Users/newworld/dev/uuos3"
     export CHAIN_API_SHARED_LIB=$PROJECT_DIR/build//libraries/chain_api/libchain_api.dylib
-    export UUOS_EXT_LIB=$PROJECT_DIR/programs/pyeos
+    export UUOS_EXT_LIB=$PROJECT_DIR/build/programs/pyeos
     export PYTHONPATH=$PROJECT_DIR/programs/uuos:$UUOS_EXT_LIB
 
     export PYTHONHOME="/Users/newworld/opt/anaconda3"
@@ -9,7 +9,7 @@ if [[ $( uname ) == 'Darwin' ]]; then
 else
     export PROJECT_DIR=$(pwd)
     export CHAIN_API_SHARED_LIB=$PROJECT_DIR/build/libraries/chain_api/libchain_api.so
-    export UUOS_EXT_LIB=$PROJECT_DIR/programs/pyeos
+    export UUOS_EXT_LIB=$PROJECT_DIR/build/programs/pyeos
     export PYTHONPATH=$UUOS_EXT_LIB:$PROJECT_DIR/programs/uuos:'/usr/lib/python37.zip':'/usr/lib/python3.7':'/usr/lib/python3.7/lib-dynload':'/home/newworld/.local/lib/python3.7/site-packages':$PATH
 
     export PYTHONHOME="/usr/lib/python3.7"
