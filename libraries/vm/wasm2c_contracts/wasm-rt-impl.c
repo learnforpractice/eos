@@ -40,10 +40,40 @@ jmp_buf g_jmp_buf;
 FuncType* g_func_types;
 uint32_t g_func_type_count;
 
+#define EOSIO_THROW(msg) eosio_assert(false, msg)
+
 void wasm_rt_trap(wasm_rt_trap_t code) {
-  eosio_assert(code != WASM_RT_TRAP_NONE, "code != WASM_RT_TRAP_NONE");
-  wasm_rt_call_stack_depth = g_saved_call_stack_depth;
-  longjmp(g_jmp_buf, code);
+//   vm_print_stacktrace();
+   wasm_rt_call_stack_depth = 0;
+   switch (code) {
+      case WASM_RT_TRAP_NONE:
+         EOSIO_THROW("vm no error");
+         break;
+      case WASM_RT_TRAP_OOB:
+         EOSIO_THROW("vm error out of bounds");
+         break;
+      case WASM_RT_TRAP_INT_OVERFLOW:
+         EOSIO_THROW("vm error int overflow");
+         break;
+      case WASM_RT_TRAP_DIV_BY_ZERO:
+         EOSIO_THROW("vm error divide by zeror");
+         break;
+      case WASM_RT_TRAP_INVALID_CONVERSION:
+         EOSIO_THROW("vm error invalid conversion");
+         break;
+      case WASM_RT_TRAP_UNREACHABLE:
+         EOSIO_THROW("vm error unreachable");
+         break;
+      case WASM_RT_TRAP_CALL_INDIRECT:
+         EOSIO_THROW("vm error call indirect");
+         break;
+      case WASM_RT_TRAP_EXHAUSTION:
+         EOSIO_THROW("vm error exhaustion");
+         break;
+      default:
+         EOSIO_THROW("vm unknown error");
+         break;
+   }
 }
 
 static bool func_types_are_equal(FuncType* a, FuncType* b) {

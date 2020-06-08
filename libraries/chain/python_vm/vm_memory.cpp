@@ -56,7 +56,7 @@ bool vm_memory::is_write_memory_in_use(uint32_t write_index) {
 
 void vm_memory::inc_counter() {
     counter += 1;
-    if (counter == 0) {//overflow, reset use flags
+    if (counter == 0) {//overflow, reset used flags, need process run years to make it overflow, but let's handle it
         counter = 1;
         memset(in_use.data(), 0, in_use.size());
     }
