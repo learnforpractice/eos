@@ -18,7 +18,37 @@ __all__ = [
     'db'
 ]
 
+import sys
+import importlib
+
+class CustomImporter(object):
+    def find_module(self, fullname, mpath=None):
+        # if fullname in ['_uuos', '_vm_api']:
+        if fullname in ['_uuos', '_vm_api']:
+            return self
+        return
+
+    def load_module(self, module_name):
+        print('++++load_module:', module_name)
+        mod = sys.modules.get(module_name)
+        if mod is None:
+            uuos_module = sys.modules.get('_uuos')
+            if not uuos_module:
+                return
+
+            uuos_so = uuos_module.__file__
+            spec = importlib.util.spec_from_file_location(module_name, uuos_so)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            sys.modules[module_name] = mod
+        return mod
+
+#sys.meta_path.insert(0, CustomImporter())
+sys.meta_path.append(CustomImporter())
+
 import _uuos
+import _vm_api
+
 import ujson as json
 
 class LogLevel:

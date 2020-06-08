@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <chain_api.hpp>
+#include <vm_api.h>
 
 extern "C" void say_hello_();
 
 chain_api_cpp* get_chain_api();
+vm_api* uuos_get_vm_api();
 
 #define pack_native_object_ get_chain_api()->pack_native_object
 #define unpack_native_object_ get_chain_api()->unpack_native_object
@@ -161,3 +163,91 @@ chain_api_cpp* get_chain_api();
 #define history_get_key_accounts_ get_chain_api()->history_get_key_accounts
 #define history_get_key_accounts_ex_ get_chain_api()->history_get_key_accounts_ex
 #define history_get_controlled_accounts_ get_chain_api()->history_get_controlled_accounts
+
+
+
+/*
+------------------------------vm_api-------------------------------------
+*/
+
+#define db_store_i64_ uuos_get_vm_api()->db_store_i64
+#define db_store_i64_ex_ uuos_get_vm_api()->db_store_i64_ex
+#define db_update_i64_ uuos_get_vm_api()->db_update_i64
+#define db_remove_i64_ uuos_get_vm_api()->db_remove_i64
+#define db_update_i64_ex_ uuos_get_vm_api()->db_update_i64_ex
+#define db_remove_i64_ex_ uuos_get_vm_api()->db_remove_i64_ex
+#define db_get_i64_ uuos_get_vm_api()->db_get_i64
+#define db_get_i64_ex_ uuos_get_vm_api()->db_get_i64_ex
+#define db_get_i64_exex_ uuos_get_vm_api()->db_get_i64_exex
+#define db_next_i64_ uuos_get_vm_api()->db_next_i64
+#define db_previous_i64_ uuos_get_vm_api()->db_previous_i64
+#define db_find_i64_ uuos_get_vm_api()->db_find_i64
+#define db_lowerbound_i64_ uuos_get_vm_api()->db_lowerbound_i64
+#define db_upperbound_i64_ uuos_get_vm_api()->db_upperbound_i64
+#define db_end_i64_ uuos_get_vm_api()->db_end_i64
+#define db_store_i256_ uuos_get_vm_api()->db_store_i256
+#define db_update_i256_ uuos_get_vm_api()->db_update_i256
+#define db_remove_i256_ uuos_get_vm_api()->db_remove_i256
+#define db_get_i256_ uuos_get_vm_api()->db_get_i256
+#define db_find_i256_ uuos_get_vm_api()->db_find_i256
+#define db_previous_i256_ uuos_get_vm_api()->db_previous_i256
+#define db_next_i256_ uuos_get_vm_api()->db_next_i256
+#define db_upperbound_i256_ uuos_get_vm_api()->db_upperbound_i256
+#define db_lowerbound_i256_ uuos_get_vm_api()->db_lowerbound_i256
+#define db_end_i256_ uuos_get_vm_api()->db_end_i256
+#define db_get_table_count_ uuos_get_vm_api()->db_get_table_count
+#define db_idx64_store_ uuos_get_vm_api()->db_idx64_store
+#define db_idx64_update_ uuos_get_vm_api()->db_idx64_update
+#define db_idx64_remove_ uuos_get_vm_api()->db_idx64_remove
+#define db_idx64_next_ uuos_get_vm_api()->db_idx64_next
+#define db_idx64_previous_ uuos_get_vm_api()->db_idx64_previous
+#define db_idx64_find_primary_ uuos_get_vm_api()->db_idx64_find_primary
+#define db_idx64_find_secondary_ uuos_get_vm_api()->db_idx64_find_secondary
+#define db_idx64_lowerbound_ uuos_get_vm_api()->db_idx64_lowerbound
+#define db_idx64_upperbound_ uuos_get_vm_api()->db_idx64_upperbound
+#define db_idx64_end_ uuos_get_vm_api()->db_idx64_end
+#define db_idx128_store_ uuos_get_vm_api()->db_idx128_store
+#define db_idx128_update_ uuos_get_vm_api()->db_idx128_update
+#define db_idx128_remove_ uuos_get_vm_api()->db_idx128_remove
+#define db_idx128_next_ uuos_get_vm_api()->db_idx128_next
+#define db_idx128_previous_ uuos_get_vm_api()->db_idx128_previous
+#define db_idx128_find_primary_ uuos_get_vm_api()->db_idx128_find_primary
+#define db_idx128_find_secondary_ uuos_get_vm_api()->db_idx128_find_secondary
+#define db_idx128_lowerbound_ uuos_get_vm_api()->db_idx128_lowerbound
+#define db_idx128_upperbound_ uuos_get_vm_api()->db_idx128_upperbound
+#define db_idx128_end_ uuos_get_vm_api()->db_idx128_end
+#define db_idx256_store_ uuos_get_vm_api()->db_idx256_store
+#define db_idx256_update_ uuos_get_vm_api()->db_idx256_update
+#define db_idx256_remove_ uuos_get_vm_api()->db_idx256_remove
+#define db_idx256_next_ uuos_get_vm_api()->db_idx256_next
+#define db_idx256_previous_ uuos_get_vm_api()->db_idx256_previous
+#define db_idx256_find_primary_ uuos_get_vm_api()->db_idx256_find_primary
+#define db_idx256_find_secondary_ uuos_get_vm_api()->db_idx256_find_secondary
+#define db_idx256_lowerbound_ uuos_get_vm_api()->db_idx256_lowerbound
+#define db_idx256_upperbound_ uuos_get_vm_api()->db_idx256_upperbound
+#define db_idx256_end_ uuos_get_vm_api()->db_idx256_end
+#define db_idx_double_store_ uuos_get_vm_api()->db_idx_double_store
+#define db_idx_double_update_ uuos_get_vm_api()->db_idx_double_update
+#define db_idx_double_remove_ uuos_get_vm_api()->db_idx_double_remove
+#define db_idx_double_next_ uuos_get_vm_api()->db_idx_double_next
+#define db_idx_double_previous_ uuos_get_vm_api()->db_idx_double_previous
+#define db_idx_double_find_primary_ uuos_get_vm_api()->db_idx_double_find_primary
+#define db_idx_double_find_secondary_ uuos_get_vm_api()->db_idx_double_find_secondary
+#define db_idx_double_lowerbound_ uuos_get_vm_api()->db_idx_double_lowerbound
+#define db_idx_double_upperbound_ uuos_get_vm_api()->db_idx_double_upperbound
+#define db_idx_double_end_ uuos_get_vm_api()->db_idx_double_end
+#define db_idx_long_double_store_ uuos_get_vm_api()->db_idx_long_double_store
+#define db_idx_long_double_update_ uuos_get_vm_api()->db_idx_long_double_update
+#define db_idx_long_double_remove_ uuos_get_vm_api()->db_idx_long_double_remove
+#define db_idx_long_double_next_ uuos_get_vm_api()->db_idx_long_double_next
+#define db_idx_long_double_previous_ uuos_get_vm_api()->db_idx_long_double_previous
+#define db_idx_long_double_find_primary_ uuos_get_vm_api()->db_idx_long_double_find_primary
+#define db_idx_long_double_find_secondary_ uuos_get_vm_api()->db_idx_long_double_find_secondary
+#define db_idx_long_double_lowerbound_ uuos_get_vm_api()->db_idx_long_double_lowerbound
+#define db_idx_long_double_upperbound_ uuos_get_vm_api()->db_idx_long_double_upperbound
+#define db_idx_long_double_end_ uuos_get_vm_api()->db_idx_long_double_end
+
+
+
+
+

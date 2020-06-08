@@ -1,7 +1,8 @@
 
-
 add_cython_target(_uuos CXX)
-add_library(_uuos MODULE ${_uuos} uuos.cpp
+add_cython_target(_vm_api CXX)
+
+add_library(_uuos MODULE ${_uuos} ${_vm_api} uuos.cpp
 )
 
 python_extension_module(_uuos)
@@ -17,6 +18,7 @@ target_include_directories(_uuos PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
     ${PROJECT_DIR}/libraries/chain/include
     ${PROJECT_DIR}/libraries/fc/include
     ${PROJECT_DIR}/externals/boost/includes
+    ${PROJECT_DIR}/contracts/vm_api
 )
 
 set_property(TARGET _uuos PROPERTY CXX_STANDARD 17)
