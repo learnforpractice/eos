@@ -391,7 +391,8 @@ class ChainTest(object):
         }
         ret = self.push_actions([a])
         elapsed = ret.elapsed
-        logger.info(f'+++++{account} {action} {elapsed}')
+        if not action == 'activate':
+            logger.info(f'+++++{account} {action} {elapsed}')
         return ret
 
     def find_private_key(self, actor, perm_name):

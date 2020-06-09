@@ -20,10 +20,10 @@ class Test(object):
         cls.chain2.free()
 
     def setup_method(self, method):
-        logger.info("starting execution of tc: {}".format(method.__name__))
+        pass
 
     def teardown_method(self, method):
-        logger.info("Ending execution of tc: {}".format(method.__name__))
+        pass
 
     def test_multi_chain(self):
         code = '''

@@ -32,10 +32,10 @@ class Test(object):
         cls.chain.free()
 
     def setup_method(self, method):
-        logger.info("starting execution of tc: {}".format(method.__name__))
+        pass
 
     def teardown_method(self, method):
-        logger.info("Ending execution of tc: {}".format(method.__name__))
+        pass
 
     def test_token(self):
         contract_name = 'helloworld11'
