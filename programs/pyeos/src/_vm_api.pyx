@@ -3,6 +3,7 @@
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 cdef extern from * :
     ctypedef signed int int32_t
@@ -10,6 +11,9 @@ cdef extern from * :
     ctypedef unsigned long long uint64_t
     ctypedef unsigned int uint32_t
     ctypedef unsigned short uint16_t
+
+cdef extern from "stdint.h":
+    ctypedef unsigned long size_t
 
 cdef extern from "Python.h":
     object PyBytes_FromStringAndSize(const char* str, int size)
@@ -24,6 +28,16 @@ cdef extern from "uuos.hpp":
 
     void require_recipient_(uint64_t name)
     void require_auth_(uint64_t name)
+
+    void require_auth2_(uint64_t name, uint64_t permission)
+    bool has_auth_(uint64_t name)
+    bool is_account_(uint64_t name)
+    void send_inline_(const char *serialized_action, size_t size)
+    void send_context_free_inline_(const char *serialized_action, size_t size)
+    uint64_t  publication_time_()
+    uint64_t current_receiver_()
+    uint32_t get_active_producers_(uint64_t* producers, uint32_t datalen)
+
 
     int32_t db_store_i64_(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t _len);
     void db_update_i64_(int32_t iterator, uint64_t payer, const char* data, uint32_t _len);
@@ -70,6 +84,41 @@ def require_recipient(account):
 def require_auth(account):
     account = to_name(account)
     require_auth_(account)
+
+def require_auth2_(name, permission):
+    name = to_name(name)
+    permission = to_name(permission)
+    require_auth2_(name, permission)
+
+def has_auth(name):
+    name = to_name(name)
+    return has_auth_(name)
+
+def is_account(name):
+    name = to_name(name)
+    return is_account_(name)
+
+def send_inline(serialized_action):
+    send_inline_(serialized_action, len(serialized_action))
+
+def send_context_free_inline(serialized_action):
+    send_context_free_inline_(serialized_action, len(serialized_action))
+
+def publication_time():
+    return publication_time_()
+
+def current_receiver():
+    return current_receiver_()
+
+def get_active_producers():
+    cdef vector[uint64_t] producers
+    cdef uint32_t producer_count
+    producers.resize(21)
+    producer_count = get_active_producers_(producers.data(), 21)
+    prods = []
+    for i in range(producer_count):
+        prods.append(producers[i])
+    return prods
 
 def db_store_i64(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, data: bytes):
     return db_store_i64_(scope, table, payer, id,  data, len(data))

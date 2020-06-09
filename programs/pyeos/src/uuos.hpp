@@ -185,6 +185,16 @@ void uuos_init_chain_api();
 
 #define require_recipient_ uuos_get_vm_api()->require_recipient
 #define require_auth_ uuos_get_vm_api()->require_auth
+#define require_auth2_ uuos_get_vm_api()->require_auth2
+
+#define has_auth_ uuos_get_vm_api()->has_auth
+#define is_account_ uuos_get_vm_api()->is_account
+#define send_inline_ uuos_get_vm_api()->send_inline
+#define send_context_free_inline_ uuos_get_vm_api()->send_context_free_inline
+#define publication_time_ uuos_get_vm_api()->publication_time
+#define current_receiver_ uuos_get_vm_api()->current_receiver
+#define get_active_producers_ uuos_get_vm_api()->get_active_producers
+
 
 #define db_store_i64_ uuos_get_vm_api()->db_store_i64
 #define db_store_i64_ex_ uuos_get_vm_api()->db_store_i64_ex
