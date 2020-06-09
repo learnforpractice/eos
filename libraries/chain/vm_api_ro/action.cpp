@@ -18,11 +18,6 @@ uint32_t action_data_size() {
    return ctx().get_action().data.size();
 }
 
-void get_action_info(uint64_t* account, uint64_t* name) {
-   *account = ctx().get_action().account.to_uint64_t();
-   *name = ctx().get_action().name.to_uint64_t();
-}
-
 uint64_t current_receiver() {
    return ctx().get_receiver().to_uint64_t();
 }

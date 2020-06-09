@@ -77,10 +77,10 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
       }
 
       void apply() override {
+         uint64_t receiver = 0;
          uint64_t account = 0;
          uint64_t act_name = 0;
-         uint64_t receiver = get_vm_api()->current_receiver();
-         get_vm_api()->get_action_info(&account, &act_name);
+         get_vm_api()->get_apply_args(receiver, account, act_name);
 
          vector<Value> args = {Value(uint64_t(receiver)),
 	                            Value(uint64_t(account)),

@@ -218,7 +218,6 @@ extern "C" void vm_api_init() {
       // _vm_api.vm_apply = vm_apply;
       _vm_api.read_action_data = read_action_data;
       _vm_api.action_data_size = action_data_size;
-      _vm_api.get_action_info = get_action_info;
       
       _vm_api.require_recipient = require_recipient;
       _vm_api.require_auth = require_auth;

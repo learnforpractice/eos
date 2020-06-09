@@ -30,7 +30,6 @@ typedef unsigned __int128 __uint128;
 struct vm_api {
    uint32_t (*read_action_data)( void* msg, uint32_t len );
    uint32_t (*action_data_size)(void);
-   void (*get_action_info)(uint64_t* account, uint64_t* action_name);
    void (*require_recipient)( uint64_t name );
    void (*require_auth)( uint64_t name );
    void (*require_auth2)( uint64_t name, uint64_t permission );
