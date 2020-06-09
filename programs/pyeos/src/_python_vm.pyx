@@ -52,9 +52,9 @@ cdef extern int cpython_setcode(uint64_t account, string& raw_code):
     return 0
 
 cdef extern int cpython_apply(string& _hash, uint8_t vmtype, uint8_t vmversion):
-    cdef uint64_t receiver
-    cdef uint64_t code
-    cdef uint64_t action
+    cdef uint64_t receiver=0
+    cdef uint64_t code=0
+    cdef uint64_t action=0
     try:
         get_apply_args_(receiver, code, action)
         py_contracts[code].apply(receiver, code, action)
