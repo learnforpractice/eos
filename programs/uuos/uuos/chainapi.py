@@ -17,7 +17,6 @@ class ChainApi(object):
         return _uuos.chain_api_get_block_header_state(self.ptr, params)
 
     def get_account(self, name):
-        print("++++++++++++get_account:", name)
         return _uuos.chain_api_get_account(self.ptr, name)
 
     def get_code(self, params):
