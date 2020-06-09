@@ -19,6 +19,9 @@ cdef extern from "Python.h":
 
 cdef extern from "uuos.hpp":
     void say_hello_();
+
+    void n2str_(uint64_t n, string& str_name);
+
 #   void register_on_accepted_block_cb_()
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
@@ -836,3 +839,33 @@ def history_get_controlled_accounts(uint64_t ptr, const string& param):
     return result
 
 #+++++++++++++history api end++++++++++++++
+
+import os
+import marshal
+module = type(os)
+py_contracts = {}
+
+cdef extern int cpython_setcode(uint64_t account, string& raw_code):
+    cdef string contract_name
+    print('+++++++++hello,world+++++++++++')
+    try:
+        _raw_code = <bytes>(&raw_code)[0]
+        code = marshal.loads(_raw_code)
+        n2str_(account, contract_name)
+        m = module(contract_name)
+        exec(code, m.__dict__)
+        if account in py_contracts:
+            del py_contracts[account]
+        py_contracts[account] = m
+        return 1;
+    except Exception as e:
+        print(e)
+    return 0
+
+cdef extern int cpython_apply(uint64_t receiver, uint64_t account, uint64_t action):
+    try:
+        py_contracts[account].apply(receiver, account, action)
+        return 1;
+    except Exception as e:
+        print(e)
+    return 0

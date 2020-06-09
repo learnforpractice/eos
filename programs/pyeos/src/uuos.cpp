@@ -31,6 +31,11 @@ chain_api_cpp* get_chain_api() {
         }
         fn_get_chain_api api = (fn_get_chain_api)dlsym(handle, "get_chain_api");
         chain_api = api();
+
+        vm_callback cb;
+        cb.setcode = cpython_setcode;
+        cb.apply = cpython_apply;
+        chain_api->register_vm_callback(2, 0, &cb);
     }
     return chain_api;
 }

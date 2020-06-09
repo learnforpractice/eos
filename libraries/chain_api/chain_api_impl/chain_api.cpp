@@ -418,6 +418,20 @@ void chain_set_current_ptr(void *ptr) {
    s_api.chain_ptr = ptr;
 }
 
+static map<uint32_t, vm_callback> vm_cbs;
+
+static void register_vm_callback_(uint8_t vmtype, uint8_t vmversion, vm_callback *cb) {
+   vm_cbs[(uint16_t(vmtype)<<8) + vmversion] = *cb;
+}
+
+static vm_callback* get_vm_callback_(uint8_t vmtype, uint8_t vmversion) {
+   auto itr = vm_cbs.find((uint16_t(vmtype)<<8) + vmversion);
+   if (itr == vm_cbs.end()) {
+      return nullptr;
+   }
+   return &itr->second;
+}
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -427,6 +441,10 @@ extern "C" void chain_api_init() {
 
     s_api = chain_api_cpp {
       .chain_ptr = nullptr,
+
+      .register_vm_callback = register_vm_callback_,
+      .get_vm_callback = get_vm_callback_,
+
       .n2str = n2str,
       .str2n = str2n,
       .get_code = get_code,

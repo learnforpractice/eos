@@ -2,8 +2,11 @@
 #include <dlfcn.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string>
 #include <chain_api.hpp>
 #include <vm_api.h>
+
+using namespace std;
 
 extern "C" void say_hello_();
 
@@ -164,7 +167,7 @@ vm_api* uuos_get_vm_api();
 #define history_get_key_accounts_ex_ get_chain_api()->history_get_key_accounts_ex
 #define history_get_controlled_accounts_ get_chain_api()->history_get_controlled_accounts
 
-
+#define n2str_ get_chain_api()->n2str
 
 /*
 ------------------------------vm_api-------------------------------------
@@ -247,7 +250,5 @@ vm_api* uuos_get_vm_api();
 #define db_idx_long_double_upperbound_ uuos_get_vm_api()->db_idx_long_double_upperbound
 #define db_idx_long_double_end_ uuos_get_vm_api()->db_idx_long_double_end
 
-
-
-
-
+extern int cpython_setcode(uint64_t account, string& code);
+extern int cpython_apply(uint64_t receiver, uint64_t account, uint64_t action);

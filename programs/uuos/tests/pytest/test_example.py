@@ -11,7 +11,7 @@ class Test(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest(uuos_network=False)
+        cls.chain = ChainTest(uuos_network=True)
 
     @classmethod
     def teardown_class(cls):
@@ -23,12 +23,22 @@ class Test(object):
     def teardown_method(self, method):
         logger.info("Ending execution of tc: {}".format(method.__name__))
 
-    def test_create_account(self):
-        self.chain.test_create_account()
+    def test_performance(self):
+        contract_name = 'helloworld11'
+        args = {
+            'account':contract_name,
+            'is_priv':1
+        }
+        self.chain.push_action('eosio', 'setpriv', args)
 
-    def test_hello_world(self):
-        logger.info('hello,world')
+        code = '''
+def apply(receiver, code, action):
+    print('hello,world')
+'''
+        code = self.chain.compile_py_code(code)
 
+        self.chain.deploy_contract(contract_name, code, b'', vmtype=2)
+        self.chain.push_action(contract_name, 'sayhello', b'hello,world from chain1')
 
 #./uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
 

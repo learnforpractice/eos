@@ -24,6 +24,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <chain_api.hpp>
+
 using namespace std;
 
 extern "C" {
@@ -145,18 +147,29 @@ void apply_eosio_setcode(apply_context& context) {
    auto  act = context.get_action().data_as<setcode>();
    context.require_authorization(act.account);
 
-   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1, invalid_contract_vm_type, "invalid vm type" );
+   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1 || act.vmtype == 2, invalid_contract_vm_type, "invalid vm type" );
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
 
-   if (act.vmtype == 1) {
+   if (act.vmtype == 0) {
+      EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
+   } else if (act.vmtype == 1){
       //only allow privileged account use python smart contract when python vm is not activated
       if (!account.is_privileged()) {
          EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
          bool activated = system_contract_is_vm_activated(act.vmtype, act.vmversion);
          EOS_ASSERT( activated, invalid_contract_vm_version, "python vm with version ${v} not activated", ("v",act.vmversion) );
       }
-   } else if (act.vmtype == 0) {
-      EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
+   } else if (act.vmtype == 2) {
+      EOS_ASSERT( account.is_privileged(), eosio_assert_message_exception, "account has no privilege");
+      bool activated = system_contract_is_vm_activated( act.vmtype, act.vmversion );
+      EOS_ASSERT( activated, invalid_contract_vm_version, "vm has not been activated" );
+      auto *cb = get_chain_api()->get_vm_callback(act.vmtype, act.vmversion);
+      if (cb) {
+         string code(act.code.data(), act.code.size());
+         cb->setcode(act.account.to_uint64_t(), code);
+      }
+   } else {
+      EOS_ASSERT( false, invalid_contract_vm_type, "invalid vm type" );
    }
 
    fc::sha256 code_hash; /// default is the all zeros hash
