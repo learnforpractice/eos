@@ -23,6 +23,7 @@ cdef extern from "uuos.hpp":
 
     void n2str_(uint64_t n, string& str_name);
     bool get_apply_args_(uint64_t& receiver, uint64_t& code, uint64_t& action);
+    void uuos_init_chain_api();
 
 #   void register_on_accepted_block_cb_()
     void pack_native_object_(int _type, string& msg, string& packed_message)
@@ -842,3 +843,9 @@ def history_get_controlled_accounts(uint64_t ptr, const string& param):
     return result
 
 #+++++++++++++history api end++++++++++++++
+
+
+
+
+uuos_init_chain_api()
+

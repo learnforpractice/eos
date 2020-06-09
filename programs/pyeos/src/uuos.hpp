@@ -10,8 +10,12 @@ using namespace std;
 
 extern "C" void say_hello_();
 
-chain_api_cpp* get_chain_api();
+chain_api_cpp* uuos_get_chain_api();
+#define get_chain_api uuos_get_chain_api
+
 vm_api* uuos_get_vm_api();
+void uuos_init_chain_api();
+
 
 #define pack_native_object_ get_chain_api()->pack_native_object
 #define unpack_native_object_ get_chain_api()->unpack_native_object

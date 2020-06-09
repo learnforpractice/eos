@@ -8,6 +8,8 @@ add_library(_uuos MODULE ${_uuos} ${_vm_api} ${_python_vm} uuos.cpp
 
 python_extension_module(_uuos)
 
+message(STATUS "++++++++++="$ENV{PROJECT_DIR})
+
 set(PROJECT_DIR $ENV{PROJECT_DIR})
 
 if ("${PROJECT_DIR}" STREQUAL "")
