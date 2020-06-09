@@ -432,6 +432,13 @@ static vm_callback* get_vm_callback_(uint8_t vmtype, uint8_t vmversion) {
    return &itr->second;
 }
 
+static bool get_apply_args_(uint64_t& receiver, uint64_t& code, uint64_t& action) {
+   receiver = ctx().get_receiver().to_uint64_t();
+   code = ctx().get_action().account.to_uint64_t();
+   action = ctx().get_action().name.to_uint64_t();
+   return true;
+}
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -444,7 +451,7 @@ extern "C" void chain_api_init() {
 
       .register_vm_callback = register_vm_callback_,
       .get_vm_callback = get_vm_callback_,
-
+      .get_apply_args = get_apply_args_,
       .n2str = n2str,
       .str2n = str2n,
       .get_code = get_code,

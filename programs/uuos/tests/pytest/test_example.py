@@ -33,12 +33,13 @@ class Test(object):
 
         code = '''
 def apply(receiver, code, action):
-    print('hello,world')
+    print('hello, python')
 '''
         code = self.chain.compile_py_code(code)
 
         self.chain.deploy_contract(contract_name, code, b'', vmtype=2)
-        self.chain.push_action(contract_name, 'sayhello', b'hello,world from chain1')
+        self.chain.push_action(contract_name, 'sayhello', b'hello,world')
+        self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
 
 #./uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
 

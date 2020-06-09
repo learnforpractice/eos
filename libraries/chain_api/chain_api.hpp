@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 // #include <eosio/chain/types.hpp>
 #include <fc/crypto/sha256.hpp>
 
@@ -37,7 +38,7 @@ enum class enum_builtin_protocol_feature : uint32_t {
 
 struct vm_callback {
    int (*setcode)(uint64_t account, string& code);
-   int (*apply)(uint64_t receiver, uint64_t account, uint64_t action);
+   int (*apply)(string& hash, uint8_t vmtype, uint8_t vmversion);
 };
 
 struct chain_api_cpp
@@ -46,6 +47,8 @@ struct chain_api_cpp
 
    void (*register_vm_callback)(uint8_t vmtype, uint8_t vmversion, vm_callback *cb);
    vm_callback* (*get_vm_callback)(uint8_t vmtype, uint8_t vmversion);
+
+   bool (*get_apply_args)(uint64_t& receiver, uint64_t& code, uint64_t& action);
 
    void (*uuos_set_log_level)(string& logger_name, int level);
    void (*uuos_set_version)();

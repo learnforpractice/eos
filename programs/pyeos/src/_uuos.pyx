@@ -13,6 +13,7 @@ cdef extern from * :
     ctypedef unsigned long long uint64_t
     ctypedef unsigned int uint32_t
     ctypedef unsigned short uint16_t
+    ctypedef unsigned char uint8_t
 
 cdef extern from "Python.h":
     object PyBytes_FromStringAndSize(const char* str, int size)
@@ -21,6 +22,7 @@ cdef extern from "uuos.hpp":
     void say_hello_();
 
     void n2str_(uint64_t n, string& str_name);
+    bool get_apply_args_(uint64_t& receiver, uint64_t& code, uint64_t& action);
 
 #   void register_on_accepted_block_cb_()
     void pack_native_object_(int _type, string& msg, string& packed_message)
@@ -28,6 +30,7 @@ cdef extern from "uuos.hpp":
 
     void *chain_get_current_ptr_();
     void chain_set_current_ptr_(void *ptr);
+
 
     void* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
     bool chain_startup_(void* ptr, bool initdb);
@@ -839,33 +842,3 @@ def history_get_controlled_accounts(uint64_t ptr, const string& param):
     return result
 
 #+++++++++++++history api end++++++++++++++
-
-import os
-import marshal
-module = type(os)
-py_contracts = {}
-
-cdef extern int cpython_setcode(uint64_t account, string& raw_code):
-    cdef string contract_name
-    print('+++++++++hello,world+++++++++++')
-    try:
-        _raw_code = <bytes>(&raw_code)[0]
-        code = marshal.loads(_raw_code)
-        n2str_(account, contract_name)
-        m = module(contract_name)
-        exec(code, m.__dict__)
-        if account in py_contracts:
-            del py_contracts[account]
-        py_contracts[account] = m
-        return 1;
-    except Exception as e:
-        print(e)
-    return 0
-
-cdef extern int cpython_apply(uint64_t receiver, uint64_t account, uint64_t action):
-    try:
-        py_contracts[account].apply(receiver, account, action)
-        return 1;
-    except Exception as e:
-        print(e)
-    return 0

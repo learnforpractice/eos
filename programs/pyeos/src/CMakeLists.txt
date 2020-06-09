@@ -1,8 +1,9 @@
 
 add_cython_target(_uuos CXX)
 add_cython_target(_vm_api CXX)
+add_cython_target(_python_vm CXX)
 
-add_library(_uuos MODULE ${_uuos} ${_vm_api} uuos.cpp
+add_library(_uuos MODULE ${_uuos} ${_vm_api} ${_python_vm} uuos.cpp
 )
 
 python_extension_module(_uuos)

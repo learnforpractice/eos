@@ -19,6 +19,8 @@ vm_api* uuos_get_vm_api();
 #define chain_get_current_ptr_ get_chain_api()->chain_get_current_ptr
 #define chain_set_current_ptr_ get_chain_api()->chain_set_current_ptr
 
+#define get_apply_args_ get_chain_api()->get_apply_args
+
 #define chain_new_ get_chain_api()->chain_new
 #define chain_startup_ get_chain_api()->chain_startup
 #define chain_free_ get_chain_api()->chain_free
@@ -251,4 +253,5 @@ vm_api* uuos_get_vm_api();
 #define db_idx_long_double_end_ uuos_get_vm_api()->db_idx_long_double_end
 
 extern int cpython_setcode(uint64_t account, string& code);
-extern int cpython_apply(uint64_t receiver, uint64_t account, uint64_t action);
+extern int cpython_apply(string& hash, uint8_t vmtype, uint8_t vmversion);
+

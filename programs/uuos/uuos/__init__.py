@@ -24,7 +24,7 @@ import importlib
 class CustomImporter(object):
     def find_module(self, fullname, mpath=None):
         # if fullname in ['_uuos', '_vm_api']:
-        if fullname in ['_uuos', '_vm_api']:
+        if fullname in ['_uuos', '_vm_api', '_python_vm']:
             return self
         return
 
@@ -48,6 +48,7 @@ sys.meta_path.append(CustomImporter())
 
 import _uuos
 import _vm_api
+import _python_vm
 
 import ujson as json
 
