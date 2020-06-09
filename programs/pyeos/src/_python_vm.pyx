@@ -1,3 +1,4 @@
+# cython: c_string_type=str, c_string_encoding=ascii
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -18,17 +19,28 @@ cdef extern from "uuos.hpp":
 
 import os
 import marshal
+import traceback
 
 module = type(os)
 py_contracts = {}
 
-cdef extern int cpython_setcode(uint64_t account, string& raw_code):
+def n2s(uint64_t account):
     cdef string contract_name
+    n2str_(account, contract_name)
+    return contract_name
+
+cdef extern int cpython_setcode(uint64_t account, string& raw_code):
     print('+++++++++hello,world+++++++++++')
     try:
+        if raw_code.size() == 0:
+            if account in py_contracts:
+                del py_contracts[account]
+            return 1
+
         _raw_code = <bytes>(&raw_code)[0]
         code = marshal.loads(_raw_code)
-        n2str_(account, contract_name)
+        contract_name = n2s(account)
+        print(account, contract_name)
         m = module(contract_name)
         exec(code, m.__dict__)
         if account in py_contracts:
@@ -36,7 +48,7 @@ cdef extern int cpython_setcode(uint64_t account, string& raw_code):
         py_contracts[account] = m
         return 1;
     except Exception as e:
-        print(e)
+        traceback.print_exc(e)
     return 0
 
 cdef extern int cpython_apply(string& _hash, uint8_t vmtype, uint8_t vmversion):
@@ -48,5 +60,5 @@ cdef extern int cpython_apply(string& _hash, uint8_t vmtype, uint8_t vmversion):
         py_contracts[code].apply(receiver, code, action)
         return 1
     except Exception as e:
-        print(e)
+        traceback.print_exc(e)
     return 0

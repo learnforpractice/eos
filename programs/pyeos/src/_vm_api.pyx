@@ -1,4 +1,7 @@
 
+# cython: c_string_type=str, c_string_encoding=ascii
+
+from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 cdef extern from * :
@@ -12,19 +15,61 @@ cdef extern from "Python.h":
     object PyBytes_FromStringAndSize(const char* str, int size)
 
 cdef extern from "uuos.hpp":
-   int32_t db_store_i64_(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t _len);
-   void db_update_i64_(int32_t iterator, uint64_t payer, const char* data, uint32_t _len);
-   void db_remove_i64_(int32_t iterator);
-   int32_t db_get_i64_(int32_t iterator, void* data, uint32_t _len);
-   int32_t db_next_i64_(int32_t iterator, uint64_t* primary);
-   int32_t db_previous_i64_(int32_t iterator, uint64_t* primary);
-   int32_t db_find_i64_(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
-   int32_t db_lowerbound_i64_(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
-   int32_t db_upperbound_i64_(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
-   int32_t db_end_i64_(uint64_t code, uint64_t scope, uint64_t table);
+
+    void n2str_(uint64_t n, string& str_name)
+    uint64_t str2n_(string& str_name)
+
+    uint32_t read_action_data_(void* msg, uint32_t len)
+    uint32_t action_data_size_()
+
+    void require_recipient_(uint64_t name)
+    void require_auth_(uint64_t name)
+
+    int32_t db_store_i64_(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t _len);
+    void db_update_i64_(int32_t iterator, uint64_t payer, const char* data, uint32_t _len);
+    void db_remove_i64_(int32_t iterator);
+    int32_t db_get_i64_(int32_t iterator, void* data, uint32_t _len);
+    int32_t db_next_i64_(int32_t iterator, uint64_t* primary);
+    int32_t db_previous_i64_(int32_t iterator, uint64_t* primary);
+    int32_t db_find_i64_(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
+    int32_t db_lowerbound_i64_(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
+    int32_t db_upperbound_i64_(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);
+    int32_t db_end_i64_(uint64_t code, uint64_t scope, uint64_t table);
 
 cdef object to_bytes(const char *str, int size):
     return PyBytes_FromStringAndSize(str, size)
+
+def n2s(uint64_t account):
+    cdef string contract_name
+    n2str_(account, contract_name)
+    return contract_name
+
+def s2n(account):
+    return str2n_(account)
+
+def N(account):
+    return str2n_(account)
+
+def to_name(account):
+    if isinstance(account, int):
+        return account
+    return s2n(account)
+
+def read_action_data():
+    cdef string data
+    cdef uint32_t size
+    size = action_data_size_()
+    data.resize(size)
+    read_action_data_(<char *>data.c_str(), size)
+    return <bytes>data
+
+def require_recipient(account):
+    account = to_name(account)
+    require_recipient_(account)
+
+def require_auth(account):
+    account = to_name(account)
+    require_auth_(account)
 
 def db_store_i64(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, data: bytes):
     return db_store_i64_(scope, table, payer, id,  data, len(data))

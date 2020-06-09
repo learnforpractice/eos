@@ -170,10 +170,17 @@ vm_api* uuos_get_vm_api();
 #define history_get_controlled_accounts_ get_chain_api()->history_get_controlled_accounts
 
 #define n2str_ get_chain_api()->n2str
+#define str2n_ get_chain_api()->str2n
 
 /*
 ------------------------------vm_api-------------------------------------
 */
+
+#define read_action_data_ uuos_get_vm_api()->read_action_data
+#define action_data_size_ uuos_get_vm_api()->action_data_size
+
+#define require_recipient_ uuos_get_vm_api()->require_recipient
+#define require_auth_ uuos_get_vm_api()->require_auth
 
 #define db_store_i64_ uuos_get_vm_api()->db_store_i64
 #define db_store_i64_ex_ uuos_get_vm_api()->db_store_i64_ex
