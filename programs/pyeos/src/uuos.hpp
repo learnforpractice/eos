@@ -24,6 +24,9 @@ void uuos_init_chain_api();
 
 #define get_apply_args_ uuos_get_chain_api()->get_apply_args
 
+#define get_code_ uuos_get_chain_api()->get_code
+
+
 #define chain_new_ uuos_get_chain_api()->chain_new
 #define chain_startup_ uuos_get_chain_api()->chain_startup
 #define chain_free_ uuos_get_chain_api()->chain_free

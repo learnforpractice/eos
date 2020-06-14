@@ -15,7 +15,9 @@ cdef extern from "uuos.hpp":
     void say_hello_();
     void n2str_(uint64_t n, string& str_name);
     bool get_apply_args_(uint64_t& receiver, uint64_t& code, uint64_t& action);
+    bool get_code_(uint64_t contract, string& code_id, string& code)
 
+    int cpython_setcode(uint64_t account, string& raw_code);
 
 import os
 import marshal
@@ -55,9 +57,20 @@ cdef extern int cpython_apply(string& _hash, uint8_t vmtype, uint8_t vmversion):
     cdef uint64_t receiver=0
     cdef uint64_t code=0
     cdef uint64_t action=0
+    cdef string code_id
+    cdef string raw_code
+    cdef bool ret
     try:
         get_apply_args_(receiver, code, action)
-        py_contracts[code].apply(receiver, code, action)
+        m = None
+#        print('+++not receiver in py_contracts:', not receiver in py_contracts)
+        if not receiver in py_contracts:
+            ret = get_code_(receiver, code_id, raw_code)
+            if ret:
+                cpython_setcode(receiver, raw_code)
+#        print(receiver, py_contracts)
+        if receiver in py_contracts:
+            py_contracts[receiver].apply(receiver, code, action)
         return 1
     except Exception as e:
         traceback.print_exc(e)

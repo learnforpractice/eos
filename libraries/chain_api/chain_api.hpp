@@ -65,7 +65,7 @@ struct chain_api_cpp
    void (*n2str)(uint64_t n, string& str_name);
    uint64_t (*str2n)(string& str_name);
 
-   bool (*get_code)(uint64_t contract, digest_type& code_id, const char** code, size_t* size);
+   bool (*get_code)(uint64_t contract, string& code_id, string& code);
    const char* (*get_code_ex)( uint64_t contract, size_t* size );
    bool (*get_code_id)( uint64_t receiver, uint8_t* code_id, size_t size);
    int (*get_code_type)( uint64_t receiver);

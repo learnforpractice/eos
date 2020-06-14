@@ -32,7 +32,6 @@ cdef extern from "uuos.hpp":
     void *chain_get_current_ptr_();
     void chain_set_current_ptr_(void *ptr);
 
-
     void* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
     bool chain_startup_(void* ptr, bool initdb);
     void chain_free_(void *ptr);

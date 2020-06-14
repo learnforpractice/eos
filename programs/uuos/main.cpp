@@ -90,7 +90,7 @@ extern "C"
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
 
-   int init_python(int argc, char **argv);
+   int init_python(bool pyeos, int argc, char **argv);
 }
 
 void uuos_set_version() {
@@ -125,7 +125,13 @@ int main(int argc, char** argv)
          chain_api->uuos_set_default_data_dir = uuos_set_default_data_dir_;
          chain_api->uuos_set_default_config_dir = uuos_set_default_config_dir_;
       }
-      return init_python(argc, argv);
+      // return init_python(argc, argv);
+      if (strcmp(argv[argc-1], "--pyeos") == 0) {
+         argc -= 1;
+         return init_python(true, argc, argv);
+      } else {
+         init_python(false, argc, argv);
+      }
 
 //      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
 

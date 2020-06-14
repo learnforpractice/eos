@@ -18,8 +18,7 @@ using namespace eosio::chain;
 extern "C" const unsigned char pythonvm_wasm[];
 extern "C" int pythonvm_wasm_size;
 extern "C" char pythonvm_wasm_hash[];
-
-static controller *s_ctrl = nullptr;
+void *chain_get_current_ptr();
 static controller::config s_cfg;
 static chain_api_cpp s_api = {};
 
@@ -37,11 +36,12 @@ static inline apply_context& ctx() {
 
 
 static inline controller& ctrl() {
-   if (!s_ctrl) {
+   controller* ptr = (controller*)chain_get_current_ptr();
+   if (!ptr) {
       print_stacktrace();
       throw std::runtime_error("controller not specified!");
    }
-   return *s_ctrl;
+   return *ptr;
 }
 
 static inline controller::config& cfg() {
@@ -70,15 +70,14 @@ static uint64_t str2n(string& str_name) {
    return 0;
 }
 
-static bool get_code(uint64_t contract, digest_type& code_id, const char** code, size_t *size) {
+static bool get_code(uint64_t contract, string& code_id, string& code) {
    try {
       const auto& account = ctrl().db().get<account_metadata_object,by_name>(name(contract));
       bool existing_code = (account.code_hash != digest_type());
-      code_id = account.code_hash;
+      code_id = string(account.code_hash.data(), account.code_hash.data_size());
       if( existing_code ) {
          const code_object& code_entry = ctrl().db().get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
-         *code = code_entry.code.data();
-         *size = code_entry.code.size();
+         code = string(code_entry.code.data(), code_entry.code.size());
          return true;
       }
    } catch (...) {
@@ -151,7 +150,7 @@ static string get_state_dir() {
 }
 
 static bool contracts_console() {
-   if (!s_ctrl) {
+   if (!s_api.chain_ptr) {
       return true;
    }
    return ctrl().contracts_console();
@@ -172,7 +171,7 @@ static void get_action(uint64_t& receiver, uint64_t& account, uint64_t action) {
 }
 
 static bool is_producing_block() {
-   if (!s_ctrl) {
+   if (!s_api.chain_ptr) {
       return false;
    }
    return ctrl().is_producing_block();
@@ -604,11 +603,11 @@ extern "C" void chain_api_init() {
     register_chain_api(&s_api);
 }
 
-void chain_api_set_controller(controller *_ctrl, controller::config _cfg) {
-   s_ctrl = _ctrl;
-   s_cfg = _cfg;
-}
-
 controller& chain_api_get_controller() {
-   return *s_ctrl;
+   controller* ptr = (controller*)chain_get_current_ptr();
+   if (!ptr) {
+      print_stacktrace();
+      throw std::runtime_error("controller not specified!");
+   }
+   return *ptr;
 }

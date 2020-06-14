@@ -18,8 +18,8 @@ fi
 
 #./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest/test_basic.py
 if [[ "$1" == "" ]]; then
-    ./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest
+    ./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest --pyeos
 else
-    ./build/programs/uuos/uuos -m pytest -s $1
+    ./build/programs/uuos/uuos -m pytest -s $1 --pyeos
 fi
 
