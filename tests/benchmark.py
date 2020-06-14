@@ -16,6 +16,7 @@ from pyeoskit.exceptions import HttpAPIError
 import sys
 
 config.main_token = 'UUOS'
+eosapi.set_public_key_prefix('UUOS')
 db.reset()
 
 if len(sys.argv) == 2:
@@ -59,7 +60,10 @@ def create_system_accounts():
         'uuos',
         'hello',
         'helloworld12',
-        'helloworld11'
+        'helloworld11',
+        'learnfortest',
+        'learnfortest1',
+        'learnfortest2'
     ]
     newaccount = {'creator': 'eosio',
      'name': '',
@@ -94,9 +98,9 @@ if not eosapi.get_account(account_name):
 
 contract_path = '/Users/newworld/dev/eos/build/contracts'
 if platform.system() == 'Linux':
-    contract_path = '/home/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
+    contract_path = '/home/newworld/dev/uuos3/build/externals/eosio.contracts/contracts'
 else:
-    contract_path = '/Users/newworld/dev/uuos2/build/externals/eosio.contracts/contracts'
+    contract_path = '/Users/newworld/dev/uuos3/build/externals/eosio.contracts/contracts'
 
 if 1:
     if False:
@@ -148,6 +152,37 @@ try:
 except Exception as e:
     print(e)
 
+code_path = os.path.join(contract_path, 'eosio.bios/eosio.bios.wasm')
+abi_path = os.path.join(contract_path, 'eosio.bios/eosio.bios.abi')
+
+code = open(code_path, 'rb').read()
+abi = open(abi_path, 'rb').read()
+
+print('publish eosio.bios contract...')
+try:
+    r = eosapi.set_contract('eosio', code, abi, 0)
+except Exception as e:
+    print(e)
+
+feature_digests = [
+    'ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
+    'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99', #REPLACE_DEFERRED
+    '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f', #NO_DUPLICATE_DEFERRED_ID
+    '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
+    '299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707', #WTMSIG_BLOCK_SIGNATURES
+    'c3a6138c5061cf291310887c0b5c71fcaffeab90d5deb50d3b9e687cead45071', #ACTION_RETURN_VALUE
+    'f1aab764127d9319143327124d14bf1bbfbe001ead8d2f7c329cad891c8d951b', #PYTHON_VM
+    '80f35049d9fb83ef812a19bbb07eaafdd135a09276ee9a7b8dcff930ef40ebca', #ETHEREUM_VM
+    '93c00d04d4836bc95250fb330d2dc18ecc17973bd0a31a1846ec51e1a98a2140', #NATIVE_EVM_EXECUTE
+]
+
+for digest in feature_digests: 
+    try:
+        args = {'feature_digest': digest}
+        eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
+    except Exception as e:
+        print(e)
+
 code_path = os.path.join(contract_path, 'eosio.system/eosio.system.wasm')
 abi_path = os.path.join(contract_path, 'eosio.system/eosio.system.abi')
 
@@ -180,22 +215,11 @@ if eosapi.get_balance('helloworld11') <=0:
 #eosapi.schedule_protocol_feature_activations(['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43']) #RESTRICT_ACTION_TO_SELF
 #eosapi.schedule_protocol_feature_activations(['4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f']) #NO_DUPLICATE_DEFERRED_ID
 
-feature_digests = ['ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
-            'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99',#REPLACE_DEFERRED
-            '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f',#NO_DUPLICATE_DEFERRED_ID
-            '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405' #ONLY_BILL_FIRST_AUTHORIZER
-            'fa0e5becb50725b19e630d92f488e0a1982f5b726923dd877b629e2432296ea2', #PYTHONVM
-]
-
-for digest in feature_digests: 
-    try:
-        args = {'feature_digest': digest}
-        eosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
-    except Exception as e:
-        print(e)
 
 try:
     args = {'vmtype': 1, 'vmversion':0} #activate vm python
+    eosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
+    args = {'vmtype': 2, 'vmversion':0} #activate vm python
     eosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
 except Exception as e:
     print(e)
@@ -214,7 +238,7 @@ if 0:
 
 balance = eosapi.get_balance('uuos')
 print('++++balance: ', balance)
-while True:
+while False:
     n = random.randint(0,10000000)
     elapsed = 0
     for i in range(n, n+10):
