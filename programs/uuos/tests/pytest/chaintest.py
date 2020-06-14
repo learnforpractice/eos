@@ -407,6 +407,7 @@ class ChainTest(object):
             if permission['perm_name'] == perm_name:
                 for key in permission['required_auth']['keys']:
                     pub_key = key['key']
+                    pub_key = pub_key.replace('UUOS', 'EOS', 1)
                     if pub_key in key_map:
                         priv_key = key_map[pub_key]
                         keys.append(priv_key)
