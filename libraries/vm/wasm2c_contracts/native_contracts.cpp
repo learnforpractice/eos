@@ -198,7 +198,7 @@ bool native_contract_apply(std::array<uint8_t, 32>& hash, uint64_t receiver, uin
 
     wasm_rt_trap_t code = (wasm_rt_trap_t)wasm_rt_impl_try2();
     if (code != 0) {
-        printf("A trap occurred with code: %d\n", code);
+//        printf("A trap occurred with code: %d\n", code);
         vm_on_trap(code);
     }
     (*apply)(receiver, first_receiver, action);
