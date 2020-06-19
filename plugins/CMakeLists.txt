@@ -23,6 +23,8 @@ add_subdirectory(test_control_api_plugin)
 add_subdirectory(debug_api_plugin)
 # add_subdirectory(contract_api_plugin)
 add_subdirectory(action_publisher_plugin)
+add_subdirectory(match_engine_plugin)
+add_subdirectory(match_engine_api_plugin)
 
 # Forward variables to top level so packaging picks them up
 set(CPACK_DEBIAN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS} PARENT_SCOPE)
