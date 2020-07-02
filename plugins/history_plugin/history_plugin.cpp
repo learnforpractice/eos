@@ -192,6 +192,7 @@ namespace eosio {
          std::set<filter_entry> filter_on;
          std::set<filter_entry> filter_out;
          bool filter_transfer = false;
+         bool snapshot = false;
 
          // chain_plugin*          chain_plug = nullptr;
          fc::optional<fake_chain_plugin>          chain_plug;
@@ -413,6 +414,10 @@ namespace eosio {
             }
          }
 
+         if (options.count( "snapshot" )) {
+            my->snapshot = true;
+         }
+
          my->filter_transfer = options.at( "filter-transfer" ).as<bool>();
 
 
@@ -504,7 +509,9 @@ namespace eosio {
          auto itr = pub_key_idx.upper_bound(public_key_type());
          if (itr != pub_key_idx.end()) {
             //already initialized
-            return;
+            if (!my->snapshot) {
+               return;
+            }
          }
       }
       const auto& accounts = db.get_index<account_metadata_index, by_name>();
