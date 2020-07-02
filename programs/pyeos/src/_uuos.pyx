@@ -32,6 +32,8 @@ cdef extern from "uuos.hpp":
     void *chain_get_current_ptr_();
     void chain_set_current_ptr_(void *ptr);
 
+    int start_eosio_(int argc, char** argv);
+
     void* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
     bool chain_startup_(void* ptr, bool initdb);
     void chain_free_(void *ptr);
@@ -232,6 +234,14 @@ def chain_get_current_ptr():
 
 def chain_set_current_ptr(uint64_t ptr):
     chain_set_current_ptr_(<void *>ptr);
+
+def start_eosio(int argc, argv):
+    cdef char *_argv[50]
+    if argc > 50:
+        raise Exception('too many arguments!')
+    for i in range(argc):
+        _argv[i] = argv[i]
+    return start_eosio_(argc, _argv);
 
 def chain_new(string& config, string& genesis, string& protocol_features_dir, string& snapshot_dir):
     return <uint64_t>chain_new_(config, genesis, protocol_features_dir, snapshot_dir)

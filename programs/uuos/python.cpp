@@ -13,7 +13,7 @@ typedef int (*fnPyRun_SimpleString)(const char *command);
 typedef void* (*fnPyMem_Malloc)(size_t n);
 typedef wchar_t * (*fnPy_DecodeLocale)(const char *arg, size_t *size);
 
-extern "C" int init_python(bool pyeos, int argc, char **argv) {
+extern "C" int start_python(int argc, char **argv) {
 
     const char *python_shared_lib_path = getenv(PYTHON_SHARED_LIB_PATH);
 
@@ -66,18 +66,17 @@ extern "C" int init_python(bool pyeos, int argc, char **argv) {
         _argv[i] = arg;
     }
     
-    if (pyeos) {
-        return Py_Main(argc, _argv);
-    } else {
-        Py_InitializeEx(0);
-        PyRun_SimpleString("import struct;print(struct)\n" \
-                            "import os;import sys;sys.path.append('.')\n" \
-                            "uuos_lib=os.getenv('UUOS_EXT_LIB')\n"
-                            "print(uuos_lib)\n"
-                            "sys.path.append(uuos_lib)\n"
-                            "import uuos\n"
-        );
-    }
+    return Py_Main(argc, _argv);
+
+    // Py_InitializeEx(0);
+    // PyRun_SimpleString("import struct;print(struct)\n" \
+    //                     "import os;import sys;sys.path.append('.')\n" \
+    //                     "uuos_lib=os.getenv('UUOS_EXT_LIB')\n"
+    //                     "print(uuos_lib)\n"
+    //                     "sys.path.append(uuos_lib)\n"
+    //                     "import uuos\n"
+    // );
+
     // PyRun_SimpleString("import struct;print(struct)\n" \
     //                     "import os;import sys;sys.path.append('.')\n" \
     //                     "uuos_lib=os.getenv('UUOS_EXT_LIB')\n"

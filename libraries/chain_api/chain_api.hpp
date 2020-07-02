@@ -50,6 +50,9 @@ struct chain_api_cpp
 
    bool (*get_apply_args)(uint64_t& receiver, uint64_t& code, uint64_t& action);
 
+   void (*init_eosio)();
+   int (*start_eosio)(int argc, char** argv);
+
    void (*uuos_set_log_level)(string& logger_name, int level);
    void (*uuos_set_version)();
    void (*uuos_set_default_data_dir)(string& dir);
@@ -95,6 +98,7 @@ struct chain_api_cpp
    bool (*is_builtin_activated)(uint32_t feature);
    string (*call_contract_off_chain)(uint64_t contract, uint64_t action, const vector<char>& binargs);
 
+//--------------------------------chain api-------------------------------------
    void *(*chain_get_current_ptr)();
    void (*chain_set_current_ptr)(void *ptr);
    void* (*chain_new)(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);

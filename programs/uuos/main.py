@@ -299,7 +299,7 @@ class UUOSMain(application.Application):
         if self.producer:
             del self.producer
 
-if __name__ == "__main__":
+def main():
     print(os.getpid())
 #    time.sleep(10)
     config = Config()
@@ -335,4 +335,7 @@ if __name__ == "__main__":
     finally:
         logger.info('exiting...')
     UUOSMain.finish()
+
+if __name__ == "__main__":
+    main()
 

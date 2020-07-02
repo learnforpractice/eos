@@ -90,7 +90,7 @@ extern "C"
    void sandboxed_contracts_init();
    int create_accounts_snapshot(int argc, char** argv);
 
-   int init_python(bool pyeos, int argc, char **argv);
+   int start_python(int argc, char **argv);
 }
 
 void uuos_set_version() {
@@ -105,7 +105,7 @@ void uuos_set_default_config_dir_(string& dir) {
    app().set_default_config_dir(fc::path(dir));  
 }
 
-int main(int argc, char** argv)
+int start_eosio_(int argc, char** argv)
 {
    for (int i=0;i<argc;i++) {
       if (strcmp(argv[i], "--create-accounts-snapshot")==0) {
@@ -124,13 +124,6 @@ int main(int argc, char** argv)
          chain_api->uuos_set_version = uuos_set_version;
          chain_api->uuos_set_default_data_dir = uuos_set_default_data_dir_;
          chain_api->uuos_set_default_config_dir = uuos_set_default_config_dir_;
-      }
-      // return init_python(argc, argv);
-      if (strcmp(argv[argc-1], "--pyeos") == 0) {
-         argc -= 1;
-         return init_python(true, argc, argv);
-      } else {
-         init_python(false, argc, argv);
       }
 
 //      fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::debug);
@@ -202,3 +195,68 @@ int main(int argc, char** argv)
    ilog("${name} successfully exiting", ("name", nodeos::config::node_executable_name));
    return SUCCESS;
 }
+
+int main(int argc, char** argv)
+{
+   for (int i=0;i<argc;i++) {
+      if (strcmp(argv[i], "--create-accounts-snapshot")==0) {
+         return create_accounts_snapshot(argc, argv);
+      }
+   }
+   try {
+      // evm_init();
+      vm_api_init();
+      chain_api_init();
+      init_chain_api_callback();
+      init_history_callback();
+      sandboxed_contracts_init();
+      {
+         auto chain_api = get_chain_api();
+         chain_api->uuos_set_version = uuos_set_version;
+         chain_api->uuos_set_default_data_dir = uuos_set_default_data_dir_;
+         chain_api->uuos_set_default_config_dir = uuos_set_default_config_dir_;
+         chain_api->start_eosio = start_eosio_;
+      }
+      return start_python(argc, argv);
+   } catch( const extract_genesis_state_exception& e ) {
+      return EXTRACTED_GENESIS;
+   } catch( const fixed_reversible_db_exception& e ) {
+      return FIXED_REVERSIBLE;
+   } catch( const node_management_success& e ) {
+      return NODE_MANAGEMENT_SUCCESS;
+   } catch( const fc::exception& e ) {
+      if( e.code() == fc::std_exception_code ) {
+         if( e.top_message().find( "database dirty flag set" ) != std::string::npos ) {
+            elog( "database dirty flag set (likely due to unclean shutdown): replay required" );
+            return DATABASE_DIRTY;
+         }
+      }
+      elog( "${e}", ("e", e.to_detail_string()));
+      return OTHER_FAIL;
+   } catch( const boost::interprocess::bad_alloc& e ) {
+      elog("bad alloc");
+      return BAD_ALLOC;
+   } catch( const boost::exception& e ) {
+      elog("${e}", ("e",boost::diagnostic_information(e)));
+      return OTHER_FAIL;
+   } catch( const std::runtime_error& e ) {
+      if( std::string(e.what()).find("database dirty flag set") != std::string::npos ) {
+         elog( "database dirty flag set (likely due to unclean shutdown): replay required" );
+         return DATABASE_DIRTY;
+      } else {
+         elog( "${e}", ("e",e.what()));
+      }
+      return OTHER_FAIL;
+   } catch( const std::exception& e ) {
+      elog("${e}", ("e",e.what()));
+      return OTHER_FAIL;
+   } catch( ... ) {
+      elog("unknown exception");
+      return OTHER_FAIL;
+   }
+
+   ilog("${name} successfully exiting", ("name", nodeos::config::node_executable_name));
+   return SUCCESS;
+}
+
+
