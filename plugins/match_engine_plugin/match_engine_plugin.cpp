@@ -182,7 +182,7 @@ namespace eosio {
 					std::find(kafka_cache.begin(), kafka_cache.end(), at.act.data) == kafka_cache.end();
 			if (notincache) {
 				controller &cc = app().get_plugin<chain_plugin>().chain();
-				const auto& findex_acnt = cc.get_account(N(findexfindex));
+				const auto& findex_acnt = cc.get_account(N(dex1234554321));
 				auto findex_abi_def = findex_acnt.get_abi();
 				fc::microseconds abi_serializer_max_time = app().get_plugin<chain_plugin>().get_abi_serializer_max_time();
 				abi_serializer dex_serializer{findex_abi_def, abi_serializer::create_yield_function( abi_serializer_max_time )};
@@ -214,7 +214,7 @@ namespace eosio {
 
 		void on_applied_transaction(const transaction_trace_ptr &trace) {
 			for (const auto &atrace : trace->action_traces) {
-				if (atrace.act.account == N(findexfindex) && atrace.act.name == N(log)) {
+				if (atrace.act.account == N(dex1234554321) && atrace.act.name == N(log)) {
 					on_action_trace(atrace);
 				}
 			}
@@ -336,12 +336,15 @@ namespace eosio {
 										  const std::function<void(const fc::exception_ptr &)> &next) {
 			chain_plugin &cp = app().get_plugin<chain_plugin>();
 			cp.accept_transaction(std::make_shared<packed_transaction>(trxs->at(index)),
-									[=](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr> &result) {
-										if (result.contains<fc::exception_ptr>()) {
-											elog("bad packed_transaction : ${m}", ("m", result.get<fc::exception_ptr>()->what()) );
+								  [=](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr> &result) {
+									if (result.contains<fc::exception_ptr>()) {
+										elog("bad packed_transaction : ${m}", ("m", fc::variant(*result.get<fc::exception_ptr>())) );
+										if (result.contains<transaction_trace_ptr>()) {
+											elog("bad packed_transaction : ${m}", ("m", fc::variant(result.get<transaction_trace_ptr>())) );
 										}
 									}
-								);
+
+			});
 		}
 
 		void
@@ -360,7 +363,7 @@ namespace eosio {
 			std::vector<signed_transaction> trxs;
 			trxs.reserve(2);
 			controller &cc = app().get_plugin<chain_plugin>().chain();
-			const auto& findex_acnt = cc.get_account(N(findexfindex));
+			const auto& findex_acnt = cc.get_account(N(dex1234554321));
 			auto findex_abi_def = findex_acnt.get_abi();
 
 			auto abi_serializer_max_time = app().get_plugin<chain_plugin>().get_abi_serializer_max_time();
@@ -432,9 +435,10 @@ namespace eosio {
 														  next);
 				limit_buy_order.quantity -= deal_quantity;
 				limit_sell_order.quantity -= deal_quantity;
-			} catch (...) {
-				ilog("action limit order deal exception");
-			}
+			} FC_CAPTURE_AND_LOG((0))
+//                        catch (...) {
+//				ilog("action limit order deal exception");
+//			}
 		}
 
 		void market_buy_limit_sell_deal(string &pair_id, order_info &market_buy_order, order_info &limit_sell_order,
