@@ -336,7 +336,12 @@ namespace eosio {
 										  const std::function<void(const fc::exception_ptr &)> &next) {
 			chain_plugin &cp = app().get_plugin<chain_plugin>();
 			cp.accept_transaction(std::make_shared<packed_transaction>(trxs->at(index)),
-								  [=](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr> &result) {});
+									[=](const fc::static_variant<fc::exception_ptr, transaction_trace_ptr> &result) {
+										if (result.contains<fc::exception_ptr>()) {
+											elog("bad packed_transaction : ${m}", ("m", result.get<fc::exception_ptr>()->what()) );
+										}
+									}
+								);
 		}
 
 		void
