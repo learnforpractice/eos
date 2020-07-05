@@ -10,6 +10,8 @@
 #include <eosio/chain/transaction_object.hpp>
 #include <eosio/chain/reversible_block_object.hpp>
 #include <eosio/chain/account_object.hpp>
+#include <eosio/chain/resource_limits.hpp>
+#include <eosio/chain/resource_limits_private.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -302,17 +304,21 @@ void db_interface::remove_table( const table_id_object& tid ) {
    db.remove(tid);
 }
 
-void db_interface::update_db_usage( const account_name& payer, int64_t delta ) {
-#if 0
-   require_write_lock( payer );
-   if( (delta > 0) ) {
-      if (!(privileged || payer == account_name(receiver))) {
-         require_authorization( payer );
-      }
-
-      mutable_controller.get_mutable_resource_limits_manager().add_pending_account_ram_usage(payer, delta);
+void db_interface::update_db_usage( const account_name& payer, int64_t ram_delta ) {
+   if (ram_delta == 0) {
+      return;
    }
-#endif
+
+   const auto& usage  = db.get<resource_limits::resource_usage_object, resource_limits::by_owner>( payer );
+//   elog("+++++++${n1}, ${n2} ${n3}", ("n1", ram_delta)("n2", usage.ram_usage)("n3", account));
+   EOS_ASSERT( ram_delta <= 0 || UINT64_MAX - usage.ram_usage >= (uint64_t)ram_delta, transaction_exception,
+              "Ram usage delta would overflow UINT64_MAX");
+   EOS_ASSERT(ram_delta >= 0 || usage.ram_usage >= (uint64_t)(-ram_delta), transaction_exception,
+              "Ram usage delta would underflow UINT64_MAX");
+
+   db.modify( usage, [&]( auto& u ) {
+     u.ram_usage += ram_delta;
+   });
 }
 
 void db_interface::db_remove_i64_ex( int iterator ) {
