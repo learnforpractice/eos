@@ -254,6 +254,8 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
           "In \"light\" mode all incoming blocks headers will be fully validated; transactions in those validated blocks will be trusted \n")
          ("uuos-mainnet", boost::program_options::value<bool>()->default_value(true),
           "uuos main network \n")
+         ("public-key-prefix", bpo::value<string>()->default_value("UUOS"),
+          "public key prefix")
          ("create-accounts-snapshot", bpo::bool_switch()->default_value(false),
           "create accounts snapshot \n")
          ("disable-ram-billing-notify-checks", bpo::bool_switch()->default_value(false),
@@ -1026,6 +1028,11 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
 
       if ( options.count("uuos-mainnet") ) {
          my->chain_config->uuos_mainnet = options.at("uuos-mainnet").as<bool>();
+      }
+
+      if( options.count( "public-key-prefix" )) {
+         auto prefix = options.at( "public-key-prefix" ).as<string>();
+         get_chain_api()->set_public_key_prefix(prefix);
       }
 
       if( options.count( "genesis-accounts" )) {

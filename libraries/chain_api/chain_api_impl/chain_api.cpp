@@ -2,6 +2,8 @@
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/resource_limits.hpp>
+#include <fc/crypto/public_key.hpp>
+
 #include <fc/io/json.hpp>
 
 #include <dlfcn.h>
@@ -438,6 +440,14 @@ static bool get_apply_args_(uint64_t& receiver, uint64_t& code, uint64_t& action
    return true;
 }
 
+void set_public_key_prefix_(const string& prefix) {
+   fc::crypto::config::public_key_legacy_prefix = prefix;
+}
+
+void get_public_key_prefix_(string& prefix) {
+   prefix = fc::crypto::config::public_key_legacy_prefix;
+}
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -478,6 +488,9 @@ extern "C" void chain_api_init() {
 
       .chain_get_current_ptr = chain_get_current_ptr,
       .chain_set_current_ptr = chain_set_current_ptr,
+
+      .set_public_key_prefix = set_public_key_prefix_,
+      .get_public_key_prefix = get_public_key_prefix_,
 
       .chain_new = chain_new_,
       .chain_startup = chain_startup_,

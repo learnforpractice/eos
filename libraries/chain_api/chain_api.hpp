@@ -98,6 +98,9 @@ struct chain_api_cpp
    bool (*is_builtin_activated)(uint32_t feature);
    string (*call_contract_off_chain)(uint64_t contract, uint64_t action, const vector<char>& binargs);
 
+   void (*set_public_key_prefix)(const string& prefix);
+   void (*get_public_key_prefix)(string& prefix);
+
 //--------------------------------chain api-------------------------------------
    void *(*chain_get_current_ptr)();
    void (*chain_set_current_ptr)(void *ptr);
