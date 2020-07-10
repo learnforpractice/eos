@@ -27,5 +27,6 @@ target_include_directories( vm_manager
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
                             "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                             PUBLIC ${HEADERS}
+                            PRIVATE ${CMAKE_SOURCE_DIR}/externals/boost/includes
                           )
 
