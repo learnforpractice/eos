@@ -163,8 +163,8 @@ namespace eosio {
          void on_action_trace( const action_trace& at ) {
             if( filter( at ) ) {
                string str_action = fc::json::to_string(at, fc::time_point::maximum());
-               // string receiver = at.receiver.to_string();
-               string receiver = at.receipt->receiver.to_string();
+               string receiver = at.receiver.to_string();
+               // string receiver = at.receipt->receiver.to_string();
 
                s_sendmore (*publisher_tcp, receiver);
                s_send (*publisher_tcp, str_action);
