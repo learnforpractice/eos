@@ -47,6 +47,7 @@ ExternalProject_Add(
 #    INSTALL_COMMAND ""
 #    BUILD_ALWAYS 1
 # )
+if (BUILD_EVMONE4EOSIO)
 
 ExternalProject_Add(
    evmone4eosio
@@ -59,14 +60,16 @@ ExternalProject_Add(
    INSTALL_COMMAND ""
    BUILD_ALWAYS 1
 )
+add_dependencies(evmone4eosio wasm2c_exports)
+add_dependencies(evmone4eosio vm_api4c)
+
+endif()
 
 #add_subdirectory(test-contracts)
 add_subdirectory(boost)
 add_subdirectory(libzmq)
 add_subdirectory(cppzmq)
 add_dependencies(cppzmq libzmq)
-add_dependencies(evmone4eosio wasm2c_exports)
-add_dependencies(evmone4eosio vm_api4c)
 
 # add_dependencies(aleth eth_account)
 # add_dependencies(aleth vm_api)
