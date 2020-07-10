@@ -2697,8 +2697,8 @@ int chain_api_get_info_(void *ptr, string& result) {
       read_only::get_info_params params;
       read_only::get_info_results results;
       auto& cc = chain_get_controller(ptr);
-
-      results = read_only(cc, fc::microseconds(max_abi_time)).get_info(params);
+      fc::optional<account_query_db> aqdb;
+      results = read_only(cc, aqdb, fc::microseconds(max_abi_time)).get_info(params);
       result = fc::json::to_string(fc::variant(results), fc::time_point::maximum());
       return 1;
     } CATCH_AND_CALL(next);
@@ -2712,8 +2712,9 @@ int chain_api_ ## api_name ## _(void *ptr, string& params, string& result) { \
    }; \
    try { \
       auto& cc = chain_get_controller(ptr); \
+      fc::optional<account_query_db> aqdb; \
       auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
-      auto _result = read_only(cc, fc::microseconds(max_abi_time)).api_name(_params); \
+      auto _result = read_only(cc, aqdb, fc::microseconds(max_abi_time)).api_name(_params); \
       result = fc::json::to_string(fc::variant(_result), fc::time_point::maximum()); \
       return 1;\
    } CATCH_AND_CALL(next); \
