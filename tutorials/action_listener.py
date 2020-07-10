@@ -4,6 +4,8 @@ import json
 import zmq
 from pyeoskit import eosapi
 
+eosapi.set_filter_on('*')
+# eosapi.set_filter_on('learnfortest1::')
 eosapi.set_filter_on('eosio.token::')
 
 port = "5556"
@@ -31,9 +33,10 @@ if len(sys.argv) > 2:
 topicfilter = "2222"
 #socket.setsockopt_string(zmq.SUBSCRIBE, topicfilter)
 socket.setsockopt_string(zmq.SUBSCRIBE, "eosio.token")
-socket.setsockopt_string(zmq.SUBSCRIBE, "helloworld11")
-socket.setsockopt_string(zmq.SUBSCRIBE, "helloworld12")
-socket.setsockopt_string(zmq.SUBSCRIBE, "eosio")
+# socket.setsockopt_string(zmq.SUBSCRIBE, "learnfortest1")
+# socket.setsockopt_string(zmq.SUBSCRIBE, "helloworld11")
+# socket.setsockopt_string(zmq.SUBSCRIBE, "helloworld12")
+# socket.setsockopt_string(zmq.SUBSCRIBE, "eosio")
 
 
 # Process 5 updates
@@ -43,9 +46,7 @@ while True:
     string = socket.recv_string()
     action = socket.recv_string()
     a = json.loads(action)
-    if a['act']['account'] == 'eosio' and a['act']['name'] == 'onblock':
-        continue
-    print(string, action)
+    print('++++++++++++:', string, a['receiver'], a['receipt']['receiver'])
     if a['act']['name'] == 'transfer':
         d = a['act']['data']
 #        print(d)
