@@ -163,7 +163,8 @@ namespace eosio {
          void on_action_trace( const action_trace& at ) {
             if( filter( at ) ) {
                string str_action = fc::json::to_string(at, fc::time_point::maximum());
-               string receiver = at.receiver.to_string();
+               // string receiver = at.receiver.to_string();
+               string receiver = at.receipt->receiver.to_string();
 
                s_sendmore (*publisher_tcp, receiver);
                s_send (*publisher_tcp, str_action);
@@ -199,8 +200,7 @@ namespace eosio {
          }
 
          void on_applied_transaction( const transaction_trace_ptr& trace ) {
-            if( !trace->receipt || (trace->receipt->status != transaction_receipt_header::executed &&
-                  trace->receipt->status != transaction_receipt_header::soft_fail) )
+            if( !trace->receipt || trace->receipt->status != transaction_receipt_header::executed )
                return;
             for( const auto& atrace : trace->action_traces ) {
                if( !atrace.receipt ) continue;
