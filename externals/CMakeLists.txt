@@ -47,6 +47,9 @@ ExternalProject_Add(
 #    INSTALL_COMMAND ""
 #    BUILD_ALWAYS 1
 # )
+
+set(BUILD_EVMONE4EOSIO TRUE)
+
 if (BUILD_EVMONE4EOSIO)
 
 ExternalProject_Add(
