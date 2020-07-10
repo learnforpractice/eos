@@ -35,6 +35,7 @@ target_include_directories(vm_api PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_BINARY_DIR}/contracts
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/fc/include
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include
+    PRIVATE ${CMAKE_SOURCE_DIR}/externals/boost/includes
 )
 
 
