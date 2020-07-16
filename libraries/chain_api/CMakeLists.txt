@@ -20,7 +20,7 @@ set( HEADERS
 if (BUILD_SHARED)
     add_library( chain_api SHARED chain_api.cpp chain_exceptions.cpp)
 else()
-    add_library( chain_api SHARED chain_api.cpp chain_exceptions.cpp)
+    add_library( chain_api STATIC chain_api.cpp chain_exceptions.cpp)
 endif()
 
 if (APPLE)
@@ -33,7 +33,7 @@ endif (APPLE)
 
 set_target_properties(chain_api  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
-target_link_libraries( chain_api boost_1_67_0)
+target_link_libraries( chain_api fc)
 
 target_include_directories( chain_api
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
