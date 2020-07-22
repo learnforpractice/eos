@@ -47,8 +47,10 @@ def check_error(msg):
         def wrapper(*args, **kwargs):
             try:
                 func(*args, **kwargs)
+                logger.info((func, msg))
                 assert 0, f"function {func} should throw error: {msg}!"
             except Exception as e:
+                # logger.info(e)
                 _except = e.args[0]['except']
                 msg = _except['stack'][0]['data']['s']
                 assert msg == msg
@@ -126,7 +128,7 @@ class Test(object):
 #     s = eosapi.n2s(int.from_bytes(data[i:i+8], 'little'))
 #     print(s)
 
-    @check_error('account name does not exists on EOS mainnet')
+#    @check_error('account name does not exists on EOS mainnet')
     def create_account_test1(self):
         '''
         testcase for account does not exist on EOS network
@@ -134,6 +136,11 @@ class Test(object):
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'testtesttest'
         self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+
+        # key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        # account = '12341234'
+        # self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
+        # assert 0, 'code should not go here!'
 
     @check_error('public key not match!')
     def create_account_test2(self):
@@ -159,6 +166,28 @@ class Test(object):
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'helloworld133'
         self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+
+    def create_account_test5(self):
+        '''
+        create account with 8 charactors
+        '''
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        account = '12341234'
+        self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
+
+    def create_account_test6(self):
+        '''
+        create account with 9 charactors
+        '''
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        account = '123412345'
+        self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
+
+    @check_error('no active bid for name')
+    def create_account_test7(self):
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        account = '123412'
+        self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
 
     def test_create_account(self):
         self.create_account_test1()

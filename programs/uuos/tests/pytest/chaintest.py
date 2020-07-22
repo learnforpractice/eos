@@ -438,10 +438,10 @@ class ChainTest(object):
         deadline = datetime.utcnow() + timedelta(microseconds=100000)
         billed_cpu_time_us = 2000
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
-#        print(ret, result)
         result = json.loads(result)
         if not ret:
-            logger.info(result['action_traces'][0]['console'])
+            # logger.info((ret, result))
+            # logger.info(result['action_traces'][0]['console'])
             raise Exception(result)
         result = JsonObject(result)
         return result
@@ -466,7 +466,7 @@ class ChainTest(object):
 
     def create_account(self, creator, account, owner_key, active_key, ram_bytes=0, stake_net=0.0, stake_cpu=0.0):
         actions = []
-        logger.debug(f'{creator} {account}')
+        logger.info(f'{creator} {account}')
         args = {
             'creator': creator,
             'name': account,
@@ -488,7 +488,7 @@ class ChainTest(object):
             'account': 'eosio',
             'name': 'newaccount',
             'data': newaccount_args.hex(),
-            'authorization':[{'actor':'eosio', 'permission':'active'}]
+            'authorization':[{'actor':creator, 'permission':'active'}]
         }
         actions.append(newaccount_action)
 
