@@ -103,6 +103,8 @@ class Test(object):
         }]
 
         cls.chain.update_auth('bob', accounts, keys)
+        cls.chain.transfer('eosio', 'alice', 1000.0, '1')
+        cls.chain.produce_block()
 
     @classmethod
     def teardown_class(cls):
@@ -189,11 +191,27 @@ class Test(object):
         account = '123412'
         self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
 
+    @check_error('no active bid for name')
+    def create_account_test8(self):
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        account = '123412'
+        self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
+
+#    @check_error('no active bid for name')
+    def create_account_test9(self):
+        key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
+        account = '123411.1'
+        self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
+
     def test_create_account(self):
         self.create_account_test1()
         self.create_account_test2()
         self.create_account_test3()
         self.create_account_test4()
+        self.create_account_test6()
+        self.create_account_test7()
+        self.create_account_test8()
+        self.create_account_test9()
 
     @check_error('public key mismatch')
     def activate_account_test1(self):
