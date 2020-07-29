@@ -20,7 +20,7 @@ class ChainApi(object):
 
     def get_account(self, name):
         ret, result = _uuos.chain_api_get_account(self.ptr, name)
-        if result:
+        if ret:
             result = json.loads(result)
         return ret, result
 

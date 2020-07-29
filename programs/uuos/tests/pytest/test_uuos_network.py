@@ -230,12 +230,12 @@ class Test(object):
     def activate_account_test2(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         h = hashlib.sha256()
-        h.update(b'activate helloworld14')
+        h.update(b'activate helloworld11')
         private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
         sign = uuos.sign_digest(h.digest(), private_key)
         args = {
             "activator":"alice",
-            "account":"helloworld14",
+            "account":"helloworld11",
             "sign": sign
         }
         #"ram_usage":2916
@@ -248,7 +248,7 @@ class Test(object):
     def activate_account_test3(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         h = hashlib.sha256()
-        h.update(b'activate helloworld14')
+        h.update(b'activate helloworld51')
         private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
         sign = uuos.sign_digest(h.digest(), private_key)
         args = {
@@ -258,10 +258,58 @@ class Test(object):
         }
         self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
 
+    def activate_account_test4(self):
+# '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
+        h = hashlib.sha256()
+        h.update(b'activate helloworld12')
+        private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
+        sign = uuos.sign_digest(h.digest(), private_key)
+        args = {
+            "activator":"uuos",
+            "account":"helloworld12",
+            "sign": sign
+        }
+        try:
+            self.chain.push_action('eosio', 'activateacc', args, actor='uuos', perm='active')
+        except Exception as e:
+            assert e.args[0]['except']['message'] == 'Missing required authority'
+
+    def activate_account_test5(self):
+# '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
+        accounts = [ ]
+
+        keys = [{
+            "key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+            "weight": 1
+        }]
+
+        self.chain.update_auth('uuos', accounts, keys, perm='activateacc', parent='owner')
+
+        args = {
+            'account':'uuos',
+            'code':'eosio',
+            'type':'activateacc',
+            'requirement':'activateacc'
+        }
+        self.chain.push_action('eosio', 'linkauth', args, actor='uuos', perm='active')
+
+        h = hashlib.sha256()
+        h.update(b'activate helloworld12')
+        private_key = '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc'
+        sign = uuos.sign_digest(h.digest(), private_key)
+        args = {
+            "activator":"uuos",
+            "account":"helloworld12",
+            "sign": sign
+        }
+        self.chain.push_action('eosio', 'activateacc', args, actor='uuos', perm='activateacc')
+
     def test_activate_account(self):
         self.activate_account_test1()
         self.activate_account_test2()
         self.activate_account_test3()
+        self.activate_account_test4()
+        self.activate_account_test5()
 
     @check_error('no res found')
     def reg_producer_test1(self):
