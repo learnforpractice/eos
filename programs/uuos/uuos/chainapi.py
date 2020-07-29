@@ -1,4 +1,6 @@
 import _uuos
+import json
+
 class ChainApi(object):
 
     def __init__(self, chain_ptr):
@@ -17,7 +19,10 @@ class ChainApi(object):
         return _uuos.chain_api_get_block_header_state(self.ptr, params)
 
     def get_account(self, name):
-        return _uuos.chain_api_get_account(self.ptr, name)
+        ret, result = _uuos.chain_api_get_account(self.ptr, name)
+        if result:
+            result = json.loads(result)
+        return ret, result
 
     def get_code(self, params):
         return _uuos.chain_api_get_code(self.ptr, params)
