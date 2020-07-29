@@ -197,7 +197,7 @@ class Test(object):
         account = '123412'
         self.chain.create_account('alice', account, key, key, 10*1024, 1, 10)
 
-#    @check_error('no active bid for name')
+    @check_error('only suffix may create this account')
     def create_account_test9(self):
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = '123411.1'
@@ -238,7 +238,11 @@ class Test(object):
             "account":"helloworld14",
             "sign": sign
         }
+        #"ram_usage":2916
+        old_ram_usage = self.chain.get_account('alice').ram_usage
         self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+        new_ram_usage = self.chain.get_account('alice').ram_usage
+        assert new_ram_usage - old_ram_usage == 240
 
     @check_error('account not registered')
     def activate_account_test3(self):
