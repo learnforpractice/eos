@@ -471,12 +471,12 @@ def nextround(username):
     users.store(user)
 
 
-code = N('helloworld11')
+code = N('testmetestme')
 scope = N('scopee')
 table = N('users')
 users= db.MultiIndex(code, scope, table, UserInfo)
 
-code = N('helloworld11')
+code = N('testmetestme')
 scope = N('scopee')
 table = N('seed')
 seeds = db.MultiIndex(code, scope, table, UserInfo)
@@ -495,7 +495,7 @@ def apply(receiver, code, action):
         # print(username)
         login(username)
         # import _db
-        # itr = _db.find_i64('helloworld11', 'scopee', 'users', 'helloworld11')
+        # itr = _db.find_i64('testmetestme', 'scopee', 'users', 'testmetestme')
         # print(itr, _db.get_i64(itr))
     elif action == action_startgame:
         username = read_action_data()

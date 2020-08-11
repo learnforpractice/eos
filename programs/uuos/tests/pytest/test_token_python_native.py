@@ -13,14 +13,14 @@ class Test(object):
     def setup_class(cls):
         cls.main_token = 'UUOS'
         cls.chain = ChainTest(uuos_network=True)
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         args = {
             'account':contract_name,
             'is_priv':1
         }
         cls.chain.push_action('eosio', 'setpriv', args)
 
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         code = cls.chain.compile_py_code_from_file('token2.py')
         abi_file = os.path.join(test_dir, '..', 'test_contracts', 'token.abi')
         with open(abi_file, 'rb') as f:
@@ -38,7 +38,7 @@ class Test(object):
         pass
 
     def test_token(self):
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         args = {"issuer": contract_name, "maximum_supply":f"11000000000.0000 UUOS"}
         r = self.chain.push_action(contract_name, 'create', args)
 
@@ -46,14 +46,14 @@ class Test(object):
         r = self.chain.push_action(contract_name,'issue', args, contract_name, 'active')
 
         balance = self.chain.get_balance(contract_name, token_account=contract_name, token_name='UUOS')
-        logger.info(f'++++helloworld11 balance:{balance}')
+        logger.info(f'++++testmetestme balance:{balance}')
 
-        self.chain.transfer('helloworld11', 'bob', 1.0, '1', token_account='helloworld11', token_name='UUOS')
+        self.chain.transfer('testmetestme', 'bob', 1.0, '1', token_account='testmetestme', token_name='UUOS')
         balance = self.chain.get_balance('bob', token_account=contract_name, token_name='UUOS')
         logger.info(f'++++bob balance:{balance}')
 
         balance = self.chain.get_balance(contract_name, token_account=contract_name, token_name='UUOS')
-        logger.info(f'++++helloworld11 balance:{balance}')
+        logger.info(f'++++testmetestme balance:{balance}')
 
 #./uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
 

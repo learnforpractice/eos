@@ -24,7 +24,7 @@ class Test(object):
         pass
 
     def test_performance(self):
-        contract_name = 'helloworld11'
+        contract_name = 'alice'
         args = {
             'account':contract_name,
             'is_priv':1

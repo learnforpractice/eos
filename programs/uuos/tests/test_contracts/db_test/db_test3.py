@@ -48,7 +48,7 @@ class MyData(object):
     def get_secondary_indexes(self):
         return ()
 
-code = N('helloworld11')
+code = N('testmetestme')
 scope = N('scopee')
 table = N('tableee')
 mi = db.MultiIndex(code, scope, table, MyData)

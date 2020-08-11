@@ -234,10 +234,10 @@ class ChainTest(object):
                 'eosio.jitfee',
                 'uuos',
                 'hello',
-                'helloworld12',
-                'helloworld11',
                 'alice',
-                'bob'
+                'bob',
+                'testmetestme',
+                'dothetesting'
         ]
         for a in systemAccounts:
             self.create_account('eosio', a, key, key)
@@ -591,6 +591,9 @@ class ChainTest(object):
     def deploy_eosio_system_uuos(self):
         code_path = os.path.join(test_dir, 'contracts/eosio.system.uuos.wasm')
         abi_path = os.path.join(test_dir, 'contracts/eosio.system.uuos.abi')
+        code_path = '/Users/newworld/dev/uuos.contracts/build/contracts/eosio.system/eosio.system.wasm'
+        abi_path = '/Users/newworld/dev/uuos.contracts/build/contracts/eosio.system/eosio.system.abi'
+
         with open(code_path, 'rb') as f:
             code = f.read()
         with open(abi_path, 'rb') as f:
@@ -761,17 +764,17 @@ class ChainTest(object):
         a = self.chain_api.get_account(arg)
         print('++++get_account:', a)
 
-        params = {'account_name':'helloworld11'}
+        params = {'account_name':'testmetestme'}
         params = json.dumps(params)
         ret = self.chain_api.get_code_hash(params)
         print('++++code_hash', ret)
 
-        params = {'account_name':'helloworld11'}
+        params = {'account_name':'testmetestme'}
         params = json.dumps(params)
         ret = self.chain_api.get_raw_code_and_abi(params)
         print('++++code', ret)
         try:
-            r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+            r = self.push_action('testmetestme', 'sayhello', b'', 'testmetestme')
         except Exception as e:
             print(e)
         self.produce_block()
@@ -789,11 +792,11 @@ def apply(receiver, first_receiver, action):
             code += f'    a{i} = dict(abc={i})\n'
         code = compile(code, "contract", 'exec')
         code = marshal.dumps(code)
-        self.deploy_contract('helloworld11', code, b'', 1)
-        r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+        self.deploy_contract('testmetestme', code, b'', 1)
+        r = self.push_action('testmetestme', 'sayhello', b'', 'testmetestme')
         r = JsonObject(r)
         logger.info(r)
-        r = self.push_action('helloworld11', 'sayhello', b'1122', 'helloworld11')
+        r = self.push_action('testmetestme', 'sayhello', b'1122', 'testmetestme')
         r = JsonObject(r)
         logger.info(r)
         self.produce_block()
@@ -825,7 +828,7 @@ def apply(receiver, code, action):
         for i in range(2):
             for j in range(10):
                 args = int.to_bytes(j, 4, 'little')
-                r = self.push_action('helloworld11', 'sayhello', args, 'helloworld11')
+                r = self.push_action('testmetestme', 'sayhello', args, 'testmetestme')
                 r = self.push_action('alice', 'sayhello', args)
             self.produce_block()
 
@@ -845,23 +848,23 @@ def apply(receiver, code, action):
     def db_test1(self):
         logger.info('+++++++++++++++db_test1++++++++++++++')
         code = self.compile_py_code_from_file('db_test.py')
-        self.deploy_contract('helloworld11', code, b'', 1)
-        r = self.push_action('helloworld11', 'sayhello', b'', 'helloworld11')
+        self.deploy_contract('testmetestme', code, b'', 1)
+        r = self.push_action('testmetestme', 'sayhello', b'', 'testmetestme')
         r = JsonObject(r)
 #        print(r)
         self.produce_block()
 
     def db_test2(self):
         code = self.compile_py_code_from_file('db_test2.py')
-        self.deploy_contract('helloworld11', code, b'', 1)
-        r = self.push_action('helloworld11', 'store', b'')
+        self.deploy_contract('testmetestme', code, b'', 1)
+        r = self.push_action('testmetestme', 'store', b'')
         r = JsonObject(r)
-        r = self.push_action('helloworld11', 'get', b'')
+        r = self.push_action('testmetestme', 'get', b'')
         r = JsonObject(r)
 
-        r = self.push_action('helloworld11', 'update', b'')
+        r = self.push_action('testmetestme', 'update', b'')
         # logger.info(r)
-        r = self.push_action('helloworld11', 'update', b'1')
+        r = self.push_action('testmetestme', 'update', b'1')
         # logger.info(r)
 
 #        print(r)
@@ -872,15 +875,15 @@ def apply(receiver, code, action):
 
         code = compile(code, "contract", 'exec')
         code = marshal.dumps(code)
-        self.deploy_contract('helloworld11', code, b'', 1)
-        r = self.push_action('helloworld11', 'store', b'')
+        self.deploy_contract('testmetestme', code, b'', 1)
+        r = self.push_action('testmetestme', 'store', b'')
         print('++++store: elapsed:', r.elapsed)
-        r = self.push_action('helloworld11', 'get', b'')
+        r = self.push_action('testmetestme', 'get', b'')
         print('++++get: elapsed:', r.elapsed)
 
-        r = self.push_action('helloworld11', 'update', b'')
+        r = self.push_action('testmetestme', 'update', b'')
         print('++++update: elapsed:', r.elapsed)
-        r = self.push_action('helloworld11', 'update', b'1')
+        r = self.push_action('testmetestme', 'update', b'1')
         print('++++update: elapsed:', r.elapsed)
 
 #        print(r)
@@ -893,8 +896,8 @@ def apply(receiver, code, action):
         '''
         code = compile(code, "contract", 'exec')
         code = marshal.dumps(code)
-        self.deploy_contract('helloworld11', code, b'', 1)
-        r = self.push_action('helloworld11', 'test', b'')
+        self.deploy_contract('testmetestme', code, b'', 1)
+        r = self.push_action('testmetestme', 'test', b'')
         return_value = r.action_traces[0]['receipt']['return_value']
         logger.info(f'+++return_value: {return_value}')
         assert return_value == b'hello,world'.hex()
@@ -910,13 +913,13 @@ def apply(receiver, code, action):
             code = f.read()
         with open(abi_file, 'rb') as f:
             abi = f.read()
-        self.deploy_contract('helloworld11', code, abi)
+        self.deploy_contract('testmetestme', code, abi)
         self.produce_block()
 
-        r = self.push_action('helloworld11', 'sayhello', b'1')
+        r = self.push_action('testmetestme', 'sayhello', b'1')
         logger.info(r.elapsed)
 
-        r = self.push_action('helloworld11', 'sayhello', b'2')
+        r = self.push_action('testmetestme', 'sayhello', b'2')
         logger.info(r.elapsed)
 
         ret_value = r.action_traces[0]['receipt']['return_value']

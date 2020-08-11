@@ -28,7 +28,7 @@ class Test(object):
         logger.info('hello,world')
 
     def test_api(self):
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('pythonvm_test.py')
         self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
         self.chain.produce_block()

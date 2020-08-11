@@ -1,5 +1,7 @@
 cd
 dd
+dd-mainnet
+cd-mainnet
 *.a
 *.sw*
 *.dylib

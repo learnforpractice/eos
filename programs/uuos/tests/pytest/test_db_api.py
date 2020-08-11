@@ -31,7 +31,7 @@ class Test(object):
         self.chain.free()
 
     def test_db_i64(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_i64.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -47,7 +47,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_db_idx64(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx64.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -63,7 +63,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_db_idx_double(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx_double.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -80,7 +80,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_db_idx128(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx128.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -96,7 +96,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_db_idx256(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx256.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -112,7 +112,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_db_idx_long_double(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx_long_double.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -128,7 +128,7 @@ class Test(object):
         self.chain.produce_block()
     
     def test_db_mi(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -136,7 +136,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_db_mi2(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test2.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 
@@ -150,7 +150,7 @@ class Test(object):
         self.chain.produce_block()
     
     def test_db_mi3(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test3.py')
         self.chain.deploy_contract(name, code, b'', vmtype=1)
 

@@ -52,7 +52,7 @@ class MyData(object):
 def test_del(receiver, code, action):
     payer = receiver
 
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('tableee')
     primary_key =  N('hello')
@@ -71,7 +71,7 @@ def test_del(receiver, code, action):
 
 def get_secondary_values_test(receiver, code, action):
     payer = receiver
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('tableee')
     primary_key =  110
@@ -81,7 +81,7 @@ def get_secondary_values_test(receiver, code, action):
 
 def test(receiver, code, action):
     payer = receiver
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('mytable')
     table = table&0xFFFFFFFFFFFFFFF0
@@ -99,7 +99,7 @@ def test(receiver, code, action):
 def test2(receiver, code, action):
     payer = receiver
 
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('mytable')
 
@@ -112,7 +112,7 @@ def test2(receiver, code, action):
 
 def secondary_test(receiver, code, action):
     payer = receiver
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('mytable')
     mi = MultiIndex(code, scope, table, MyData)
@@ -140,7 +140,7 @@ def secondary_test(receiver, code, action):
 
 def bound_tests(receiver, code, action):
     payer = receiver
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('mytable')
     mi = MultiIndex(code, scope, table, MyData)
@@ -262,7 +262,7 @@ def apply(receiver, code, action):
 
     payer = receiver
 
-    code = N('helloworld11')
+    code = N('testmetestme')
     scope = N('scopee')
     table = N('mytable')
     mi = MultiIndex(code, scope, table, MyData)

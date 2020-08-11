@@ -18,7 +18,7 @@ class Test(object):
     def setup_class(cls):
         cls.main_token = 'UUOS'
         cls.chain = chain = ChainTest(uuos_network=True)
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         code = chain.compile_py_code_from_file('token.py')
         abi_file = os.path.join(test_dir, '..', 'test_contracts', 'token.abi')
         with open(abi_file, 'rb') as f:
@@ -36,7 +36,7 @@ class Test(object):
         pass
 
     def test_token(self):
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         args = {"issuer": contract_name, "maximum_supply":f"11000000000.0000 {self.main_token}"}
         r = self.chain.push_action(contract_name, 'create', args)
 
@@ -58,7 +58,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_token_close(self):
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         token_name = 'UUUV'
         args = {"issuer": contract_name, "maximum_supply":f"11000000000.0000 {token_name}"}
         r = self.chain.push_action(contract_name, 'create', args)
@@ -73,8 +73,8 @@ class Test(object):
         r = self.chain.push_action(contract_name,'close', args, 'bob', 'active')
         self.chain.produce_block()
 
-        self.chain.transfer('helloworld11', 'bob', 1.0, '1', token_account='helloworld11', token_name='UUUV')
-        self.chain.transfer('bob', 'helloworld11', 1.0, '2', token_account='helloworld11', token_name='UUUV')
+        self.chain.transfer('testmetestme', 'bob', 1.0, '1', token_account='testmetestme', token_name='UUUV')
+        self.chain.transfer('bob', 'testmetestme', 1.0, '2', token_account='testmetestme', token_name='UUUV')
 
         args = {"owner": 'bob', "symbol":f"4,{token_name}"}
         r = self.chain.push_action(contract_name,'close', args, 'bob', 'active')
@@ -82,7 +82,7 @@ class Test(object):
         self.chain.produce_block()
 
     def test_retire(self):
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         token_name = 'KKKK'
 
         args = {"issuer": contract_name, "maximum_supply":f"11000000000.0000 {token_name}"}

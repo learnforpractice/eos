@@ -47,7 +47,7 @@ class Test(object):
         accounts = [
             {
                 "permission": {
-                    "actor": "helloworld12",
+                    "actor": "bob",
                     "permission": "eosio.code"
                 },
                 "weight": 1
@@ -59,7 +59,25 @@ class Test(object):
             "weight": 1
         }]
 
-        cls.chain.update_auth('helloworld12', accounts, keys)
+        cls.chain.update_auth('bob', accounts, keys)
+
+        accounts = [
+            {
+                "permission": {
+                    "actor": "testmetestme",
+                    "permission": "eosio.code"
+                },
+                "weight": 1
+            },
+        ]
+
+        keys = [{
+            "key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+            "weight": 1
+        }]
+
+        cls.chain.update_auth('testmetestme', accounts, keys)
+
 
     @classmethod
     def teardown_class(cls):

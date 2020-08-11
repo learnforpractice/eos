@@ -61,7 +61,7 @@ class MyData(object):
     def get_secondary_indexes(self):
         return ()
 
-code = N('helloworld11')
+code = N('testmetestme')
 scope = N('scopee')
 table = N('tableee')
 mi = db.MultiIndex(code, scope, table, MyData)
@@ -82,7 +82,7 @@ def apply(receiver, code, action):
 '''
         code = self.chain1.compile_py_code(code)
 
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         self.chain1.deploy_contract(contract_name, code, b'', vmtype=1)
         self.chain1.push_action(contract_name, 'sayhello', b'hello,world from chain1')
         self.chain1.push_action(contract_name, 'sayhello', b'hello,world from chain1 again')

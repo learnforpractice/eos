@@ -32,7 +32,7 @@ class Test(object):
         self.chain.free()
 
     def test_cardgame1(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.wasm')
         with open(code_file, 'rb') as f:
             code = f.read()
@@ -42,25 +42,25 @@ class Test(object):
 
         self.chain.deploy_contract(name, code, abi, vmtype=0)
 
-        args = {'username':'helloworld11'}
-        self.chain.push_action(name, 'login', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme'}
+        self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
         self.chain.produce_block()
-        self.chain.push_action(name, 'login', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
         self.chain.produce_block()
-        self.chain.push_action(name, 'startgame', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'startgame', args, actor='testmetestme', perm='active')
 
-        args = {'username':'helloworld11', 'player_card_idx':1}
-        self.chain.push_action(name, 'playcard', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme', 'player_card_idx':1}
+        self.chain.push_action(name, 'playcard', args, actor='testmetestme', perm='active')
 
 
-        args = {'username':'helloworld11'}
-        self.chain.push_action(name, 'nextround', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme'}
+        self.chain.push_action(name, 'nextround', args, actor='testmetestme', perm='active')
 
-        self.chain.push_action(name, 'endgame', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'endgame', args, actor='testmetestme', perm='active')
         return
 
     def test_cardgame2(self):
-        name = 'helloworld12'
+        name = 'dothetesting'
         code_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.wasm')
         with open(code_file, 'rb') as f:
             code = f.read()
@@ -69,75 +69,63 @@ class Test(object):
             abi = f.read()
         self.chain.deploy_contract(name, code, abi, vmtype=0)
 
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = '''
 def apply(receiver, code, action):
     if action == N('login'):
-        call_contract('helloworld12', b'')
+        call_contract('dothetesting', b'')
     elif action == N('startgame'):
-        call_contract('helloworld12', b'')
+        call_contract('dothetesting', b'')
     elif action == N('endgame'):
-        call_contract('helloworld12', b'')
+        call_contract('dothetesting', b'')
     elif action == N('playcard'):
-        call_contract('helloworld12', b'')
+        call_contract('dothetesting', b'')
         '''
         code = self.chain.compile_py_code(code)
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
         self.chain.deploy_contract(name, code, abi, vmtype=1)
-        args = {'username':'helloworld11'}
+        args = {'username':'testmetestme'}
 
-        self.chain.push_action(name, 'login', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
         self.chain.produce_block()
-        self.chain.push_action(name, 'login', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
         self.chain.produce_block()
-        self.chain.push_action(name, 'startgame', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'startgame', args, actor='testmetestme', perm='active')
 
-        args = {'username':'helloworld11', 'player_card_idx':1}
-        self.chain.push_action(name, 'playcard', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme', 'player_card_idx':1}
+        self.chain.push_action(name, 'playcard', args, actor='testmetestme', perm='active')
 
 
-        args = {'username':'helloworld11'}
-        self.chain.push_action(name, 'nextround', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme'}
+        self.chain.push_action(name, 'nextround', args, actor='testmetestme', perm='active')
 
-        self.chain.push_action(name, 'endgame', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'endgame', args, actor='testmetestme', perm='active')
         return
 
     def test_cardgame3(self):
-        name = 'helloworld11'
+        name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('cardgame/cardgame.py')
         logger.info(f'+++++++code size: {len(code)}')
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
         self.chain.deploy_contract(name, code, abi, vmtype=1)
-        args = {'username':'helloworld11'}
+        args = {'username':'testmetestme'}
 
-        self.chain.push_action(name, 'login', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
         self.chain.produce_block()
-        self.chain.push_action(name, 'login', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
         self.chain.produce_block()
-        self.chain.push_action(name, 'startgame', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'startgame', args, actor='testmetestme', perm='active')
 
-        args = {'username':'helloworld11', 'player_card_idx':1}
-        self.chain.push_action(name, 'playcard', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme', 'player_card_idx':1}
+        self.chain.push_action(name, 'playcard', args, actor='testmetestme', perm='active')
 
 
-        args = {'username':'helloworld11'}
-        self.chain.push_action(name, 'nextround', args, actor='helloworld11', perm='active')
+        args = {'username':'testmetestme'}
+        self.chain.push_action(name, 'nextround', args, actor='testmetestme', perm='active')
 
-        self.chain.push_action(name, 'endgame', args, actor='helloworld11', perm='active')
+        self.chain.push_action(name, 'endgame', args, actor='testmetestme', perm='active')
         return
-
-
-
-
-        rows = self.chain.get_table_rows(False, 'helloworld11', 'scoppe', 'users', 'helloworld11', '', '', 10)
-        logger.info(rows)
-        from uuos.db import DB
-        db = DB(self.chain.chain.ptr)
-        (helloworld11, scope, users) = (7684014468695212560, 13990807347690209280, 15426372438069346304)
-        itr = db.find_i64(helloworld11, scope, users, helloworld11)
-        print(itr, db.get_i64(itr))
-

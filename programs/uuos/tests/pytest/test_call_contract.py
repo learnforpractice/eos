@@ -58,7 +58,7 @@ extern "C" {
 }
         '''
 
-        contract_name = 'helloworld12'
+        contract_name = 'dothetesting'
         code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
         self.chain.deploy_contract(contract_name, code, b'')
         self.chain.produce_block()
@@ -68,7 +68,7 @@ import struct
 def apply(receiver, code, action):
     calltest1 = N('calltest1')
     args = struct.pack('QQ', calltest1, 1)
-    ret = call_contract('helloworld12', args)
+    ret = call_contract('dothetesting', args)
     print('+++call contract return:', len(ret), ret)
     ret = int.from_bytes(ret, 'little')
     print(ret)
@@ -76,7 +76,7 @@ def apply(receiver, code, action):
 '''
         code = self.chain.compile_py_code(code)
 
-        contract_name = 'helloworld11'
+        contract_name = 'testmetestme'
         self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
         self.chain.push_action(contract_name, 'sayhello', b'')
         self.chain.push_action(contract_name, 'sayhello', b'a')
