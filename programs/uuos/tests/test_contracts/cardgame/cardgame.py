@@ -1,10 +1,10 @@
 import struct
 import db
 
-#game_status:
-ONGOING     = 0
-PLAYER_WON   = 1
-PLAYER_LOST  = -1
+# game_status:
+ONGOING = 0
+PLAYER_WON = 1
+PLAYER_LOST = -1
 
 # enum card_type
 EMPTY = 0
@@ -12,9 +12,9 @@ FIRE = 1
 WOOD = 2
 WATER = 3
 NEUTRAL = 4
-VOID = 5 
+VOID = 5
 
-#[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #vector<uint8_t>
+# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #vector<uint8_t>
 default_deck = b'\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11'
 
 
@@ -22,6 +22,7 @@ class Card:
     def __init__(self, _type, attack_point):
         self._type = _type
         self.attack_point = attack_point
+
 
 card_dict = {
     0: Card(EMPTY, 0),
@@ -34,35 +35,36 @@ card_dict = {
     7: Card(WOOD, 1),
     8: Card(WOOD, 2),
     9: Card(WOOD, 2),
-    10: Card(WOOD, 3), 
+    10: Card(WOOD, 3),
     11: Card(WATER, 1),
     12: Card(WATER, 1),
     13: Card(WATER, 2),
     14: Card(WATER, 2),
     15: Card(WATER, 3),
-    16: Card(NEUTRAL, 3), 
+    16: Card(NEUTRAL, 3),
     17: Card(VOID, 0)
 }
 
+
 class Game:
     def __init__(self):
-        self.life_player = 5 #int8_t
-        self.life_ai = 5 #int8_t
-        self.deck_player = bytearray(default_deck) #b'\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11' #[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #vector<uint8_t>
-        self.deck_ai = bytearray(default_deck) #b'\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11' #[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #vector<uint8_t>
-        self.hand_player = bytearray(b'\x00\x00\x00\x00') #[0, 0, 0, 0] #vector<uint8_t>
-        self.hand_ai = bytearray(b'\x00\x00\x00\x00') #[0, 0, 0, 0] #vector<uint8_t>
-        self.selected_card_player = 0 #uint8_t
-        self.selected_card_ai = 0 #uint8_t
-        self.life_lost_player = 0 #uint8_t
-        self.life_lost_ai = 0 #uint8_t
-        self.status = ONGOING #int8
+        self.life_player = 5  # int8_t
+        self.life_ai = 5  # int8_t
+        self.deck_player = bytearray(default_deck)  # b'\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11' #[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #vector<uint8_t>
+        self.deck_ai = bytearray(default_deck)  # b'\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11' #[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #vector<uint8_t>
+        self.hand_player = bytearray(b'\x00\x00\x00\x00')  # [0, 0, 0, 0] #vector<uint8_t>
+        self.hand_ai = bytearray(b'\x00\x00\x00\x00')  # [0, 0, 0, 0] #vector<uint8_t>
+        self.selected_card_player = 0  # uint8_t
+        self.selected_card_ai = 0  # uint8_t
+        self.life_lost_player = 0  # uint8_t
+        self.life_lost_ai = 0  # uint8_t
+        self.status = ONGOING  # int8
 
     def pack_bytes(self, buffer, index, data):
         length = len(data)
         buffer[index] = length
-        index+=1
-        buffer[index:index+length] = data
+        index += 1
+        buffer[index:index + length] = data
         index += length
         return index
 
@@ -70,10 +72,10 @@ class Game:
     def unpack_bytes(cls, buffer, index):
         length = buffer[index]
         index += 1
-        return index+length, buffer[index:index+length]
+        return index + length, buffer[index:index + length]
 
     def pack(self):
-        data = bytearray(49+4)
+        data = bytearray(49 + 4)
         data[0] = self.life_player
         data[1] = self.life_ai
         data[2] = self.selected_card_player
@@ -111,6 +113,7 @@ class Game:
 
         return game
 
+
 class UserInfo(object):
     def __init__(self, username):
         self.username = username
@@ -122,7 +125,7 @@ class UserInfo(object):
         if not isinstance(self.username, int):
             username = N(self.username)
         else:
-            username =self.username
+            username = self.username
 
         game_data = self.game_data.pack()
         return struct.pack('QHH49s', username, self.win_count, self.lost_count, game_data)
@@ -154,6 +157,7 @@ class UserInfo(object):
     @classmethod
     def get_secondary_indexes(self):
         return ()
+
 
 class Seed(object):
     def __init__(self):
@@ -188,15 +192,17 @@ class Seed(object):
     def set_secondary_value(self, idx):
         pass
 
+
 def random(n):
     return int(current_time() / 1e6) % n
 
+
 # Draw one card from the deck and assign it to the hand
 def draw_one_card(deck, hand):
-    #Pick a random card from the deck
+    # Pick a random card from the deck
     deck_card_idx = random(len(deck))
 
-    #Find the first empty slot in the hand
+    # Find the first empty slot in the hand
     first_empty_slot = -1
     for i in range(len(hand)):
         id = hand[i]
@@ -205,53 +211,59 @@ def draw_one_card(deck, hand):
             break
     assert first_empty_slot != -1, "No empty slot in the player's hand"
     hand[first_empty_slot] = deck[deck_card_idx]
-  
+
     # Remove the card from the deck
     del deck[deck_card_idx]
+
 
 # Calculate the final attack point of a card after taking the elemental bonus into account
 def calculate_attack_point(card1, card2):
     result = card1.attack_point
-    #Add elemental compatibility bonus of 1
-    if ((card1._type == FIRE and card2._type == WOOD) or \
-        (card1._type == WOOD and card2._type == WATER) or \
-        (card1._type == WATER and card2._type == FIRE)):
-        result+=1
+    # Add elemental compatibility bonus of 1
+    if (card1._type == FIRE and card2._type == WOOD) or \
+            (card1._type == WOOD and card2._type == WATER) or \
+            (card1._type == WATER and card2._type == FIRE):
+        result += 1
 
     return result
 
+
 # AI Best Card Win Strategy
 def ai_best_card_win_strategy(ai_attack_point: int, player_attack_point: int):
-#    print("Best Card Wins")
+    # print("Best Card Wins")
     if ai_attack_point > player_attack_point:
         return 3
     if ai_attack_point < player_attack_point:
         return -2
     return -1
 
+
 # AI Minimize Loss Strategy
 def ai_min_loss_strategy(ai_attack_point: int, player_attack_point: int):
-#    print("Minimum Losses")
+    # print("Minimum Losses")
     if ai_attack_point > player_attack_point:
         return 1
     if ai_attack_point < player_attack_point:
         return -4
     return -1
 
+
 # AI Points Tally Strategy
-def ai_points_tally_strategy(ai_attack_point:int, player_attack_point:int):
-#    print("Points Tally")
+def ai_points_tally_strategy(ai_attack_point: int, player_attack_point: int):
+    # print("Points Tally")
     return ai_attack_point - player_attack_point
 
+
 # AI Loss Prevention Strategy
-def ai_loss_prevention_strategy(life_ai:int, ai_attack_point:int, player_attack_point:int):
+def ai_loss_prevention_strategy(life_ai: int, ai_attack_point: int, player_attack_point: int):
     print("Loss Prevention")
     if life_ai + ai_attack_point - player_attack_point > 0:
         return 1
     return 0
 
+
 # Calculate the score for the current ai card given the  strategy and the player hand cards
-def calculate_ai_card_score(strategy_idx:int, life_ai:int, ai_card:Card, hand_player:list):
+def calculate_ai_card_score(strategy_idx: int, life_ai: int, ai_card: Card, hand_player: list):
     card_score = 0
     for i in range(len(hand_player)):
         player_card_id = hand_player[i]
@@ -260,7 +272,7 @@ def calculate_ai_card_score(strategy_idx:int, life_ai:int, ai_card:Card, hand_pl
         ai_attack_point = calculate_attack_point(ai_card, player_card)
         player_attack_point = calculate_attack_point(player_card, ai_card)
 
-        #Accumulate the card score based on the given strategy
+        # Accumulate the card score based on the given strategy
         if strategy_idx == 0:
             card_score += ai_best_card_win_strategy(ai_attack_point, player_attack_point)
         elif strategy_idx == 1:
@@ -271,17 +283,18 @@ def calculate_ai_card_score(strategy_idx:int, life_ai:int, ai_card:Card, hand_pl
             card_score += ai_loss_prevention_strategy(life_ai, ai_attack_point, player_attack_point)
     return card_score
 
+
 # Chose a card from the AI's hand based on the current game data
-def ai_choose_card(game_data:Game):
-  # The 4th strategy is only chosen in the dire situation
+def ai_choose_card(game_data: Game):
+    # The 4th strategy is only chosen in the dire situation
     available_strategies = 4
     if game_data.life_ai > 2:
-        available_strategies-=1
+        available_strategies -= 1
     strategy_idx = random(available_strategies)
- 
-    # Calculate the score of each card in the AI hand 
+
+    # Calculate the score of each card in the AI hand
     chosen_card_idx = -1
-    chosen_card_score = 0 #std::numeric_limits<int>::min()
+    chosen_card_score = 0  # std::numeric_limits<int>::min()
 
     for i in range(len(game_data.hand_ai)):
         ai_card_id = game_data.hand_ai[i]
@@ -299,32 +312,34 @@ def ai_choose_card(game_data:Game):
             chosen_card_idx = i
     return chosen_card_idx
 
-#  Resolve selected cards and update the damage dealt
-def resolve_selected_cards(game_data:Game):
+
+# Resolve selected cards and update the damage dealt
+def resolve_selected_cards(game_data: Game):
     player_card = card_dict[game_data.selected_card_player]
     ai_card = card_dict[game_data.selected_card_ai]
 
-    #  For type VOID, we will skip any damage calculation
+    # For type VOID, we will skip any damage calculation
     if player_card._type == VOID or ai_card._type == VOID:
         return
 
     player_attack_point = calculate_attack_point(player_card, ai_card)
-    ai_attack_point =  calculate_attack_point(ai_card, player_card)
+    ai_attack_point = calculate_attack_point(ai_card, player_card)
 
-    #  Damage calculation
+    # Damage calculation
     if player_attack_point > ai_attack_point:
         #  Deal damage to the AI if the AI card's attack point is higher
         diff = player_attack_point - ai_attack_point
         game_data.life_lost_ai = diff
         game_data.life_ai -= diff
     elif ai_attack_point > player_attack_point:
-    #  Deal damage to the player if the player card's attack point is higher
+        # Deal damage to the player if the player card's attack point is higher
         diff = ai_attack_point - player_attack_point
         game_data.life_lost_player = diff
         game_data.life_player -= diff
 
+
 # Check the current game board and update the game status accordingly
-def update_game_status(user:UserInfo):
+def update_game_status(user: UserInfo):
     game_data = user.game_data
     if game_data.life_ai <= 0:
         # Check the AI's HP
@@ -354,16 +369,17 @@ def update_game_status(user:UserInfo):
             else:
                 game_data.status = PLAYER_LOST
 
-  # Update the lost/ win count accordingly
+    # Update the lost/ win count accordingly
     if game_data.status == PLAYER_WON:
-        user.win_count+=1
+        user.win_count += 1
     elif game_data.status == PLAYER_LOST:
-        user.lost_count+=1
+        user.lost_count += 1
+
 
 def login(username):
     # Ensure this action is authorized by the player
     require_auth(username)
-  
+
     # Create a record in the table if the player doesn't exist in our app yet
     user_iterator = users.find(username)
     if user_iterator < 0:
@@ -373,6 +389,7 @@ def login(username):
     else:
         info = users.get(user_iterator)
         # print(info.game_data.deck_player)
+
 
 def startgame(username):
     # Ensure this action is authorized by the player
@@ -392,6 +409,7 @@ def startgame(username):
     user.payer = username
     users.store(user)
 
+
 def endgame(username):
     # Ensure this action is authorized by the player
     require_auth(username)
@@ -404,6 +422,7 @@ def endgame(username):
     user.game_data = Game()
     user.payer = username
     users.store(user)
+
 
 def playcard(username, player_card_idx):
     # Ensure this action is authorized by the player
@@ -418,10 +437,10 @@ def playcard(username, player_card_idx):
 
     # Verify game status is suitable for the player to play a card
     assert user.game_data.status == ONGOING, \
-               "playcard: This game has ended. Please start a new one"
+        "playcard: This game has ended. Please start a new one"
 
     assert user.game_data.selected_card_player == 0, \
-               "playcard: The player has played his card this turn!"
+        "playcard: The player has played his card this turn!"
 
     game_data = user.game_data
 
@@ -440,6 +459,7 @@ def playcard(username, player_card_idx):
     user.payer = username
     users.store(user)
 
+
 def nextround(username):
     # Ensure this action is authorized by the player
     require_auth(username)
@@ -450,9 +470,9 @@ def nextround(username):
 
     # Verify game status
     assert user.game_data.status == ONGOING, \
-                "nextround: This game has ended. Please start a new one."
+        "nextround: This game has ended. Please start a new one."
     assert user.game_data.selected_card_player != 0 and user.game_data.selected_card_ai != 0, \
-                "nextround: Please play a card first."
+        "nextround: Please play a card first."
 
     game_data = user.game_data
 
@@ -474,7 +494,7 @@ def nextround(username):
 code = N('testmetestme')
 scope = N('scopee')
 table = N('users')
-users= db.MultiIndex(code, scope, table, UserInfo)
+users = db.MultiIndex(code, scope, table, UserInfo)
 
 code = N('testmetestme')
 scope = N('scopee')
@@ -487,6 +507,7 @@ action_startgame = N('startgame')
 action_endgame = N('endgame')
 action_playcard = N('playcard')
 action_nextround = N('nextround')
+
 
 def apply(receiver, code, action):
     if action == action_login:
@@ -515,7 +536,7 @@ def apply(receiver, code, action):
         nextround(username)
     else:
         assert 0, 'unknow action!'
-        payer = receiver
+        # payer = receiver
         itr = users.find('helloo')
         print(itr)
         if itr >= 0:
