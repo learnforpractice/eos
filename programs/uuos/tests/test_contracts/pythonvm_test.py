@@ -1,7 +1,10 @@
-#-*- encoding: utf8
+# -*- encoding: utf8
 import struct
+
+
 def recursive_call():
     recursive_call()
+
 
 def apply(receiver, code, action):
     if action == N('test1'):
@@ -13,9 +16,10 @@ def apply(receiver, code, action):
         print(data)
         print(data.decode('utf8'))
     elif action == N('test4'):
-        while True: pass
+        while True:
+            pass
     elif action == N('test5'):
-        a = bytes(8*1024*1024)
+        a = bytes(8 * 1024 * 1024)
     elif action == N('test51'):
         data = read_action_data()
         n, start, end = struct.unpack('III', data)

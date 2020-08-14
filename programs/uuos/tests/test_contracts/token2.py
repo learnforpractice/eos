@@ -1,12 +1,14 @@
 import struct
 from _vm_api import *
 
-_code = None #N('eosio.token')
-#_code = N('mytoken')
+_code = None  # N('eosio.token')
+# _code = N('mytoken')
+
 
 def to_symbol_name(s):
     n = int.from_bytes(s, 'little')
-    return n>>8
+    return n >> 8
+
 
 class Asset(object):
     def __init__(self, amount=0, symbol=None):
@@ -22,6 +24,7 @@ class Asset(object):
         a = Asset()
         a.amount, a.symbol = struct.unpack('Q8s', data)
         return a
+
 
 class multi_index(object):
     def __init__(self, code, scope, table_id):
@@ -57,6 +60,7 @@ class multi_index(object):
     def unpack(self, data):
         raise Exception('should be implemented by subclass')
 
+
 class currency_stats(multi_index):
     def __init__(self, symbol):
         table_id = N('stat')
@@ -64,7 +68,7 @@ class currency_stats(multi_index):
         multi_index.__init__(self, _code, scope, table_id)
 
         self.supply = Asset(0, symbol)
-        self.max_supply =Asset(0, symbol)
+        self.max_supply = Asset(0, symbol)
         self.issuer = 0
 
         self.load()
@@ -85,6 +89,7 @@ class currency_stats(multi_index):
         s1.amount, s1.symbol, s2.amount, s2.symbol, self.issuer = struct.unpack_from('Q8sQ8sQ', data)
         return True
 
+
 class Singleton(multi_index):
     def __init__(self, code, scope, table_id):
         super(multi_index, self).__init__(code, scope, table_id)
@@ -92,6 +97,7 @@ class Singleton(multi_index):
 
     def get_primary_key(self):
         return self.pk_value
+
 
 class Balance(multi_index):
     def __init__(self, owner, symbol):
@@ -127,6 +133,7 @@ class Balance(multi_index):
     def unpack(self, data):
         self.a.amount, self.a.symbol = struct.unpack('Q8s', data)
 
+
 def _create(msg):
     require_auth(_code)
     issuer, amount, symbol = struct.unpack('QQ8s', msg)
@@ -137,6 +144,7 @@ def _create(msg):
     cs.issuer = issuer
     cs.max_supply.amount = amount
     cs.store(_code)
+
 
 def _issue(msg):
     _to, amount, symbol = struct.unpack('QQ8s', msg[:24])
@@ -150,6 +158,7 @@ def _issue(msg):
 
     acc = Balance(_to, symbol)
     acc.add(amount, cs.issuer)
+
 
 def _transfer(msg):
     _from, to, amount, symbol = struct.unpack('QQQ8s', msg[:32])

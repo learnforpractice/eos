@@ -22,8 +22,8 @@ class MyData(object):
         c = int.to_bytes(self.c, 32, 'little')
         return struct.pack('Q16s32sd', self.a, b, c, self.d)
 
-    @classmethod
-    def unpack(cls, data):
+    @staticmethod
+    def unpack(data):
         a, b, c, d = struct.unpack('Q16s32sd', data)
         b = int.from_bytes(b, 'little')
         c = int.from_bytes(c, 'little')
@@ -45,8 +45,8 @@ class MyData(object):
         elif idx == 3:
             pass
 
-    @classmethod
-    def get_secondary_indexes(self):
+    @staticmethod
+    def get_secondary_indexes():
         return (idx64, idx128, idx256, idx_double)
 
 def test_del(receiver, code, action):
