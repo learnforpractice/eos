@@ -9,6 +9,7 @@ idx_long_double = 4
 import db
 from db import MultiIndex
 
+
 class MyData(object):
     def __init__(self, a: int, b: int, c: int, d: float):
         self.a = a
@@ -49,6 +50,7 @@ class MyData(object):
     def get_secondary_indexes():
         return (idx64, idx128, idx256, idx_double)
 
+
 def test_del(receiver, code, action):
     payer = receiver
 
@@ -69,6 +71,7 @@ def test_del(receiver, code, action):
         print('primary key not exists!')
     return
 
+
 def get_secondary_values_test(receiver, code, action):
     payer = receiver
     code = N('testmetestme')
@@ -78,6 +81,7 @@ def get_secondary_values_test(receiver, code, action):
     mi = MultiIndex(code, scope, table, MyData)
     values = mi.get_secondary_values(primary_key)
     print(values)
+
 
 def test(receiver, code, action):
     payer = receiver
@@ -96,6 +100,7 @@ def test(receiver, code, action):
     itr = db.idx128_previous(itr)
     print(itr)
 
+
 def test2(receiver, code, action):
     payer = receiver
 
@@ -109,6 +114,7 @@ def test2(receiver, code, action):
     print('itr', itr)
     itr, primary = _mi.idx_previous(ptr, 1, itr)
     print(itr, primary)    
+
 
 def secondary_test(receiver, code, action):
     payer = receiver
@@ -137,6 +143,7 @@ def secondary_test(receiver, code, action):
     for item in sec:
         print('+++++++++by secondary index 3:', item.a, item.b, item.c, item.d)
     return
+
 
 def bound_tests(receiver, code, action):
     payer = receiver

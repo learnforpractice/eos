@@ -9,7 +9,6 @@ import platform
 from pyeoskit import wallet
 from pyeoskit import eosapi
 from pyeoskit import config
-from pyeoskit import db
 from pyeoskit import util
 
 from pyeoskit.exceptions import HttpAPIError
@@ -17,7 +16,6 @@ import sys
 
 config.main_token = 'UUOS'
 eosapi.set_public_key_prefix('UUOS')
-db.reset()
 
 if len(sys.argv) == 2:
     print(sys.argv)

@@ -1,15 +1,9 @@
 import os
-import io
-import gc
-import time
 import sys
 import ujson as json
-import struct
-import asyncio
 import shutil
 import tempfile
 import unittest
-import platform
 import marshal
 
 test_dir = os.path.dirname(__file__)
@@ -420,17 +414,19 @@ class ChainTest(object):
         for act in actions:
             for author in act['authorization']:
                 keys = self.find_private_key(author['actor'], author['permission'])
-                if keys:
-                    priv_keys.extend(keys)
+                for key in keys:
+                    if not key in priv_keys:
+                        priv_keys.append(key)
         assert len(priv_keys) >= 1
-        priv_key = priv_keys[0]
+
+        priv_keys = json.dumps(priv_keys)
 #        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
 
         actions = json.dumps(actions)
         expiration = datetime.utcnow() + timedelta(seconds=60)
         expiration = isoformat(expiration)
-        raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
-        signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
+        raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_keys)
+        # signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
         # logger.info(signed_trx)
         # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
         # logger.info(r)
@@ -624,7 +620,8 @@ class ChainTest(object):
     def gen_trx(self):
         chain_id = self.chain.id()
         ref_block_id = self.chain.last_irreversible_block_id()
-        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
+        priv_keys = ['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3']
+        priv_keys = json.dumps(priv_keys)
         actions = []
         action = {
             'account':'eosio',
@@ -636,7 +633,7 @@ class ChainTest(object):
         actions = json.dumps(actions)
         expiration = datetime.utcnow() + timedelta(seconds=60)
         expiration = isoformat(expiration)
-        r = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_key)
+        r = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_keys)
 #        logger.info(r)
         return r
 
@@ -665,8 +662,6 @@ class ChainTest(object):
 
         self.chain.start_block(isoformat(self.calc_pending_block_time()), 0, self.feature_digests)
         self.feature_digests.clear()
-
-
 
     def produce_block(self):
         self.chain.finalize_block(['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'])

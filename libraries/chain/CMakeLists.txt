@@ -115,6 +115,8 @@ add_library( eosio_chain
              db_api/db_interface.cpp
              )
 
+set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
+
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
                        vm_api chain_api vm_manager
@@ -143,7 +145,7 @@ target_include_directories( eosio_chain
                               PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
                         )
 add_dependencies(eosio_chain contracts_project)
-# add_dependencies(eosio_chain evmone4eosio)
+add_dependencies(eosio_chain evmone4eosio)
 
 # add_dependencies(eosio_chain aleth)
 

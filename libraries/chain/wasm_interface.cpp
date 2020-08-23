@@ -31,6 +31,8 @@
 
 #include <vm_api/vm_api.h>
 
+extern "C" int evm_call_native(int type, const uint8_t *packed_args, size_t packed_args_size, uint8_t *output, size_t output_size);
+
 namespace eosio { namespace chain {
    using namespace webassembly::common;
 
@@ -1136,6 +1138,32 @@ class action_api : public context_aware_api {
       name current_receiver() {
          return context.get_receiver();
       }
+
+      vector<vector<uint8_t>> unpack_arg(const uint8_t *packed_args, size_t packed_args_size) {
+         vector<vector<uint8_t>> args;
+      //    args.reserve(3);
+
+         const uint8_t *ptr = packed_args;
+         const uint8_t *end_ptr = packed_args+packed_args_size;
+         while (ptr < end_ptr) {
+            size_t arg_size = *((uint32_t *)ptr);
+            ptr += sizeof(uint32_t);
+            vector<uint8_t> arg;
+            arg.resize(arg_size);
+            memcpy(arg.data(), ptr, arg_size);
+            ptr += arg_size;
+            args.emplace_back(arg);
+         }
+         return args;
+      }
+
+      int call_native(int main_type, int sub_type, array_ptr<char> input, uint32_t input_size, array_ptr<char> output, uint32_t output_size) {
+         if (main_type == 0) {
+            EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::ethereum_vm), invalid_contract_vm_type, "ethereum_vm not activated!" );
+            return evm_call_native(sub_type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
+         }
+         EOS_THROW( eosio_assert_message_exception, "bad native call" );
+      }
 };
 
 class console_api : public context_aware_api {
@@ -2103,6 +2131,7 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,         int(int, int)  )
    (action_data_size,         int()          )
    (current_receiver,         int64_t()      )
+   (call_native,              int(int, int, int, int, int, int))
 );
 
 REGISTER_INTRINSICS(authorization_api,

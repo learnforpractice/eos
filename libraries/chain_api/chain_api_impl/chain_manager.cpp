@@ -486,7 +486,7 @@ bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& 
     return false;
 }
 
-void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result) {
+void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_keys, vector<char>& result) {
     try {
         signed_transaction trx;
         auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
@@ -496,11 +496,12 @@ void chain_gen_transaction_(string& _actions, string& expiration, string& refere
         trx.set_reference_block(id);
         trx.max_net_usage_words = 0;
 
-        auto priv_key = private_key_type(_private_key);
-
         chain::chain_id_type chain_id(_chain_id);
-        trx.sign(priv_key, chain_id);
 
+        auto priv_keys = fc::json::from_string(_private_keys).as<vector<private_key_type>>();
+        for (auto& key: priv_keys) {
+            trx.sign(key, chain_id);
+        }
         packed_transaction::compression_type type;
         if (compress) {
             type = packed_transaction::compression_type::zlib;
@@ -517,20 +518,23 @@ void chain_gen_transaction_(string& _actions, string& expiration, string& refere
 
 
 bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result) {
-    auto& chain = chain_get_controller(ptr);
-    vector<char> packed_trx(_packed_trx.c_str(), _packed_trx.c_str()+_packed_trx.size());
-    auto ptrx = std::make_shared<packed_transaction>();
-    fc::datastream<const char*> ds( _packed_trx.c_str(), _packed_trx.size() );
-    fc::raw::unpack(ds, *ptrx);
-    auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain.get_chain_id());
-//    auto ptrx_meta = transaction_metadata::create_no_recover_keys( trx, transaction_metadata::trx_type::input );
-    auto _deadline = fc::time_point::from_iso_string(deadline);
-    auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us, true);
-    result = fc::json::to_string(ret, fc::time_point::maximum());
-    if (ret->except) {
-        return false;
-    }
-    return true;
+    try {
+        auto& chain = chain_get_controller(ptr);
+        vector<char> packed_trx(_packed_trx.c_str(), _packed_trx.c_str()+_packed_trx.size());
+        auto ptrx = std::make_shared<packed_transaction>();
+        fc::datastream<const char*> ds( _packed_trx.c_str(), _packed_trx.size() );
+        fc::raw::unpack(ds, *ptrx);
+        auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain.get_chain_id());
+    //    auto ptrx_meta = transaction_metadata::create_no_recover_keys( trx, transaction_metadata::trx_type::input );
+        auto _deadline = fc::time_point::from_iso_string(deadline);
+        auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us, true);
+        result = fc::json::to_string(ret, fc::time_point::maximum());
+        if (ret->except) {
+            return false;
+        }
+        return true;
+    } FC_LOG_AND_DROP();
+    return false;
 }
 
 void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result) {

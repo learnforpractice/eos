@@ -1,8 +1,7 @@
 import os
 import hashlib
 import marshal
-from pyeoskit import eosapi, wallet, db
-db.reset()
+from pyeoskit import eosapi, wallet
 
 if os.path.exists('test.wallet'):
     os.remove('test.wallet')

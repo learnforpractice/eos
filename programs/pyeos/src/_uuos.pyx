@@ -44,7 +44,7 @@ cdef extern from "uuos.hpp":
     void chain_get_unapplied_transactions_(void *ptr, string& result);
     bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _args, vector[char]& result);
     bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& _binargs, string& result);
-    void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key, vector[char]& result);
+    void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_keys, vector[char]& result);
     bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
     void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
     void chain_commit_block_(void *ptr);
@@ -658,9 +658,9 @@ def chain_unpack_action_args(uint64_t ptr, string& name, string& action, string&
     ret = chain_unpack_action_args_(<void *>ptr, name, action, binargs, result)
     return result
 
-def chain_gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_key):
+def chain_gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_keys):
     cdef vector[char] result
-    chain_gen_transaction_(_actions, expiration, reference_block_id, _chain_id, compress, _private_key, result)
+    chain_gen_transaction_(_actions, expiration, reference_block_id, _chain_id, compress, _private_keys, result)
     return PyBytes_FromStringAndSize(result.data(), result.size())
 
 
