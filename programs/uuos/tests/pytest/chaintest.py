@@ -133,7 +133,12 @@ class ChainTest(object):
 
         self.uuos_network = uuos_network
         self.feature_activated = False
-        self.main_token = 'UUOS'
+        if uuos_network:
+            self.main_token = 'UUOS'
+            self.main_token_contract = 'uuos.token'
+        else:
+            self.main_token = 'EOS'
+            self.main_token_contract = 'eosio.token'
         logger.info(('++++++++++++pid:', os.getpid()))
         # input()
         uuos.set_default_log_level(0)
@@ -213,19 +218,19 @@ class ChainTest(object):
         self.produce_block()
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         systemAccounts = [
-                'eosio.bpay',
-                'eosio.msig',
-                'eosio.names',
-                'eosio.ram',
-                'eosio.ramfee',
-                'eosio.saving',
-                'eosio.stake',
-                'eosio.token',
-                'eosio.vpay',
-                'eosio.rex',
+                'uuos.bpay',
+                'uuos.msig',
+                'uuos.names',
+                'uuos.ram',
+                'uuos.ramfee',
+                'uuos.saving',
+                'uuos.stake',
+                'uuos.token',
+                'uuos.vpay',
+                'uuos.rex',
 
-                'eosio.jit',
-                'eosio.jitfee',
+                'uuos.jit',
+                'uuos.jitfee',
                 'uuos',
                 'hello',
                 'alice',
@@ -234,7 +239,7 @@ class ChainTest(object):
                 'dothetesting'
         ]
         for a in systemAccounts:
-            self.create_account('eosio', a, key, key)
+            self.create_account('uuos', a, key, key)
 
         logger.info('deploy eosio.token')
         self.deploy_eosio_token()
@@ -263,7 +268,7 @@ class ChainTest(object):
         for digest in feature_digests: 
             try:
                 args = {'feature_digest': digest}
-                self.push_action('eosio', 'activate', args, 'eosio', 'active')
+                self.push_action('uuos', 'activate', args, 'uuos', 'active')
                 self.feature_digests.append(digest)
             except Exception as e:
                 logger.info(e)
@@ -276,21 +281,21 @@ class ChainTest(object):
             self.deploy_eosio_system()
         self.produce_block()
 
-        args = {"issuer":"eosio", "maximum_supply":f"11000000000.0000 {self.main_token}"}
-        r = self.push_action('eosio.token', 'create', args, 'eosio.token', 'active')
+        args = {"issuer":"uuos", "maximum_supply":f"11000000000.0000 {self.main_token}"}
+        r = self.push_action('uuos.token', 'create', args, 'uuos.token', 'active')
 
-        args = {"to":"eosio","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
-        r = self.push_action('eosio.token','issue', args, 'eosio', 'active')
+        args = {"to":"uuos","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
+        r = self.push_action('uuos.token','issue', args, 'uuos', 'active')
 
         args = {'version':0, 'core':'4,UUOS'}
-        self.push_action('eosio', 'init', args, 'eosio', 'active')
+        self.push_action('uuos', 'init', args, 'uuos', 'active')
         self.produce_block()
 
         if self.uuos_network:
             args = {'vmtype': 1, 'vmversion':0} #activate vm python
-            self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
+            self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
             args = {'vmtype': 2, 'vmversion':0} #activate vm python
-            self.push_action('eosio', 'activatevm', args, 'eosio', 'active')
+            self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
 
         self.produce_block()
 
@@ -307,7 +312,7 @@ class ChainTest(object):
         # msg = SignedBlockMessage.unpack(block)
         # logger.info(msg)
 
-    def get_balance(self, account, token_account='eosio.token', token_name='UUOS'):
+    def get_balance(self, account, token_account='uuos.token', token_name='UUOS'):
         # symbol = b'\x04'+token_name.encode('utf8')
         # symbol = symbol.ljust(8, b'\x00')
         # symbol = int.from_bytes(symbol, 'little')
@@ -442,7 +447,7 @@ class ChainTest(object):
         result = JsonObject(result)
         return result
 
-    def transfer(self, _from, _to, _amount, _memo='', token_account='eosio.token', token_name='', permission='active'):
+    def transfer(self, _from, _to, _amount, _memo='', token_account='uuos.token', token_name='', permission='active'):
         if not token_name:
             token_name = self.main_token
         args = {"from":_from, "to":_to, "quantity":'%.4f %s'%(_amount,token_name), "memo":_memo}
@@ -477,11 +482,11 @@ class ChainTest(object):
                         'waits': []
                     }
         }
-        newaccount_args = self.pack_args('eosio', 'newaccount', args)
+        newaccount_args = self.pack_args('uuos', 'newaccount', args)
         if not newaccount_args:
             raise Exception('bad args')
         newaccount_action = {
-            'account': 'eosio',
+            'account': 'uuos',
             'name': 'newaccount',
             'data': newaccount_args.hex(),
             'authorization':[{'actor':creator, 'permission':'active'}]
@@ -490,7 +495,7 @@ class ChainTest(object):
 
         if ram_bytes:
             args = {'payer':creator, 'receiver':account, 'bytes':ram_bytes}
-            act = self.gen_action('eosio', 'buyrambytes', args, creator, perm='active')
+            act = self.gen_action('uuos', 'buyrambytes', args, creator, perm='active')
             actions.append(act)
 
         if stake_net or stake_cpu:
@@ -501,14 +506,14 @@ class ChainTest(object):
                 'stake_cpu_quantity': '%0.4f %s'%(stake_cpu, self.main_token),
                 'transfer': 1
             }
-            act = self.gen_action('eosio', 'delegatebw', args, creator, perm='active')
+            act = self.gen_action('uuos', 'delegatebw', args, creator, perm='active')
             actions.append(act)
 
         return self.push_actions(actions)
 
     def buy_ram_bytes(self, payer, receiver, _bytes):
         args = {'payer': payer, 'receiver': receiver, 'bytes': _bytes}
-        act = self.gen_action('eosio', 'buyrambytes', args, payer, perm='active')
+        act = self.gen_action('uuos', 'buyrambytes', args, payer, perm='active')
         return self.push_actions([act])
 
     def delegatebw(self, _from, receiver, stake_net, stake_cpu, transfer=0):
@@ -519,7 +524,7 @@ class ChainTest(object):
             'stake_cpu_quantity': '%0.4f %s'%(stake_cpu, self.main_token),
             'transfer': transfer
         }
-        act = self.gen_action('eosio', 'delegatebw', args, _from, perm='active')
+        act = self.gen_action('uuos', 'delegatebw', args, _from, perm='active')
 
         return self.push_actions([act])
 
@@ -531,10 +536,10 @@ class ChainTest(object):
                    "code": code.hex()
         }
 
-        setcode = self.chain.pack_action_args('eosio', 'setcode', setcode)
+        setcode = self.chain.pack_action_args('uuos', 'setcode', setcode)
         actions = []
         setcode = {
-            'account': 'eosio',
+            'account': 'uuos',
             'name': 'setcode',
             'data': setcode.hex(),
             'authorization':[{'actor': account, 'permission':'active'}]
@@ -542,9 +547,9 @@ class ChainTest(object):
         actions.append(setcode)
         if abi:
             abi = nativeobject.pack_native_object(nativeobject.abi_def_type, abi)
-        setabi = self.chain.pack_action_args('eosio', 'setabi', {'account':account, 'abi':abi.hex()})
+        setabi = self.chain.pack_action_args('uuos', 'setabi', {'account':account, 'abi':abi.hex()})
         setabi = {
-            'account': 'eosio',
+            'account': 'uuos',
             'name': 'setabi',
             'data': setabi.hex(),
             'authorization':[{'actor': account, 'permission':'active'}]
@@ -570,7 +575,7 @@ class ChainTest(object):
             }
         }
 
-        self.push_action('eosio', 'updateauth', a, actor=account, perm='owner')
+        self.push_action('uuos', 'updateauth', a, actor=account, perm='owner')
 
     def deploy_eosio_token(self):
         # contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
@@ -582,7 +587,7 @@ class ChainTest(object):
             code = f.read()
         with open(abi_path, 'rb') as f:
             abi = f.read()
-        self.deploy_contract('eosio.token', code, abi)
+        self.deploy_contract('uuos.token', code, abi)
 
     def deploy_eosio_system_uuos(self):
         code_path = os.path.join(test_dir, 'contracts/eosio.system.uuos.wasm')
@@ -594,7 +599,7 @@ class ChainTest(object):
             code = f.read()
         with open(abi_path, 'rb') as f:
             abi = f.read()
-        self.deploy_contract('eosio', code, abi)
+        self.deploy_contract('uuos', code, abi)
 
     def deploy_eosio_system(self):
         code_path = os.path.join(test_dir, 'contracts/eosio.system.wasm')
@@ -603,7 +608,7 @@ class ChainTest(object):
             code = f.read()
         with open(abi_path, 'rb') as f:
             abi = f.read()
-        self.deploy_contract('eosio', code, abi)
+        self.deploy_contract('uuos', code, abi)
 
     def deploy_eosio_bios(self):
         # contract_path = os.path.join(test_dir, '../../..', 'build/externals/eosio.contracts/contracts')
@@ -615,7 +620,7 @@ class ChainTest(object):
             code = f.read()
         with open(abi_path, 'rb') as f:
             abi = f.read()
-        self.deploy_contract('eosio', code, abi)
+        self.deploy_contract('uuos', code, abi)
 
     def gen_trx(self):
         chain_id = self.chain.id()
@@ -624,10 +629,10 @@ class ChainTest(object):
         priv_keys = json.dumps(priv_keys)
         actions = []
         action = {
-            'account':'eosio',
+            'account':'uuos',
             'name':'sayhello',
             'data':'aabbcc',
-            'authorization':[{'actor':'eosio', 'permission':'active'}]
+            'authorization':[{'actor':'uuos', 'permission':'active'}]
         }
         actions.append(action)
         actions = json.dumps(actions)

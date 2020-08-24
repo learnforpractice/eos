@@ -53,7 +53,7 @@ void db_interface::init_key_accounts() {
    if (key_accounts_map.size() > 0) {
       return;
    }
-   int itr = db_upperbound_i64(N(eosio).to_uint64_t(), N(eosio).to_uint64_t(), N(gaccounts).to_uint64_t(), 0);
+   int itr = db_upperbound_i64(N(uuos).to_uint64_t(), N(uuos).to_uint64_t(), N(gaccounts).to_uint64_t(), 0);
    if (itr >= 0) {
       int i = 0;
       while (itr >= 0) {
@@ -734,7 +734,7 @@ void db_interface::init_accounts(const std::vector<uint8_t>& raw_data) {
          key_accounts_map[pub_key].emplace_back(name);
       }
 //      elog("++++${n}", ("n", name(account)));
-      db_store_i64(N(eosio).to_uint64_t(), N(eosio).to_uint64_t(), N(gaccounts).to_uint64_t(), N(eosio), account, (char *)&raw_data[i+8], 34);
+      db_store_i64(N(uuos).to_uint64_t(), N(uuos).to_uint64_t(), N(gaccounts).to_uint64_t(), N(uuos), account, (char *)&raw_data[i+8], 34);
       if ((i/42+1) % 100000 == 0) {
          vmilog("+++++initialize genesis accounts %d\n", i/42+1);
       }

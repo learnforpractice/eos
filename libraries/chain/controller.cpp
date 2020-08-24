@@ -352,22 +352,22 @@ struct controller_impl {
 
 #define SET_APP_HANDLER( receiver, contract, action) \
    set_apply_handler( account_name(#receiver), account_name(#contract), action_name(#action), \
-                      &BOOST_PP_CAT(apply_, BOOST_PP_CAT(contract, BOOST_PP_CAT(_,action) ) ) )
+                      &BOOST_PP_CAT(apply_, BOOST_PP_CAT(eosio, BOOST_PP_CAT(_,action) ) ) )
 
-   SET_APP_HANDLER( eosio, eosio, newaccount );
-   SET_APP_HANDLER( eosio, eosio, setcode );
-   SET_APP_HANDLER( eosio, eosio, setabi );
-   SET_APP_HANDLER( eosio, eosio, updateauth );
-   SET_APP_HANDLER( eosio, eosio, deleteauth );
-   SET_APP_HANDLER( eosio, eosio, linkauth );
-   SET_APP_HANDLER( eosio, eosio, unlinkauth );
+   SET_APP_HANDLER( uuos, uuos, newaccount );
+   SET_APP_HANDLER( uuos, uuos, setcode );
+   SET_APP_HANDLER( uuos, uuos, setabi );
+   SET_APP_HANDLER( uuos, uuos, updateauth );
+   SET_APP_HANDLER( uuos, uuos, deleteauth );
+   SET_APP_HANDLER( uuos, uuos, linkauth );
+   SET_APP_HANDLER( uuos, uuos, unlinkauth );
 /*
    SET_APP_HANDLER( eosio, eosio, postrecovery );
    SET_APP_HANDLER( eosio, eosio, passrecovery );
    SET_APP_HANDLER( eosio, eosio, vetorecovery );
 */
 
-   SET_APP_HANDLER( eosio, eosio, canceldelay );
+   SET_APP_HANDLER( uuos, uuos, canceldelay );
    }
 
    /**

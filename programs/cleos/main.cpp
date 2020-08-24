@@ -743,7 +743,7 @@ asset to_asset( account_name code, const string& s ) {
 }
 
 inline asset to_asset( const string& s ) {
-   return to_asset( N(eosio.token), s );
+   return to_asset( N(uuos.token), s );
 }
 
 struct set_account_permission_subcommand {
@@ -3089,7 +3089,7 @@ int main( int argc, char** argv ) {
    auto setActionPermission = set_action_permission_subcommand(setAction);
 
    // Transfer subcommand
-   string con = "eosio.token";
+   string con = "uuos.token";
    string sender;
    string recipient;
    string amount;
@@ -3521,7 +3521,7 @@ int main( int argc, char** argv ) {
          ("requested", requested_perm_var)
          ("trx", trx_var);
 
-      send_actions({chain::action{accountPermissions, N(eosio.msig), N(propose), variant_to_bin( N(eosio.msig), N(propose), args ) }});
+      send_actions({chain::action{accountPermissions, N(uuos.msig), N(propose), variant_to_bin( N(uuos.msig), N(propose), args ) }});
    });
 
    //multisig propose transaction
@@ -3554,7 +3554,7 @@ int main( int argc, char** argv ) {
          ("requested", requested_perm_var)
          ("trx", trx_var);
 
-      send_actions({chain::action{accountPermissions, N(eosio.msig), N(propose), variant_to_bin( N(eosio.msig), N(propose), args ) }});
+      send_actions({chain::action{accountPermissions, N(uuos.msig), N(propose), variant_to_bin( N(uuos.msig), N(propose), args ) }});
    });
 
 
@@ -3771,7 +3771,7 @@ int main( int argc, char** argv ) {
       }
 
       auto accountPermissions = get_account_permissions(tx_permission, {name(proposer), config::active_name});
-      send_actions({chain::action{accountPermissions, N(eosio.msig), name(action), variant_to_bin( N(eosio.msig), name(action), args ) }});
+      send_actions({chain::action{accountPermissions, N(uuos.msig), name(action), variant_to_bin( N(uuos.msig), name(action), args ) }});
    };
 
    // multisig approve
@@ -3801,7 +3801,7 @@ int main( int argc, char** argv ) {
          ("account", invalidator);
 
       auto accountPermissions = get_account_permissions(tx_permission, {name(invalidator), config::active_name});
-      send_actions({chain::action{accountPermissions, N(eosio.msig), N(invalidate), variant_to_bin( N(eosio.msig), N(invalidate), args ) }});
+      send_actions({chain::action{accountPermissions, N(uuos.msig), N(invalidate), variant_to_bin( N(uuos.msig), N(invalidate), args ) }});
    });
 
    // multisig cancel
@@ -3828,7 +3828,7 @@ int main( int argc, char** argv ) {
          ("proposal_name", proposal_name)
          ("canceler", canceler);
 
-      send_actions({chain::action{accountPermissions, N(eosio.msig), N(cancel), variant_to_bin( N(eosio.msig), N(cancel), args ) }});
+      send_actions({chain::action{accountPermissions, N(uuos.msig), N(cancel), variant_to_bin( N(uuos.msig), N(cancel), args ) }});
       }
    );
 
@@ -3857,7 +3857,7 @@ int main( int argc, char** argv ) {
          ("proposal_name", proposal_name)
          ("executer", executer);
 
-      send_actions({chain::action{accountPermissions, N(eosio.msig), N(exec), variant_to_bin( N(eosio.msig), N(exec), args ) }});
+      send_actions({chain::action{accountPermissions, N(uuos.msig), N(exec), variant_to_bin( N(uuos.msig), N(exec), args ) }});
       }
    );
 

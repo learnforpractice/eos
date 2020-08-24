@@ -10,7 +10,7 @@ using namespace eosio;
 extern "C" {
    int64_t eosio_system_get_delegated_balance(uint64_t owner) {
 //      eosio::datastream<const char*> _ds = datastream<const char*>(nullptr, 0);
-//      eosiosystem::system_contract t("eosio"_n, "eosio"_n, _ds);
+//      eosiosystem::system_contract t("uuos"_n, "uuos"_n, _ds);
       return eosiosystem::system_contract::get_delegated_balance(name(owner));
    }
    int64_t eosio_system_get_rex_fund(uint64_t owner) {

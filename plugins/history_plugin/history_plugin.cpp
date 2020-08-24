@@ -208,7 +208,7 @@ namespace eosio {
 
             do {
                if (filter_transfer) {
-                  if (act.act.account == N(eosio.token) && act.act.name == N(transfer)) {
+                  if (act.act.account == N(uuos.token) && act.act.name == N(transfer)) {
                      pass_on = true;
                      break;
                   }

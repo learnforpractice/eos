@@ -269,27 +269,27 @@ BOOST_AUTO_TEST_CASE(delete_auth_test) { try {
    // link auth
    chain.push_action(config::system_account_name, linkauth::get_name(), tester_account, fc::mutable_variant_object()
            ("account", "tester")
-           ("code", "eosio.token")
+           ("code", "uuos.token")
            ("type", "transfer")
            ("requirement", "first"));
 
    // create CUR token
    chain.produce_blocks();
    chain.push_action(N(eosio.token), N(create), N(eosio.token), mutable_variant_object()
-           ("issuer", "eosio.token" )
+           ("issuer", "uuos.token" )
            ("maximum_supply", "9000000.0000 CUR" )
    );
 
    // issue to account "eosio.token"
    chain.push_action(N(eosio.token), name("issue"), N(eosio.token), fc::mutable_variant_object()
-           ("to",       "eosio.token")
+           ("to",       "uuos.token")
            ("quantity", "1000000.0000 CUR")
            ("memo", "for stuff")
    );
 
    // transfer from eosio.token to tester
    trace = chain.push_action(N(eosio.token), name("transfer"), N(eosio.token), fc::mutable_variant_object()
-       ("from", "eosio.token")
+       ("from", "uuos.token")
        ("to", "tester")
        ("quantity", "100.0000 CUR")
        ("memo", "hi" )
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE(delete_auth_test) { try {
    // unlink auth
    trace = chain.push_action(config::system_account_name, unlinkauth::get_name(), tester_account, fc::mutable_variant_object()
            ("account", "tester")
-           ("code", "eosio.token")
+           ("code", "uuos.token")
            ("type", "transfer"));
    BOOST_REQUIRE_EQUAL(transaction_receipt::executed, trace->receipt->status);
 

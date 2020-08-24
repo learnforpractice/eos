@@ -113,7 +113,7 @@ public_key_type find_public_key_by_name2(const chainbase::database& db, account_
    perm = permissions.lower_bound( boost::make_tuple( name ) );
    while( perm != permissions.end() && perm->owner == name ) {// && perm->name == perm_name) {
       for (auto& account: perm->auth.accounts) {
-         if (N(eosio.code) == account.permission.permission) {
+         if (N(uuos.code) == account.permission.permission) {
             continue;
          }
          auto public_key = find_public_key_by_name2(db, account.permission.actor, account.permission.permission, depth);
@@ -142,7 +142,7 @@ public_key_type find_public_key_by_name(const chainbase::database& db, account_n
    perm = permissions.lower_bound( boost::make_tuple( name ) );
    while( perm != permissions.end() && perm->owner == name ) {
       for (auto& account: perm->auth.accounts) {
-         if (N(eosio.code) == account.permission.permission) {
+         if (N(uuos.code) == account.permission.permission) {
             continue;
          }
 //         ilog("----${name} ${perm_name}", ("name", account.permission.actor)("perm_name", account.permission.permission));
