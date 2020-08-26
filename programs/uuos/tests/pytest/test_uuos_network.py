@@ -67,14 +67,14 @@ class Test(object):
             {
                 "permission": {
                     "actor": "alice",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
             {
                 "permission": {
                     "actor": "bob",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
@@ -91,7 +91,7 @@ class Test(object):
             {
                 "permission": {
                     "actor": "bob",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
@@ -103,7 +103,7 @@ class Test(object):
         }]
 
         cls.chain.update_auth('bob', accounts, keys)
-        cls.chain.transfer('eosio', 'alice', 1000.0, '1')
+        cls.chain.transfer('uuos', 'alice', 1000.0, '1')
         cls.chain.produce_block()
 
     @classmethod
@@ -137,7 +137,7 @@ class Test(object):
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'testtesttest'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
         # key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         # account = '12341234'
@@ -151,7 +151,7 @@ class Test(object):
         '''
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         account = 'helloworld13'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
     def create_account_test3(self):
         '''
@@ -159,7 +159,7 @@ class Test(object):
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'helloworld13'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
     def create_account_test4(self):
         '''
@@ -167,7 +167,7 @@ class Test(object):
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'helloworld133'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
     def create_account_test5(self):
         '''
@@ -225,7 +225,7 @@ class Test(object):
             "account":"helloworld14",
             "sign": sign
         }
-        self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+        self.chain.push_action('uuos', 'activateacc', args, actor='alice', perm='active')
 
     def activate_account_test2(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
@@ -240,8 +240,12 @@ class Test(object):
         }
         #"ram_usage":2916
         old_ram_usage = self.chain.get_account('alice').ram_usage
-        self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+        self.chain.push_action('uuos', 'activateacc', args, actor='alice', perm='active')
+
+        logger.info(self.chain.get_account('helloworld11'))
+
         new_ram_usage = self.chain.get_account('alice').ram_usage
+        logger.info('++++%s %s', new_ram_usage, old_ram_usage)
         assert new_ram_usage - old_ram_usage == 240
 
     @check_error('account not registered')
@@ -256,7 +260,7 @@ class Test(object):
             "account":"helloworld51",
             "sign": sign
         }
-        self.chain.push_action('eosio', 'activateacc', args, actor='alice', perm='active')
+        self.chain.push_action('uuos', 'activateacc', args, actor='alice', perm='active')
 
     def activate_account_test4(self):
 # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
@@ -270,7 +274,7 @@ class Test(object):
             "sign": sign
         }
         try:
-            self.chain.push_action('eosio', 'activateacc', args, actor='uuos', perm='active')
+            self.chain.push_action('uuos', 'activateacc', args, actor='uuos', perm='active')
         except Exception as e:
             assert e.args[0]['except']['message'] == 'Missing required authority'
 
@@ -309,7 +313,7 @@ class Test(object):
         self.activate_account_test2()
         self.activate_account_test3()
         self.activate_account_test4()
-        self.activate_account_test5()
+#        self.activate_account_test5()
 
     @check_error('no res found')
     def reg_producer_test1(self):
@@ -320,15 +324,15 @@ class Test(object):
             "location": 1
         }
 
-        self.chain.push_action('eosio', 'regproducer', args, 'alice', 'active')
+        self.chain.push_action('uuos', 'regproducer', args, 'alice', 'active')
 
     @check_error('no enough staking')
     def reg_producer_test2(self):
         '''
         stake less than 1000_000 tokens
         '''
-        self.chain.buy_ram_bytes('eosio', 'alice', 60*1024)
-        self.chain.delegatebw('eosio', 'alice', 1.0, 999998.0, transfer=0)
+        self.chain.buy_ram_bytes('uuos', 'alice', 60*1024)
+        self.chain.delegatebw('uuos', 'alice', 1.0, 999998.0, transfer=0)
         args = {
             "producer": "alice",
             "producer_key": "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV",
@@ -336,14 +340,14 @@ class Test(object):
             "location": 1
         }
 
-        self.chain.push_action('eosio', 'regproducer', args, 'alice', 'active')
+        self.chain.push_action('uuos', 'regproducer', args, 'alice', 'active')
 
     def reg_producer_test3(self):
         '''
         stake tokens equal to 1000000
         '''
-        self.chain.buy_ram_bytes('eosio', 'bob', 60*1024)
-        self.chain.delegatebw('eosio', 'bob', 1.0, 999999.0, transfer=0)
+        self.chain.buy_ram_bytes('uuos', 'bob', 60*1024)
+        self.chain.delegatebw('uuos', 'bob', 1.0, 999999.0, transfer=0)
         args = {
             "producer": "bob",
             "producer_key": "EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV",
@@ -351,7 +355,7 @@ class Test(object):
             "location": 1
         }
 
-        self.chain.push_action('eosio', 'regproducer', args, 'bob', 'active')
+        self.chain.push_action('uuos', 'regproducer', args, 'bob', 'active')
 
     def test_reg_producer(self):
         self.reg_producer_test1()

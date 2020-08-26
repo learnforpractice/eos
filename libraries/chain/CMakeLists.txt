@@ -113,9 +113,10 @@ add_library( eosio_chain
              ${HEADERS}
              db_api/db_api.cpp
              db_api/db_interface.cpp
+             evm.cpp
              )
 
-set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
+# set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}

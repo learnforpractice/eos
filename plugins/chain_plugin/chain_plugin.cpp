@@ -27,6 +27,7 @@
 #include <fc/variant.hpp>
 #include <signal.h>
 #include <cstdlib>
+#include <eosio/chain/evm.hpp>
 
 #include <chain_api.hpp>
 
@@ -286,8 +287,8 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
           "In \"light\" mode all incoming blocks headers will be fully validated; transactions in those validated blocks will be trusted \n")
          ("uuos-mainnet", boost::program_options::value<bool>()->default_value(true),
           "uuos main network \n")
-         ("public-key-prefix", bpo::value<string>()->default_value("UUOS"),
-          "public key prefix")
+         ("public-key-prefix", bpo::value<string>()->default_value("UUOS"), "public key prefix")
+         ("evm-lib", bpo::value<string>()->default_value(""), "evm shared lib path")
          ("create-accounts-snapshot", bpo::bool_switch()->default_value(false),
           "create accounts snapshot \n")
          ("disable-ram-billing-notify-checks", bpo::bool_switch()->default_value(false),
@@ -1066,6 +1067,9 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
       if ( options.count("uuos-mainnet") ) {
          my->chain_config->uuos_mainnet = options.at("uuos-mainnet").as<bool>();
       }
+
+      EOS_ASSERT( options.count("evm-lib"), plugin_config_exception, "evm lib path not specified");
+      evm_init(options.at("evm-lib").as<string>().c_str());
 
       if( options.count( "public-key-prefix" )) {
          auto prefix = options.at( "public-key-prefix" ).as<string>();

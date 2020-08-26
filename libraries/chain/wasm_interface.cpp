@@ -31,7 +31,7 @@
 
 #include <vm_api/vm_api.h>
 
-extern "C" int evm_call_native(int type, const uint8_t *packed_args, size_t packed_args_size, uint8_t *output, size_t output_size);
+#include <eosio/chain/evm.hpp>
 
 namespace eosio { namespace chain {
    using namespace webassembly::common;
