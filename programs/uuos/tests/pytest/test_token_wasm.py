@@ -44,14 +44,14 @@ class Test(object):
 
         for i in range(5):
             a1 = self.chain.get_balance(contract_name, token_account=contract_name)
-            a2 = self.chain.get_balance('eosio', token_account=contract_name)
+            a2 = self.chain.get_balance('uuos', token_account=contract_name)
 
-            args = {"from": contract_name, 'to': 'eosio', "quantity":f"100.0000 {self.main_token}", "memo":str(i)}
+            args = {"from": contract_name, 'to': 'uuos', "quantity":f"100.0000 {self.main_token}", "memo":str(i)}
             r = self.chain.push_action(contract_name,'transfer', args, contract_name, 'active')
             logger.info(f'++++r.elapsed: {r.elapsed}')
 
             b1 = self.chain.get_balance(contract_name, token_account=contract_name)
-            b2 = self.chain.get_balance('eosio', token_account=contract_name)
+            b2 = self.chain.get_balance('uuos', token_account=contract_name)
             assert a1 - 100.0 == b1
             assert a2 + 100.0 == b2
         self.chain.produce_block()

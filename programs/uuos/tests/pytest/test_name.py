@@ -66,14 +66,14 @@ class Test(object):
             {
                 "permission": {
                     "actor": "alice",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
             {
                 "permission": {
                     "actor": "bob",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
@@ -90,7 +90,7 @@ class Test(object):
             {
                 "permission": {
                     "actor": "bob",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
@@ -103,7 +103,7 @@ class Test(object):
 
         cls.chain.update_auth('bob', accounts, keys)
 
-        cls.chain.transfer('eosio', 'alice', 1000.0, '1')
+        cls.chain.transfer('uuos', 'alice', 1000.0, '1')
         cls.chain.produce_block()
 
     @classmethod
@@ -132,7 +132,7 @@ class Test(object):
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'testtesttest'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
         # key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         # account = '12341234'
@@ -146,7 +146,7 @@ class Test(object):
         '''
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         account = 'helloworld13'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
     def create_account_test3(self):
         '''
@@ -154,7 +154,7 @@ class Test(object):
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'helloworld13'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
     def create_account_test4(self):
         '''
@@ -162,7 +162,7 @@ class Test(object):
         '''
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
         account = 'helloworld133'
-        self.chain.create_account('eosio', account, key, key, 10*1024, 1, 10)
+        self.chain.create_account('uuos', account, key, key, 10*1024, 1, 10)
 
     def create_account_test5(self):
         '''

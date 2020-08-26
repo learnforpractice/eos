@@ -29,7 +29,7 @@ class Test(object):
             'account':contract_name,
             'is_priv':1
         }
-        self.chain.push_action('eosio', 'setpriv', args)
+        self.chain.push_action('uuos', 'setpriv', args)
 
         code = '''
 def apply(receiver, code, action):

@@ -24,14 +24,14 @@ class Test(object):
             {
                 "permission": {
                     "actor": "alice",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
             {
                 "permission": {
                     "actor": "bob",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
@@ -48,7 +48,7 @@ class Test(object):
             {
                 "permission": {
                     "actor": "bob",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },
@@ -65,7 +65,7 @@ class Test(object):
             {
                 "permission": {
                     "actor": "testmetestme",
-                    "permission": "eosio.code"
+                    "permission": "uuos.code"
                 },
                 "weight": 1
             },

@@ -288,7 +288,7 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
          ("uuos-mainnet", boost::program_options::value<bool>()->default_value(true),
           "uuos main network \n")
          ("public-key-prefix", bpo::value<string>()->default_value("UUOS"), "public key prefix")
-         ("evm-lib", bpo::value<string>()->default_value(""), "evm shared lib path")
+         ("evm-lib", bpo::value<string>(), "evm shared lib path")
          ("create-accounts-snapshot", bpo::bool_switch()->default_value(false),
           "create accounts snapshot \n")
          ("disable-ram-billing-notify-checks", bpo::bool_switch()->default_value(false),

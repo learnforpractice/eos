@@ -18,7 +18,7 @@ class Test(object):
             'account':contract_name,
             'is_priv':1
         }
-        cls.chain.push_action('eosio', 'setpriv', args)
+        cls.chain.push_action('uuos', 'setpriv', args)
 
         contract_name = 'testmetestme'
         code = cls.chain.compile_py_code_from_file('token2.py')
