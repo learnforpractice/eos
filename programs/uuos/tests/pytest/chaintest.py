@@ -136,9 +136,11 @@ class ChainTest(object):
         if uuos_network:
             self.main_token = 'UUOS'
             self.main_token_contract = 'uuos.token'
+            self.system_contract = 'uuos'
         else:
             self.main_token = 'EOS'
             self.main_token_contract = 'eosio.token'
+            self.system_contract = 'eosio'
         logger.info(('++++++++++++pid:', os.getpid()))
         # input()
         uuos.set_default_log_level(0)
@@ -231,7 +233,7 @@ class ChainTest(object):
 
                 'uuos.jit',
                 'uuos.jitfee',
-                'uuos',
+#                'uuos',
                 'hello',
                 'alice',
                 'bob',
@@ -590,10 +592,8 @@ class ChainTest(object):
         self.deploy_contract('uuos.token', code, abi)
 
     def deploy_eosio_system_uuos(self):
-        code_path = os.path.join(test_dir, 'contracts/eosio.system.uuos.wasm')
-        abi_path = os.path.join(test_dir, 'contracts/eosio.system.uuos.abi')
-        code_path = '/Users/newworld/dev/uuos.contracts/build/contracts/eosio.system/eosio.system.wasm'
-        abi_path = '/Users/newworld/dev/uuos.contracts/build/contracts/eosio.system/eosio.system.abi'
+        code_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.wasm')
+        abi_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.abi')
 
         with open(code_path, 'rb') as f:
             code = f.read()
@@ -685,7 +685,7 @@ class ChainTest(object):
     def test_create_account_uuos(self):
         # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
-        self.create_account('eosio', 'testtesttest1', key, key, 10*1024, 1, 10)
+        self.create_account(self.system_contract, 'testtesttest1', key, key, 10*1024, 1, 10)
         params = {'account_name':'testtesttest1'}
         params = json.dumps(params)
         ret, result = self.chain_api.get_account(params)
@@ -696,7 +696,7 @@ class ChainTest(object):
     def test_create_account(self):
         # '5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',#EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV
         key = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
-        self.create_account('eosio', 'testtesttest', key, key, 10*1024, 1, 10)
+        self.create_account(self.system_contract, 'testtesttest', key, key, 10*1024, 1, 10)
         params = {'account_name':'testtesttest'}
         params = json.dumps(params)
         ret, result = self.chain_api.get_account(params)
@@ -729,7 +729,7 @@ class ChainTest(object):
         self.calc_pending_block_time()
 
     def test3(self):
-        params = {'account_name':'eosio.token'}
+        params = {'account_name': self.main_token_contract}
         params = json.dumps(params)
         ret = self.chain_api.get_code_hash(params)
         print('++++code_hash', ret)
@@ -737,7 +737,7 @@ class ChainTest(object):
         # ret = self.chain.get_account('eosio.token')
         # print(ret)
 
-        r = self.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"uuos","quantity":f"1.0000 {self.main_token}","memo":""}, 'eosio', 'active')
+        r = self.push_action(self.main_token_contract, 'transfer', {"from": self.system_contract, "to":"uuos","quantity":f"1.0000 {self.main_token}","memo":""}, self.system_contract, 'active')
         # print(r)
     # struct get_currency_balance_params {
     #   name             code;
@@ -745,9 +745,9 @@ class ChainTest(object):
     #   optional<string> symbol;
     # };
         params = {
-            'code': 'eosio.token', 
-            'account': 'eosio',
-            'symbol': 'UUOS'
+            'code': self.main_token_contract, 
+            'account': self.system_contract,
+            'symbol': self.main_token
         }
         params = json.dumps(params)
         ret = self.chain_api.get_currency_balance(params)
@@ -759,7 +759,7 @@ class ChainTest(object):
         # a = 'eosio.token'
         # r = self.create_account('eosio', a, key, key)
         self.produce_block()
-        arg = {'account_name':'eosio.token'}
+        arg = {'account_name': self.main_token_contract}
         arg = json.dumps(arg)
         a = self.chain_api.get_account(arg)
         print('++++get_account:', a)

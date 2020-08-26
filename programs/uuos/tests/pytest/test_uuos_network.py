@@ -242,8 +242,6 @@ class Test(object):
         old_ram_usage = self.chain.get_account('alice').ram_usage
         self.chain.push_action('uuos', 'activateacc', args, actor='alice', perm='active')
 
-        logger.info(self.chain.get_account('helloworld11'))
-
         new_ram_usage = self.chain.get_account('alice').ram_usage
         logger.info('++++%s %s', new_ram_usage, old_ram_usage)
         assert new_ram_usage - old_ram_usage == 240
