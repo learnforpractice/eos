@@ -24,6 +24,8 @@ else()
   add_subdirectory(test-contracts)
 endif()
 
+add_subdirectory(eosio_contracts_test)
+
 if( GPERFTOOLS_FOUND )
    message( STATUS "Found gperftools; compiling tests with TCMalloc" )
    list( APPEND PLATFORM_SPECIFIC_LIBS tcmalloc )

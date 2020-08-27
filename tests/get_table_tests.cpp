@@ -99,7 +99,7 @@ BOOST_FIXTURE_TEST_CASE( get_scope_test, TESTER ) try {
       BOOST_REQUIRE_EQUAL(name(N(eosio.token)), result.rows[0].code);
       BOOST_REQUIRE_EQUAL(name(N(inita)), result.rows[0].scope);
       BOOST_REQUIRE_EQUAL(name(N(accounts)), result.rows[0].table);
-      BOOST_REQUIRE_EQUAL(name(N(eosio)), result.rows[0].payer);
+      BOOST_REQUIRE_EQUAL(name(N(uuos)), result.rows[0].payer);
       BOOST_REQUIRE_EQUAL(1u, result.rows[0].count);
 
       BOOST_REQUIRE_EQUAL(name(N(initb)), result.rows[1].scope);
@@ -349,7 +349,7 @@ BOOST_FIXTURE_TEST_CASE( get_table_by_seckey_test, TESTER ) try {
 
    // bidname
    auto bidname = [this]( const account_name& bidder, const account_name& newname, const asset& bid ) {
-      return push_action( N(eosio), N(bidname), bidder, fc::mutable_variant_object()
+      return push_action( N(uuos), N(bidname), bidder, fc::mutable_variant_object()
                           ("bidder",  bidder)
                           ("newname", newname)
                           ("bid", bid)
@@ -365,7 +365,7 @@ BOOST_FIXTURE_TEST_CASE( get_table_by_seckey_test, TESTER ) try {
    // get table: normal case
    eosio::chain_apis::read_only plugin(*(this->control), {}, fc::microseconds::maximum());
    eosio::chain_apis::read_only::get_table_rows_params p;
-   p.code = N(eosio);
+   p.code = N(uuos);
    p.scope = "eosio";
    p.table = N(namebids);
    p.json = true;

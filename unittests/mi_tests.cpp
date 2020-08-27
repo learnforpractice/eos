@@ -37,9 +37,9 @@ BOOST_AUTO_TEST_CASE( mi_test1 ) try {
     dlog("++++++++++++");
 
 //    create_accounts( {N(alice), N(bob), N(charlie)} );
-    t.create_account_with_resources(N(alice), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
-    t.stake( N(eosio), N(alice), ASSET(10.0000), ASSET(10.0000) );
-    t.transfer( N(eosio), N(alice), ASSET(100000.0000), N(eosio) );
+    t.create_account_with_resources(N(alice), N(uuos), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
+    t.stake( N(uuos), N(alice), ASSET(10.0000), ASSET(10.0000) );
+    t.transfer( N(uuos), N(alice), ASSET(100000.0000), N(uuos) );
 
     dlog("++++++++++++");
 

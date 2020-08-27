@@ -59,7 +59,7 @@ void call_test(TESTER& test, action& act, uint32_t billed_cpu_time_us , uint32_t
 void contract_tests() {
     eosio_system_tester t;
     //   tester t;//( setup_policy::full );
-    t.create_account_with_resources(N(testapi), N(eosio), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
+    t.create_account_with_resources(N(testapi), N(uuos), ASSET(1000.0000), false, ASSET(10.0000), ASSET(10.0000));
     //   t.create_account( N(testapi) );
 
     t.produce_block();

@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_SUITE(producer_schedule_tests)
 
       // ---- Test deliberately miss some blocks ----
       const int64_t num_of_missed_blocks = 5000;
-      produce_block(fc::microseconds(500 * 1000 * num_of_missed_blocks));
+      produce_block(fc::microseconds(config.block_interval_ms * 1000 * num_of_missed_blocks));
       // Ensure schedule is still correct
       confirm_schedule_correctness(second_prod_schd, eff_second_prod_schd_block_num);
       produce_block();
