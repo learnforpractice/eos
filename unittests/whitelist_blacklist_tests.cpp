@@ -778,7 +778,7 @@ BOOST_AUTO_TEST_CASE( greylist_limit_tests ) { try {
    BOOST_REQUIRE_EQUAL( rm.get_virtual_block_cpu_limit(), cfg.max_block_cpu_usage );
    BOOST_REQUIRE_EQUAL( rm.get_virtual_block_net_limit(), cfg.max_block_net_usage );
 
-   uint64_t blocks_per_day = 2*60*60*24;
+   uint64_t blocks_per_day = 60*60*24;
 
    uint64_t user_cpu_per_day = (cfg.max_block_cpu_usage * blocks_per_day / 250'000'000); // 103 us
    uint64_t user_net_per_day = (cfg.max_block_net_usage * blocks_per_day / 250'000'000); // 90 bytes

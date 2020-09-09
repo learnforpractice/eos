@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_SUITE(resource_limits_test)
       int64_t  total_staked_tokens = 1'000'000'000'0000ll;
       int64_t  user_stake = 1'0000ll;
       uint64_t max_block_cpu = 200'000.; // us;
-      uint64_t blocks_per_day = 2*60*60*24;
+      uint64_t blocks_per_day = 60*60*24;
       uint64_t total_cpu_per_period = max_block_cpu * blocks_per_day;
 
       double congested_cpu_time_per_period = (double(total_cpu_per_period) * user_stake) / total_staked_tokens;
