@@ -22,14 +22,14 @@ extern "C" {
    }
 }
 
-#ifdef _NATIVE
+#ifdef EOSIO_NATIVE
 
 #define EOSIO_DISPATCH_NATIVE( TYPE, MEMBERS ) \
 extern "C" { \
    __attribute__ ((visibility ("default"))) void eosio_system_apply( uint64_t receiver, uint64_t code, uint64_t action ) { \
       if( code == receiver ) { \
          switch( action ) { \
-            EOSIO_DISPATCH_HELPER( TYPE, MEMBERS ) \
+            EOSIO_DISPATCH_HELPER_UUOS( TYPE, MEMBERS ) \
          } \
          /* does not allow destructor of thiscontract to run: eosio_exit(0); */ \
       } \
