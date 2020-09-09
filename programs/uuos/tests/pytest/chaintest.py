@@ -289,9 +289,21 @@ class ChainTest(object):
         args = {"to":"uuos","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
         r = self.push_action('uuos.token','issue', args, 'uuos', 'active')
 
-        args = {'version':0, 'core':'4,UUOS'}
+        args = dict(version = 0,
+                    core = '4,UUOS',
+                    min_bp_staking_amount=0,
+                    vote_producer_limit=100,
+                    mini_voting_requirement=21
+        )
+
+        if self.uuos_network:
+            args['min_bp_staking_amount'] = 10000000000
+
         self.push_action('uuos', 'init', args, 'uuos', 'active')
         self.produce_block()
+        # 1% inflation rate, 100% producer pay, 25% block pay, 75% vote pay
+        args = dict(annual_rate=100, inflation_pay_factor=10000, votepay_factor=40000)
+        self.push_action('uuos', 'setinflation', args, 'uuos', 'active')
 
         if self.uuos_network:
             args = {'vmtype': 1, 'vmversion':0} #activate vm python
