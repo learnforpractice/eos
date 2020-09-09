@@ -7,7 +7,7 @@ default_state_guard_size      =    128*1024*1024#
 default_reversible_cache_size = 340*1024*1024 # 1MB * 340 blocks based on 21 producer BFT delay
 default_reversible_guard_size = 2*1024*1024 # 1MB * 340 blocks based on 21 producer BFT delay
 
-block_interval_ms = 500
+block_interval_ms = 1000
 block_interval_us = block_interval_ms*1000
 
 genesis_eos = {
