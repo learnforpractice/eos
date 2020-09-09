@@ -62,6 +62,9 @@ public:
                                                config::system_account_name,  mutable_variant_object()
                                                ("version", 0)
                                                ("core", CORE_SYM_STR)
+                                               ("min_bp_staking_amount", 0)
+                                               ("vote_producer_limit", 1000)
+                                               ("mini_voting_requirement", 21)
          );
       }
 
