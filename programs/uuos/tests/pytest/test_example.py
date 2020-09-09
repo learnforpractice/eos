@@ -3,9 +3,9 @@ import time
 import pytest
 import logging
 from chaintest import ChainTest
+from uuos import application
 
-logging.basicConfig(filename='logfile.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(lineno)d %(module)s %(message)s')
-logger=logging.getLogger(__name__)
+logger = application.get_logger(__name__)
 
 class Test(object):
 
@@ -40,6 +40,12 @@ def apply(receiver, code, action):
         self.chain.deploy_contract(contract_name, code, b'', vmtype=2)
         self.chain.push_action(contract_name, 'sayhello', b'hello,world')
         self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
+        r = self.chain.get_table_rows(True, 'uuos', 'uuos', 'global', 'global', '', '', 10)
+        logger.info(r)
+        self.chain.produce_block()
+
+        r = self.chain.get_table_rows(True, 'uuos', 'uuos', 'producers', 'uuos', '', '', 10)
+        logger.info(r)
 
 #./uuos/uuos -m pytest ../../programs/uuos/tests/test.py::Test::test_create_account
 
