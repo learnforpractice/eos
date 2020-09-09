@@ -27,6 +27,29 @@ using namespace eosio::chain;
         get_chain_api()->uuos_on_error(ex);\
    }
 
+#define CATCH_AND_LOG_EXCEPTION_AND_RETURN_FALSE() \
+   catch ( const fc::exception& e ) {\
+      string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
+      get_chain_api()->uuos_on_error(ex);\
+      return false; \
+   } catch ( const std::exception& e ) {\
+      fc::exception fce( \
+         FC_LOG_MESSAGE( warn, "rethrow ${what}: ", ("what",e.what())),\
+         fc::std_exception_code,\
+         BOOST_CORE_TYPEID(e).name(),\
+         e.what() ) ;\
+        string ex = fc::json::to_string(*fce.dynamic_copy_exception(), fc::time_point::maximum()); \
+        get_chain_api()->uuos_on_error(ex);\
+        return false; \
+   } catch( ... ) {\
+      fc::unhandled_exception e(\
+         FC_LOG_MESSAGE(warn, "rethrow"),\
+         std::current_exception());\
+        string ex = fc::json::to_string(*e.dynamic_copy_exception(), fc::time_point::maximum()); \
+        get_chain_api()->uuos_on_error(ex);\
+        return false; \
+   }
+
 static string s_last_error;
 static bool s_shutdown = false;
 
@@ -314,7 +337,7 @@ bool chain_manager::init(string& config, string& _genesis, string& protocol_feat
     } catch (const database_guard_exception& e) {
         log_guard_exception(e);
         // make sure to properly close the db
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION_AND_RETURN_FALSE();
     delete cc;
     cc = nullptr;
     return false;
@@ -337,7 +360,7 @@ bool chain_manager::startup(bool init_db) {
     } catch (const database_guard_exception& e) {
         log_guard_exception(e);
         // make sure to properly close the db
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION_AND_RETURN_FALSE();
     delete cc;
     cc = nullptr;
     return false;
@@ -406,7 +429,7 @@ void chain_id_(void *ptr, string& chain_id) {
     try {
         auto& chain = chain_get_controller(ptr);
         chain_id = chain.get_chain_id().str();
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features) {
@@ -419,7 +442,7 @@ void chain_start_block_(void *ptr, string& _time, uint16_t confirm_block_count, 
         } else {
             chain.start_block(block_timestamp_type(time), confirm_block_count);
         }
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 int chain_abort_block_(void *ptr) {
@@ -427,14 +450,14 @@ int chain_abort_block_(void *ptr) {
         auto& chain = chain_get_controller(ptr);
         chain.abort_block();
         return 1;
-   } FC_LOG_AND_DROP();
+   } CATCH_AND_LOG_EXCEPTION();
    return 0;
 }
 
 void chain_get_preactivated_protocol_features_(void *ptr, string& result) {
    try {
         auto& chain = chain_get_controller(ptr);
-   } FC_LOG_AND_DROP();
+   } CATCH_AND_LOG_EXCEPTION();
 }
 
 void chain_get_unapplied_transactions_(void *ptr, string& result) {
@@ -462,7 +485,7 @@ bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _a
         fc::variant args = fc::json::from_string(_args);
         result = serializer.variant_to_binary(action_type, args, abi_serializer::create_yield_function(fc::microseconds(150000)));
         return true;
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
     return false;
 }
 
@@ -482,7 +505,7 @@ bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& 
         auto v = serializer.binary_to_variant(action_type, binargs, abi_serializer::create_yield_function(fc::microseconds(150000)));
         result = fc::json::to_string(v, fc::time_point::maximum());
         return true;
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
     return false;
 }
 
@@ -512,7 +535,7 @@ void chain_gen_transaction_(string& _actions, string& expiration, string& refere
         auto packed_trx = packed_transaction(trx, type);
         auto v = fc::raw::pack(packed_trx);
         result = std::move(v);
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 
@@ -533,7 +556,7 @@ bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, u
             return false;
         }
         return true;
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
     return false;
 }
 
@@ -581,7 +604,7 @@ void chain_get_account_(void *ptr, string& account, string& result) {
         auto& chain = chain_get_controller(ptr);
         auto ret = chain.get_account(account_name(account));
         result = fc::json::to_string(ret, fc::time_point::maximum());
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 void chain_get_global_properties_(void *ptr, string& result) {
@@ -1102,7 +1125,7 @@ void uuos_recover_key_( string& _digest, string& _sig, string& _pub ) {
       auto digest = fc::sha256(_digest);
       auto s = fc::crypto::signature(_sig);
       _pub = fc::crypto::public_key( s, digest, false ).to_string();
-   } FC_LOG_AND_DROP();
+   } CATCH_AND_LOG_EXCEPTION();
 }
 
 uint64_t uuos_current_time_nano_() {
@@ -1116,7 +1139,7 @@ void uuos_sign_digest_(string& _digest, string& _priv_key, string& out) {
         chain::digest_type digest(_digest.c_str(), _digest.size());
         auto sign = priv_key.sign(digest);
         out = sign.to_string();
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 
