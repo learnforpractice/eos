@@ -45,3 +45,4 @@
 [submodule "externals/micropython"]
 	path = externals/micropython
 	url = https://github.com/uuosio/micropython
+	branch = uuosio
