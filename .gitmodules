@@ -42,3 +42,6 @@
 [submodule "externals/evmone4eosio"]
 	path = externals/evmone4eosio
 	url = https://github.com/learnforpractice/evmone4eosio-private
+[submodule "externals/micropython"]
+	path = externals/micropython
+	url = https://github.com/uuosio/micropython
