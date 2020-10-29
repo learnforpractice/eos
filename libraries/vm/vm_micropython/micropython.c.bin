@@ -1159,7 +1159,11 @@ void vm_checktime(void) {
   setjmp(*(jmp_buf*)get_memory_ptr(p0))
 
 #define longjmp_ex(p0, p1) \
-  longjmp(*(jmp_buf*)get_memory_ptr(p0), p1)
+{ \
+  void *ptr = get_memory_ptr(p0); \
+  printf("++++++++longjmp:%p\n", ptr); \
+  longjmp(*(jmp_buf*)ptr, p1); \
+}
 
 static u32 g0;
 static u32 g1;
@@ -135853,7 +135857,7 @@ long long current_timestamp() {
     struct timeval te; 
     gettimeofday(&te, NULL); // get current time
     long long us = te.tv_sec*1000000LL + te.tv_usec; // calculate milliseconds
-    printf("us: %lld\n", us);
+//    printf("us: %lld\n", us);
     return us/1000;
 }
 
@@ -142656,7 +142660,7 @@ static const u8 data_segment_data_1016[] = {
 };
 
 static void init_memory(void) {
-  wasm_rt_allocate_memory((&M0), 1, 65536);
+  wasm_rt_allocate_memory((&M0), 2, 65536);
   memcpy(&(M0.data[20480u]), data_segment_data_0, 4648);
   memcpy(&(M0.data[25128u]), data_segment_data_1, 1076);
   memcpy(&(M0.data[26204u]), data_segment_data_2, 715);
@@ -144208,20 +144212,11 @@ void WASM_RT_ADD_PREFIX(init)(void) {
 }
 
 const char *script_ = \
-"import time\n" \
-"print(time.ticks_ms())\n" \
-"n = 0 \n" \
-"for i in range(10000):\n" \
-"    n += i\n" \
-"print(time.ticks_ms())\n"
-;
-
-const char *script = \
 "import time\n"  \
 "t0 = time.ticks_ms()\n"  \
 "for i in range(1000000):\n"  \
 "    a = 1\n"  \
-"print('assignment.py', time.ticks_ms()-t0)\n"  \
+"print('assignment.py', (time.ticks_ms()-t0)/1000)\n"  \
 "t0 = time.ticks_ms()\n"  \
 "a = 0\n"  \
 "for i in range(1000000):\n"  \
@@ -144232,7 +144227,7 @@ const char *script = \
 "    a = 1.0\n"  \
 "print('assignment_float.py', time.ticks_ms()-t0)\n"  \
 "t0 = time.ticks_ms()\n"  \
-"for i in range(2):\n"  \
+"for i in range(1000):\n"  \
 "    a = {0:0}\n"  \
 "print('build_dict.py', time.ticks_ms()-t0)\n"  \
 "t0 = time.ticks_ms()\n"  \
@@ -144240,20 +144235,44 @@ const char *script = \
 "for i in range(1000000):\n"  \
 "    a[0] = i\n"  \
 "assert a[0]==999999\n"  \
-"print('set_dict_item.py', time.ticks_ms()-t0)\n"
+"print('set_dict_item.py', time.ticks_ms()-t0)\n" \
+"t0 = time.ticks_ms()\n" \
+"for i in range(1000000):\n" \
+"    a = [1, 2, 3]\n" \
+"print('build_list.py', time.ticks_ms()-t0)\n" \
 ;
 
+const char *script = \
+"import time\n"  \
+"import struct\n" \
+"t0 = time.ticks_ms()\n" \
+"for i in range(1000):\n" \
+"    aa = struct.pack('QQ3s', 123, 456, 'abc')\n" \
+"print('pack.py', time.ticks_ms()-t0)\n" \
+;
+
+#include "wasm-rt-impl.h"
+
 int main(int argc, char **argv) {
-  init();
-  printf("+++++++++hello,world\n");
-  apply(0, 0, 0);
-  int script_size = strlen(script);
-  u32 ptr_offset = malloc(script_size+1);
-  char *ptr = get_memory_ptr(ptr_offset);
-  memset(ptr, 0, script_size+1);
-  memcpy(ptr, script, script_size);
-  printf("%s\n", script);
-  do_str(ptr_offset, 1);
-  return 0;
+  int code = wasm_rt_impl_try();
+  if (code == 0) {
+    init();
+    printf("+++++++++hello,world\n");
+    apply(0, 0, 0);
+    int script_size = strlen(script);
+    u32 ptr_offset = malloc(script_size+1);
+    if (ptr_offset == 0) {
+      printf("bad malloc\n");
+      return -1;
+    }
+    char *ptr = get_memory_ptr(ptr_offset);
+    memset(ptr, 0, script_size+1);
+    memcpy(ptr, script, script_size);
+//    printf("%ld, %s\n", ptr_offset, script);
+    do_str(ptr_offset, 1);
+    return 0;
+  } else {
+    printf("trap: %d\n", code);
+  }
 }
 
