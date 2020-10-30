@@ -42,6 +42,7 @@ target_include_directories( native_contracts
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.system/include
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/eosio.token/include
                             PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts
+                            PRIVATE ${CMAKE_SOURCE_DIR}/externals/eosio.contracts/contracts/include/eosio
 
                             PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
                             PRIVATE "${CMAKE_SOURCE_DIR}/contracts/include"

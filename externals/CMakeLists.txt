@@ -76,3 +76,5 @@ add_dependencies(cppzmq libzmq)
 
 # add_dependencies(aleth eth_account)
 # add_dependencies(aleth vm_api)
+add_subdirectory(micropython)
+

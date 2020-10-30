@@ -29,7 +29,10 @@ _Noreturn void _longjmp (jmp_buf, int);
 #endif
 
 int setjmp (jmp_buf);
+int setjmp_ex (jmp_buf);
+
 _Noreturn void longjmp (jmp_buf, int);
+_Noreturn void longjmp_ex (jmp_buf, int);
 
 #define setjmp setjmp
 #define longjmp longjmp

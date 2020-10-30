@@ -12,6 +12,7 @@ system.cpp
 transaction.cpp
 #utility.cpp
 vm_api.cpp
+vm_api_wrap.cpp
 )
 
 if (APPLE)

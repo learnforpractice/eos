@@ -40,6 +40,8 @@ extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' 'eosio_assert' */
 extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
+/* import: 'env' 'call_vm_api' */
+extern u32 (*Z_envZ_call_vm_apiZ_iiiiii)(u32, u32, u32, u32, u32);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
