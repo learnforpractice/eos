@@ -36,12 +36,12 @@ extern "C" { \
    } \
 }
 
-EOSIO_DISPATCH_NATIVE(eosiosystem::system_contract, (init)(setacctram)(setacctnet)(setacctcpu)(activate)(delegatebw)(deposit)
-(withdraw)(buyrex)(unstaketorex)(sellrex)(cnclrexorder)(rentcpu)(rentnet)
-(fundcpuloan)(fundnetloan)(defcpuloan)(defnetloan)(updaterex)(rexexec)(setrex)
-(mvtosavings)(mvfrsavings)(consolidate)(closerex)(undelegatebw)(buyram)(buyrambytes)
-(sellram)(refund)(regproducer)(unregprod)(setram)(setramrate)(voteproducer)(regproxy)
-(claimrewards)(rmvproducer)(updtrevision)(bidname)(bidrefund)(setpriv)(setalimits)(setparams)
-)
+// EOSIO_DISPATCH_NATIVE(eosiosystem::system_contract, (init)(setacctram)(setacctnet)(setacctcpu)(activate)(delegatebw)(deposit)
+// (withdraw)(buyrex)(unstaketorex)(sellrex)(cnclrexorder)(rentcpu)(rentnet)
+// (fundcpuloan)(fundnetloan)(defcpuloan)(defnetloan)(updaterex)(rexexec)(setrex)
+// (mvtosavings)(mvfrsavings)(consolidate)(closerex)(undelegatebw)(buyram)(buyrambytes)
+// (sellram)(refund)(regproducer)(unregprod)(setram)(setramrate)(voteproducer)(regproxy)
+// (claimrewards)(rmvproducer)(updtrevision)(bidname)(bidrefund)(setpriv)(setalimits)(setparams)
+// )
 
 #endif

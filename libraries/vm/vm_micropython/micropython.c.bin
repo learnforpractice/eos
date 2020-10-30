@@ -144113,7 +144113,6 @@ const char *script = \
 "import struct\n" \
 "import hello\n" \
 "print(hello.say_hello())\n" \
-"print(hello.say_hello2())\n" \
 "print(dir(struct))\n" \
 "t0 = time.ticks_ms()\n" \
 "for i in range(1):\n" \
