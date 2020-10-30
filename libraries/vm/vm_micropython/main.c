@@ -10,7 +10,8 @@ jmp_buf g_jmp_buf;
 uint32_t g_saved_call_stack_depth;
 
 int micropython_init();
-int micropython_contract_init(const char *mpy, size_t size);
+int micropython_contract_init(int type, const char *py_src, size_t size);
+
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
 
 void *micropython_get_memory();
@@ -29,9 +30,19 @@ long long get_time_us() {
 int main(int argc, char **argv) {
     FILE *fp = fopen(argv[1], "rb");
     char raw_code[1024*10];
+
     size_t size = fread(raw_code, 1, sizeof(raw_code), fp);
     micropython_init();
-    micropython_contract_init(raw_code, size);
+
+    if (strstr(argv[1], ".mpy") != NULL) {
+        micropython_contract_init(0, raw_code, size);
+    } else if (strstr(argv[1], ".py") != NULL) {
+        micropython_contract_init(1, raw_code, size);
+    } else {
+        return -1;
+    }
+
+    printf("+++++++++++++++++++\n");
 
     void *vm_memory = micropython_get_memory();
     size_t vm_memory_size = micropython_get_memory_size();
@@ -40,7 +51,8 @@ int main(int argc, char **argv) {
     memcpy(vm_memory_backup, vm_memory, vm_memory_size);
 
     long long total_time = 0;
-    int count = 500;
+    int count = 1;
+
     for (int i=0;i<count;i++)
     {
         long long start = get_time_us();

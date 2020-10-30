@@ -109,17 +109,32 @@ static void *get_memory_ptr(int offset) {
 int micropython_init() {
   init();
   mp_js_init(64*1024);
+  return 1;
 }
 
-int micropython_contract_init(const char *mpy, size_t size) {
+int micropython_contract_init(int type, const char *py_src, size_t size) {
   u32 offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(offset);
-  memcpy(ptr, mpy, size);
-  return micropython_init_from_mpy(offset, size);
+  memcpy(ptr, py_src, size);
+  return micropython_init_module(type, offset, size);
 }
 
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
-  return micropython_apply(receiver, code, action);
+  int trap_code = wasm_rt_impl_try();
+  if (trap_code == 0) {
+    return micropython_apply(receiver, code, action);
+  } else {
+    printf("++++trap code: %d\n", trap_code);
+  }
+  return 0;
+}
+
+void *micropython_get_memory() {
+  return M0.data;
+}
+
+size_t micropython_get_memory_size() {
+  return M0.size;
 }
 
 ''')

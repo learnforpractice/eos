@@ -910,7 +910,9 @@ static void mp_binary_set_val_array(u32, u32, u32, u32);
 static void mp_binary_set_val_array_from_int(u32, u32, u32, u32);
 static u32 mp_obj_is_package(u32);
 static u32 mp_builtin___import__(u32, u32);
-static u32 micropython_init_from_mpy(u32, u32);
+static u32 micropython_init_module_from_mpy(u32, u32);
+static u32 micropython_init_module_from_py(u32, u32);
+static u32 micropython_init_module(u32, u32, u32);
 static u32 micropython_apply(u64, u64, u64);
 static u32 mp_builtin_compile(u32, u32);
 static u32 mp_builtin_eval(u32, u32);
@@ -99291,7 +99293,7 @@ static u32 mp_builtin___import__(u32 p0, u32 p1) {
   return i0;
 }
 
-static u32 micropython_init_from_mpy(u32 p0, u32 p1) {
+static u32 micropython_init_module_from_mpy(u32 p0, u32 p1) {
   u32 l2 = 0, l3 = 0;
   FUNC_PROLOGUE;
   u32 i0, i1, i2, i3;
@@ -99413,6 +99415,101 @@ static u32 micropython_init_from_mpy(u32 p0, u32 p1) {
   i0 = i32_load((&M0), (u64)(i0 + 180));
   nlr_jump(i0);
   UNREACHABLE;
+  Bfunc:;
+  FUNC_EPILOGUE;
+  return i0;
+}
+
+static u32 micropython_init_module_from_py(u32 p0, u32 p1) {
+  u32 l2 = 0, l3 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3;
+  i0 = g0;
+  i1 = 176u;
+  i0 -= i1;
+  l2 = i0;
+  g0 = i0;
+  i0 = l2;
+  i1 = 8u;
+  i0 += i1;
+  i0 = nlr_push_tail(i0);
+  i0 = l2;
+  i1 = 16u;
+  i0 += i1;
+  i0 = setjmp_ex(i0);
+  i0 = !(i0);
+  if (i0) {goto B0;}
+  i0 = 39492u;
+  i1 = l2;
+  i1 = i32_load((&M0), (u64)(i1 + 12));
+  mp_obj_print_exception(i0, i1);
+  i0 = l2;
+  i1 = 176u;
+  i0 += i1;
+  g0 = i0;
+  i0 = 0u;
+  goto Bfunc;
+  B0:;
+  i0 = 28017u;
+  i0 = qstr_from_str(i0);
+  l3 = i0;
+  i1 = p0;
+  i2 = p1;
+  i3 = 0u;
+  i0 = mp_lexer_new_from_str_len(i0, i1, i2, i3);
+  p0 = i0;
+  i0 = 0u;
+  i1 = l3;
+  i1 = mp_obj_new_module(i1);
+  p1 = i1;
+  i32_store((&M0), (u64)(i0 + 20972), i1);
+  i0 = p1;
+  i1 = 181u;
+  i2 = p0;
+  i2 = i32_load((&M0), (u64)(i2));
+  i3 = 3u;
+  i2 <<= (i3 & 31);
+  i3 = 2u;
+  i2 |= i3;
+  mp_store_attr(i0, i1, i2);
+  i0 = p0;
+  i1 = 1u;
+  i2 = p1;
+  i2 = i32_load((&M0), (u64)(i2 + 4));
+  p1 = i2;
+  i3 = p1;
+  i0 = mp_parse_compile_execute(i0, i1, i2, i3);
+  i0 = 0u;
+  i1 = 0u;
+  i1 = i32_load((&M0), (u64)(i1 + 20972));
+  i2 = 28330u;
+  i2 = qstr_from_str(i2);
+  i1 = mp_load_attr(i1, i2);
+  i32_store((&M0), (u64)(i0 + 20976), i1);
+  i0 = l2;
+  i1 = 176u;
+  i0 += i1;
+  g0 = i0;
+  i0 = 1u;
+  Bfunc:;
+  FUNC_EPILOGUE;
+  return i0;
+}
+
+static u32 micropython_init_module(u32 p0, u32 p1, u32 p2) {
+  FUNC_PROLOGUE;
+  u32 i0, i1;
+  i0 = p0;
+  i0 = !(i0);
+  if (i0) {goto B0;}
+  i0 = p1;
+  i1 = p2;
+  i0 = micropython_init_module_from_py(i0, i1);
+  goto Bfunc;
+  B0:;
+  i0 = p1;
+  i1 = p2;
+  i0 = micropython_init_module_from_mpy(i0, i1);
   Bfunc:;
   FUNC_EPILOGUE;
   return i0;
@@ -140373,7 +140470,7 @@ static const u8 data_segment_data_996[] = {
 };
 
 static void init_memory(void) {
-  wasm_rt_allocate_memory((&M0), 2, 65536);
+  wasm_rt_allocate_memory((&M0), 1, 65536);
   memcpy(&(M0.data[20480u]), data_segment_data_0, 4668);
   memcpy(&(M0.data[25148u]), data_segment_data_1, 1086);
   memcpy(&(M0.data[26234u]), data_segment_data_2, 760);
@@ -141838,7 +141935,7 @@ static void init_table(void) {
   T0.data[offset + 458] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&time_ticks_cpu)};
   T0.data[offset + 459] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&time_ticks_diff)};
   T0.data[offset + 460] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&time_ticks_add)};
-  T0.data[offset + 461] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&micropython_init_from_mpy)};
+  T0.data[offset + 461] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&micropython_init_module)};
   T0.data[offset + 462] = (wasm_rt_elem_t){func_types[10], (wasm_rt_anyfunc_t)(&init_micropython)};
   T0.data[offset + 463] = (wasm_rt_elem_t){func_types[32], (wasm_rt_anyfunc_t)(&micropython_apply)};
   T0.data[offset + 464] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&mp_js_init)};
@@ -141959,11 +142056,11 @@ int micropython_init() {
   return 1;
 }
 
-int micropython_contract_init(const char *mpy, size_t size) {
+int micropython_contract_init(int type, const char *py_src, size_t size) {
   u32 offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(offset);
-  memcpy(ptr, mpy, size);
-  return micropython_init_from_mpy(offset, size);
+  memcpy(ptr, py_src, size);
+  return micropython_init_module(type, offset, size);
 }
 
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
