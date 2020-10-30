@@ -1,1 +1,6 @@
-_main
+_vm_init
+_vm_apply
+_micropython_init
+_micropython_contract_init
+_micropython_contract_apply
+

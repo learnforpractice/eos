@@ -9,10 +9,11 @@ endif (APPLE)
 
 set(SRCS
     micropython.c
+    vm_micropython.cpp
     ./wasm2c/wasm-rt-impl.c
 )
 
-add_library(vm_micropython SHARED ${SRCS})
+add_library(vm_micropython STATIC ${SRCS})
 
 target_link_libraries(vm_micropython PRIVATE vm_api frozen chain_api vm_api4c)
 set_target_properties(vm_micropython  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
@@ -38,6 +39,9 @@ target_compile_options(vm_micropython PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300
 #     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #     COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
 # )
+
+add_executable(run_test main.c)
+target_link_libraries(run_test PRIVATE vm_micropython)
 
 install(TARGETS vm_micropython
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

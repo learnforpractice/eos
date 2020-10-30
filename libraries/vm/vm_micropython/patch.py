@@ -78,7 +78,7 @@ const char *script = \
 
 #include "wasm-rt-impl.h"
 
-int main(int argc, char **argv) {
+int run_main(int argc, char **argv) {
   int code = wasm_rt_impl_try();
   if (code == 0) {
     init();
@@ -98,11 +98,28 @@ int main(int argc, char **argv) {
     return 0;
   } else {
     printf("trap: %d\n", code);
+    return -code;
   }
 }
 
 static void *get_memory_ptr(int offset) {
   return M0.data + offset;
+}
+
+int micropython_init() {
+  init();
+  mp_js_init(64*1024);
+}
+
+int micropython_contract_init(const char *mpy, size_t size) {
+  u32 offset = malloc(size);
+  char *ptr = (char *)get_memory_ptr(offset);
+  memcpy(ptr, mpy, size);
+  return micropython_init_from_mpy(offset, size);
+}
+
+int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
+  return micropython_apply(receiver, code, action);
 }
 
 ''')

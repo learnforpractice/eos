@@ -1,4 +1,5 @@
 CODEABI_1.0 {
-    global: main;
+    global: vm_init;vm_apply;micropython_init;micropython_contract_init;micropython_contract_apply
     local: *;
 };
+
