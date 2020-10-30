@@ -78,6 +78,7 @@ add_library( eosio_chain
               wasm_interface.cpp
 
               python_interface.cpp
+              micropython_interface.cpp
               python_vm/vm_memory.cpp
 
               wasm_eosio_validation.cpp

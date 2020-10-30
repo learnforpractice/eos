@@ -25,6 +25,7 @@
 #include <eosio/chain/chain_snapshot.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/python_interface.hpp>
+#include <eosio/chain/micropython_interface.hpp>
 #include <eosio/chain/platform_timer.hpp>
 
 #include <chainbase/chainbase.hpp>
@@ -240,6 +241,7 @@ struct controller_impl {
    fork_database                  fork_db;
    wasm_interface                 wasmif;
    python_interface               pythonif;
+   micropython_interface          micropythonif;
    db_interface                   dbif;
    resource_limits_manager        resource_limits;
    authorization_manager          authorization;
@@ -321,6 +323,7 @@ struct controller_impl {
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
     pythonif( db ),
+    micropythonif( db ),
     dbif( db ), 
     resource_limits( db ),
     authorization( s, db ),
@@ -347,6 +350,7 @@ struct controller_impl {
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
          pythonif.current_lib(bsp->block_num);
+         micropythonif.current_lib(bsp->block_num);
       });
 
 
@@ -3151,6 +3155,11 @@ wasm_interface& controller::get_wasm_interface() {
 python_interface& controller::get_python_interface() {
    return my->pythonif;
 }
+
+micropython_interface& controller::get_micropython_interface() {
+   return my->micropythonif;
+}
+
 
 db_interface& controller::get_db_interface() {
    return my->dbif;

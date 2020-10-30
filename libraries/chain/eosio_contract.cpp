@@ -16,6 +16,7 @@
 
 #include <eosio/chain/wasm_interface.hpp>
 #include <eosio/chain/python_interface.hpp>
+#include <eosio/chain/micropython_interface.hpp>
 
 #include <eosio/chain/abi_serializer.hpp>
 
@@ -212,6 +213,8 @@ void apply_eosio_setcode(apply_context& context) {
             context.control.get_wasm_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
          } else if (account.vm_type == 1) {
             context.control.get_python_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
+         } else if (account.vm_type == 3) {
+            context.control.get_micropython_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
          }
       } else {
          db.modify(old_code_entry, [](code_object& o) {
