@@ -1,6 +1,11 @@
 #include "micropython.c.bin"
 #include <wasm-rt-impl.h>
 
+//libwasm2c_contracts.a
+uint32_t wasm_rt_call_stack_depth = 0;
+uint32_t g_saved_call_stack_depth = 0;
+jmp_buf g_jmp_buf;
+
 u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
@@ -121,6 +126,7 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
   u32 ptr_offset = malloc(1);
 //  printf("+++++++++free_memory start pos: %d\n", ptr_offset);
+  wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
     return micropython_apply(receiver, code, action);
