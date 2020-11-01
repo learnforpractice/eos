@@ -174,7 +174,8 @@ enum vm_api_function_type {
    enum_is_feature_activated,
    enum_preactivate_feature,
    enum_get_sender,
-   enum_call_native
+   enum_call_native,
+   enum_vm_api_function_count
 };
 
 struct vm_api_arg {

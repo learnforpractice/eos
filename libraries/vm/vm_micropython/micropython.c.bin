@@ -128586,7 +128586,7 @@ static u32 mod_chainlib_require_auth2(u32 p0, u32 p1) {
   i2 += i3;
   i3 = 16u;
   i0 = pack_value(i0, i1, i2, i3);
-  i0 = 3u;
+  i0 = 4u;
   i1 = l2;
   i2 = 16u;
   i1 += i2;
