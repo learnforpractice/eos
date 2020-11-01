@@ -1,6 +1,7 @@
-_vm_init
-_vm_apply
 _micropython_init
+_micropython_get_memory
+_micropython_get_memory_size
+_micropython_backup_memory
+_micropython_restore_memory
 _micropython_contract_init
 _micropython_contract_apply
-

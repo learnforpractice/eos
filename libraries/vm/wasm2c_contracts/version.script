@@ -1,4 +1,4 @@
 CODEABI_1.0 {
-    global: sandboxed_contracts_init;get_apply_entry;get_contract_memory;native_contract_apply;add_native_contract;offset_to_ptr;offset_to_char_ptr;wasm_rt_allocate_memory;wasm_rt_allocate_table;wasm_rt_call_stack_depth;wasm_rt_grow_memory;wasm_rt_register_func_type;wasm_rt_trap;
+    global: sandboxed_contracts_init;get_apply_entry;get_contract_memory;native_contract_apply;add_native_contract;offset_to_ptr;offset_to_char_ptr;wasm_rt_allocate_memory;wasm_rt_allocate_table;wasm_rt_grow_memory;wasm_rt_register_func_type;wasm_rt_trap;
     local: *;
 };

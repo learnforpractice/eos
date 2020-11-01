@@ -13,7 +13,7 @@ set(SRCS
     ./wasm2c/wasm-rt-impl.c
 )
 
-add_library(vm_micropython STATIC ${SRCS})
+add_library(vm_micropython SHARED ${SRCS})
 
 target_link_libraries(vm_micropython PRIVATE vm_api frozen chain_api vm_api4c)
 set_target_properties(vm_micropython  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")

@@ -1,4 +1,4 @@
-add_library(wasm2c_contracts STATIC
+add_library(wasm2c_contracts SHARED
     main.cpp
     wasm-rt-impl.c
     native_contracts.cpp

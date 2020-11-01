@@ -36,7 +36,7 @@ void micropython_instantiated_module::apply(apply_context& context) {
 
     long long start = get_time_us();
     micropython_contract_apply(receiver, account, act);
-    printf("+++++++++apply %lld\n", get_time_us() - start);
+    // printf("+++++++++apply %lld\n", get_time_us() - start);
 }
 
 void micropython_instantiated_module::call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) {

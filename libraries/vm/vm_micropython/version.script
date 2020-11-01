@@ -1,5 +1,5 @@
 CODEABI_1.0 {
-    global: vm_init;vm_apply;micropython_init;micropython_contract_init;micropython_contract_apply
+    global: micropython_init;micropython_get_memory;micropython_get_memory_size;micropython_backup_memory;micropython_restore_memory;micropython_contract_init;micropython_contract_apply
     local: *;
 };
 
