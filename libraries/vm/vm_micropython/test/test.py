@@ -1,7 +1,9 @@
+import foo
 import time
+
 print('hello,worlddd!')
 g_n = 888888
-
+foo.say_hello()
 def apply(a, b, c):
     global g_n
     print('hello,worlddd!')

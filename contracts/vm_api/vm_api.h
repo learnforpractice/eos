@@ -41,9 +41,9 @@ struct vm_api {
    uint64_t (*current_receiver)(void);
    uint32_t (*get_active_producers)( uint64_t* producers, uint32_t datalen );
 
-   int (*get_balance)(uint64_t _account, uint64_t _symbol, int64_t* amount);
-   int (*transfer_inline)(uint64_t to, int64_t amount, uint64_t symbol);
-   int (*transfer)(uint64_t from, uint64_t to, int64_t amount, uint64_t symbol);
+   // int (*get_balance)(uint64_t _account, uint64_t _symbol, int64_t* amount);
+   // int (*transfer_inline)(uint64_t to, int64_t amount, uint64_t symbol);
+   // int (*transfer)(uint64_t from, uint64_t to, int64_t amount, uint64_t symbol);
 
    void (*assert_sha256)( const char* data, uint32_t length, const struct checksum256* hash );
    void (*assert_sha1)( const char* data, uint32_t length, const struct checksum160* hash );
@@ -250,6 +250,9 @@ struct vm_api {
    bool read_only;
    char reserved[sizeof(char*)*128]; //for forward compatibility
 };
+
+uint64_t s2n( const char *str, size_t str_size );
+int n2s(uint64_t value, char *str, size_t str_size);
 
 int32_t uint64_to_string(uint64_t n, char* out, int size);
 uint64_t string_to_uint64(const char* str);

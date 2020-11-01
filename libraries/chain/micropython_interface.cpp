@@ -6,17 +6,37 @@
 using namespace eosio::chain;
 
 extern "C" {
+    int micropython_init();
+    void *micropython_get_memory();
+    size_t micropython_get_memory_size();
+    size_t micropython_backup_memory(void *backup, size_t size);
+    size_t micropython_restore_memory(void *backup, size_t size);
 
+    int micropython_contract_init(int type, const char *py_src, size_t size);
+    int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
 }
-
 
 micropython_instantiated_module::micropython_instantiated_module()
 {
 
 }
 
+long long get_time_us() {
+    struct timeval te; 
+    gettimeofday(&te, NULL); // get current time
+    long long us = te.tv_sec*1000000LL + te.tv_usec; // calculate milliseconds
+//    printf("us: %lld\n", us);
+    return us;
+}
+
 void micropython_instantiated_module::apply(apply_context& context) {
-    
+    auto receiver = context.get_receiver().to_uint64_t();
+    auto account = context.get_action().account.to_uint64_t();
+    auto act = context.get_action().name.to_uint64_t();
+
+    long long start = get_time_us();
+    micropython_contract_apply(receiver, account, act);
+    printf("+++++++++apply %lld\n", get_time_us() - start);
 }
 
 void micropython_instantiated_module::call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) {
@@ -41,6 +61,12 @@ void micropython_runtime::immediately_exit_currently_running_module() {
 
 micropython_interface::micropython_interface(const chainbase::database& d): db(d) {
     runtime_interface = std::make_unique<micropython_runtime>();
+
+    micropython_init();    
+    size_t size = micropython_get_memory_size();
+    void *memory = micropython_get_memory();
+    initial_vm_memory.resize(size);
+    memcpy(initial_vm_memory.data(), memory, size);
 }
 
 micropython_interface::~micropython_interface() {}
@@ -118,22 +144,22 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
     if(!it->module) {
         if(!codeobject)
             codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
-#if 0
-        auto timer_pause = fc::make_scoped_exit([&](){
-            context.trx_context.resume_billing_timer();
-        });
-        context.trx_context.pause_billing_timer();
-#endif
-        vector<char> bytes;
         micropython_instantiation_cache.modify(it, [&](auto& c) {
-            c.module = runtime_interface->instantiate_module((const char*)bytes.data(), bytes.size(), {}, code_hash, vm_type, vm_version);
+            c.module = runtime_interface->instantiate_module(codeobject->code.data(), codeobject->code.size(), {}, code_hash, vm_type, vm_version);
 
             get_vm_api()->allow_access_apply_context = false;
-//
+            micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
+            //TODO: handle exception in micropython vm
+//            printf("++++code: %s\n", codeobject->code.data());
+            micropython_contract_init(0, codeobject->code.data(), codeobject->code.size());
+            size_t size = micropython_get_memory_size();
+            c.module->backup.data.resize(size);
+            micropython_backup_memory(c.module->backup.data.data(), size);
             get_vm_api()->allow_access_apply_context = true;
-
             c.module->take_snapshoot();
         });
+    } else {
+        micropython_restore_memory(it->module->backup.data.data(), it->module->backup.data.size());
     }
     return it->module;
 }

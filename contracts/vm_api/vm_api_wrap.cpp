@@ -1,6 +1,7 @@
 #include "vm_api_wrap.h"
 #include "vm_api.h"
 #include <string.h>
+#include <stdio.h>
 
 #define DB_SECONDARY_INDEX_METHODS_SIMPLE(IDX, IDX_TYPE) \
     case enum_db_##IDX##_store:                \
@@ -157,16 +158,23 @@
         int32_t itr = get_vm_api()->db_##IDX##_end(code, scope, table); \
         pack_value(&itr, 4, output, output_size); \
     } \
-        break;                                 \
+        break;
+
+
+static uint64_t align8(uint64_t size) {
+   return (size + 7) & ~(uint64_t)7;
+}
 
 int verify_args(void *input, size_t input_size) {
     int n = 0;
     int pos = 0;
 
     while(pos + sizeof(uint64_t) < input_size) {
-        uint64_t arg_size = *((uint64_t *)((char*)input+pos));
+        uint64_t arg_size = ((uint64_t *)((char*)input+pos))[0];
+        uint64_t aligned_arg_size = align8(arg_size);
+
         pos += sizeof(uint64_t);
-        pos += arg_size;
+        pos += aligned_arg_size;
         n += 1;
     }
 
@@ -183,75 +191,54 @@ int parse_args(void *input, size_t input_size, vm_api_arg *args, size_t args_cou
     }
 
     int n = verify_args(input, input_size);
-    if (n != args_count) {
+    if (n > args_count) {
         return 0;
     }
 
     for (int i=0;i<n;i++) {
-        uint64_t arg_size = *((uint64_t *)((char*)input+pos));
-        pos += sizeof(uint64_t);
-        pos += arg_size;
-        args[i].ptr = (char *)input + sizeof(uint64_t);;
+        uint64_t arg_size = ((uint64_t *)((char*)input+pos))[0];
+        uint64_t aligned_arg_size = align8(arg_size);
+
+        args[i].ptr = (char *)input + pos + sizeof(uint64_t);
         args[i].size = arg_size;
+        pos += sizeof(uint64_t);
+        pos += aligned_arg_size;
     }
     return n;
 }
 
-int pack_values(vm_api_arg *args, size_t args_count, void *output, size_t output_size) {
-    int total_size = 0;
-    if ((args == 0 || args_count == 0) || (output == 0 || output_size <= 0)) {
+static int pack_value(const void *value, size_t value_size, void *output, size_t output_size) {
+    size_t aligned_value_size = align8(value_size);
+    if (output_size < aligned_value_size + sizeof(uint64_t)) {
         return 0;
     }
 
-    for (int i=0;i<args_count;i++) {
-        total_size += sizeof(uint64_t);
-        total_size += args[i].size;
-    }
-
-    if (total_size > output_size) {
-        return 0;
-    }
-
-    int pos = 0;
-    for (int i=0;i<args_count;i++) {
-        *((uint64_t *)((char *)output+pos)) = args[i].size;
-        memcpy((char *)output+pos, args[i].ptr, args[i].size);
-        pos += sizeof(uint64_t);
-        pos += args[i].size;
-    }
-    return args_count;
+    *((uint64_t *)output) = value_size;
+    memcpy((char *)output + 8, value, value_size);
+    return aligned_value_size + 8;
 }
 
-bool pack_value(void *ret, size_t ret_size, void *output, size_t output_size) {
-    if ((ret == 0 || ret_size <= 0) || (output_size != ret_size + sizeof(uint64_t))) {
-        return false;
-    }
-
-    *((uint64_t *)output) = 8;
-    memcpy((char *)output + 8, ret, ret_size);
-    return true;
+static void print_hex(char *data, size_t size) {
+  for (int i=0;i<size;i++) {
+    printf("%02x", data[i]);
+  }
+  printf("\n");
 }
 
-int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_size, void *output, size_t output_size) {
+extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_size, void *output, size_t output_size) {
     vm_api_arg args[MAX_VM_API_ARGS];
     int args_count = parse_args(input, input_size, args, MAX_VM_API_ARGS);
     switch(function_type) {
         case enum_read_action_data:
         {
             uint32_t size = get_vm_api()->read_action_data(args[0].ptr, args[0].size);
-            vm_api_arg ret_args;
-            ret_args.ptr = &size;
-            ret_args.size = sizeof(uint32_t);
-            pack_values(&ret_args, 1, output, output_size);
+            pack_value(&size, sizeof(size), output, output_size);
         }
             break;
         case enum_action_data_size:
         {
             uint32_t size = get_vm_api()->action_data_size();
-            vm_api_arg ret_args;
-            ret_args.ptr = &size;
-            ret_args.size = sizeof(uint32_t);
-            pack_values(&ret_args, 1, output, output_size);            
+            pack_value(&size, sizeof(size), output, output_size);
         }
             break;
         case enum_require_recipient:
@@ -309,10 +296,7 @@ int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_s
             } else if (function_type == enum_has_auth) {
                 ret = get_vm_api()->has_auth(*(uint64_t*)args[0].ptr);
             }
-            vm_api_arg ret_arg;
-            ret_arg.ptr = &ret;
-            ret_arg.size = sizeof(bool);
-            pack_values(&ret_arg, 1, output, output_size);
+            pack_value(&ret, 1, output, output_size);
         }
             break;
         case enum_send_inline:
@@ -331,19 +315,13 @@ int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_s
         case enum_publication_time:
         {
             uint64_t pub_time = get_vm_api()->publication_time();
-            vm_api_arg ret_arg;
-            ret_arg.ptr = &pub_time;
-            ret_arg.size = sizeof(uint64_t);
-            pack_values(&ret_arg, 1, output, output_size);
+            pack_value(&pub_time, sizeof(pub_time), output, output_size);            
         }
             break;
         case enum_current_receiver:
         {
             uint64_t receiver = get_vm_api()->current_receiver();
-            vm_api_arg ret_arg;
-            ret_arg.ptr = &receiver;
-            ret_arg.size = sizeof(uint64_t);
-            pack_values(&ret_arg, 1, output, output_size);            
+            pack_value(&receiver, sizeof(receiver), output, output_size);            
         }
             break;
         case enum_get_active_producers:
@@ -354,6 +332,8 @@ int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_s
             break;
         case enum_assert_sha256:
         {
+            get_vm_api()->eosio_assert(args_count == 2, "bad assert_sha256 argument count!");
+            printf("+++++++%p %d %p, %d\n", args[0].ptr, args[0].size, args[1].ptr, args[1].size);
             get_vm_api()->assert_sha256((char *)args[0].ptr, args[0].size, (checksum256 *)args[1].ptr);
         }
             break;
@@ -382,6 +362,8 @@ int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_s
             if (args[1].size < 32) {
                 return 0;
             }
+            get_vm_api()->eosio_assert(args_count == 2, "bad sha256 argument count!");
+            printf("+++++++%p %d %p, %d\n", args[0].ptr, args[0].size, args[1].ptr, args[1].size);
             get_vm_api()->sha256((char *)args[0].ptr, args[0].size, (checksum256 *)args[1].ptr);            
         }
             break;
@@ -408,7 +390,8 @@ int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_s
             break;
         case enum_recover_key:
         {
-            get_vm_api()->recover_key((checksum256*)args[0].ptr, (char *)args[1].ptr, args[1].size, (char *)args[2].ptr, args[2].size);
+            int ret = get_vm_api()->recover_key((checksum256*)args[0].ptr, (char *)args[1].ptr, args[1].size, (char *)args[2].ptr, args[2].size);
+            pack_value(&ret, sizeof(ret), output, output_size);
         }
             break;
         case enum_sha3:

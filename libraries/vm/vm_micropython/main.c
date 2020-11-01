@@ -27,6 +27,18 @@ long long get_time_us() {
     return us;
 }
 
+uint64_t s2n( const char *str, size_t str_size ) {
+    return 0;
+}
+
+int n2s(uint64_t value, char *str, size_t str_size) {
+    return 0;
+}
+
+int call_vm_api(int function_type,  void *input, size_t input_size, void *output, size_t output_size) {
+    return 0;
+}
+
 int main(int argc, char **argv) {
     FILE *fp = fopen(argv[1], "rb");
     char raw_code[1024*10];
@@ -34,48 +46,35 @@ int main(int argc, char **argv) {
     size_t size = fread(raw_code, 1, sizeof(raw_code), fp);
     micropython_init();
 
-    if (strstr(argv[1], ".mpy") != NULL) {
-        micropython_contract_init(0, raw_code, size);
-    } else if (strstr(argv[1], ".py") != NULL) {
-        micropython_contract_init(1, raw_code, size);
-    } else {
-        return -1;
-    }
+    int err = wasm_rt_impl_try();
+    if (err == 0) {
+        if (strstr(argv[1], ".mpy") != NULL) {
+            micropython_contract_init(0, raw_code, size);
+        } else if (strstr(argv[1], ".py") != NULL) {
+            micropython_contract_init(1, raw_code, size);
+        } else {
+            return -1;
+        }
 
-    printf("+++++++++++++++++++\n");
+        printf("+++++++++++++++++++\n");
 
-    void *vm_memory = micropython_get_memory();
-    size_t vm_memory_size = micropython_get_memory_size();
-    void *vm_memory_backup = malloc(vm_memory_size);
+        void *vm_memory = micropython_get_memory();
+        size_t vm_memory_size = micropython_get_memory_size();
+        void *vm_memory_backup = malloc(vm_memory_size);
 
-    memcpy(vm_memory_backup, vm_memory, vm_memory_size);
+        memcpy(vm_memory_backup, vm_memory, vm_memory_size);
 
-    long long total_time = 0;
-    int count = 1;
+        long long total_time = 0;
+        int count = 1;
 
-    for (int i=0;i<count;i++)
-    {
         long long start = get_time_us();
         memcpy(vm_memory, vm_memory_backup, vm_memory_size);
         micropython_contract_apply(1, 2, 3);
         long long duration = get_time_us() - start;
-        total_time += duration;
-//        printf("duration: %lld\n", duration);
+        printf("duration: %lld\n", duration);
+    } else {
+        printf("err: %d\n", err);
+        return -1;
     }
-    printf("+++avg: %lld\n", total_time/count);
-
-
-    total_time = 0;
-    for (int i=0;i<count;i++)
-    {
-        long long start = get_time_us();
-//        memcpy(vm_memory, vm_memory_backup, vm_memory_size);
-        micropython_contract_apply(1, 2, 3);
-        long long duration = get_time_us() - start;
-        total_time += duration;
-//        printf("duration: %lld\n", get_time_us() - start);
-    }
-    printf("+++avg: %lld\n", total_time/count);
-    return 0;
 }
 

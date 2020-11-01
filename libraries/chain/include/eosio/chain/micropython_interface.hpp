@@ -19,8 +19,7 @@ namespace eosio { namespace chain {
    class controller;
 
    struct vm_micropython_state {
-      void *vm_memory_backup;
-      size_t vm_memory_size;
+      vector<uint8_t> data;
    };
 
    class micropython_instantiated_module {
@@ -102,6 +101,7 @@ namespace eosio { namespace chain {
          python_cache_index micropython_instantiation_cache;
          const chainbase::database& db;
          static std::map<uint16_t, struct vm_python_info> vm_python_map;
+         vector<uint8_t> initial_vm_memory;
 //         static std::map<uint16_t, std::shared_ptr<vm_memory>> vm_python_memory_map;
    };
 

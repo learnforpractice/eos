@@ -145,3 +145,6 @@ _transaction_size
 _vm_register_api
 _is_feature_activated
 _preactivate_feature
+_call_vm_api
+_n2s
+_s2n

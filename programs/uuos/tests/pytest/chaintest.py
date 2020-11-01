@@ -310,6 +310,8 @@ class ChainTest(object):
             self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
             args = {'vmtype': 2, 'vmversion':0} #activate vm python
             self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
+            args = {'vmtype': 3, 'vmversion':0} #activate vm python
+            self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
 
         self.produce_block()
 

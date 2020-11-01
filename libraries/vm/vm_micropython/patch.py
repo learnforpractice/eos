@@ -19,7 +19,7 @@ static void *get_memory_ptr(int offset);
 #include <setjmp.h>
 #include <stdio.h>
 
-void vm_checktime(void) {
+static void vm_checktime(void) {
 
 }
 
@@ -117,6 +117,10 @@ with open('micropython.c.bin', 'r') as f:
     data = patch_micropython(data, origin, patch)
 
     origin, patch = patch_ticks_ms
+    data = patch_micropython(data, origin, patch)
+
+    origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'
+    patch = 'wasm_rt_allocate_memory((&M0), 2, 65536);'
     data = patch_micropython(data, origin, patch)
 
 with open('micropython.c.bin', 'w') as f:

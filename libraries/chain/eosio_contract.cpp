@@ -148,12 +148,12 @@ void apply_eosio_setcode(apply_context& context) {
    auto  act = context.get_action().data_as<setcode>();
    context.require_authorization(act.account);
 
-   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1 || act.vmtype == 2, invalid_contract_vm_type, "invalid vm type" );
+   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1 || act.vmtype == 2 || act.vmtype == 3, invalid_contract_vm_type, "invalid vm type" );
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
 
    if (act.vmtype == 0) {
       EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
-   } else if (act.vmtype == 1){
+   } else if (act.vmtype == 1 || act.vmtype == 3){
       //only allow privileged account use python smart contract when python vm is not activated
       if (!account.is_privileged()) {
          EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
@@ -182,17 +182,6 @@ void apply_eosio_setcode(apply_context& context) {
       if (act.vmtype == 0) {
          wasm_interface::validate(context.control, act.code);
       }
-#if 0
-      string file_name = "contracts/" + act.account.to_string();
-      file_name += "-";
-      file_name += code_hash.str();
-      file_name += "-";
-      file_name += std::to_string(context.control.head_block_num());
-      file_name += ".wasm";
-      fstream file(file_name, ios::out | ios::binary);
-      file.write(act.code.data(), act.code.size());
-      file.close();
-#endif
    }
 
    bool existing_code = (account.code_hash != digest_type());
