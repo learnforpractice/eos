@@ -7,6 +7,8 @@
 #include <wasm-rt-impl.h>
 
 jmp_buf g_jmp_buf;
+
+uint32_t wasm_rt_call_stack_depth;
 uint32_t g_saved_call_stack_depth;
 
 int micropython_init();

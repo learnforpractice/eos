@@ -1144,9 +1144,7 @@ static void *get_memory_ptr(int offset);
 #include <setjmp.h>
 #include <stdio.h>
 
-static void vm_checktime(void) {
-
-}
+void vm_checktime(void);
 
 #define setjmp_ex(p0) \
   setjmp(*(jmp_buf*)get_memory_ptr(p0))

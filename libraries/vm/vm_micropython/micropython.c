@@ -29,6 +29,11 @@ static void print_hex(char *data, size_t size) {
   printf("\n");
 }
 
+void checktime(void);
+void vm_checktime(void) {
+  checktime();
+}
+
 void _print_hex(u32 data_offset, u32 size) {
   char *data = (char *)get_memory_ptr(data_offset);
   print_hex(data, size);
