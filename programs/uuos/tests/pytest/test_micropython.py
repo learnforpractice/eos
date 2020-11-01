@@ -1,5 +1,6 @@
 import os
 import time
+import json
 import pytest
 import logging
 import subprocess
@@ -36,9 +37,36 @@ class Test(object):
         os.remove('tmp.py')
         return code
 
+    def test_loop(self):
+        code = '''
+def apply(a, b, c):
+    while True:
+        pass
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'deadline_exception'
+
+    def test_call_depth(self):
+        code = '''
+def apply(a, b, c):
+    pass
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        self.chain.produce_block()
+
+        for i in range(300):
+            r = self.chain.push_action('alice', 'sayhello', str(i).encode('utf8'))
+            if i % 50 == 0:
+                self.chain.produce_block()
+        self.chain.produce_block()
+        logger.info('+++elapsed: %s', r['elapsed'])
+
     def test_vm_api(self):
-        print(os.getpid())
-        input('<<<')
         contract_name = 'alice'
         args = {
             'account':contract_name,
@@ -60,7 +88,7 @@ def apply(a, b, c):
         self.chain.deploy_contract('bob', code, b'', vmtype=3)
 
         r = self.chain.push_action(contract_name, 'sayhello', b'hello,world')
-        logger.info(r['elapsed'])
+        logger.info('+++elapsed: %s', r['elapsed'])
 
         # r = self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
         # logger.info(r['elapsed'])
