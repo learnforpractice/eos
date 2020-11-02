@@ -197,7 +197,7 @@ DB_API_METHOD_WRAPPERS_FLOAT_SECONDARY_(idx_long_double, float128_t)
 
 
 int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, void* id, int size, const char* buffer, size_t buffer_size ) {
-   eosio_assert(size <= sizeof(key256_t), "size of id must be ==32 bytes long!");
+   eosio_assert(size <= sizeof(key256_t), "size of id must be <= 32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
    return ctx().db_store_i256( scope, table, name(payer), key, buffer, buffer_size);
@@ -216,35 +216,37 @@ int db_get_i256( int iterator, char* buffer, size_t buffer_size ) {
 }
 
 int db_find_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t size ) {
-   eosio_assert(size == 32, "size of id must be ==32 bytes long!");
+   eosio_assert(size <= 32, "size of id must be ==32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
    return ctx().db_find_i256(code, scope, table, key);
 }
 
 int db_previous_i256( int iterator, void* primary, size_t size ) {
-   eosio_assert(size == 32, "size of id must be ==32 bytes long!");
+   eosio_assert(size == 32, "size of id must be == 32 bytes long!");
    key256_t key = {{0, 0}};
-   memcpy(key.data(), primary, size);
-   return ctx().db_previous_i256(iterator, key);
+   int ret = ctx().db_previous_i256(iterator, key);
+   memcpy(primary, key.data(), 32);
+   return ret;
 }
 
 int db_next_i256( int iterator, void* primary, size_t size ) {
-   eosio_assert(size == 32, "size of id must be ==32 bytes long!");
+   eosio_assert(size == 32, "size of id must be == 32 bytes long!");
    key256_t key = {{0, 0}};
-   memcpy(key.data(), primary, size);
-   return ctx().db_next_i256(iterator, key);
+   int ret = ctx().db_next_i256(iterator, key);
+   memcpy(primary, key.data(), 32);
+   return ret;
 }
 
 int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, int size ) {
-   eosio_assert(size == 32, "size of id must be ==32 bytes long!");
+   eosio_assert(size <= 32, "size of id must be <= 32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
    return ctx().db_upperbound_i256(code, scope, table, key);
 }
 
 int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, int size ) {
-   eosio_assert(size == 32, "size of id must be ==32 bytes long!");
+   eosio_assert(size <= 32, "size of id must be <= 32 bytes long!");
    key256_t key = {{0, 0}};
    memcpy(key.data(),id, size);
    return ctx().db_lowerbound_i256(code, scope, table, key);

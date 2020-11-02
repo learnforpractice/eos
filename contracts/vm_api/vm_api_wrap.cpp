@@ -643,24 +643,86 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
         }
             break;
         case enum_db_store_i256:
+        {
+            uint64_t scope = args[0].u64;
+            uint64_t table = args[1].u64;
+            uint64_t payer = args[2].u64;
+            int32_t itr = get_vm_api()->db_store_i256(scope, table, payer, args[3].ptr, args[3].size, (char *)args[4].ptr, args[4].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
             break;
         case enum_db_update_i256:
+        {
+            int32_t iterator = args[0].i32;
+            uint64_t payer = args[1].u64;
+            get_vm_api()->db_update_i256(iterator, payer, (char *)args[2].ptr, args[2].size);
+        }
             break;
         case enum_db_remove_i256:
+        {
+            get_vm_api()->db_remove_i256(args[0].i32);
+        }
             break;
         case enum_db_get_i256:
-            break;
-        case enum_db_find_i256:
-            break;
-        case enum_db_previous_i256:
+        {
+            int32_t itr = args[0].i32;
+            int32_t size = get_vm_api()->db_get_i256(itr, (char *)args[1].ptr, args[1].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = size;
+        }
             break;
         case enum_db_next_i256:
+        {
+            int32_t itr = args[0].i32;
+            itr = get_vm_api()->db_next_i256(itr, args[1].ptr, args[1].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
             break;
-        case enum_db_upperbound_i256:
+        case enum_db_previous_i256:
+        {
+            int32_t itr = args[0].i32;
+            itr = get_vm_api()->db_previous_i256(itr, args[1].ptr, args[1].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
+            break;
+        case enum_db_find_i256:
+        {
+            int32_t itr = get_vm_api()->db_find_i256(args[0].u64, args[1].u64, args[2].u64, args[3].ptr, args[3].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
             break;
         case enum_db_lowerbound_i256:
+        {
+            int32_t itr = get_vm_api()->db_lowerbound_i256(args[0].u64, args[1].u64, args[2].u64, args[3].ptr, args[3].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
+            break;
+        case enum_db_upperbound_i256:
+        {
+            int32_t itr = get_vm_api()->db_upperbound_i256(args[0].u64, args[1].u64, args[2].u64, args[3].ptr, args[3].size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
             break;
         case enum_db_end_i256:
+        {
+            int32_t itr = get_vm_api()->db_end_i256(args[0].u64, args[1].u64, args[2].u64);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
+        }
             break;
         case enum_db_get_table_count:
             break;
