@@ -1,26 +1,39 @@
+#include <string.h>
 #include <vm_api_wrap.h>
 #include "micropython.h"
 
 void *get_memory_ptr(int offset);
 
-u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset) {
-  struct vm_api_arg *input = 0;
+u32 _call_vm_api(u32 function_type, u32 args_offset, u32 args_size, u32 output_offset) {
+  struct vm_api_arg *vm_args = 0;
   struct vm_api_arg *output = 0;
+  struct vm_api_arg vm_args_copy[10];
 
-  if (input_offset) {
-    input = (struct vm_api_arg *)get_memory_ptr(input_offset);
+  if (args_size > 10) {
+    return 0;
+  }
+
+  if (args_offset) {
+    vm_args = (struct vm_api_arg *)get_memory_ptr(args_offset);
   }
 
   if (output_offset) {
     output = (struct vm_api_arg *)get_memory_ptr(output_offset);
   }
 
-  for (int i=0;i<input_size;i++) {
-    if (input[i].type == enum_arg_type_ptr) {
+  memcpy(vm_args_copy, vm_args, args_size * sizeof(struct vm_api_arg));
+
+
+  for (int i=0;i<args_size;i++) {
+    if (vm_args_copy[i].type == enum_arg_type_ptr) {
       // pointer type in vm is 32 bit long, convert pointer offset to pointer
-      input[i].ptr = get_memory_ptr(input[i].u32);
+      if (vm_args[i].u32) {
+        vm_args_copy[i].ptr = get_memory_ptr(vm_args[i].u32);
+      } else {
+        vm_args_copy[i].ptr = 0;
+      }
     }
   }
 
-  return call_vm_api(function_type, input, input_size, output);
+  return call_vm_api(function_type, vm_args_copy, args_size, output);
 }

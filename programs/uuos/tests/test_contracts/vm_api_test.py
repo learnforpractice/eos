@@ -69,5 +69,3 @@ def apply(receiver, code, action):
 
     h = sha256('hello,world')
     assert_sha256('hello,world', h)
-    itr = db_store_i64('alice', 'table', 'alice', 'hello', 'world')
-    db_update_i64(itr, 0, b'abc')
