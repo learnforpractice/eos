@@ -120,3 +120,32 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
         self.chain.produce_block()
+
+    def test_exception(self):
+        code = '''
+def apply(a, b, c):
+    raise Exception('oops!')
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            logger.info(e.args[0]['action_traces'][0]['console'])
+            assert e.args[0]['except']['name'] == 'python_execution_error'
+            assert e.args[0]['except']['message'] == 'Python execution error'
+
+    def test_init_exception(self):
+        code = '''
+aa = bb
+def apply(a, b, c):
+    raise Exception('oops!')
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            logger.info(e.args[0]['action_traces'][0]['console'])
+            assert e.args[0]['except']['name'] == 'python_execution_error'
+

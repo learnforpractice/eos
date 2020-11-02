@@ -161,7 +161,7 @@ def apply(receiver, code, action):
     assert db_get_i256(itr4) == b'7'
     assert db_get_i256(itr5) == b'world'
 
-    assert n == db_get_table_count(code, scope, table)
+    assert 8 == db_get_table_count(code, scope, table)
 
 #++++++++++cleanup++++++++++++++++++++++++
     db_remove_i256(itr2)

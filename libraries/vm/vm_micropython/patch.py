@@ -65,12 +65,12 @@ static void longjmp_ex(u32 p0, u32 p1) {
 ''',
 
 r'''
-static void mp_js_write(u32 p0, u32 p1) {
+void prints_l( const char* cstr, uint32_t len);
+
+static void mp_js_write(u32 p0, u32 len) {
   FUNC_PROLOGUE;
   char *p0_ptr = get_memory_ptr(p0);
-  for (int i=0;i<p1;i++) {
-    putchar(p0_ptr[i]);
-  }
+  prints_l(p0_ptr, len);
   FUNC_EPILOGUE;
 }
 

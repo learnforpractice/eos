@@ -35,7 +35,8 @@ void micropython_instantiated_module::apply(apply_context& context) {
     auto act = context.get_action().name.to_uint64_t();
 
     long long start = get_time_us();
-    micropython_contract_apply(receiver, account, act);
+    int ret = micropython_contract_apply(receiver, account, act);
+    EOS_ASSERT( ret, python_execution_error, "python vm execution error" );
     // printf("+++++++++apply %lld\n", get_time_us() - start);
 }
 
@@ -151,7 +152,8 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
             //TODO: handle exception in micropython vm
 //            printf("++++code: %s\n", codeobject->code.data());
-            micropython_contract_init(0, codeobject->code.data(), codeobject->code.size());
+            int ret = micropython_contract_init(0, codeobject->code.data(), codeobject->code.size());
+            EOS_ASSERT( ret, python_execution_error, "python contract init error" );
             size_t size = micropython_get_memory_size();
             c.module->backup.data.resize(size);
             micropython_backup_memory(c.module->backup.data.data(), size);

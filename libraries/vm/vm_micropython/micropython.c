@@ -30,6 +30,8 @@ static void print_hex(char *data, size_t size) {
 }
 
 void checktime(void);
+void prints_l( const char* cstr, uint32_t len);
+
 void vm_checktime(void) {
   checktime();
 }
@@ -75,8 +77,9 @@ static u32 _memmove(u32 dest_offset, u32 src_offset, u32 num) {
   return dest_offset;
 }
 
-static void _prints(u32 a, u32 b) {
-
+static void _prints_l(u32 src_offset, u32 len) {
+  char *src_ptr = get_memory_ptr(src_offset);
+  prints_l(src_ptr, len);
 }
 
 static void _eosio_assert(u32 a, u32 b) {
@@ -87,7 +90,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_memsetZ_iiii = _memset;
   Z_envZ_memcpyZ_iiii = _memcpy;
   Z_envZ_memmoveZ_iiii = _memmove;
-  Z_envZ_prints_lZ_vii = _prints;
+  Z_envZ_prints_lZ_vii = _prints_l;
   Z_envZ_eosio_assertZ_vii = _eosio_assert;
   Z_envZ_call_vm_apiZ_iiiii = _call_vm_api;
 
@@ -122,7 +125,7 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
 }
 
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
-  u32 ptr_offset = malloc(1);
+  // u32 ptr_offset = malloc(1);
 //  printf("+++++++++free_memory start pos: %d\n", ptr_offset);
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
