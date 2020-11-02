@@ -29,6 +29,7 @@ def apply(receiver, code, action):
     require_auth('alice')
 
     producers = get_active_producers()
+    print(producers)
     assert producers == ('uuos', )
 
     require_auth('alice')
@@ -66,7 +67,7 @@ def apply(receiver, code, action):
     data = read_action_data()
     print(len(data), data)
 
-    # h = sha256('hello,world')
-    # print(h)
-    h = b'w\xdf&?I\x123V\xd2\x8aJ\x87\x15\xd2[\xf5\xb9\x80\xbe\xee\xb5\x03\xca\xb4n\xa6\x1a\xc9\xf32\x0e\xda'
+    h = sha256('hello,world')
     assert_sha256('hello,world', h)
+    itr = db_store_i64('alice', 'table', 'alice', 'hello', 'world')
+    db_update_i64(itr, 0, b'abc')
