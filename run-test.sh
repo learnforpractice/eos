@@ -20,6 +20,6 @@ fi
 if [[ "$1" == "" ]]; then
     ./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest #--pyeos
 else
-    ./build/programs/uuos/uuos -m pytest -s $1 #--pyeos
+    ./build/programs/uuos/uuos -m pytest -s $1 $2 $3 $4 #--pyeos
 fi
 
