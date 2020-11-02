@@ -725,6 +725,13 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
         }
             break;
         case enum_db_get_table_count:
+        {
+            uint32_t n = get_vm_api()->db_get_table_count(args[0].u64, args[1].u64, args[2].u64);
+
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_u32;
+            vm_ret->u32 = n;
+        }
             break;
 
         DB_SECONDARY_INDEX_METHODS_SIMPLE(idx64, uint64_t)

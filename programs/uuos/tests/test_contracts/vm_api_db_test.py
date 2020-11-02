@@ -86,6 +86,9 @@ def apply(receiver, code, action):
     assert db_get_i64(itr4) == b'7'
     assert db_get_i64(itr5) == b'world'
 
+    itrs_64 = (itr2, itr3, itr4, itr5)
+
+
 #+++++++++++++++++++db i256++++++++++++++++++++++++++++++++++
     itr1 = db_store_i256(scope, table, payer, '1', '1')
     itr2 = db_store_i256(scope, table, payer, '3', '3')
@@ -93,7 +96,7 @@ def apply(receiver, code, action):
     itr4 = db_store_i256(scope, table, payer, '7', '7')
     itr5 = db_store_i256(scope, table, payer, 'hello', 'world')
     print(itr1, itr2, itr3, itr4, itr5)
-
+    
     assert itr1 == db_find_i256(code, scope, table, '1')
     assert itr2 == db_find_i256(code, scope, table, '3')
     assert itr3 == db_find_i256(code, scope, table, '5')
@@ -157,3 +160,15 @@ def apply(receiver, code, action):
     assert db_get_i256(itr3) == b'5'
     assert db_get_i256(itr4) == b'7'
     assert db_get_i256(itr5) == b'world'
+
+    assert n == db_get_table_count(code, scope, table)
+
+#++++++++++cleanup++++++++++++++++++++++++
+    db_remove_i256(itr2)
+    db_remove_i256(itr3)
+    db_remove_i256(itr4)
+    db_remove_i256(itr5)
+
+    for itr in itrs_64:
+        db_remove_i64(itr)
+
