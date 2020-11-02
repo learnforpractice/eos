@@ -359,6 +359,7 @@ namespace eosio { namespace chain {
                                     3070005, "binaryen exception" )
 
 
+
    FC_DECLARE_DERIVED_EXCEPTION( resource_exhausted_exception, chain_exception,
                                  3080000, "Resource exhausted exception" )
 
@@ -650,4 +651,9 @@ namespace eosio { namespace chain {
                                     3250002, "Protocol feature exception (invalid block)" )
       FC_DECLARE_DERIVED_EXCEPTION( protocol_feature_iterator_exception, protocol_feature_exception,
                                     3250003, "Protocol feature iterator exception" )
+
+      FC_DECLARE_DERIVED_EXCEPTION( python_execution_error,     chain_exception,
+                                    3900000, "Python execution error" )
+
+
 } } // eosio::chain
