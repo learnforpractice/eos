@@ -372,7 +372,7 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
     }
     
     if (function_arg_count[function_type] != args_count) {
-        // printf("++++++++++function_type:%d %d %d\n", function_type, function_arg_count[function_type], args_count);
+        printf("++++++++++function_type:%d %d %d\n", function_type, function_arg_count[function_type], args_count);
         // print_hex((char *)input, input_size);
         get_vm_api()->eosio_assert(false, "bad argument count!");
         return 0;
@@ -845,8 +845,15 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
         case enum_call_contract_set_results:
             break;
         case enum_call_contract_get_results:
+        {
+           int ret = get_vm_api()->call_contract_get_results((char *)args[0].ptr, args[0].size);
+           vm_ret->size = 4;
+           vm_ret->type = enum_arg_type_i32;
+           vm_ret->i32 = ret;
+        }
             break;
         case enum_call_contract:
+           get_vm_api()->call_contract(args[0].u64, (char *)args[1].ptr, args[1].size);
             break;
         case enum_is_feature_activated:
             break;

@@ -7,6 +7,7 @@ import subprocess
 
 from chaintest import ChainTest
 from uuos import application
+from uuos import wasmcompiler
 
 test_dir = os.path.dirname(__file__)
 
@@ -149,3 +150,60 @@ def apply(a, b, c):
             logger.info(e.args[0]['action_traces'][0]['console'])
             assert e.args[0]['except']['name'] == 'python_execution_error'
 
+    def test_call(self):
+        # print(os.getpid())
+        # input('<<<')
+        code = r'''
+#include <eosio/eosio.hpp>
+#include <eosio/action.hpp>
+#include <eosio/print.hpp>
+
+extern "C" {
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_args(void* args, size_t size1);
+
+    __attribute__((eosio_wasm_import))
+    int call_contract_set_results(void* result, size_t size1);
+
+    void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
+         uint64_t args[2];
+         int args_size = ::call_contract_get_args(&args, sizeof(args));
+         eosio::print("+++++++++++call: arg count:", args_size, "\n");
+         eosio::check(args_size == 16, "bad args size");
+         if (args[0] == eosio::name("calltest1").value) {
+            eosio::print("+++++++++++call: args[1]:", args[1], "\n");
+            args[1] += 1;
+            ::call_contract_set_results(&args[1], sizeof(uint64_t));
+         }
+    }
+}
+        '''
+
+        contract_name = 'bob'
+        code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
+        self.chain.deploy_contract(contract_name, code, b'')
+        self.chain.produce_block()
+
+        code = '''
+import struct
+from chainlib import *
+def apply(receiver, code, action):
+    contract = s2n('calltest1')
+    args = struct.pack('QQ', contract, 1)
+    ret = call_contract('bob', args)
+    print('+++call contract return:', len(ret), ret)
+    ret = int.from_bytes(ret, 'little')
+    print(ret)
+    assert ret == 2
+'''
+        code = self.compile(code)
+
+        contract_name = 'alice'
+        self.chain.deploy_contract(contract_name, code, b'', vmtype=3)
+
+        self.chain.push_action(contract_name, 'sayhello', b'a')
+
+        self.chain.push_action(contract_name, 'sayhello', b'b')
+        self.chain.push_action(contract_name, 'sayhello', b'c')
+
+        self.chain.produce_block()
