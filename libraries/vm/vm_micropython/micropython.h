@@ -45,7 +45,7 @@ extern u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'n2s' */
 extern u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 /* import: 'env' 'call_vm_api' */
-extern u32 (*Z_envZ_call_vm_apiZ_iiiiii)(u32, u32, u32, u32, u32);
+extern u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);

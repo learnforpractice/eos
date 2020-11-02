@@ -18,8 +18,6 @@ _db_find_i256
 _db_find_i64
 _db_get_i256
 _db_get_i64
-_db_get_i64_ex
-_db_get_i64_exex
 _db_get_table_count
 _db_idx128_end
 _db_idx128_find_primary
@@ -79,13 +77,10 @@ _db_previous_i256
 _db_previous_i64
 _db_remove_i256
 _db_remove_i64
-_db_remove_i64_ex
 _db_store_i256
 _db_store_i64
-_db_store_i64_ex
 _db_update_i256
 _db_update_i64
-_db_update_i64_ex
 _db_upperbound_i256
 _db_upperbound_i64
 _eosio_abort

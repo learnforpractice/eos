@@ -9,6 +9,7 @@ endif (APPLE)
 
 set(SRCS
     micropython.c
+    vm_api.c
     vm_micropython.cpp
     ./wasm2c/wasm-rt-impl.c
 )
@@ -21,6 +22,7 @@ set_target_properties(vm_micropython  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 target_include_directories(vm_micropython PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts
+    PRIVATE ${CMAKE_SOURCE_DIR}/contracts/vm_api
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include

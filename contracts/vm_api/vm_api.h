@@ -59,14 +59,9 @@ struct vm_api {
    int (*sha3)(const char* data, int size, char* result, int size2);
 
    int32_t (*db_store_i64)(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len);
-   int32_t (*db_store_i64_ex)(uint64_t code, uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const char* data, uint32_t len);
    void (*db_update_i64)(int32_t iterator, uint64_t payer, const char* data, uint32_t len);
    void (*db_remove_i64)(int32_t iterator);
-   void (*db_update_i64_ex)( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, size_t buffer_size );
-   void (*db_remove_i64_ex)( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id );
    int32_t (*db_get_i64)(int32_t iterator, void* data, uint32_t len);
-   int32_t (*db_get_i64_ex)( int itr, uint64_t* primary, char* buffer, size_t buffer_size );
-   const char* (*db_get_i64_exex)( int itr, size_t* buffer_size );
    int32_t (*db_next_i64)(int32_t iterator, uint64_t* primary);
    int32_t (*db_previous_i64)(int32_t iterator, uint64_t* primary);
    int32_t (*db_find_i64)(uint64_t code, uint64_t scope, uint64_t table, uint64_t id);

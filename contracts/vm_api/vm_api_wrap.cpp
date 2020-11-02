@@ -11,7 +11,9 @@
         uint64_t payer = *(uint64_t *)args[2].ptr; \
         uint64_t id = *(uint64_t *)args[3].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_store(scope, table, payer, id, (IDX_TYPE *)args[4].ptr ); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     }                                          \
         break;                                 \
     case enum_db_##IDX##_update:               \
@@ -25,13 +27,17 @@
     case enum_db_##IDX##_next:                 \
     { \
         int32_t itr = get_vm_api()->db_##IDX##_next(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_previous:             \
     { \
         int32_t itr = get_vm_api()->db_##IDX##_previous(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break; \
     case enum_db_##IDX##_find_primary:         \
@@ -41,7 +47,9 @@
         uint64_t table = *(uint64_t *)args[2].ptr; \
         uint64_t primary = *(uint64_t *)args[4].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (IDX_TYPE *)args[3].ptr, primary); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_find_secondary:       \
@@ -50,7 +58,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (IDX_TYPE *)args[3].ptr, *(uint64_t *)args[4].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_lowerbound:           \
@@ -59,7 +69,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_lowerbound(code, scope, table, (IDX_TYPE *)args[3].ptr, (uint64_t *)args[4].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_upperbound:           \
@@ -68,7 +80,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_upperbound(code, scope, table, (IDX_TYPE *)args[3].ptr, (uint64_t *)args[4].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_end:                  \
@@ -77,7 +91,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_end(code, scope, table); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
 
@@ -90,7 +106,9 @@
         uint64_t payer = *(uint64_t *)args[2].ptr; \
         uint64_t id = *(uint64_t *)args[3].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_store(scope, table, payer, id, (ARR_TYPE *)args[4].ptr, 2); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     }                                          \
         break;                                 \
     case enum_db_##IDX##_update:               \
@@ -104,13 +122,17 @@
     case enum_db_##IDX##_next:                 \
     { \
         int32_t itr = get_vm_api()->db_##IDX##_next(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_previous:             \
     { \
         int32_t itr = get_vm_api()->db_##IDX##_previous(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break; \
     case enum_db_##IDX##_find_primary:         \
@@ -120,7 +142,9 @@
         uint64_t table = *(uint64_t *)args[2].ptr; \
         uint64_t primary = *(uint64_t *)args[4].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, primary); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_find_secondary:       \
@@ -129,7 +153,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, *(uint64_t *)args[4].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_lowerbound:           \
@@ -138,7 +164,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_lowerbound(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, (uint64_t *)args[4].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_upperbound:           \
@@ -147,7 +175,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_upperbound(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, (uint64_t *)args[4].ptr); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;                                 \
     case enum_db_##IDX##_end:                  \
@@ -156,7 +186,9 @@
         uint64_t scope = *(uint64_t *)args[1].ptr;    \
         uint64_t table = *(uint64_t *)args[2].ptr; \
         int32_t itr = get_vm_api()->db_##IDX##_end(code, scope, table); \
-        pack_value(&itr, 4, output, output_size); \
+        vm_ret->size = 4; \
+        vm_ret->type = enum_arg_type_i32; \
+        vm_ret->i32 = itr; \
     } \
         break;
 
@@ -325,63 +357,6 @@ void init_function_args() {
     init = 1;
 }
 
-static uint64_t align8(uint64_t size) {
-   return (size + 7) & ~(uint64_t)7;
-}
-
-int verify_args(void *input, size_t input_size) {
-    int n = 0;
-    int pos = 0;
-
-    while(pos + sizeof(uint64_t) < input_size) {
-        uint64_t arg_size = ((uint64_t *)((char*)input+pos))[0];
-        uint64_t aligned_arg_size = align8(arg_size);
-
-        pos += sizeof(uint64_t);
-        pos += aligned_arg_size;
-        n += 1;
-    }
-
-    if (pos == input_size) {
-        return n;
-    }
-    return 0;
-}
-
-int parse_args(void *input, size_t input_size, vm_api_arg *args, size_t args_count) {
-    uint64_t pos = 0;
-    if (input == nullptr || input_size <= sizeof(uint64_t)) {
-        return 0;
-    }
-
-    int n = verify_args(input, input_size);
-    if (n > args_count) {
-        return 0;
-    }
-
-    for (int i=0;i<n;i++) {
-        uint64_t arg_size = ((uint64_t *)((char*)input+pos))[0];
-        uint64_t aligned_arg_size = align8(arg_size);
-
-        args[i].ptr = (char *)input + pos + sizeof(uint64_t);
-        args[i].size = arg_size;
-        pos += sizeof(uint64_t);
-        pos += aligned_arg_size;
-    }
-    return n;
-}
-
-static int pack_value(const void *value, size_t value_size, void *output, size_t output_size) {
-    size_t aligned_value_size = align8(value_size);
-    if (output_size < aligned_value_size + sizeof(uint64_t)) {
-        return 0;
-    }
-
-    *((uint64_t *)output) = value_size;
-    memcpy((char *)output + 8, value, value_size);
-    return aligned_value_size + 8;
-}
-
 static void print_hex(char *data, size_t size) {
   for (int i=0;i<size;i++) {
     printf("%02x", data[i]);
@@ -389,18 +364,16 @@ static void print_hex(char *data, size_t size) {
   printf("\n");
 }
 
-extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, size_t input_size, void *output, size_t output_size) {
+extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args, size_t args_count, vm_api_arg *vm_ret) {
     static int initialized = 0;
-    vm_api_arg args[MAX_VM_API_ARGS];
     if (!initialized) {
         init_function_args();
         initialized = 1;
     }
-
-    int args_count = parse_args(input, input_size, args, MAX_VM_API_ARGS);
     
     if (function_arg_count[function_type] != args_count) {
-        printf("++++++++++function_type:%d %d\n", function_type, args_count);
+        // printf("++++++++++function_type:%d %d %d\n", function_type, function_arg_count[function_type], args_count);
+        // print_hex((char *)input, input_size);
         get_vm_api()->eosio_assert(false, "bad argument count!");
         return 0;
     }
@@ -409,13 +382,17 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
         case enum_read_action_data:
         {
             uint32_t size = get_vm_api()->read_action_data(args[0].ptr, args[0].size);
-            pack_value(&size, sizeof(size), output, output_size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_u32;
+            vm_ret->u32 = size;
         }
             break;
         case enum_action_data_size:
         {
             uint32_t size = get_vm_api()->action_data_size();
-            pack_value(&size, sizeof(size), output, output_size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_u32;
+            vm_ret->u32 = size;
         }
             break;
         case enum_require_recipient:
@@ -426,7 +403,7 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
             if (args[0].size != sizeof(uint64_t)) {
                 return 0;
             }
-            get_vm_api()->require_recipient(*(uint64_t*)args[0].ptr);
+            get_vm_api()->require_recipient(args[0].u64);
         }
             break;
         case enum_require_auth:
@@ -437,7 +414,7 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
             if (args[0].size != sizeof(uint64_t)) {
                 return 0;
             }
-            get_vm_api()->require_auth(*(uint64_t*)args[0].ptr);
+            get_vm_api()->require_auth(args[0].u64);
         }
             break;
         case enum_require_auth2:
@@ -453,7 +430,7 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
             if (args[1].size != sizeof(uint64_t)) {
                 return 0;
             }
-            get_vm_api()->require_auth2(*(uint64_t*)args[0].ptr, *(uint64_t*)args[1].ptr);
+            get_vm_api()->require_auth2(args[0].u64, args[1].u64);
         }
             break;
         case enum_has_auth:
@@ -467,13 +444,15 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
                 return 0;
             }
             
-            bool ret;
+            bool ret = false;
             if (function_type == enum_is_account) {
-                ret = get_vm_api()->is_account(*(uint64_t*)args[0].ptr);
+                ret = get_vm_api()->is_account(args[0].u64);
             } else if (function_type == enum_has_auth) {
-                ret = get_vm_api()->has_auth(*(uint64_t*)args[0].ptr);
+                ret = get_vm_api()->has_auth(args[0].u64);
             }
-            pack_value(&ret, 1, output, output_size);
+            vm_ret->size = 1;
+            vm_ret->u8 = ret;
+            vm_ret->type = enum_arg_type_u8;
         }
             break;
         case enum_send_inline:
@@ -492,19 +471,25 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
         case enum_publication_time:
         {
             uint64_t pub_time = get_vm_api()->publication_time();
-            pack_value(&pub_time, sizeof(pub_time), output, output_size);            
+            vm_ret->size = 8;
+            vm_ret->type = enum_arg_type_u64;
+            vm_ret->u64 = pub_time;
         }
             break;
         case enum_current_receiver:
         {
             uint64_t receiver = get_vm_api()->current_receiver();
-            pack_value(&receiver, sizeof(receiver), output, output_size);            
+            vm_ret->size = 8;
+            vm_ret->type = enum_arg_type_u64;
+            vm_ret->u64 = receiver;
         }
             break;
         case enum_get_active_producers:
         {
             uint32_t ret = get_vm_api()->get_active_producers((uint64_t *)args[0].ptr, args[0].size);
-            pack_value(&ret, 4, output, output_size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = ret;
         }
             break;
         case enum_assert_sha256:
@@ -564,7 +549,9 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
         case enum_recover_key:
         {
             int ret = get_vm_api()->recover_key((checksum256*)args[0].ptr, (char *)args[1].ptr, args[1].size, (char *)args[2].ptr, args[2].size);
-            pack_value(&ret, sizeof(ret), output, output_size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = ret;
         }
             break;
         case enum_sha3:
@@ -574,29 +561,31 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  void *input, siz
             break;
         case enum_db_store_i64:
         {
-            uint64_t scope = *(uint64_t *)args[0].ptr;
-            uint64_t table = *(uint64_t *)args[1].ptr;
-            uint64_t payer = *(uint64_t *)args[2].ptr;
-            uint64_t id = *(uint64_t *)args[3].ptr;
+            uint64_t scope = args[0].u64;
+            uint64_t table = args[1].u64;
+            uint64_t payer = args[2].u64;
+            uint64_t id = args[3].u64;
             int32_t itr = get_vm_api()->db_store_i64(scope, table, payer, id, (char *)args[4].ptr, args[4].size);
-            pack_value(&itr, 4, output, output_size);
+            vm_ret->size = 4;
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->i32 = itr;
         }
             break;
         case enum_db_update_i64:
         {
-            int32_t iterator = *(int32_t *)args[0].ptr;
-            uint64_t payer = *(uint64_t *)args[1].ptr;
+            int32_t iterator = args[0].i32;
+            uint64_t payer = args[1].u64;
             get_vm_api()->db_update_i64(iterator, payer, (char *)args[2].ptr, args[2].size);
         }
             break;
         case enum_db_remove_i64:
         {
-            get_vm_api()->db_remove_i64(*(int32_t*)args[0].ptr);
+            get_vm_api()->db_remove_i64(args[0].i32);
         }
             break;
         case enum_db_get_i64:
         {
-            int32_t itr = *(int32_t *)args[0].ptr;
+            int32_t itr = args[0].i32;
             get_vm_api()->db_get_i64(itr, (char *)args[1].ptr, args[1].size);
         }
             break;

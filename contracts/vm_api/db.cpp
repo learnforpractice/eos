@@ -14,9 +14,9 @@ int32_t db_store_i64(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id
    return get_vm_api()->db_store_i64(scope, table, payer, id, (const char*)data, len);
 }
 
-int32_t db_store_i64_ex(uint64_t code, uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const void* data, uint32_t len) {
-   return get_vm_api()->db_store_i64_ex(code, scope, table, payer, id, (const char*)data, len);
-}
+// int32_t db_store_i64_ex(uint64_t code, uint64_t scope, uint64_t table, uint64_t payer, uint64_t id,  const void* data, uint32_t len) {
+//    return get_vm_api()->db_store_i64_ex(code, scope, table, payer, id, (const char*)data, len);
+// }
 
 
 void db_update_i64(int32_t iterator, uint64_t payer, const void* data, uint32_t len) {
@@ -27,25 +27,25 @@ void db_remove_i64(int32_t iterator) {
    get_vm_api()->db_remove_i64(iterator);
 }
 
-void db_update_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, size_t buffer_size ) {
-   get_vm_api()->db_update_i64_ex(scope, payer, table, id, buffer, buffer_size);
-}
+// void db_update_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id, const char* buffer, size_t buffer_size ) {
+//    get_vm_api()->db_update_i64_ex(scope, payer, table, id, buffer, buffer_size);
+// }
 
-void db_remove_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id ) {
-   get_vm_api()->db_remove_i64_ex(scope, payer, table, id);
-}
+// void db_remove_i64_ex( uint64_t scope, uint64_t payer, uint64_t table, uint64_t id ) {
+//    get_vm_api()->db_remove_i64_ex(scope, payer, table, id);
+// }
 
 int32_t db_get_i64(int32_t iterator, void* data, uint32_t len) {
    return get_vm_api()->db_get_i64(iterator, data, len);
 }
 
-int32_t db_get_i64_ex( int itr, uint64_t* primary, char* buffer, size_t buffer_size ) {
-   return get_vm_api()->db_get_i64_ex( itr, primary, buffer, buffer_size );
-}
+// int32_t db_get_i64_ex( int itr, uint64_t* primary, char* buffer, size_t buffer_size ) {
+//    return get_vm_api()->db_get_i64_ex( itr, primary, buffer, buffer_size );
+// }
 
-const char* db_get_i64_exex( int itr, size_t* buffer_size ) {
-   return get_vm_api()->db_get_i64_exex( itr,  buffer_size);
-}
+// const char* db_get_i64_exex( int itr, size_t* buffer_size ) {
+//    return get_vm_api()->db_get_i64_exex( itr,  buffer_size);
+// }
 
 int32_t db_next_i64(int32_t iterator, uint64_t* primary) {
    return get_vm_api()->db_next_i64(iterator, primary);

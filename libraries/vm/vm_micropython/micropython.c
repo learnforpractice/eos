@@ -11,14 +11,14 @@ u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 void (*Z_envZ_prints_lZ_vii)(u32, u32);
 void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
-u32 (*Z_envZ_call_vm_apiZ_iiiiii)(u32, u32, u32, u32, u32);
+u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
 u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 void (*Z_envZ_print_hexZ_vii)(u32, u32);
 
 uint64_t s2n( const char *str, size_t str_size );
 int n2s(uint64_t value, char *str, size_t str_size);
-int call_vm_api(int function_type,  void *input, size_t input_size, void *output, size_t output_size);
+u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset);
 
 #include <stdio.h>
 
@@ -50,13 +50,6 @@ static u32 _n2s(u64 n, u32 str_offset, u32 str_size) {
 //  printf("+++++++++++++_n2s: %s %d\n", str, ret);
   return ret;
 }
-
-static u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset, u32 output_size) {
-  char *input = get_memory_ptr(input_offset);
-  char *output = get_memory_ptr(output_offset);
-  return call_vm_api(function_type, input, input_size, output, output_size);
-}
-
 
 //void * memset ( void * ptr, int value, size_t num );
 
@@ -96,7 +89,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_memmoveZ_iiii = _memmove;
   Z_envZ_prints_lZ_vii = _prints;
   Z_envZ_eosio_assertZ_vii = _eosio_assert;
-  Z_envZ_call_vm_apiZ_iiiiii = _call_vm_api;
+  Z_envZ_call_vm_apiZ_iiiii = _call_vm_api;
 
   Z_envZ_s2nZ_jii = _s2n;
   Z_envZ_n2sZ_ijii = _n2s;
@@ -111,7 +104,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   memcpy(&(M0.data[0]), &g1, 4);
 }
 
-static void *get_memory_ptr(int offset) {
+void *get_memory_ptr(int offset) {
   return M0.data + offset;
 }
 

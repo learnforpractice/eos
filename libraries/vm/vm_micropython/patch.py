@@ -15,7 +15,7 @@ static void longjmp_ex(u32, u32);
 r'''
 // static u32 setjmp_ex(u32);
 // static void longjmp_ex(u32, u32);
-static void *get_memory_ptr(int offset);
+void *get_memory_ptr(int offset);
 #include <setjmp.h>
 #include <stdio.h>
 
