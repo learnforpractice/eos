@@ -1171,7 +1171,7 @@ void apply_context::call_contract(uint64_t contract, const char *args, size_t ar
 }
 
 int apply_context::call_contract_get_args(void* args, size_t size) {
-   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)args)("n2", size));
+//   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)args)("n2", size));
 
     if (!args || size == 0) {
         return call_args.size();
@@ -1182,14 +1182,14 @@ int apply_context::call_contract_get_args(void* args, size_t size) {
 }
 
 int apply_context::call_contract_set_results(const void* result, size_t size) {
-   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)result)("n2", size));
+//   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)result)("n2", size));
     call_returns.resize(size);
     memcpy(call_returns.data(), result, size);
     return size;
 }
 
 int apply_context::call_contract_get_results(void* result, size_t size) {
-   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)result)("n2", size));
+//   ilog("+++++++${n1}, ${n2}", ("n1", (uint64_t)result)("n2", size));
     if (!result || size == 0) {
         return call_returns.size();
     }

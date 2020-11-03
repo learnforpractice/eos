@@ -15,18 +15,18 @@ static void longjmp_ex(u32, u32);
 r'''
 // static u32 setjmp_ex(u32);
 // static void longjmp_ex(u32, u32);
-void *get_memory_ptr(int offset);
+void *get_memory_ptr(u32 offset, u32 size);
 #include <setjmp.h>
 #include <stdio.h>
 
 void vm_checktime(void);
 
 #define setjmp_ex(p0) \
-  setjmp(*(jmp_buf*)get_memory_ptr(p0))
+  setjmp(*(jmp_buf*)get_memory_ptr(p0, 128))
 
 #define longjmp_ex(p0, p1) \
 { \
-  void *ptr = get_memory_ptr(p0); \
+  void *ptr = get_memory_ptr(p0, 128); \
   printf("++++++++longjmp:%p\n", ptr); \
   longjmp(*(jmp_buf*)ptr, p1); \
 }
@@ -69,7 +69,7 @@ void prints_l( const char* cstr, uint32_t len);
 
 static void mp_js_write(u32 p0, u32 len) {
   FUNC_PROLOGUE;
-  char *p0_ptr = get_memory_ptr(p0);
+  char *p0_ptr = get_memory_ptr(p0, len);
   prints_l(p0_ptr, len);
   FUNC_EPILOGUE;
 }

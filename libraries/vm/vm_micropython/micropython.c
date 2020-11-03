@@ -31,23 +31,24 @@ static void print_hex(char *data, size_t size) {
 
 void checktime(void);
 void prints_l( const char* cstr, uint32_t len);
+void eosio_assert( uint32_t test, const char* msg );
 
 void vm_checktime(void) {
   checktime();
 }
 
 void _print_hex(u32 data_offset, u32 size) {
-  char *data = (char *)get_memory_ptr(data_offset);
+  char *data = (char *)get_memory_ptr(data_offset, size);
   print_hex(data, size);
 }
 
 static u64 _s2n(u32 str_offset, u32 str_size) {
-  char *str = get_memory_ptr(str_offset);
+  char *str = get_memory_ptr(str_offset, str_size);
   return s2n(str, str_size);
 }
 
 static u32 _n2s(u64 n, u32 str_offset, u32 str_size) {
-  char *str = get_memory_ptr(str_offset);
+  char *str = get_memory_ptr(str_offset, str_size);
   u32 ret = n2s(n, str, str_size);
 //  printf("+++++++++++++_n2s: %s %d\n", str, ret);
   return ret;
@@ -56,34 +57,35 @@ static u32 _n2s(u64 n, u32 str_offset, u32 str_size) {
 //void * memset ( void * ptr, int value, size_t num );
 
 static u32 _memset(u32 ptr_offset, u32 value, u32 num) {
-  char *ptr = get_memory_ptr(ptr_offset);
+  char *ptr = get_memory_ptr(ptr_offset, num);
   memset(ptr, value, num);
   return ptr_offset;
 }
 
 //void * memcpy ( void * destination, const void * source, size_t num );
 static u32 _memcpy(u32 dest_offset, u32 src_offset, u32 num) {
-  char *src_ptr = get_memory_ptr(src_offset);
-  char *dest_ptr = get_memory_ptr(dest_offset);
+  char *src_ptr = get_memory_ptr(src_offset, num);
+  char *dest_ptr = get_memory_ptr(dest_offset, num);
   memcpy(dest_ptr, src_ptr, num);
   return dest_offset;
 }
 
 //void * memmove ( void * destination, const void * source, size_t num )
 static u32 _memmove(u32 dest_offset, u32 src_offset, u32 num) {
-  char *src_ptr = get_memory_ptr(src_offset);
-  char *dest_ptr = get_memory_ptr(dest_offset);
+  char *src_ptr = get_memory_ptr(src_offset, num);
+  char *dest_ptr = get_memory_ptr(dest_offset, num);
   memmove(dest_ptr, src_ptr, num);
   return dest_offset;
 }
 
 static void _prints_l(u32 src_offset, u32 len) {
-  char *src_ptr = get_memory_ptr(src_offset);
+  char *src_ptr = get_memory_ptr(src_offset, len);
   prints_l(src_ptr, len);
 }
 
-static void _eosio_assert(u32 a, u32 b) {
-
+static void _eosio_assert(u32 test, u32 msg_offset) {
+  const char *msg = get_memory_ptr(msg_offset, 128);
+  eosio_assert(test, msg);
 }
 
 void WASM_RT_ADD_PREFIX(init)(void) {
@@ -107,7 +109,8 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   memcpy(&(M0.data[0]), &g1, 4);
 }
 
-void *get_memory_ptr(int offset) {
+void *get_memory_ptr(uint32_t offset, uint32_t size) {
+  eosio_assert(offset + size <= M0.size && offset + size >= offset, "memory access out of bound!");
   return M0.data + offset;
 }
 
@@ -119,7 +122,7 @@ int micropython_init() {
 
 int micropython_contract_init(int type, const char *py_src, size_t size) {
   u32 offset = malloc(size);
-  char *ptr = (char *)get_memory_ptr(offset);
+  char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
   return micropython_init_module(type, offset, size);
 }
