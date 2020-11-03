@@ -150,6 +150,18 @@ def apply(a, b, c):
             logger.info(e.args[0]['action_traces'][0]['console'])
             assert e.args[0]['except']['name'] == 'python_execution_error'
 
+    def test_bigint(self):
+        code = '''
+def apply(a, b, c):
+    a = bigint(123)
+    b = bigint(123)
+    print(bigint, a, b, a + b)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info(r['action_traces'][0]['console'])
+
     def test_call(self):
         # print(os.getpid())
         # input('<<<')
@@ -201,9 +213,13 @@ def apply(receiver, code, action):
         contract_name = 'alice'
         self.chain.deploy_contract(contract_name, code, b'', vmtype=3)
 
-        self.chain.push_action(contract_name, 'sayhello', b'a')
+        r = self.chain.push_action(contract_name, 'sayhello', b'a')
+        logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.push_action(contract_name, 'sayhello', b'b')
-        self.chain.push_action(contract_name, 'sayhello', b'c')
+        r = self.chain.push_action(contract_name, 'sayhello', b'b')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action(contract_name, 'sayhello', b'c')
+        logger.info('+++elapsed: %s', r['elapsed'])
 
         self.chain.produce_block()
