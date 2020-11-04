@@ -138651,16 +138651,19 @@ static u32 mod_chainlib_call_contract(u32 p0, u32 p1) {
 }
 
 static u32 mod_chainlib_db_idx64_store(u32 p0, u32 p1) {
-  u32 l2 = 0;
-  u64 l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0;
+  u32 l2 = 0, l7 = 0;
+  u64 l3 = 0, l4 = 0, l5 = 0, l6 = 0;
   FUNC_PROLOGUE;
-  u32 i0, i1, i2, i4;
+  u32 i0, i1, i2, i3, i4, i5;
   u64 j0, j1, j2, j3;
   i0 = g0;
   i1 = 16u;
   i0 -= i1;
   l2 = i0;
   g0 = i0;
+  i0 = l2;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0), j1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
   j0 = obj_to_u64(i0);
@@ -138682,33 +138685,58 @@ static u32 mod_chainlib_db_idx64_store(u32 p0, u32 p1) {
   p1 = i0;
   i1 = 1u;
   i0 &= i1;
-  if (i0) {goto B1;}
+  if (i0) {goto B2;}
   i0 = p1;
   i1 = 3u;
   i0 &= i1;
-  if (i0) {goto B2;}
+  l7 = i0;
+  if (i0) {goto B3;}
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
   i1 = 50064u;
   i0 = i0 == i1;
-  if (i0) {goto B1;}
+  if (i0) {goto B2;}
+  B3:;
+  i0 = p1;
+  i1 = 7u;
+  i0 &= i1;
+  i1 = 2u;
+  i0 = i0 == i1;
+  if (i0) {goto B4;}
+  i0 = l7;
+  if (i0) {goto B0;}
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0));
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  i1 = 56u;
+  i0 = i0 != i1;
+  if (i0) {goto B0;}
+  B4:;
+  i0 = l2;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 12), i1);
+  i0 = l2;
+  i1 = p1;
+  i2 = l2;
+  i3 = 12u;
+  i2 += i3;
+  i1 = mp_obj_str_get_data(i1, i2);
+  i2 = l2;
+  i2 = i32_load((&M0), (u64)(i2 + 12));
+  p1 = i2;
+  i3 = 8u;
+  i4 = p1;
+  i5 = 8u;
+  i4 = i4 < i5;
+  i2 = i4 ? i2 : i3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  goto B1;
   B2:;
   i0 = p1;
   i1 = l2;
   i2 = 8u;
   mp_obj_int_to_bytes(i0, i1, i2);
-  goto B0;
   B1:;
-  i0 = p1;
-  j0 = mp_obj_int_get_ull(i0);
-  l7 = j0;
-  i0 = l2;
-  j1 = 0ull;
-  i64_store((&M0), (u64)(i0 + 8), j1);
-  i0 = l2;
-  j1 = l7;
-  i64_store((&M0), (u64)(i0), j1);
-  B0:;
   j0 = l3;
   j1 = l4;
   j2 = l5;
@@ -138722,28 +138750,93 @@ static u32 mod_chainlib_db_idx64_store(u32 p0, u32 p1) {
   i0 += i1;
   g0 = i0;
   i0 = p1;
+  goto Bfunc;
+  B0:;
+  i0 = 26286u;
+  mp_raise_TypeError(i0);
+  UNREACHABLE;
+  Bfunc:;
   FUNC_EPILOGUE;
   return i0;
 }
 
 static u32 mod_chainlib_db_idx64_update(u32 p0, u32 p1, u32 p2) {
   u32 l3 = 0;
+  u64 l4 = 0;
   FUNC_PROLOGUE;
-  u32 i0, i1, i2;
-  u64 j1;
+  u32 i0, i1, i2, i3, i4, i5;
+  u64 j0, j1;
   i0 = g0;
   i1 = 16u;
   i0 -= i1;
   l3 = i0;
   g0 = i0;
-  i0 = p2;
-  i1 = l3;
-  i2 = 16u;
-  mp_obj_int_to_bytes(i0, i1, i2);
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0), j1);
   i0 = p0;
   i0 = mp_obj_get_int(i0);
-  i1 = p1;
-  j1 = obj_to_u64(i1);
+  p0 = i0;
+  i0 = p1;
+  j0 = obj_to_u64(i0);
+  l4 = j0;
+  i0 = p2;
+  i1 = 1u;
+  i0 &= i1;
+  if (i0) {goto B2;}
+  i0 = p2;
+  i1 = 3u;
+  i0 &= i1;
+  p1 = i0;
+  if (i0) {goto B3;}
+  i0 = p2;
+  i0 = i32_load((&M0), (u64)(i0));
+  i1 = 50064u;
+  i0 = i0 == i1;
+  if (i0) {goto B2;}
+  B3:;
+  i0 = p2;
+  i1 = 7u;
+  i0 &= i1;
+  i1 = 2u;
+  i0 = i0 == i1;
+  if (i0) {goto B4;}
+  i0 = p1;
+  if (i0) {goto B0;}
+  i0 = p2;
+  i0 = i32_load((&M0), (u64)(i0));
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  i1 = 56u;
+  i0 = i0 != i1;
+  if (i0) {goto B0;}
+  B4:;
+  i0 = l3;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 12), i1);
+  i0 = l3;
+  i1 = p2;
+  i2 = l3;
+  i3 = 12u;
+  i2 += i3;
+  i1 = mp_obj_str_get_data(i1, i2);
+  i2 = l3;
+  i2 = i32_load((&M0), (u64)(i2 + 12));
+  p2 = i2;
+  i3 = 8u;
+  i4 = p2;
+  i5 = 8u;
+  i4 = i4 < i5;
+  i2 = i4 ? i2 : i3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  goto B1;
+  B2:;
+  i0 = p2;
+  i1 = l3;
+  i2 = 8u;
+  mp_obj_int_to_bytes(i0, i1, i2);
+  B1:;
+  i0 = p0;
+  j1 = l4;
   i2 = l3;
   db_idx64_update(i0, j1, i2);
   i0 = l3;
@@ -138751,6 +138844,12 @@ static u32 mod_chainlib_db_idx64_update(u32 p0, u32 p1, u32 p2) {
   i0 += i1;
   g0 = i0;
   i0 = 6u;
+  goto Bfunc;
+  B0:;
+  i0 = 26286u;
+  mp_raise_TypeError(i0);
+  UNREACHABLE;
+  Bfunc:;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -138906,10 +139005,10 @@ static u32 mod_chainlib_db_idx64_find_primary(u32 p0, u32 p1) {
 }
 
 static u32 mod_chainlib_db_idx64_find_secondary(u32 p0, u32 p1) {
-  u32 l2 = 0;
+  u32 l2 = 0, l6 = 0;
   u64 l3 = 0, l4 = 0, l5 = 0;
   FUNC_PROLOGUE;
-  u32 i0, i1, i2, i4, i5, i6;
+  u32 i0, i1, i2, i3, i4, i5, i6;
   u64 j0, j1, j2, j3;
   i0 = g0;
   i1 = 32u;
@@ -138932,10 +139031,69 @@ static u32 mod_chainlib_db_idx64_find_secondary(u32 p0, u32 p1) {
   j1 = 0ull;
   i64_store((&M0), (u64)(i0 + 24), j1);
   i0 = l2;
-  i1 = p1;
-  i1 = i32_load((&M0), (u64)(i1 + 12));
-  j1 = obj_to_u64(i1);
+  j1 = 0ull;
   i64_store((&M0), (u64)(i0 + 16), j1);
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0 + 12));
+  p1 = i0;
+  i1 = 1u;
+  i0 &= i1;
+  if (i0) {goto B2;}
+  i0 = p1;
+  i1 = 3u;
+  i0 &= i1;
+  l6 = i0;
+  if (i0) {goto B3;}
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0));
+  i1 = 50064u;
+  i0 = i0 == i1;
+  if (i0) {goto B2;}
+  B3:;
+  i0 = p1;
+  i1 = 7u;
+  i0 &= i1;
+  i1 = 2u;
+  i0 = i0 == i1;
+  if (i0) {goto B4;}
+  i0 = l6;
+  if (i0) {goto B0;}
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0));
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  i1 = 56u;
+  i0 = i0 != i1;
+  if (i0) {goto B0;}
+  B4:;
+  i0 = l2;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 8), i1);
+  i0 = l2;
+  i1 = 16u;
+  i0 += i1;
+  i1 = p1;
+  i2 = l2;
+  i3 = 8u;
+  i2 += i3;
+  i1 = mp_obj_str_get_data(i1, i2);
+  i2 = l2;
+  i2 = i32_load((&M0), (u64)(i2 + 8));
+  p1 = i2;
+  i3 = 8u;
+  i4 = p1;
+  i5 = 8u;
+  i4 = i4 < i5;
+  i2 = i4 ? i2 : i3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  goto B1;
+  B2:;
+  i0 = p1;
+  i1 = l2;
+  i2 = 16u;
+  i1 += i2;
+  i2 = 8u;
+  mp_obj_int_to_bytes(i0, i1, i2);
+  B1:;
   i0 = l2;
   j1 = l3;
   j2 = l4;
@@ -138965,6 +139123,12 @@ static u32 mod_chainlib_db_idx64_find_secondary(u32 p0, u32 p1) {
   i0 += i1;
   g0 = i0;
   i0 = p1;
+  goto Bfunc;
+  B0:;
+  i0 = 26286u;
+  mp_raise_TypeError(i0);
+  UNREACHABLE;
+  Bfunc:;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -139117,16 +139281,22 @@ static u32 mod_chainlib_db_idx64_end(u32 p0, u32 p1) {
 }
 
 static u32 mod_chainlib_db_idx128_store(u32 p0, u32 p1) {
-  u32 l2 = 0;
-  u64 l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0;
+  u32 l2 = 0, l7 = 0;
+  u64 l3 = 0, l4 = 0, l5 = 0, l6 = 0;
   FUNC_PROLOGUE;
-  u32 i0, i1, i2, i4;
+  u32 i0, i1, i2, i3, i4, i5;
   u64 j0, j1, j2, j3;
   i0 = g0;
-  i1 = 16u;
+  i1 = 32u;
   i0 -= i1;
   l2 = i0;
   g0 = i0;
+  i0 = l2;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l2;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0), j1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
   j0 = obj_to_u64(i0);
@@ -139148,33 +139318,58 @@ static u32 mod_chainlib_db_idx128_store(u32 p0, u32 p1) {
   p1 = i0;
   i1 = 1u;
   i0 &= i1;
-  if (i0) {goto B1;}
+  if (i0) {goto B2;}
   i0 = p1;
   i1 = 3u;
   i0 &= i1;
-  if (i0) {goto B2;}
+  l7 = i0;
+  if (i0) {goto B3;}
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
   i1 = 50064u;
   i0 = i0 == i1;
-  if (i0) {goto B1;}
+  if (i0) {goto B2;}
+  B3:;
+  i0 = p1;
+  i1 = 7u;
+  i0 &= i1;
+  i1 = 2u;
+  i0 = i0 == i1;
+  if (i0) {goto B4;}
+  i0 = l7;
+  if (i0) {goto B0;}
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0));
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  i1 = 56u;
+  i0 = i0 != i1;
+  if (i0) {goto B0;}
+  B4:;
+  i0 = l2;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 28), i1);
+  i0 = l2;
+  i1 = p1;
+  i2 = l2;
+  i3 = 28u;
+  i2 += i3;
+  i1 = mp_obj_str_get_data(i1, i2);
+  i2 = l2;
+  i2 = i32_load((&M0), (u64)(i2 + 28));
+  p1 = i2;
+  i3 = 16u;
+  i4 = p1;
+  i5 = 16u;
+  i4 = i4 < i5;
+  i2 = i4 ? i2 : i3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  goto B1;
   B2:;
   i0 = p1;
   i1 = l2;
   i2 = 16u;
   mp_obj_int_to_bytes(i0, i1, i2);
-  goto B0;
   B1:;
-  i0 = p1;
-  j0 = mp_obj_int_get_ull(i0);
-  l7 = j0;
-  i0 = l2;
-  j1 = 0ull;
-  i64_store((&M0), (u64)(i0 + 8), j1);
-  i0 = l2;
-  j1 = l7;
-  i64_store((&M0), (u64)(i0), j1);
-  B0:;
   j0 = l3;
   j1 = l4;
   j2 = l5;
@@ -139184,39 +139379,113 @@ static u32 mod_chainlib_db_idx128_store(u32 p0, u32 p1) {
   i0 = mp_obj_new_int(i0);
   p1 = i0;
   i0 = l2;
-  i1 = 16u;
+  i1 = 32u;
   i0 += i1;
   g0 = i0;
   i0 = p1;
+  goto Bfunc;
+  B0:;
+  i0 = 26286u;
+  mp_raise_TypeError(i0);
+  UNREACHABLE;
+  Bfunc:;
   FUNC_EPILOGUE;
   return i0;
 }
 
 static u32 mod_chainlib_db_idx128_update(u32 p0, u32 p1, u32 p2) {
   u32 l3 = 0;
+  u64 l4 = 0;
   FUNC_PROLOGUE;
-  u32 i0, i1, i2;
-  u64 j1;
+  u32 i0, i1, i2, i3, i4, i5;
+  u64 j0, j1;
   i0 = g0;
-  i1 = 16u;
+  i1 = 32u;
   i0 -= i1;
   l3 = i0;
   g0 = i0;
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0 + 8), j1);
+  i0 = l3;
+  j1 = 0ull;
+  i64_store((&M0), (u64)(i0), j1);
+  i0 = p0;
+  i0 = mp_obj_get_int(i0);
+  p0 = i0;
+  i0 = p1;
+  j0 = obj_to_u64(i0);
+  l4 = j0;
+  i0 = p2;
+  i1 = 1u;
+  i0 &= i1;
+  if (i0) {goto B2;}
+  i0 = p2;
+  i1 = 3u;
+  i0 &= i1;
+  p1 = i0;
+  if (i0) {goto B3;}
+  i0 = p2;
+  i0 = i32_load((&M0), (u64)(i0));
+  i1 = 50064u;
+  i0 = i0 == i1;
+  if (i0) {goto B2;}
+  B3:;
+  i0 = p2;
+  i1 = 7u;
+  i0 &= i1;
+  i1 = 2u;
+  i0 = i0 == i1;
+  if (i0) {goto B4;}
+  i0 = p1;
+  if (i0) {goto B0;}
+  i0 = p2;
+  i0 = i32_load((&M0), (u64)(i0));
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  i1 = 56u;
+  i0 = i0 != i1;
+  if (i0) {goto B0;}
+  B4:;
+  i0 = l3;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 28), i1);
+  i0 = l3;
+  i1 = p2;
+  i2 = l3;
+  i3 = 28u;
+  i2 += i3;
+  i1 = mp_obj_str_get_data(i1, i2);
+  i2 = l3;
+  i2 = i32_load((&M0), (u64)(i2 + 28));
+  p2 = i2;
+  i3 = 16u;
+  i4 = p2;
+  i5 = 16u;
+  i4 = i4 < i5;
+  i2 = i4 ? i2 : i3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  goto B1;
+  B2:;
   i0 = p2;
   i1 = l3;
   i2 = 16u;
   mp_obj_int_to_bytes(i0, i1, i2);
+  B1:;
   i0 = p0;
-  i0 = mp_obj_get_int(i0);
-  i1 = p1;
-  j1 = obj_to_u64(i1);
+  j1 = l4;
   i2 = l3;
   db_idx128_update(i0, j1, i2);
   i0 = l3;
-  i1 = 16u;
+  i1 = 32u;
   i0 += i1;
   g0 = i0;
   i0 = 6u;
+  goto Bfunc;
+  B0:;
+  i0 = 26286u;
+  mp_raise_TypeError(i0);
+  UNREACHABLE;
+  Bfunc:;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -139380,10 +139649,10 @@ static u32 mod_chainlib_db_idx128_find_primary(u32 p0, u32 p1) {
 }
 
 static u32 mod_chainlib_db_idx128_find_secondary(u32 p0, u32 p1) {
-  u32 l2 = 0;
+  u32 l2 = 0, l6 = 0;
   u64 l3 = 0, l4 = 0, l5 = 0;
   FUNC_PROLOGUE;
-  u32 i0, i1, i2, i4, i5, i6;
+  u32 i0, i1, i2, i3, i4, i5, i6;
   u64 j0, j1, j2, j3;
   i0 = g0;
   i1 = 48u;
@@ -139413,11 +139682,65 @@ static u32 mod_chainlib_db_idx128_find_secondary(u32 p0, u32 p1) {
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 12));
+  p1 = i0;
+  i1 = 1u;
+  i0 &= i1;
+  if (i0) {goto B2;}
+  i0 = p1;
+  i1 = 3u;
+  i0 &= i1;
+  l6 = i0;
+  if (i0) {goto B3;}
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0));
+  i1 = 50064u;
+  i0 = i0 == i1;
+  if (i0) {goto B2;}
+  B3:;
+  i0 = p1;
+  i1 = 7u;
+  i0 &= i1;
+  i1 = 2u;
+  i0 = i0 == i1;
+  if (i0) {goto B4;}
+  i0 = l6;
+  if (i0) {goto B0;}
+  i0 = p1;
+  i0 = i32_load((&M0), (u64)(i0));
+  i0 = i32_load((&M0), (u64)(i0 + 24));
+  i1 = 56u;
+  i0 = i0 != i1;
+  if (i0) {goto B0;}
+  B4:;
+  i0 = l2;
+  i1 = 0u;
+  i32_store((&M0), (u64)(i0 + 8), i1);
+  i0 = l2;
+  i1 = 16u;
+  i0 += i1;
+  i1 = p1;
+  i2 = l2;
+  i3 = 8u;
+  i2 += i3;
+  i1 = mp_obj_str_get_data(i1, i2);
+  i2 = l2;
+  i2 = i32_load((&M0), (u64)(i2 + 8));
+  p1 = i2;
+  i3 = 16u;
+  i4 = p1;
+  i5 = 16u;
+  i4 = i4 < i5;
+  i2 = i4 ? i2 : i3;
+  i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
+  goto B1;
+  B2:;
+  i0 = p1;
   i1 = l2;
   i2 = 16u;
   i1 += i2;
   i2 = 16u;
   mp_obj_int_to_bytes(i0, i1, i2);
+  B1:;
   i0 = l2;
   j1 = l3;
   j2 = l4;
@@ -139447,6 +139770,12 @@ static u32 mod_chainlib_db_idx128_find_secondary(u32 p0, u32 p1) {
   i0 += i1;
   g0 = i0;
   i0 = p1;
+  goto Bfunc;
+  B0:;
+  i0 = 26286u;
+  mp_raise_TypeError(i0);
+  UNREACHABLE;
+  Bfunc:;
   FUNC_EPILOGUE;
   return i0;
 }
