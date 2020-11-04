@@ -22,9 +22,9 @@ u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output
 
 #include <stdio.h>
 
-static void print_hex(char *data, size_t size) {
+static void print_hex(char *data, uint32_t size) {
   for (int i=0;i<size;i++) {
-    printf("%02x", data[i]);
+    printf("%02x", (unsigned char)data[i]);
   }
   printf("\n");
 }
