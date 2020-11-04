@@ -187,10 +187,15 @@ def apply(receiver, code, action):
 
 
     assert (0, 11) == db_idx64_find_primary(code, scope, table, 1)
-    assert (0, 1) == db_idx64_find_secondary(code, scope, table, 11)
-
     assert (1, 33) == db_idx64_find_primary(code, scope, table, 3)
+    assert (2, 55) == db_idx64_find_primary(code, scope, table, 5)
+    assert (3, 77) == db_idx64_find_primary(code, scope, table, 7)
+
+    assert (0, 1) == db_idx64_find_secondary(code, scope, table, 11)
     assert (1, 3) == db_idx64_find_secondary(code, scope, table, 33)
+    assert (2, 5) == db_idx64_find_secondary(code, scope, table, 55)
+    assert (3, 7) == db_idx64_find_secondary(code, scope, table, 77)
+
 
     assert (0, 1) == db_idx64_lowerbound(code, scope, table, 11)
     assert (1, 3) == db_idx64_upperbound(code, scope, table, 11)
@@ -198,3 +203,41 @@ def apply(receiver, code, action):
     assert (-2, 0) == db_idx64_lowerbound(code, scope, table, 88)
     assert (-2, 0) == db_idx64_upperbound(code, scope, table, 88)
 
+
+    secondary0 = 0x0102030405060708090a0b0c0d0e0f11
+    secondary1 = 0x0102030405060708090a0b0c0d0e0f33
+    secondary2 = 0x0102030405060708090a0b0c0d0e0f55
+    secondary3 = 0x0102030405060708090a0b0c0d0e0f77
+
+    itr0 = db_idx128_store(scope, table, payer, 1, secondary0)
+    itr1 = db_idx128_store(scope, table, payer, 3, secondary1)
+    itr2 = db_idx128_store(scope, table, payer, 5, secondary2)
+    itr3 = db_idx128_store(scope, table, payer, 7, secondary3)
+
+    assert itr0 == 0
+    assert itr1 == 1
+    assert itr2 == 2
+    assert itr3 == 3
+
+    assert (0, secondary0) == db_idx128_find_primary(code, scope, table, 1)
+    assert (1, secondary1) == db_idx128_find_primary(code, scope, table, 3)
+    assert (2, secondary2) == db_idx128_find_primary(code, scope, table, 5)
+    assert (3, secondary3) == db_idx128_find_primary(code, scope, table, 7)
+
+    assert (0, 1) == db_idx128_find_secondary(code, scope, table, secondary0)
+    assert (1, 3) == db_idx128_find_secondary(code, scope, table, secondary1)
+    assert (2, 5) == db_idx128_find_secondary(code, scope, table, secondary2)
+    assert (3, 7) == db_idx128_find_secondary(code, scope, table, secondary3)
+
+
+    assert (0, 1) == db_idx128_lowerbound(code, scope, table, secondary0)
+    assert (1, 3) == db_idx128_upperbound(code, scope, table, secondary0)
+
+    ret = db_idx128_lowerbound(code, scope, table, 0x0102030405060708090a0b0c0d0e0f78)
+    assert (-2, 0) == db_idx128_lowerbound(code, scope, table, 0x0102030405060708090a0b0c0d0e0f78)
+    assert (-2, 0) == db_idx128_upperbound(code, scope, table, 0x0102030405060708090a0b0c0d0e0f78)
+
+    secondary_0_update = 0x0102030405060708090a0b0c0d0e0f111
+    db_idx128_update(itr0, payer, secondary_0_update)
+    assert (0, 1) == db_idx128_find_secondary(code, scope, table, secondary_0_update)
+    assert (0, secondary_0_update) == db_idx128_find_primary(code, scope, table, 1)
