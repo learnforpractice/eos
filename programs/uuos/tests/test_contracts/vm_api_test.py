@@ -30,7 +30,7 @@ def apply(receiver, code, action):
 
     producers = get_active_producers()
     print(producers)
-    assert producers == ('uuos', )
+    assert producers == (name('uuos'), )
 
     require_auth('alice')
     try:
@@ -63,7 +63,7 @@ def apply(receiver, code, action):
     t = publication_time()
     print('+++publication_time:', t)
 
-    assert 'alice' == current_receiver()
+    assert name('alice') == current_receiver()
     data = read_action_data()
     print(len(data), data)
 
