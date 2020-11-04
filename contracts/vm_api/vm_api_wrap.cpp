@@ -6,10 +6,10 @@
 #define DB_SECONDARY_INDEX_METHODS_SIMPLE(IDX, IDX_TYPE) \
     case enum_db_##IDX##_store:                \
     {                                                  \
-        uint64_t scope = *(uint64_t *)args[0].ptr;   \
-        uint64_t table = *(uint64_t *)args[1].ptr;    \
-        uint64_t payer = *(uint64_t *)args[2].ptr; \
-        uint64_t id = *(uint64_t *)args[3].ptr; \
+        uint64_t scope =args[0].u64;   \
+        uint64_t table = args[1].u64;    \
+        uint64_t payer = args[2].u64; \
+        uint64_t id = args[3].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_store(scope, table, payer, id, (IDX_TYPE *)args[4].ptr ); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -17,16 +17,16 @@
     }                                          \
         break;                                 \
     case enum_db_##IDX##_update:               \
-        get_vm_api()->db_##IDX##_update(*(int32_t *)args[0].ptr, *(uint64_t *)args[1].ptr, (IDX_TYPE *)args[2].ptr); \
+        get_vm_api()->db_##IDX##_update(args[0].i32, args[1].u64, (IDX_TYPE *)args[2].ptr); \
         break;                                 \
     case enum_db_##IDX##_remove:               \
     { \
-        get_vm_api()->db_##IDX##_remove(*(int32_t *)args[0].ptr); \
+        get_vm_api()->db_##IDX##_remove(args[0].i32); \
     } \
         break;                                 \
     case enum_db_##IDX##_next:                 \
     { \
-        int32_t itr = get_vm_api()->db_##IDX##_next(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
+        int32_t itr = get_vm_api()->db_##IDX##_next(args[0].i32, (uint64_t *)args[1].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
         vm_ret->i32 = itr; \
@@ -34,7 +34,7 @@
         break;                                 \
     case enum_db_##IDX##_previous:             \
     { \
-        int32_t itr = get_vm_api()->db_##IDX##_previous(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
+        int32_t itr = get_vm_api()->db_##IDX##_previous(args[0].i32, (uint64_t *)args[1].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
         vm_ret->i32 = itr; \
@@ -42,10 +42,10 @@
         break; \
     case enum_db_##IDX##_find_primary:         \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
-        uint64_t primary = *(uint64_t *)args[4].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
+        uint64_t primary = args[4].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (IDX_TYPE *)args[3].ptr, primary); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -54,10 +54,10 @@
         break;                                 \
     case enum_db_##IDX##_find_secondary:       \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
-        int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (IDX_TYPE *)args[3].ptr, *(uint64_t *)args[4].ptr); \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
+        int32_t itr = get_vm_api()->db_##IDX##_find_secondary(code, scope, table, (IDX_TYPE *)args[3].ptr, (uint64_t *)args[4].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
         vm_ret->i32 = itr; \
@@ -65,9 +65,9 @@
         break;                                 \
     case enum_db_##IDX##_lowerbound:           \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_lowerbound(code, scope, table, (IDX_TYPE *)args[3].ptr, (uint64_t *)args[4].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -76,9 +76,9 @@
         break;                                 \
     case enum_db_##IDX##_upperbound:           \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_upperbound(code, scope, table, (IDX_TYPE *)args[3].ptr, (uint64_t *)args[4].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -87,9 +87,9 @@
         break;                                 \
     case enum_db_##IDX##_end:                  \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_end(code, scope, table); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -101,10 +101,10 @@
 #define DB_SECONDARY_INDEX_METHODS_ARRAY(IDX, ARR_TYPE, ARR_SIZE) \
     case enum_db_##IDX##_store:                \
     {                                                  \
-        uint64_t scope = *(uint64_t *)args[0].ptr;   \
-        uint64_t table = *(uint64_t *)args[1].ptr;    \
-        uint64_t payer = *(uint64_t *)args[2].ptr; \
-        uint64_t id = *(uint64_t *)args[3].ptr; \
+        uint64_t scope = args[0].u64;   \
+        uint64_t table = args[1].u64;    \
+        uint64_t payer = args[2].u64; \
+        uint64_t id = args[3].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_store(scope, table, payer, id, (ARR_TYPE *)args[4].ptr, 2); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -112,16 +112,16 @@
     }                                          \
         break;                                 \
     case enum_db_##IDX##_update:               \
-        get_vm_api()->db_##IDX##_update(*(int32_t *)args[0].ptr, *(uint64_t *)args[1].ptr, args[2].ptr, args[2].size); \
+        get_vm_api()->db_##IDX##_update(args[0].i32, args[1].u64, args[2].ptr, args[2].size); \
         break;                                 \
     case enum_db_##IDX##_remove:               \
     { \
-        get_vm_api()->db_##IDX##_remove(*(int32_t *)args[0].ptr); \
+        get_vm_api()->db_##IDX##_remove(args[0].i32); \
     } \
         break;                                 \
     case enum_db_##IDX##_next:                 \
     { \
-        int32_t itr = get_vm_api()->db_##IDX##_next(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
+        int32_t itr = get_vm_api()->db_##IDX##_next(args[0].i32, (uint64_t *)args[1].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
         vm_ret->i32 = itr; \
@@ -129,7 +129,7 @@
         break;                                 \
     case enum_db_##IDX##_previous:             \
     { \
-        int32_t itr = get_vm_api()->db_##IDX##_previous(*(int32_t *)args[0].ptr, (uint64_t *)args[1].ptr); \
+        int32_t itr = get_vm_api()->db_##IDX##_previous(args[0].i32, (uint64_t *)args[1].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
         vm_ret->i32 = itr; \
@@ -137,10 +137,10 @@
         break; \
     case enum_db_##IDX##_find_primary:         \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
-        uint64_t primary = *(uint64_t *)args[4].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
+        uint64_t primary = args[4].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, primary); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -149,10 +149,10 @@
         break;                                 \
     case enum_db_##IDX##_find_secondary:       \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
-        int32_t itr = get_vm_api()->db_##IDX##_find_primary(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, *(uint64_t *)args[4].ptr); \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
+        int32_t itr = get_vm_api()->db_##IDX##_find_secondary(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, (uint64_t *)args[4].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
         vm_ret->i32 = itr; \
@@ -160,9 +160,9 @@
         break;                                 \
     case enum_db_##IDX##_lowerbound:           \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_lowerbound(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, (uint64_t *)args[4].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -171,9 +171,9 @@
         break;                                 \
     case enum_db_##IDX##_upperbound:           \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_upperbound(code, scope, table, (ARR_TYPE *)args[3].ptr, 2, (uint64_t *)args[4].ptr); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -182,9 +182,9 @@
         break;                                 \
     case enum_db_##IDX##_end:                  \
     { \
-        uint64_t code = *(uint64_t *)args[0].ptr;   \
-        uint64_t scope = *(uint64_t *)args[1].ptr;    \
-        uint64_t table = *(uint64_t *)args[2].ptr; \
+        uint64_t code = args[0].u64;   \
+        uint64_t scope = args[1].u64;    \
+        uint64_t table = args[2].u64; \
         int32_t itr = get_vm_api()->db_##IDX##_end(code, scope, table); \
         vm_ret->size = 4; \
         vm_ret->type = enum_arg_type_i32; \
@@ -192,167 +192,171 @@
     } \
         break;
 
-static int function_arg_count[enum_vm_api_function_count];
+struct function_info {
+    int arg_count;
+    const char *name;
+};
 
-#define SET_FUNCTION_ARG_COUNT(FN, COUNT) \
-    function_arg_count[enum_##FN] = COUNT;
+static struct function_info s_vm_api_functions[enum_vm_api_function_count];
+#define SET_FUNCTION_INFO(FN, COUNT) \
+    s_vm_api_functions[enum_##FN] = {COUNT, #FN};
 
 void init_function_args() {
     static int init = false;
     if (init) {
         return;
     }
-    memset(function_arg_count, 0, sizeof(function_arg_count));
+    memset(s_vm_api_functions, 0, sizeof(s_vm_api_functions));
 
-    SET_FUNCTION_ARG_COUNT(read_action_data, 1);
-    SET_FUNCTION_ARG_COUNT(require_recipient, 1);
-    SET_FUNCTION_ARG_COUNT(require_auth, 1);
-    SET_FUNCTION_ARG_COUNT(require_auth2, 2);
-    SET_FUNCTION_ARG_COUNT(has_auth, 1);
-    SET_FUNCTION_ARG_COUNT(is_account, 1);
-    SET_FUNCTION_ARG_COUNT(send_inline, 1);
-    SET_FUNCTION_ARG_COUNT(send_context_free_inline, 1);
-    SET_FUNCTION_ARG_COUNT(publication_time, 0);
-    SET_FUNCTION_ARG_COUNT(current_receiver, 0);
-    SET_FUNCTION_ARG_COUNT(get_active_producers, 1);
-    SET_FUNCTION_ARG_COUNT(assert_sha256, 2);
-    SET_FUNCTION_ARG_COUNT(assert_sha1, 2);
-    SET_FUNCTION_ARG_COUNT(assert_sha512, 2);
-    SET_FUNCTION_ARG_COUNT(assert_ripemd160, 2);
-    SET_FUNCTION_ARG_COUNT(assert_recover_key, 3);
-    SET_FUNCTION_ARG_COUNT(sha256, 2);
-    SET_FUNCTION_ARG_COUNT(sha1, 2);
-    SET_FUNCTION_ARG_COUNT(sha512, 2);
-    SET_FUNCTION_ARG_COUNT(ripemd160, 2);
-    SET_FUNCTION_ARG_COUNT(recover_key, 3);
-    SET_FUNCTION_ARG_COUNT(db_store_i64, 5);
-    SET_FUNCTION_ARG_COUNT(db_update_i64, 3);
-    SET_FUNCTION_ARG_COUNT(db_remove_i64, 1);
-    SET_FUNCTION_ARG_COUNT(db_get_i64, 2);
-    SET_FUNCTION_ARG_COUNT(db_next_i64, 2);
-    SET_FUNCTION_ARG_COUNT(db_previous_i64, 2);
-    SET_FUNCTION_ARG_COUNT(db_find_i64, 4);
-    SET_FUNCTION_ARG_COUNT(db_lowerbound_i64, 4);
-    SET_FUNCTION_ARG_COUNT(db_upperbound_i64, 4);
-    SET_FUNCTION_ARG_COUNT(db_end_i64, 3);
-    SET_FUNCTION_ARG_COUNT(db_store_i256, 5);
-    SET_FUNCTION_ARG_COUNT(db_update_i256, 3);
-    SET_FUNCTION_ARG_COUNT(db_remove_i256, 1);
-    SET_FUNCTION_ARG_COUNT(db_get_i256, 2);
-    SET_FUNCTION_ARG_COUNT(db_find_i256, 4);
-    SET_FUNCTION_ARG_COUNT(db_previous_i256, 2);
-    SET_FUNCTION_ARG_COUNT(db_next_i256, 2);
-    SET_FUNCTION_ARG_COUNT(db_upperbound_i256, 4);
-    SET_FUNCTION_ARG_COUNT(db_lowerbound_i256, 4);
-    SET_FUNCTION_ARG_COUNT(db_end_i256, 3);
-    SET_FUNCTION_ARG_COUNT(db_get_table_count, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx64_store, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx64_update, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx64_remove, 1);
-    SET_FUNCTION_ARG_COUNT(db_idx64_next, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx64_previous, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx64_find_primary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx64_find_secondary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx64_lowerbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx64_upperbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx64_end, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx128_store, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx128_update, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx128_remove, 1);
-    SET_FUNCTION_ARG_COUNT(db_idx128_next, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx128_previous, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx128_find_primary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx128_find_secondary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx128_lowerbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx128_upperbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx128_end, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx256_store, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx256_update, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx256_remove, 1);
-    SET_FUNCTION_ARG_COUNT(db_idx256_next, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx256_previous, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx256_find_primary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx256_find_secondary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx256_lowerbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx256_upperbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx256_end, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_store, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_update, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_remove, 1);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_next, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_previous, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_find_primary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_find_secondary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_lowerbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_upperbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_double_end, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_store, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_update, 3);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_remove, 1);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_next, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_previous, 2);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_find_primary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_find_secondary, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_lowerbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_upperbound, 5);
-    SET_FUNCTION_ARG_COUNT(db_idx_long_double_end, 3);
-    SET_FUNCTION_ARG_COUNT(check_transaction_authorization, 3);
-    SET_FUNCTION_ARG_COUNT(check_permission_authorization, 5);
-    SET_FUNCTION_ARG_COUNT(get_permission_last_used, 2);
-    SET_FUNCTION_ARG_COUNT(get_account_creation_time, 1);
-    SET_FUNCTION_ARG_COUNT(prints, 1);
-    SET_FUNCTION_ARG_COUNT(prints_l, 1);
-    SET_FUNCTION_ARG_COUNT(printi, 1);
-    SET_FUNCTION_ARG_COUNT(printui, 1);
-    SET_FUNCTION_ARG_COUNT(printi128, 1);
-    SET_FUNCTION_ARG_COUNT(printui128, 1);
-    SET_FUNCTION_ARG_COUNT(printsf, 1);
-    SET_FUNCTION_ARG_COUNT(printdf, 1);
-    SET_FUNCTION_ARG_COUNT(printqf, 1);
-    SET_FUNCTION_ARG_COUNT(printn, 1);
-    SET_FUNCTION_ARG_COUNT(printhex, 1);
-    SET_FUNCTION_ARG_COUNT(set_resource_limits, 4);
-    SET_FUNCTION_ARG_COUNT(get_resource_limits, 4);
-    SET_FUNCTION_ARG_COUNT(set_proposed_producers, 1);
-    SET_FUNCTION_ARG_COUNT(set_proposed_producers_ex, 2);
-    SET_FUNCTION_ARG_COUNT(is_privileged, 1);
-    SET_FUNCTION_ARG_COUNT(set_privileged, 2);
-    SET_FUNCTION_ARG_COUNT(set_blockchain_parameters_packed, 1);
-    SET_FUNCTION_ARG_COUNT(get_blockchain_parameters_packed, 1);
-    SET_FUNCTION_ARG_COUNT(activate_feature, 1);
-    SET_FUNCTION_ARG_COUNT(eosio_abort, 0);
-    SET_FUNCTION_ARG_COUNT(eosio_assert, 2);
-    SET_FUNCTION_ARG_COUNT(eosio_assert_message, 2);
-    SET_FUNCTION_ARG_COUNT(eosio_assert_code, 2);
-    SET_FUNCTION_ARG_COUNT(eosio_exit, 1);
-    SET_FUNCTION_ARG_COUNT(current_time, 0);
-    SET_FUNCTION_ARG_COUNT(now, 0);
-    SET_FUNCTION_ARG_COUNT(checktime, 0);
-    SET_FUNCTION_ARG_COUNT(check_context_free, 1);
-    SET_FUNCTION_ARG_COUNT(send_deferred, 4);
-    SET_FUNCTION_ARG_COUNT(cancel_deferred, 1);
-    SET_FUNCTION_ARG_COUNT(read_transaction, 1);
-    SET_FUNCTION_ARG_COUNT(transaction_size, 0);
-    SET_FUNCTION_ARG_COUNT(tapos_block_num, 0);
-    SET_FUNCTION_ARG_COUNT(tapos_block_prefix, 0);
-    SET_FUNCTION_ARG_COUNT(expiration, 0);
-    SET_FUNCTION_ARG_COUNT(get_action, 3);
-    SET_FUNCTION_ARG_COUNT(assert_privileged, 0);
-    SET_FUNCTION_ARG_COUNT(assert_context_free, 0);
-    SET_FUNCTION_ARG_COUNT(get_context_free_data, 2);
-    SET_FUNCTION_ARG_COUNT(token_create, 3);
-    SET_FUNCTION_ARG_COUNT(token_issue, 4);
-    SET_FUNCTION_ARG_COUNT(token_transfer, 5);
-    SET_FUNCTION_ARG_COUNT(token_open, 3);
-    SET_FUNCTION_ARG_COUNT(token_retire, 3);
-    SET_FUNCTION_ARG_COUNT(token_close, 2);
-    SET_FUNCTION_ARG_COUNT(call_contract_get_args, 1);
-    SET_FUNCTION_ARG_COUNT(call_contract_set_results, 1);
-    SET_FUNCTION_ARG_COUNT(call_contract_get_results, 1);
-    SET_FUNCTION_ARG_COUNT(call_contract, 2);
-    SET_FUNCTION_ARG_COUNT(is_feature_activated, 1);
-    SET_FUNCTION_ARG_COUNT(preactivate_feature, 1);
-    SET_FUNCTION_ARG_COUNT(get_sender, 0);
+    SET_FUNCTION_INFO(read_action_data, 1);
+    SET_FUNCTION_INFO(require_recipient, 1);
+    SET_FUNCTION_INFO(require_auth, 1);
+    SET_FUNCTION_INFO(require_auth2, 2);
+    SET_FUNCTION_INFO(has_auth, 1);
+    SET_FUNCTION_INFO(is_account, 1);
+    SET_FUNCTION_INFO(send_inline, 1);
+    SET_FUNCTION_INFO(send_context_free_inline, 1);
+    SET_FUNCTION_INFO(publication_time, 0);
+    SET_FUNCTION_INFO(current_receiver, 0);
+    SET_FUNCTION_INFO(get_active_producers, 1);
+    SET_FUNCTION_INFO(assert_sha256, 2);
+    SET_FUNCTION_INFO(assert_sha1, 2);
+    SET_FUNCTION_INFO(assert_sha512, 2);
+    SET_FUNCTION_INFO(assert_ripemd160, 2);
+    SET_FUNCTION_INFO(assert_recover_key, 3);
+    SET_FUNCTION_INFO(sha256, 2);
+    SET_FUNCTION_INFO(sha1, 2);
+    SET_FUNCTION_INFO(sha512, 2);
+    SET_FUNCTION_INFO(ripemd160, 2);
+    SET_FUNCTION_INFO(recover_key, 3);
+    SET_FUNCTION_INFO(db_store_i64, 5);
+    SET_FUNCTION_INFO(db_update_i64, 3);
+    SET_FUNCTION_INFO(db_remove_i64, 1);
+    SET_FUNCTION_INFO(db_get_i64, 2);
+    SET_FUNCTION_INFO(db_next_i64, 2);
+    SET_FUNCTION_INFO(db_previous_i64, 2);
+    SET_FUNCTION_INFO(db_find_i64, 4);
+    SET_FUNCTION_INFO(db_lowerbound_i64, 4);
+    SET_FUNCTION_INFO(db_upperbound_i64, 4);
+    SET_FUNCTION_INFO(db_end_i64, 3);
+    SET_FUNCTION_INFO(db_store_i256, 5);
+    SET_FUNCTION_INFO(db_update_i256, 3);
+    SET_FUNCTION_INFO(db_remove_i256, 1);
+    SET_FUNCTION_INFO(db_get_i256, 2);
+    SET_FUNCTION_INFO(db_find_i256, 4);
+    SET_FUNCTION_INFO(db_previous_i256, 2);
+    SET_FUNCTION_INFO(db_next_i256, 2);
+    SET_FUNCTION_INFO(db_upperbound_i256, 4);
+    SET_FUNCTION_INFO(db_lowerbound_i256, 4);
+    SET_FUNCTION_INFO(db_end_i256, 3);
+    SET_FUNCTION_INFO(db_get_table_count, 3);
+    SET_FUNCTION_INFO(db_idx64_store, 5);
+    SET_FUNCTION_INFO(db_idx64_update, 3);
+    SET_FUNCTION_INFO(db_idx64_remove, 1);
+    SET_FUNCTION_INFO(db_idx64_next, 2);
+    SET_FUNCTION_INFO(db_idx64_previous, 2);
+    SET_FUNCTION_INFO(db_idx64_find_primary, 5);
+    SET_FUNCTION_INFO(db_idx64_find_secondary, 5);
+    SET_FUNCTION_INFO(db_idx64_lowerbound, 5);
+    SET_FUNCTION_INFO(db_idx64_upperbound, 5);
+    SET_FUNCTION_INFO(db_idx64_end, 3);
+    SET_FUNCTION_INFO(db_idx128_store, 5);
+    SET_FUNCTION_INFO(db_idx128_update, 3);
+    SET_FUNCTION_INFO(db_idx128_remove, 1);
+    SET_FUNCTION_INFO(db_idx128_next, 2);
+    SET_FUNCTION_INFO(db_idx128_previous, 2);
+    SET_FUNCTION_INFO(db_idx128_find_primary, 5);
+    SET_FUNCTION_INFO(db_idx128_find_secondary, 5);
+    SET_FUNCTION_INFO(db_idx128_lowerbound, 5);
+    SET_FUNCTION_INFO(db_idx128_upperbound, 5);
+    SET_FUNCTION_INFO(db_idx128_end, 3);
+    SET_FUNCTION_INFO(db_idx256_store, 5);
+    SET_FUNCTION_INFO(db_idx256_update, 3);
+    SET_FUNCTION_INFO(db_idx256_remove, 1);
+    SET_FUNCTION_INFO(db_idx256_next, 2);
+    SET_FUNCTION_INFO(db_idx256_previous, 2);
+    SET_FUNCTION_INFO(db_idx256_find_primary, 5);
+    SET_FUNCTION_INFO(db_idx256_find_secondary, 5);
+    SET_FUNCTION_INFO(db_idx256_lowerbound, 5);
+    SET_FUNCTION_INFO(db_idx256_upperbound, 5);
+    SET_FUNCTION_INFO(db_idx256_end, 3);
+    SET_FUNCTION_INFO(db_idx_double_store, 5);
+    SET_FUNCTION_INFO(db_idx_double_update, 3);
+    SET_FUNCTION_INFO(db_idx_double_remove, 1);
+    SET_FUNCTION_INFO(db_idx_double_next, 2);
+    SET_FUNCTION_INFO(db_idx_double_previous, 2);
+    SET_FUNCTION_INFO(db_idx_double_find_primary, 5);
+    SET_FUNCTION_INFO(db_idx_double_find_secondary, 5);
+    SET_FUNCTION_INFO(db_idx_double_lowerbound, 5);
+    SET_FUNCTION_INFO(db_idx_double_upperbound, 5);
+    SET_FUNCTION_INFO(db_idx_double_end, 3);
+    SET_FUNCTION_INFO(db_idx_long_double_store, 5);
+    SET_FUNCTION_INFO(db_idx_long_double_update, 3);
+    SET_FUNCTION_INFO(db_idx_long_double_remove, 1);
+    SET_FUNCTION_INFO(db_idx_long_double_next, 2);
+    SET_FUNCTION_INFO(db_idx_long_double_previous, 2);
+    SET_FUNCTION_INFO(db_idx_long_double_find_primary, 5);
+    SET_FUNCTION_INFO(db_idx_long_double_find_secondary, 5);
+    SET_FUNCTION_INFO(db_idx_long_double_lowerbound, 5);
+    SET_FUNCTION_INFO(db_idx_long_double_upperbound, 5);
+    SET_FUNCTION_INFO(db_idx_long_double_end, 3);
+    SET_FUNCTION_INFO(check_transaction_authorization, 3);
+    SET_FUNCTION_INFO(check_permission_authorization, 5);
+    SET_FUNCTION_INFO(get_permission_last_used, 2);
+    SET_FUNCTION_INFO(get_account_creation_time, 1);
+    SET_FUNCTION_INFO(prints, 1);
+    SET_FUNCTION_INFO(prints_l, 1);
+    SET_FUNCTION_INFO(printi, 1);
+    SET_FUNCTION_INFO(printui, 1);
+    SET_FUNCTION_INFO(printi128, 1);
+    SET_FUNCTION_INFO(printui128, 1);
+    SET_FUNCTION_INFO(printsf, 1);
+    SET_FUNCTION_INFO(printdf, 1);
+    SET_FUNCTION_INFO(printqf, 1);
+    SET_FUNCTION_INFO(printn, 1);
+    SET_FUNCTION_INFO(printhex, 1);
+    SET_FUNCTION_INFO(set_resource_limits, 4);
+    SET_FUNCTION_INFO(get_resource_limits, 4);
+    SET_FUNCTION_INFO(set_proposed_producers, 1);
+    SET_FUNCTION_INFO(set_proposed_producers_ex, 2);
+    SET_FUNCTION_INFO(is_privileged, 1);
+    SET_FUNCTION_INFO(set_privileged, 2);
+    SET_FUNCTION_INFO(set_blockchain_parameters_packed, 1);
+    SET_FUNCTION_INFO(get_blockchain_parameters_packed, 1);
+    SET_FUNCTION_INFO(activate_feature, 1);
+    SET_FUNCTION_INFO(eosio_abort, 0);
+    SET_FUNCTION_INFO(eosio_assert, 2);
+    SET_FUNCTION_INFO(eosio_assert_message, 2);
+    SET_FUNCTION_INFO(eosio_assert_code, 2);
+    SET_FUNCTION_INFO(eosio_exit, 1);
+    SET_FUNCTION_INFO(current_time, 0);
+    SET_FUNCTION_INFO(now, 0);
+    SET_FUNCTION_INFO(checktime, 0);
+    SET_FUNCTION_INFO(check_context_free, 1);
+    SET_FUNCTION_INFO(send_deferred, 4);
+    SET_FUNCTION_INFO(cancel_deferred, 1);
+    SET_FUNCTION_INFO(read_transaction, 1);
+    SET_FUNCTION_INFO(transaction_size, 0);
+    SET_FUNCTION_INFO(tapos_block_num, 0);
+    SET_FUNCTION_INFO(tapos_block_prefix, 0);
+    SET_FUNCTION_INFO(expiration, 0);
+    SET_FUNCTION_INFO(get_action, 3);
+    SET_FUNCTION_INFO(assert_privileged, 0);
+    SET_FUNCTION_INFO(assert_context_free, 0);
+    SET_FUNCTION_INFO(get_context_free_data, 2);
+    SET_FUNCTION_INFO(token_create, 3);
+    SET_FUNCTION_INFO(token_issue, 4);
+    SET_FUNCTION_INFO(token_transfer, 5);
+    SET_FUNCTION_INFO(token_open, 3);
+    SET_FUNCTION_INFO(token_retire, 3);
+    SET_FUNCTION_INFO(token_close, 2);
+    SET_FUNCTION_INFO(call_contract_get_args, 1);
+    SET_FUNCTION_INFO(call_contract_set_results, 1);
+    SET_FUNCTION_INFO(call_contract_get_results, 1);
+    SET_FUNCTION_INFO(call_contract, 2);
+    SET_FUNCTION_INFO(is_feature_activated, 1);
+    SET_FUNCTION_INFO(preactivate_feature, 1);
+    SET_FUNCTION_INFO(get_sender, 0);
 
     init = 1;
 }
@@ -370,9 +374,11 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
         init_function_args();
         initialized = 1;
     }
-    
-    if (function_arg_count[function_type] != args_count) {
-        printf("++++++++++function_type:%d %d %d\n", function_type, function_arg_count[function_type], args_count);
+
+    printf("++++++++++function name:%s\n", s_vm_api_functions[function_type].name);
+
+    if (s_vm_api_functions[function_type].arg_count != args_count) {
+        printf("++++++++++function_type:%d %d %d\n", function_type, s_vm_api_functions[function_type].arg_count, args_count);
         // print_hex((char *)input, input_size);
         get_vm_api()->eosio_assert(false, "bad argument count!");
         return 0;
