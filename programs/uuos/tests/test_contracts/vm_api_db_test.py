@@ -1,10 +1,10 @@
 from chainlib import *
 def apply(receiver, code, action):
-    code = 'alice'
-    scope = 'alice'
-    table = 'table'
-    payer = 'alice'
-    key = 'hello'
+    code = name('alice')
+    scope = name('alice')
+    table = name('table')
+    payer = name('alice')
+    key = name('hello')
     try:
         itr1 = db_store_i64(scope, table, payer, 1, 123)
         raise 'should not go here'
@@ -171,4 +171,30 @@ def apply(receiver, code, action):
 
     for itr in itrs_64:
         db_remove_i64(itr)
+
+
+    itr0 = db_idx64_store(scope, table, payer, 1, 11)
+    itr1 = db_idx64_store(scope, table, payer, 3, 33)
+    itr2 = db_idx64_store(scope, table, payer, 5, 55)
+    itr3 = db_idx64_store(scope, table, payer, 7, 77)
+
+    assert (1, 3) == db_idx64_next(itr0)
+    assert (-1, 0) == db_idx64_previous(itr0)
+    assert (2, 5) == db_idx64_next(itr1)
+    assert (0, 1) == db_idx64_previous(itr1)
+
+    assert (2, 5) == db_idx64_previous(itr3)
+
+
+    assert (0, 11) == db_idx64_find_primary(code, scope, table, 1)
+    assert (0, 1) == db_idx64_find_secondary(code, scope, table, 11)
+
+    assert (1, 33) == db_idx64_find_primary(code, scope, table, 3)
+    assert (1, 3) == db_idx64_find_secondary(code, scope, table, 33)
+
+    assert (0, 1) == db_idx64_lowerbound(code, scope, table, 11)
+    assert (1, 3) == db_idx64_upperbound(code, scope, table, 11)
+
+    assert (-2, 0) == db_idx64_lowerbound(code, scope, table, 88)
+    assert (-2, 0) == db_idx64_upperbound(code, scope, table, 88)
 

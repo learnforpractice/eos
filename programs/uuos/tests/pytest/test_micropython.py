@@ -101,6 +101,9 @@ def apply(a, b, c):
 
 
     def test_db_vm_api(self):
+        # print(os.getpid())
+        # input('<<<')
+
         code = os.path.join(test_dir, '..', 'test_contracts', 'vm_api_db_test.py')
         with open(code, 'r') as f:
             code = f.read()
