@@ -231,7 +231,12 @@ def apply(a, b, c):
     assert name('alice') == name(s2n('alice'))
 
     print(name('alice') , name(s2n('alice')))
-    print(a.to_int(), a.to_str())
+
+    assert a.to_int() == s2n('alice')
+    assert 'alice' == a.to_str()
+    assert name('helloworld111') == name(s2n('helloworld111'))
+    assert name('helloworld111').to_str() == 'helloworld111'
+    assert name('helloworld111').to_int() == s2n('helloworld111')
 
 #    print(name('hello') == s2n('hello'))
 
