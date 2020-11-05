@@ -178,18 +178,6 @@ enum vm_api_function_type {
    enum_vm_api_function_count
 };
 
-struct vm_api_arg {
-    uint32_t size;
-    uint32_t type;
-    union {
-        uint64_t u64;
-        int32_t i32;
-        uint32_t u32;
-        uint8_t u8;
-        void *ptr;
-    };
-};
-
 enum vm_api_arg_type {
    enum_arg_type_i8,
    enum_arg_type_u8,
@@ -198,6 +186,19 @@ enum vm_api_arg_type {
    enum_arg_type_i64,
    enum_arg_type_u64,
    enum_arg_type_ptr,
+};
+
+struct vm_api_arg {
+    uint32_t size;
+    enum vm_api_arg_type type;
+    union {
+        uint64_t u64;
+        int64_t i64;
+        int32_t i32;
+        uint32_t u32;
+        uint8_t u8;
+        void *ptr;
+    };
 };
 
 #define MAX_VM_API_ARGS (10)

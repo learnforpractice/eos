@@ -747,12 +747,54 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
         DB_SECONDARY_INDEX_METHODS_SIMPLE(idx_long_double, float128_t)
 
         case enum_check_transaction_authorization:
+        {
+            int32_t ret = get_vm_api()->check_transaction_authorization(
+                                (char *)args[0].ptr, args[0].size,
+                                (char *)args[1].ptr, args[1].size, 
+                                (char *)args[2].ptr, args[2].size
+            );
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->size = 4;
+            vm_ret->i32 = ret;
+        }
             break;
+// int32_t check_permission_authorization( account_name account,
+//                                  permission_name permission,
+//                                  const char* pubkeys_data, uint32_t pubkeys_size,
+//                                  const char* perms_data,   uint32_t perms_size,
+//                                  uint64_t delay_us
+//                               );
         case enum_check_permission_authorization:
+        {
+            int32_t ret = get_vm_api()->check_permission_authorization(
+                args[0].u64,
+                args[1].u64,
+                (char *)args[2].ptr, args[2].size,
+                (char *)args[3].ptr, args[3].size,
+                args[4].u64
+            );
+            vm_ret->type = enum_arg_type_i32;
+            vm_ret->size = 4;
+            vm_ret->i32 = ret;
+        }
             break;
+// int64_t get_permission_last_used( account_name account, permission_name permission );
         case enum_get_permission_last_used:
+        {
+            int64_t ret = get_vm_api()->get_permission_last_used(args[0].u64, args[1].u64);
+            vm_ret->type = enum_arg_type_i64;
+            vm_ret->size = 8;
+            vm_ret->i64 = ret;
+        }
             break;
+// int64_t get_account_creation_time( account_name account );
         case enum_get_account_creation_time:
+        {
+            int64_t ret = get_vm_api()->get_account_creation_time(args[0].u64);
+            vm_ret->type = enum_arg_type_i64;
+            vm_ret->size = 8;
+            vm_ret->i64 = ret;
+        }
             break;
         case enum_prints:
             break;
