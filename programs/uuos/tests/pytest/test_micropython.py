@@ -227,6 +227,7 @@ def apply(a, b, c):
     assert a == name('alice')
     assert int(a) == s2n('alice')
     assert int(b) == s2n('alice')
+    assert str(a) == 'alice'
     assert name('alice') == name(s2n('alice'))
 
     print(name('alice') , name(s2n('alice')))
