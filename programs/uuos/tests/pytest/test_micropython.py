@@ -99,6 +99,57 @@ def apply(a, b, c):
 
         self.chain.produce_block()
 
+    def test_send_inline(self):
+        a = {
+            "account": 'alice',
+            "permission": "active",
+            "parent": "owner",
+            "auth": {
+                "threshold": 1,
+                "keys": [
+                    {
+                        "key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+                        "weight": 1
+                    },
+                ],
+                "accounts": [{"permission":{"actor":'alice',"permission":"uuos.code"},"weight":1}],
+                "waits": []
+            }
+        }
+
+        r = self.chain.push_action(self.chain.system_contract, 'updateauth', a, actor='alice')
+
+        code = '''
+import struct
+from chainlib import *
+def apply(a, b, c):
+    if c == s2n('sayhello'):
+        data = read_action_data()
+        print(data)
+    elif c == s2n('sendinline'):
+        account = name('alice')
+        action = name('sayhello')
+        actor = name('alice')
+        permission = name('active')
+        data = read_action_data()
+        send_inline(account, action, actor, permission, data)
+    elif c == s2n('contextfree'):
+        account = name('alice')
+        action = name('sayhello')
+        actor = name('alice')
+        permission = name('active')
+        data = read_action_data()
+        send_inline(account, action, actor, permission, data)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        r = self.chain.push_action('alice', 'sendinline', b'hello,world from inline')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'contextfree', b'hello,world from context free inline')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        self.chain.produce_block()
 
     def test_db_vm_api(self):
         # print(os.getpid())
@@ -156,36 +207,9 @@ def apply(a, b, c):
         self.chain.produce_block()
 
     def test_bigint(self):
-        code = r'''
-def apply(a, b, c):
-    a = bigint(123)
-    b = bigint(123)
-    print(bigint, a, b, a + b, a == b, a==123)
-    c1 = 0x0fffffffffffffff
-    c2 = bigint(0x0fffffffffffffff)
-    print(c1, c2, c1 == c2)
-    print("++++bigint(b'\x01\x01')", bigint(b'12345'))
-
-    try:
-        a = 0xffffffffffffff
-        b = 0xfffffffffffff
-        print(a/b)
-    except Exception as e:
-        print(e)
-
-    a = 0xffffffff
-    b = 0xfffffff
-    print(a/b)
-
-    # 0xffffffffffffffffff00/0xffffffffffffffff00
-    a = int.from_bytes(b'\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00', 'little')
-    b = int.from_bytes(b'\x00\xff\xff\xff\xff\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00', 'little')
-
-    print(type(a), a)
-    print(type(b), b)
-
-    print(1.1)
-'''
+        code = os.path.join(test_dir, '..', 'test_contracts', 'test_bigint.py')
+        with open(code, 'r') as f:
+            code = f.read()
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
@@ -196,8 +220,10 @@ def apply(a, b, c):
 
     def test_name(self):
         code = r'''
+from chainlib import *
 def apply(a, b, c):
     a = name('hello')
+    assert name(s2n('hello')) == name('hello')
     print('++++name:', a)
 '''
         code = self.compile(code)
