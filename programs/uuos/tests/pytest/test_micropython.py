@@ -222,9 +222,18 @@ def apply(a, b, c):
         code = r'''
 from chainlib import *
 def apply(a, b, c):
-    a = name('hello')
-    assert name(s2n('hello')) == name('hello')
+    print(type(a) == name, type(b) == name, type(c) == name)
     print('++++name:', a)
+    assert a == name('alice')
+    assert int(a) == s2n('alice')
+    assert int(b) == s2n('alice')
+    assert name('alice') == name(s2n('alice'))
+
+    print(name('alice') , name(s2n('alice')))
+    print(a.to_int(), a.to_str())
+
+#    print(name('hello') == s2n('hello'))
+
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
