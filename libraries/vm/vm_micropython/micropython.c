@@ -15,6 +15,7 @@ u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
 u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 void (*Z_envZ_print_hexZ_vii)(u32, u32);
+void (*Z_envZ_abortZ_vv)(void);
 
 uint64_t s2n( const char *str, size_t str_size );
 int n2s(uint64_t value, char *str, size_t str_size);
@@ -32,6 +33,7 @@ static void print_hex(char *data, uint32_t size) {
 void checktime(void);
 void prints_l( const char* cstr, uint32_t len);
 void eosio_assert( uint32_t test, const char* msg );
+void eosio_abort(void);
 
 void vm_checktime(void) {
   checktime();
@@ -88,12 +90,18 @@ static void _eosio_assert(u32 test, u32 msg_offset) {
   eosio_assert(test, msg);
 }
 
+static void _abort(void) {
+  eosio_abort();
+}
+
 void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_memsetZ_iiii = _memset;
   Z_envZ_memcpyZ_iiii = _memcpy;
   Z_envZ_memmoveZ_iiii = _memmove;
   Z_envZ_prints_lZ_vii = _prints_l;
   Z_envZ_eosio_assertZ_vii = _eosio_assert;
+  Z_envZ_abortZ_vv = _abort;
+
   Z_envZ_call_vm_apiZ_iiiii = _call_vm_api;
 
   Z_envZ_s2nZ_jii = _s2n;
