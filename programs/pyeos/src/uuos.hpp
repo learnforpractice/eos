@@ -142,6 +142,9 @@ void uuos_init_chain_api();
 #define uuos_shutdown_ uuos_get_chain_api()->uuos_shutdown
 #define uuos_sign_digest_ uuos_get_chain_api()->uuos_sign_digest
 
+#define uuos_get_last_error_ uuos_get_chain_api()->uuos_get_last_error
+
+
 //+++++++++++++++++chain api++++++++++++++
 #define chain_api_get_info_ uuos_get_chain_api()->chain_api_get_info
 #define chain_api_get_activated_protocol_features_ uuos_get_chain_api()->chain_api_get_activated_protocol_features

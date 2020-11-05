@@ -108,7 +108,7 @@ def set_default_config_dir(dir):
     _uuos.set_default_config_dir(dir)
 
 def get_last_error():
-    return _uuos.uuos_get_last_error()
+    return _uuos.get_last_error()
 
 def set_accepted_block_callback(cb):
     _uuos.set_accepted_block_callback(cb)

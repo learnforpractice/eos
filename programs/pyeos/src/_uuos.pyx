@@ -183,6 +183,9 @@ cdef extern from "uuos.hpp":
     void history_get_key_accounts_ex_(void *ptr, const string& param, string& result);
     void history_get_controlled_accounts_(void *ptr, const string& param, string& result);
 
+    string& uuos_get_last_error_()
+
+
 def say_hello():
     return say_hello_()
 
@@ -213,6 +216,9 @@ def set_default_data_dir(string& dir):
 
 def set_default_config_dir(string& dir):
     uuos_set_default_config_dir_(dir)
+
+def get_last_error():
+    return uuos_get_last_error_()
 
 def pack_native_object(int _type, string& msg):
     cdef string packed_message

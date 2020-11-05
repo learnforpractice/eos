@@ -395,7 +395,8 @@ class ChainTest(object):
         if not isinstance(args, bytes):
             _args = self.chain.pack_action_args(account, action, args)
             if not _args:
-                raise Exception(f'pack error for {args}')
+                error = uuos.get_last_error()
+                raise Exception(f'{error}')
             args = _args
             # logger.error(f'++++{args}')
         a = {
