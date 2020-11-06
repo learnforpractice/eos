@@ -17,6 +17,11 @@ u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 void (*Z_envZ_print_hexZ_vii)(u32, u32);
 void (*Z_envZ_abortZ_vv)(void);
 
+void (*Z_envZ_printhexZ_vii)(u32, u32);
+/* import: 'env' 'prints' */
+void (*Z_envZ_printsZ_vi)(u32);
+
+
 uint64_t s2n( const char *str, size_t str_size );
 int n2s(uint64_t value, char *str, size_t str_size);
 u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset);
@@ -94,7 +99,47 @@ static void _abort(void) {
   eosio_abort();
 }
 
+void (*Z_envZ___multi3Z_vijjjj)(u32, u64, u64, u64, u64);
+
+static void __multi3(__int128 *ret, uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb) {
+    __int128 lhs = ha;
+    __int128 rhs = hb;
+
+    lhs <<= 64;
+    lhs |=  la;
+
+    rhs <<= 64;
+    rhs |=  lb;
+
+    lhs *= rhs;
+    *ret = lhs;
+}
+
+static void _multi3(u32 ret, u64 la, u64 ha, u64 lb, u64 hb) {
+   __int128* _ret = (__int128 *)get_memory_ptr(ret, sizeof(unsigned __int128));
+   __multi3(_ret, la, ha, lb, hb);
+}
+
+void printhex( const void* data, uint32_t datalen );
+void prints( const char* cstr );
+
+void _printhex(u32 a, u32 datalen) {
+  void *data = get_memory_ptr(a, datalen);
+  printhex(data, datalen);
+}
+
+void _prints(u32 a) {
+  char *str = (char *)get_memory_ptr(a, 64);
+  prints(str);
+}
+
 void WASM_RT_ADD_PREFIX(init)(void) {
+
+  Z_envZ_printhexZ_vii = _printhex;
+  Z_envZ_printsZ_vi = _prints;
+
+  Z_envZ___multi3Z_vijjjj = _multi3;
+
   Z_envZ_memsetZ_iiii = _memset;
   Z_envZ_memcpyZ_iiii = _memcpy;
   Z_envZ_memmoveZ_iiii = _memmove;
@@ -128,10 +173,23 @@ int micropython_init() {
   return 1;
 }
 
+static void *offset_to_ptr(u32 offset, u32 size) {
+  return get_memory_ptr(offset, size);
+}
+
+static void *offset_to_char_ptr(u32 offset) {
+  return get_memory_ptr(offset, 64);
+}
+
+#include <vm_api4c.h>
+
 int micropython_contract_init(int type, const char *py_src, size_t size) {
   u32 offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
+  
+  // init_vm_api4c();
+  // set_memory_converter(offset_to_ptr, offset_to_char_ptr);
   return micropython_init_module(type, offset, size);
 }
 

@@ -1,28 +1,59 @@
 def apply(a, b, c):
+    #test for initialize bigint from small int
+    try:
+        bigint(-1)
+        assert 0
+    except ValueError:
+        pass
+
     a = bigint(123)
-    b = bigint(123)
-    print(bigint, a, b, a + b, a == b, a==123)
-    c1 = 0x0fffffffffffffff
-    c2 = bigint(0x0fffffffffffffff)
-    print(c1, c2, c1 == c2)
-    print("++++bigint(b'\x01\x01')", bigint(b'12345'))
+    b = bigint(456)
+    assert(int(a) == 123)
+    assert(int(b) == 456)
+    assert b > a
+    assert a < b
+    assert a != b
+
+    print(bigint)
+    print(a, b)
+    print(a + b)
+    print('b - a', a - b)
+    print('int(b - a)', int(a - b))
+
+    assert a != b
+    assert a + b == bigint(579)
+    assert b - a == bigint(333)
+#    assert a - b == bigint(333)
+    assert b * a == bigint(123*456)
+    assert b / a == bigint(456//123)
+    assert a / b == bigint(0)
 
     try:
-        a = 0xffffffffffffff
-        b = 0xfffffffffffff
-        print(a/b)
-    except Exception as e:
-        print(e)
+        a / bigint(0)
+        assert 0
+    except ZeroDivisionError:
+        pass
 
-    a = 0xffffffff
-    b = 0xfffffff
-    print(a/b)
+    a = bigint(0x0FFFFFFFFFFFFFFF)
+    assert int(a) == 0x0FFFFFFFFFFFFFFF
 
-    # 0xffffffffffffffffff00/0xffffffffffffffff00
-    a = int.from_bytes(b'\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00', 'little')
-    b = int.from_bytes(b'\x00\xff\xff\xff\xff\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00', 'little')
+    #test initialize bigint from str
+    a = bigint('123')
+    assert int(a) == 123
 
-    print(type(a), a)
-    print(type(b), b)
+    #initialize bigint from hex
+    a = bigint('0x123')
+    assert int(a) == 0x123
 
-    print(1.1)
+    a = bigint('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+    assert int(a) == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    print("bigint('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')", 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+
+    try:
+        # larger than 258 bit integer
+        a = bigint('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+        assert 0
+    except ValueError:
+        pass
+
+
