@@ -120,6 +120,7 @@ with open('micropython.c.bin', 'r') as f:
     origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'
     patch = 'wasm_rt_allocate_memory((&M0), 2, 65536);'
     data = patch_micropython(data, origin, patch)
+    data = data.replace('__fpclassifyl', '____fpclassifyl')
 
 with open('micropython.c.bin', 'w') as f:
     f.write(data)
