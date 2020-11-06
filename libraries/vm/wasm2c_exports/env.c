@@ -356,6 +356,7 @@ f64 (*Z_eosio_injectionZ__eosio_f64_maxZ_ddd)(f64, f64);
 
 /* import: 'env' 'printhex' */
 void (*Z_envZ_printhexZ_vii)(u32, u32);
+void (*Z_envZ_printqfZ_vi)(u32);
 
 /* import: 'env' 'call_native' */
 u32 (*Z_envZ_call_nativeZ_iiiiiii)(u32, u32, u32, u32, u32, u32);

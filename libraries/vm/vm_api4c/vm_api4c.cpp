@@ -67,7 +67,10 @@ static void _printn(u64 n) {
     get_vm_api()->printn(n);
 }
 
-
+static void _printqf(u32 offset) {
+    float128_t *qf = (float128_t *)offset_to_ptr(offset, sizeof(float128_t));
+    get_vm_api()->printqf(qf);
+}
 
 static void _prints_l(u32 s_offset, u32 size) {
     char *s = (char *)offset_to_ptr(s_offset, size);
@@ -139,6 +142,8 @@ void init_vm_api4c() {
 
     Z_envZ_printiZ_vj = _printi;
     Z_envZ_printsZ_vi = _prints;
+    Z_envZ_printqfZ_vi = _printqf;
+
     Z_envZ_n2sZ_ijii = _n2s;
 
     Z_envZ_get_codeZ_ijii = _get_code;
