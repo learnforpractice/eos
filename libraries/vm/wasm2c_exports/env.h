@@ -377,6 +377,14 @@ extern void (*Z_envZ_printhexZ_vii)(u32, u32);
 /* import: 'env' 'call_native' */
 extern u32 (*Z_envZ_call_nativeZ_iiiiiii)(u32, u32, u32, u32, u32, u32);
 
+
+extern u32 (*Z_envZ___gttf2Z_ijjjj)(u64, u64, u64, u64);
+extern u32 (*Z_envZ___getf2Z_ijjjj)(u64, u64, u64, u64);
+extern u32 (*Z_envZ___letf2Z_ijjjj)(u64, u64, u64, u64);
+extern f64 (*Z_envZ___trunctfdf2Z_djj)(u64, u64);
+extern u32 (*Z_envZ___lttf2Z_ijjjj)(u64, u64, u64, u64);
+
+
 #ifdef __cplusplus
 }
 #endif

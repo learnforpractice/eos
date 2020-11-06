@@ -480,9 +480,62 @@ static double _eosio_ui64_to_f64( uint64_t a ) {
     return from_softfloat64(ui64_to_f64( a ));
 }
 
+static int __unordtf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb ) {
+    float128_t a = {{ la, ha }};
+    float128_t b = {{ lb, hb }};
+    if ( is_nan(a) || is_nan(b) ) {
+        return 1;
+    }
+    return 0;
+}
+
+static int ___cmptf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb, int return_value_if_nan ) {
+    float128_t a = {{ la, ha }};
+    float128_t b = {{ lb, hb }};
+    if ( __unordtf2(la, ha, lb, hb) ) {
+        return return_value_if_nan;
+    }
+
+    if ( f128_lt( a, b ) ) {
+        return -1;
+    }
+
+    if ( f128_eq( a, b ) ) {
+        return 0;
+    }
+    return 1;
+}
+
+static u32 __gttf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb ) {
+    return ___cmptf2(la, ha, lb, hb, 0);
+}
+
+static u32 __getf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb ) {
+    return ___cmptf2(la, ha, lb, hb, -1);
+}
+
+static u32 __letf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb ) {
+    return ___cmptf2(la, ha, lb, hb, 1);
+}
+
+static double __trunctfdf2( uint64_t l, uint64_t h ) {
+    float128_t f = {{ l, h }};
+    return from_softfloat64(f128_to_f64( f ));
+}
+
+static u32 __lttf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb ) {
+    return ___cmptf2(la, ha, lb, hb, 0);
+}
 
 void init_eosio_injection()
 {
+    Z_envZ___gttf2Z_ijjjj = __gttf2;
+    Z_envZ___getf2Z_ijjjj = __getf2;
+    Z_envZ___letf2Z_ijjjj = __letf2;
+    Z_envZ___trunctfdf2Z_djj = __trunctfdf2;
+    Z_envZ___lttf2Z_ijjjj = __lttf2;
+
+
     Z_eosio_injectionZ_checktimeZ_vv = vm_checktime ;
     Z_eosio_injectionZ_call_depth_assertZ_vv = call_depth_assert ;
     Z_eosio_injectionZ__eosio_f64_trunc_i64sZ_jd = _eosio_f64_trunc_i64s ;
