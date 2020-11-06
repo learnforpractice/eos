@@ -44,6 +44,8 @@ extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 extern void (*Z_envZ_printsZ_vi)(u32);
 /* import: 'env' '__fixtfsi' */
 extern u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
+/* import: 'env' 'printqf' */
+extern void (*Z_envZ_printqfZ_vi)(u32);
 /* import: 'env' '__trunctfdf2' */
 extern f64 (*Z_envZ___trunctfdf2Z_djj)(u64, u64);
 /* import: 'env' '__eqtf2' */

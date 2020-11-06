@@ -135517,6 +135517,11 @@ static u32 ____fpclassifyl(u64 p0, u64 p1) {
 
 static void float128_print(u32 p0, u32 p1, u32 p2) {
   FUNC_PROLOGUE;
+  u32 i0, i1;
+  i0 = p1;
+  i1 = 16u;
+  i0 += i1;
+  (*Z_envZ_printqfZ_vi)(i0);
   FUNC_EPILOGUE;
 }
 
