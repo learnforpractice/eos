@@ -227,7 +227,6 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
-
         self.chain.produce_block()
 
     def test_name(self):
@@ -260,6 +259,29 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
 
         self.chain.produce_block()
+
+    def test_trx(self):
+        code = r'''
+from chainlib import *
+def apply(a, b, c):
+    for i in range(10):
+        float128(128.0) * float128(889.0)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        self.chain.produce_block()
+        logger.info('+++++++++++++++get_balance("alice") %s', self.chain.get_balance('alice'))
+        total_time = 0
+        count = 1000
+        start = time.time()
+        for i in range(count):
+            r = self.chain.push_action('alice', 'sayhello', str(i).encode('utf8'))
+            total_time += r['elapsed']
+        print('duration:', time.time() - start)
+        logger.info(r['action_traces'][0]['console'])
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+        print(total_time/count, 1e6/(total_time/count))
 
     def test_call(self):
         # print(os.getpid())
