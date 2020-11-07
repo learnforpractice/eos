@@ -550,7 +550,7 @@ bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, u
         auto ptrx_meta = transaction_metadata::recover_keys(ptrx, chain.get_chain_id());
     //    auto ptrx_meta = transaction_metadata::create_no_recover_keys( trx, transaction_metadata::trx_type::input );
         auto _deadline = fc::time_point::from_iso_string(deadline);
-        auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us, true);
+        auto ret = chain.push_transaction(ptrx_meta, _deadline, billed_cpu_time_us, false);
         result = fc::json::to_string(ret, fc::time_point::maximum());
         if (ret->except) {
             return false;
