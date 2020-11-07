@@ -40,7 +40,7 @@ genesis_test = {
     "net_usage_leeway": 500,
     "context_free_discount_net_usage_num": 20,
     "context_free_discount_net_usage_den": 100,
-    "max_block_cpu_usage": 500000,
+    "max_block_cpu_usage": 800000,
     "target_block_cpu_usage_pct": 1000,
     "max_transaction_cpu_usage": 450000,
     "min_transaction_cpu_usage": 100,
@@ -64,11 +64,11 @@ genesis_uuos = {
     "net_usage_leeway": 500,
     "context_free_discount_net_usage_num": 20,
     "context_free_discount_net_usage_den": 100,
-    "max_block_cpu_usage": 200000,
+    "max_block_cpu_usage": 800000,
     "target_block_cpu_usage_pct": 1000,
     "max_transaction_cpu_usage": 150000,
-    "min_transaction_cpu_usage": 100,
-    "max_transaction_lifetime": 3600,
+    "min_transaction_cpu_usage": 100, #microseconds
+    "max_transaction_lifetime": 3600, #seconds
     "deferred_trx_expiration_window": 600,
     "max_transaction_delay": 3888000,
     "max_inline_action_size": 4096,
@@ -288,6 +288,7 @@ class ChainTest(object):
 
         args = {"to":"uuos","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
         r = self.push_action('uuos.token','issue', args, 'uuos', 'active')
+        self.transfer('uuos', 'alice', 1000000.0)
 
         args = dict(version = 0,
                     core = '4,UUOS',
@@ -454,7 +455,7 @@ class ChainTest(object):
         # logger.info(r)
 
         deadline = datetime.utcnow() + timedelta(microseconds=100000)
-        billed_cpu_time_us = 2000
+        billed_cpu_time_us = 100
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
         result = json.loads(result)
         if not ret:
