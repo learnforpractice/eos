@@ -112,7 +112,7 @@
     }                                          \
         break;                                 \
     case enum_db_##IDX##_update:               \
-        get_vm_api()->db_##IDX##_update(args[0].i32, args[1].u64, args[2].ptr, args[2].size); \
+        get_vm_api()->db_##IDX##_update(args[0].i32, args[1].u64, args[2].ptr, 2); \
         break;                                 \
     case enum_db_##IDX##_remove:               \
     { \
