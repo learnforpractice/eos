@@ -100,6 +100,8 @@ def apply(a, b, c):
         self.chain.produce_block()
 
     def test_send_inline(self):
+        # print(os.getpid())
+        # input('<<<')
         a = {
             "account": 'alice',
             "permission": "active",
@@ -121,48 +123,60 @@ def apply(a, b, c):
 
         code = '''
 import struct
-from chainlib import *
+from chain import *
 def apply(a, b, c):
-    if c == s2n('sayhello'):
+    print(a, b, c)
+    if c == name('sayhello'):
         data = read_action_data()
         print(data)
-    elif c == s2n('sendinline'):
+    elif c == name('sendinline'):
         account = name('alice')
         action = name('sayhello')
         actor = name('alice')
         permission = name('active')
         data = read_action_data()
         send_inline(account, action, actor, permission, data)
-    elif c == s2n('contextfree'):
+    elif c == name('sendraw'):
+        account = name('alice').to_int()
+        action = name('sayhello').to_int()
+        actor = name('alice').to_int()
+        permission = name('active').to_int()
+        action = struct.pack('QQ', account, action) + struct.pack('B', 1) + struct.pack('QQ', actor, permission)
+        data = b'hello,world'
+        action += struct.pack('B', len(data)) + data
+        send_inline_raw(action)
+    elif c == name('contextfree'):
         account = name('alice')
         action = name('sayhello')
         actor = name('alice')
         permission = name('active')
         data = read_action_data()
-        send_inline(account, action, actor, permission, data)
+        send_context_free_inline(account, action, data)
+    elif c == name('contextraw'):
+        account = name('alice').to_int()
+        action = name('sayhello').to_int()
+        actor = name('alice').to_int()
+        permission = name('active').to_int()
+        action = struct.pack('QQ', account, action) + struct.pack('B', 0)
+        data = b'hello,world'
+        action += struct.pack('B', len(data)) + data
+        send_context_free_inline_raw(action)
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
         r = self.chain.push_action('alice', 'sendinline', b'hello,world from inline')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'sendraw', b'hello,world from raw')
         logger.info('+++elapsed: %s', r['elapsed'])
 
         r = self.chain.push_action('alice', 'contextfree', b'hello,world from context free inline')
         logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.produce_block()
-
-    def test_db_vm_api(self):
-        # print(os.getpid())
-        # input('<<<')
-
-        code = os.path.join(test_dir, '..', 'test_contracts', 'vm_api_db_test.py')
-        with open(code, 'r') as f:
-            code = f.read()
-        code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=3)
-
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        r = self.chain.push_action('alice', 'contextraw', b'hello,world from context free inline')
         logger.info('+++elapsed: %s', r['elapsed'])
+
         self.chain.produce_block()
 
     def test_db_i256(self):
@@ -218,6 +232,45 @@ def apply(a, b, c):
 
         self.chain.produce_block()
 
+    def test_bigint_performance(self):
+        code = r'''
+def apply(a, b, c):
+    a = 0xffffffffffffffff
+    b = 0xffffffffffffffff
+    for i in range(500):
+        a * b
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info(r['action_traces'][0]['console'])
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info(r['action_traces'][0]['console'])
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+        code = r'''
+def apply(a, b, c):
+    a = bigint(0xffffffffffffffff)
+    b = bigint(0xffffffffffffffff)
+    for i in range(500):
+        a * b
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info(r['action_traces'][0]['console'])
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info(r['action_traces'][0]['console'])
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
     def test_float128(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_float128.py')
         with open(code, 'r') as f:
@@ -231,7 +284,7 @@ def apply(a, b, c):
 
     def test_name(self):
         code = r'''
-from chainlib import *
+from chain import *
 def apply(a, b, c):
     print(type(a) == name, type(b) == name, type(c) == name)
     print('++++name:', a)
@@ -262,17 +315,16 @@ def apply(a, b, c):
 
     def test_trx(self):
         code = r'''
-from chainlib import *
+from chain import *
 def apply(a, b, c):
-    for i in range(10):
-        float128(128.0) * float128(889.0)
+    float128(128.0) * float128(889.0)
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         self.chain.produce_block()
         logger.info('+++++++++++++++get_balance("alice") %s', self.chain.get_balance('alice'))
         total_time = 0
-        count = 1000
+        count = 6000
         start = time.time()
         for i in range(count):
             r = self.chain.push_action('alice', 'sayhello', str(i).encode('utf8'))
@@ -319,7 +371,7 @@ extern "C" {
 
         code = '''
 import struct
-from chainlib import *
+from chain import *
 def apply(receiver, code, action):
     contract = s2n('calltest1')
     args = struct.pack('QQ', contract, 1)
@@ -344,3 +396,77 @@ def apply(receiver, code, action):
         logger.info('+++elapsed: %s', r['elapsed'])
 
         self.chain.produce_block()
+
+    def test_multi_index(self):
+        code = os.path.join(test_dir, '..', 'test_contracts', 'test_multi_index.py')
+        with open(code, 'r') as f:
+            code = f.read()
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+# test for out of context
+# calling vm_api from module level not allowed!
+    def test_context(self):
+        code = r'''
+import chain
+receiver = chain.current_receiver();
+def apply(a, b, c):
+    a = 0xffffffffffffffff
+    b = 0xffffffffffffffff
+    for i in range(500):
+        a * b
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+
+    def test_oob(self):
+        code = r'''
+def apply(a, b, c):
+    for i in range(10000):
+        bigint(0xffffffffffffffff) * bigint(0xffffffffffffffff)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'vm error out of bounds'
+
+    def test_memory(self):
+        code = r'''
+def apply(a, b, c):
+    a = 'a'*(1024*128)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
+        self.chain.produce_block()
+
+        code = r'''
+g_a = 1
+def apply(a, b, c):
+    global g_a
+    assert g_a == 1
+    g_a += 1
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
