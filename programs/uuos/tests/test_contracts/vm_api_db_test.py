@@ -1,4 +1,4 @@
-from chainlib import *
+from chain import *
 
 idx64 = 0
 idx128 = 1

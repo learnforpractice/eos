@@ -1,4 +1,4 @@
-from chainlib import *
+from chain import *
 def apply(a, b, c):
     code = 'alice'
     scope = 'alice'

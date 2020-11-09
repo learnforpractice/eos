@@ -1,4 +1,4 @@
-from chainlib import *
+from chain import *
 def apply(receiver, code, action):
     assert s2n('alice') == 3773036822876127232
     assert s2n('Alice') == 0
