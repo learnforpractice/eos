@@ -56,4 +56,5 @@ def apply(a, b, c):
     except ValueError:
         pass
 
+    assert int(bigint(0xffffffffffffffff)*bigint(0xffffffffffffffff)) == 0xffffffffffffffff * 0xffffffffffffffff
 
