@@ -86,7 +86,7 @@ apply_context *get_apply_context() {
 
 apply_context& ctx() {
    if (!_vm_api.allow_access_apply_context) {
-      print_stacktrace();
+//      print_stacktrace();
       _vm_api.eosio_assert(0, "access apply context not allowed!");
    }
    return *s_ctx;
