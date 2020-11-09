@@ -209,6 +209,7 @@ void init_function_args() {
     memset(s_vm_api_functions, 0, sizeof(s_vm_api_functions));
 
     SET_FUNCTION_INFO(read_action_data, 1);
+    SET_FUNCTION_INFO(action_data_size, 0);
     SET_FUNCTION_INFO(require_recipient, 1);
     SET_FUNCTION_INFO(require_auth, 1);
     SET_FUNCTION_INFO(require_auth2, 2);
@@ -375,7 +376,9 @@ extern "C" int call_vm_api(vm_api_function_type function_type,  vm_api_arg *args
         initialized = 1;
     }
 
-    printf("++++++++++function name:%s\n", s_vm_api_functions[function_type].name);
+    get_vm_api()->eosio_assert(function_type < enum_vm_api_function_count && function_type >= 0, "bad function type");
+
+    printf("++++++++++function name:%d %s\n", function_type, s_vm_api_functions[function_type].name);
 
     if (s_vm_api_functions[function_type].arg_count != args_count) {
         printf("++++++++++function_type:%d %d %d\n", function_type, s_vm_api_functions[function_type].arg_count, args_count);
