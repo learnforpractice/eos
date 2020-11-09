@@ -116,21 +116,58 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   u32 offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
-  
+  printf("++++++++++++memory start %p\n", ptr);
   init_vm_api4c();
   set_memory_converter(offset_to_ptr, offset_to_char_ptr);
   return micropython_init_module(type, offset, size);
 }
 
+#define EOSIO_THROW(msg) eosio_assert(0, msg)
+
+void wasm_rt_on_trap(wasm_rt_trap_t code) {
+//   vm_print_stacktrace();
+   wasm_rt_call_stack_depth = 0;
+   switch (code) {
+      case WASM_RT_TRAP_NONE:
+         EOSIO_THROW("vm no error");
+         break;
+      case WASM_RT_TRAP_OOB:
+         EOSIO_THROW("vm error out of bounds");
+         break;
+      case WASM_RT_TRAP_INT_OVERFLOW:
+         EOSIO_THROW("vm error int overflow");
+         break;
+      case WASM_RT_TRAP_DIV_BY_ZERO:
+         EOSIO_THROW("vm error divide by zeror");
+         break;
+      case WASM_RT_TRAP_INVALID_CONVERSION:
+         EOSIO_THROW("vm error invalid conversion");
+         break;
+      case WASM_RT_TRAP_UNREACHABLE:
+         EOSIO_THROW("vm error unreachable");
+         break;
+      case WASM_RT_TRAP_CALL_INDIRECT:
+         EOSIO_THROW("vm error call indirect");
+         break;
+      case WASM_RT_TRAP_EXHAUSTION:
+         EOSIO_THROW("vm error exhaustion");
+         break;
+      default:
+         EOSIO_THROW("vm unknown error");
+         break;
+   }
+}
+
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
   // u32 ptr_offset = malloc(1);
-//  printf("+++++++++free_memory start pos: %d\n", ptr_offset);
+  // printf("+++++++++free_memory start pos: %d\n", ptr_offset);
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
     return micropython_apply(receiver, code, action);
   } else {
-//    printf("++++trap code: %d\n", trap_code);
+    printf("++++trap code: %d\n", trap_code);
+    wasm_rt_on_trap((wasm_rt_trap_t)trap_code);
   }
   return 0;
 }
