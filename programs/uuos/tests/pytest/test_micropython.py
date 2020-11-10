@@ -179,6 +179,18 @@ def apply(a, b, c):
 
         self.chain.produce_block()
 
+    def test_db_api(self):
+        code = os.path.join(test_dir, '..', 'test_contracts', 'vm_api_db_test.py')
+        with open(code, 'r') as f:
+            code = f.read()
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info(r['action_traces'][0]['console'])
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        self.chain.produce_block()
+
     def test_db_i256(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_db_i256.py')
         with open(code, 'r') as f:
