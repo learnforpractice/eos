@@ -100,6 +100,48 @@ extern u64 (*Z_envZ_publication_timeZ_jv)(void);
 extern u64 (*Z_envZ_current_receiverZ_jv)(void);
 /* import: 'env' 'call_vm_api' */
 extern u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
+/* import: 'env' 'db_store_i64' */
+extern u32 (*Z_envZ_db_store_i64Z_ijjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'db_update_i64' */
+extern void (*Z_envZ_db_update_i64Z_vijii)(u32, u64, u32, u32);
+/* import: 'env' 'db_remove_i64' */
+extern void (*Z_envZ_db_remove_i64Z_vi)(u32);
+/* import: 'env' 'db_get_i64' */
+extern u32 (*Z_envZ_db_get_i64Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_next_i64' */
+extern u32 (*Z_envZ_db_next_i64Z_iii)(u32, u32);
+/* import: 'env' 'db_previous_i64' */
+extern u32 (*Z_envZ_db_previous_i64Z_iii)(u32, u32);
+/* import: 'env' 'db_find_i64' */
+extern u32 (*Z_envZ_db_find_i64Z_ijjjj)(u64, u64, u64, u64);
+/* import: 'env' 'db_lowerbound_i64' */
+extern u32 (*Z_envZ_db_lowerbound_i64Z_ijjjj)(u64, u64, u64, u64);
+/* import: 'env' 'db_upperbound_i64' */
+extern u32 (*Z_envZ_db_upperbound_i64Z_ijjjj)(u64, u64, u64, u64);
+/* import: 'env' 'db_end_i64' */
+extern u32 (*Z_envZ_db_end_i64Z_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_store_i256' */
+extern u32 (*Z_envZ_db_store_i256Z_ijjjiiii)(u64, u64, u64, u32, u32, u32, u32);
+/* import: 'env' 'db_update_i256' */
+extern void (*Z_envZ_db_update_i256Z_vijii)(u32, u64, u32, u32);
+/* import: 'env' 'db_remove_i256' */
+extern void (*Z_envZ_db_remove_i256Z_vi)(u32);
+/* import: 'env' 'db_get_i256' */
+extern u32 (*Z_envZ_db_get_i256Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_next_i256' */
+extern u32 (*Z_envZ_db_next_i256Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_previous_i256' */
+extern u32 (*Z_envZ_db_previous_i256Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_find_i256' */
+extern u32 (*Z_envZ_db_find_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_lowerbound_i256' */
+extern u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_upperbound_i256' */
+extern u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_end_i256' */
+extern u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_get_table_count' */
+extern u32 (*Z_envZ_db_get_table_countZ_ijjj)(u64, u64, u64);
 /* import: 'env' 'call_contract' */
 extern void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
 /* import: 'env' 'call_contract_get_results' */
