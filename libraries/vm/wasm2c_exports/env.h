@@ -385,6 +385,11 @@ extern u32 (*Z_envZ___letf2Z_ijjjj)(u64, u64, u64, u64);
 extern f64 (*Z_envZ___trunctfdf2Z_djj)(u64, u64);
 extern u32 (*Z_envZ___lttf2Z_ijjjj)(u64, u64, u64, u64);
 
+extern u32 (*Z_envZ_db_next_i256Z_iiii)(u32, u32, u32);
+extern u32 (*Z_envZ_db_previous_i256Z_iiii)(u32, u32, u32);
+extern u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+extern u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+extern u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
 
 #ifdef __cplusplus
 }

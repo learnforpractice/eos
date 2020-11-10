@@ -341,6 +341,20 @@ static u32 db_lowerbound_i256( u64 code, u64 scope, u64 table, u32 id_offset, u3
    return get_vm_api()->db_lowerbound_i256(code, scope, table, id, id_size);
 }
 
+static u32 db_next_i256(u32 itr, u32 primary_offset, u32 primary_size) {
+   void *primary = offset_to_ptr(primary_offset, primary_size);
+   return get_vm_api()->db_next_i256(itr, primary, primary_size);
+}
+
+static u32 db_previous_i256(u32 itr, u32 primary_offset, u32 primary_size) {
+   void *primary = offset_to_ptr(primary_offset, primary_size);
+   return get_vm_api()->db_previous_i256(itr, primary, primary_size);
+}
+
+static u32 db_end_i256(u64 code, u64 scope, u64 table) {
+   return get_vm_api()->db_end_i256(code, scope, table);
+}
+
 static void init_db() {
    Z_envZ_db_lowerbound_i64Z_ijjjj = db_lowerbound_i64 ;
    Z_envZ_db_next_i64Z_iii = db_next_i64 ;
@@ -419,4 +433,12 @@ static void init_db() {
    Z_envZ_db_store_i256Z_ijjjiiii = db_store_i256;
    Z_envZ_db_get_i256Z_iiii = db_get_i256;
    Z_envZ_db_remove_i256Z_vi = db_remove_i256;
+
+   Z_envZ_db_next_i256Z_iiii = db_next_i256;
+   Z_envZ_db_previous_i256Z_iiii = db_previous_i256;
+
+   Z_envZ_db_lowerbound_i256Z_ijjjii = db_lowerbound_i256;
+   Z_envZ_db_upperbound_i256Z_ijjjii = db_upperbound_i256;
+   Z_envZ_db_end_i256Z_ijjj = db_end_i256;
+
 }
