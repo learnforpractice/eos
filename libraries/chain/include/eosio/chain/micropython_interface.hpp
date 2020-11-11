@@ -85,6 +85,7 @@ namespace eosio { namespace chain {
          void call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context );
          //Immediately exits currently running wasm. UB is called when no wasm running
          void exit();
+         void take_snapshoot(micropython_instantiated_module& module);
 
          const std::unique_ptr<micropython_instantiated_module>& get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
                                                                                     const uint8_t& vm_version, apply_context& context );

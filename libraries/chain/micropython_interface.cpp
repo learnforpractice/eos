@@ -121,6 +121,42 @@ void micropython_interface::exit() {
 
 }
 
+void micropython_interface::take_snapshoot(micropython_instantiated_module& module) {
+//            printf("++++++++++++malloc pos %u\n", *(uint32_t *)ptr2);
+    int total_count = 0;
+    int block_size = 128;
+    int vm_memory_size = micropython_get_memory_size();
+    char *vm_start_memory_address = (char *)micropython_get_memory();
+    char *ptr1 = (char *)initial_vm_memory.data();
+    char *ptr2 = (char *)vm_start_memory_address;
+
+    int pos = 0;
+    while(pos<vm_memory_size) {
+        if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+            pos += block_size;
+            continue;
+        }
+        int start = pos;
+        total_count += 1;
+        pos += block_size;
+        while (pos<vm_memory_size) {
+            if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+                break;
+            }
+            pos += block_size;
+            total_count += 1;
+        }
+        memory_segment segment;
+        segment.offset = start;
+        segment.data.resize(pos-start);
+        memcpy(segment.data.data(), vm_start_memory_address + start, pos-start);
+        module.backup.segments.emplace_back(segment);
+//                printf("++++offset %d, size %d\n", start, pos-start);
+        pos += block_size;
+    }
+//            printf("++++++++total_backup_size: %d\n", total_count * block_size);
+}
+
 const std::unique_ptr<micropython_instantiated_module>& micropython_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
                                                                             const uint8_t& vm_version, apply_context& context )
 {
@@ -147,52 +183,19 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
         micropython_instantiation_cache.modify(it, [&](auto& c) {
             c.module = runtime_interface->instantiate_module(codeobject->code.data(), codeobject->code.size(), {}, code_hash, vm_type, vm_version);
-
+            auto cleanup = fc::make_scoped_exit([](){
+                get_vm_api()->allow_access_apply_context = true;
+            });
             get_vm_api()->allow_access_apply_context = false;
             micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
             //TODO: handle exception in micropython vm
 //            printf("++++code: %s\n", codeobject->code.data());
             int ret = micropython_contract_init(0, codeobject->code.data(), codeobject->code.size());
             EOS_ASSERT( ret, python_execution_error, "python contract init error" );
-            size_t size = micropython_get_memory_size();
-            c.module->backup.data.resize(size);
-            micropython_backup_memory(c.module->backup.data.data(), size);
-
-            char *ptr1 = (char *)initial_vm_memory.data();
-            char *ptr2 = (char *)c.module->backup.data.data();
-//            printf("++++++++++++malloc pos %u\n", *(uint32_t *)ptr2);
-            int pos = 0;
-            int total_count = 0;
-            int vm_memory_size = size;
-            int block_size = 128;
-            char *vm_start_memory_address = (char *)micropython_get_memory();
-            while(pos<vm_memory_size) {
-                if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
-                    pos += block_size;
-                    continue;
-                }
-                int start = pos;
-                total_count += 1;
-                pos += block_size;
-                while (pos<vm_memory_size) {
-                    if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
-                        break;
-                    }
-                    pos += block_size;
-                    total_count += 1;
-                }
-                memory_segment segment;
-                segment.offset = start;
-                segment.data.resize(pos-start);
-                memcpy(segment.data.data(), vm_start_memory_address + start, pos-start);
-                c.module->backup.segments.emplace_back(segment);
-//                printf("++++offset %d, size %d\n", start, pos-start);
-                pos += block_size;
-            }
-//            printf("++++++++total_backup_size: %d\n", total_count * block_size);
-
-            get_vm_api()->allow_access_apply_context = true;
-            c.module->take_snapshoot();
+            // size_t size = micropython_get_memory_size();
+            // c.module->backup.data.resize(size);
+            // micropython_backup_memory(c.module->backup.data.data(), size);
+            take_snapshoot(*c.module);
         });
     } else {
         char *vm_start_memory_address = (char *)micropython_get_memory();
