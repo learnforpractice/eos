@@ -276,14 +276,16 @@ extern u32 (*Z_envZ_expirationZ_iv)(void);
 extern u32 (*Z_envZ_get_actionZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'get_context_free_data' */
 extern u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
+/* import: 'env' 'abort' */
+extern void (*Z_envZ_abortZ_vv)(void);
+/* import: 'env' 'send_deferred' */
+extern void (*Z_envZ_send_deferredZ_vijiii)(u32, u64, u32, u32, u32);
 /* import: 'env' 'set_blockchain_parameters_packed' */
 extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 /* import: 'env' 'get_blockchain_parameters_packed' */
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
 /* import: 'env' '__multi3' */
 extern void (*Z_envZ___multi3Z_vijjjj)(u32, u64, u64, u64, u64);
-/* import: 'env' 'abort' */
-extern void (*Z_envZ_abortZ_vv)(void);
 /* import: 'env' '__extendsftf2' */
 extern void (*Z_envZ___extendsftf2Z_vif)(u32, f32);
 /* import: 'env' '__floatunsitf' */
