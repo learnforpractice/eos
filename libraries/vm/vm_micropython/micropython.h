@@ -30,6 +30,8 @@ typedef double f64;
 
 extern void WASM_RT_ADD_PREFIX(init)(void);
 
+/* import: 'env' 'setjmp_discard_top' */
+extern void (*Z_envZ_setjmp_discard_topZ_vv)(void);
 /* import: 'env' 'memset' */
 extern u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 /* import: 'env' 'memcpy' */

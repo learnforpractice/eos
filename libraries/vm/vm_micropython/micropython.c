@@ -15,6 +15,7 @@ u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 void (*Z_envZ_abortZ_vv)(void);
 
 void (*Z_envZ_prints_lZ_vii)(u32, u32);
+void (*Z_envZ_setjmp_discard_topZ_vv)(void);
 
 
 uint64_t s2n( const char *str, size_t str_size );
@@ -25,6 +26,7 @@ u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output
 void prints_l( const char* cstr, uint32_t len);
 void eosio_assert( uint32_t test, const char* msg );
 void eosio_abort(void);
+void setjmp_discard_top(void);
 
 static u64 _s2n(u32 str_offset, u32 str_size) {
   char *str = get_memory_ptr(str_offset, str_size);
@@ -71,6 +73,10 @@ static void _abort(void) {
   eosio_abort();
 }
 
+static void _setjmp_discard_top() {
+  setjmp_discard_top();
+}
+
 void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_memsetZ_iiii = _memset;
   Z_envZ_memcpyZ_iiii = _memcpy;
@@ -82,6 +88,8 @@ void WASM_RT_ADD_PREFIX(init)(void) {
 
   Z_envZ_s2nZ_jii = _s2n;
   Z_envZ_n2sZ_ijii = _n2s;
+
+  Z_envZ_setjmp_discard_topZ_vv = _setjmp_discard_top;
 
   init_func_types();
   init_globals();
@@ -111,8 +119,10 @@ static void *offset_to_char_ptr(u32 offset) {
 }
 
 #include <vm_api4c.h>
+void setjmp_clear_stack();
 
 int micropython_contract_init(int type, const char *py_src, size_t size) {
+  setjmp_clear_stack();
   u32 offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
@@ -161,6 +171,7 @@ void wasm_rt_on_trap(wasm_rt_trap_t code) {
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
   // u32 ptr_offset = malloc(1);
   // printf("+++++++++free_memory start pos: %d\n", ptr_offset);
+  setjmp_clear_stack();
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {

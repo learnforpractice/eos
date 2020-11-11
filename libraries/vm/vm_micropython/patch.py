@@ -16,18 +16,32 @@ r'''
 // static u32 setjmp_ex(u32);
 // static void longjmp_ex(u32, u32);
 void *get_memory_ptr(u32 offset, u32 size);
+void vm_checktime(void);
+void print_hex(char *data, size_t size);
+
 #include <setjmp.h>
 #include <stdio.h>
 
-void vm_checktime(void);
+void setjmp_push(char *buf, size_t size);
+void setjmp_pop(char *buf, size_t size);
 
-#define setjmp_ex(p0) \
-  setjmp(*(jmp_buf*)get_memory_ptr(p0, 128))
+#define setjmp_ex(i0) \
+  i0; \
+  { \
+    jmp_buf *buf = (jmp_buf*)get_memory_ptr(i0, 128); \
+    int n = setjmp(*buf); \
+    if (n == 0) { \
+      setjmp_push((char *)buf, sizeof(jmp_buf)); \
+    } \
+    i0 = n; \
+  }
 
 #define longjmp_ex(p0, p1) \
 { \
   void *ptr = get_memory_ptr(p0, 128); \
-  printf("++++++++longjmp:%p\n", ptr); \
+  jmp_buf buf; \
+  setjmp_pop((char *)buf, sizeof(buf)); \
+  longjmp(buf, p1); \
   longjmp(*(jmp_buf*)ptr, p1); \
 }
 ''')
