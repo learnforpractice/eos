@@ -157,11 +157,55 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             size_t size = micropython_get_memory_size();
             c.module->backup.data.resize(size);
             micropython_backup_memory(c.module->backup.data.data(), size);
+
+            char *ptr1 = (char *)initial_vm_memory.data();
+            char *ptr2 = (char *)c.module->backup.data.data();
+//            printf("++++++++++++malloc pos %u\n", *(uint32_t *)ptr2);
+            int pos = 0;
+            int total_count = 0;
+            int vm_memory_size = size;
+            int block_size = 128;
+            char *vm_start_memory_address = (char *)micropython_get_memory();
+            while(pos<vm_memory_size) {
+                if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+                    pos += block_size;
+                    continue;
+                }
+                int start = pos;
+                total_count += 1;
+                pos += block_size;
+                while (pos<vm_memory_size) {
+                    if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+                        break;
+                    }
+                    pos += block_size;
+                    total_count += 1;
+                }
+                memory_segment segment;
+                segment.offset = start;
+                segment.data.resize(pos-start);
+                memcpy(segment.data.data(), vm_start_memory_address + start, pos-start);
+                c.module->backup.segments.emplace_back(segment);
+//                printf("++++offset %d, size %d\n", start, pos-start);
+                pos += block_size;
+            }
+//            printf("++++++++total_backup_size: %d\n", total_count * block_size);
+
             get_vm_api()->allow_access_apply_context = true;
             c.module->take_snapshoot();
         });
     } else {
-        micropython_restore_memory(it->module->backup.data.data(), it->module->backup.data.size());
+        char *vm_start_memory_address = (char *)micropython_get_memory();
+        int pos = 0;
+        for (memory_segment& segment: it->module->backup.segments) {
+//            ilog("+++++++offset ${n1}, size ${n2}", ("n1", segment.offset)("n2", segment.data.size()));
+            memcpy(vm_start_memory_address + pos, initial_vm_memory.data() + pos, segment.offset - pos);
+            memcpy(vm_start_memory_address + segment.offset, segment.data.data(), segment.data.size());
+            pos = segment.offset + segment.data.size();
+        }
+        memset(vm_start_memory_address + pos, 0, micropython_get_memory_size() - pos);
+//        EOS_ASSERT(memcmp(it->module->backup.data.data(), vm_start_memory_address, it->module->backup.data.size()) == 0, fc::exception, "bad restore!");
+//        micropython_restore_memory(it->module->backup.data.data(), it->module->backup.data.size());
     }
     return it->module;
 }

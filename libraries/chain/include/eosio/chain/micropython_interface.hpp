@@ -18,8 +18,14 @@ namespace eosio { namespace chain {
    class apply_context;
    class controller;
 
+   struct memory_segment {
+      int offset;
+      vector<uint8_t> data;
+   };
+
    struct vm_micropython_state {
       vector<uint8_t> data;
+      vector<memory_segment> segments;
    };
 
    class micropython_instantiated_module {
