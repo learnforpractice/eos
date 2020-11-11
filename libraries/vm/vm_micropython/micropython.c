@@ -116,7 +116,7 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   u32 offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
-  printf("++++++++++++memory start %p\n", ptr);
+//  printf("++++++++++++memory start %p\n", ptr);
   init_vm_api4c();
   set_memory_converter(offset_to_ptr, offset_to_char_ptr);
   return micropython_init_module(type, offset, size);
