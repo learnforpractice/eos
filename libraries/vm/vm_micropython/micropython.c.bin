@@ -1179,6 +1179,7 @@ static u32 mp_import_stat(u32);
 static u32 mp_builtin_open(u32, u32, u32);
 static void nlr_jump_fail(u32);
 static void init_micropython(void);
+static void micropython_init(u32, u32);
 static void apply(u64, u64, u64);
 static void mp_hal_stdout_tx_strn(u32, u32);
 static void mp_hal_delay_ms(u32);
@@ -134226,6 +134227,43 @@ static void init_micropython(void) {
   FUNC_EPILOGUE;
 }
 
+static void micropython_init(u32 p0, u32 p1) {
+  u32 l2 = 0;
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2;
+  i0 = g0;
+  i1 = 16u;
+  i0 -= i1;
+  l2 = i0;
+  g0 = i0;
+  i0 = 0u;
+  i1 = l2;
+  i2 = 12u;
+  i1 += i2;
+  i32_store((&M0), (u64)(i0 + 21016), i1);
+  i0 = 21024u;
+  i1 = 25120u;
+  mp_pystack_init(i0, i1);
+  mp_init();
+  i0 = 20588u;
+  i1 = 0u;
+  mp_obj_list_init(i0, i1);
+  i0 = 20588u;
+  i1 = 10u;
+  i0 = mp_obj_list_append(i0, i1);
+  i0 = 20604u;
+  i1 = 0u;
+  mp_obj_list_init(i0, i1);
+  i0 = p1;
+  i1 = 1u;
+  i0 = do_str(i0, i1);
+  i0 = l2;
+  i1 = 16u;
+  i0 += i1;
+  g0 = i0;
+  FUNC_EPILOGUE;
+}
+
 static void apply(u64 p0, u64 p1, u64 p2) {
   u32 l3 = 0;
   FUNC_PROLOGUE;
@@ -134274,6 +134312,9 @@ static void apply(u64 p0, u64 p1, u64 p2) {
   i0 = 0u;
   i1 = 465u;
   i32_store((&M0), (u64)(i0 + 25136), i1);
+  i0 = 0u;
+  i1 = 466u;
+  i32_store((&M0), (u64)(i0 + 25140), i1);
   B0:;
   i0 = 0u;
   __cxa_finalize(i0);
@@ -134368,7 +134409,7 @@ static u32 malloc(u32 p0) {
   i0 = i2 ? i0 : i1;
   p0 = i0;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 25140));
+  i0 = i32_load((&M0), (u64)(i0 + 25144));
   l2 = i0;
   if (i0) {goto B0;}
   i0 = l1;
@@ -134383,10 +134424,10 @@ static u32 malloc(u32 p0) {
   i2 = 4294967288u;
   i1 &= i2;
   l2 = i1;
-  i32_store((&M0), (u64)(i0 + 25140), i1);
+  i32_store((&M0), (u64)(i0 + 25144), i1);
   B0:;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 25144));
+  i0 = i32_load((&M0), (u64)(i0 + 25148));
   l3 = i0;
   i1 = p0;
   i2 = 3u;
@@ -134415,7 +134456,7 @@ static u32 malloc(u32 p0) {
   B1:;
   i0 = 0u;
   i1 = p0;
-  i32_store((&M0), (u64)(i0 + 25144), i1);
+  i32_store((&M0), (u64)(i0 + 25148), i1);
   i0 = l1;
   i1 = 16u;
   i0 += i1;
@@ -134441,7 +134482,7 @@ static u32 realloc(u32 p0, u32 p1) {
   i0 = !(i0);
   if (i0) {goto B3;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 25140));
+  i0 = i32_load((&M0), (u64)(i0 + 25144));
   l3 = i0;
   if (i0) {goto B4;}
   i0 = l2;
@@ -134456,10 +134497,10 @@ static u32 realloc(u32 p0, u32 p1) {
   i2 = 4294967288u;
   i1 &= i2;
   l3 = i1;
-  i32_store((&M0), (u64)(i0 + 25140), i1);
+  i32_store((&M0), (u64)(i0 + 25144), i1);
   B4:;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 25144));
+  i0 = i32_load((&M0), (u64)(i0 + 25148));
   l4 = i0;
   i1 = p1;
   i2 = 3u;
@@ -134496,7 +134537,7 @@ static u32 realloc(u32 p0, u32 p1) {
   l6 = i0;
   i0 = 0u;
   i1 = l5;
-  i32_store((&M0), (u64)(i0 + 25144), i1);
+  i32_store((&M0), (u64)(i0 + 25148), i1);
   i0 = l3;
   i1 = l4;
   i0 += i1;
@@ -141308,7 +141349,7 @@ static u32 mod_chain_get_context_free_data(u32 p0) {
 static u32 __errno_location(void) {
   FUNC_PROLOGUE;
   u32 i0;
-  i0 = 25148u;
+  i0 = 25152u;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -141500,7 +141541,7 @@ static u32 operator_new_unsigned_int_(u32 p0) {
     i0 = 0u;
     p0 = i0;
     i0 = 0u;
-    i0 = i32_load((&M0), (u64)(i0 + 25156));
+    i0 = i32_load((&M0), (u64)(i0 + 25160));
     l2 = i0;
     i0 = !(i0);
     if (i0) {goto B0;}
@@ -141575,7 +141616,7 @@ static u32 operator_new_unsigned_int__std__align_val_t_(u32 p0, u32 p1) {
   if (i0) {goto B0;}
   L2: vm_checktime();
     i0 = 0u;
-    i0 = i32_load((&M0), (u64)(i0 + 25156));
+    i0 = i32_load((&M0), (u64)(i0 + 25160));
     p0 = i0;
     i0 = !(i0);
     if (i0) {goto B1;}
@@ -158713,7 +158754,7 @@ static const u8 data_segment_data_1079[] = {
 };
 
 static const u8 data_segment_data_1080[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xff, 0xff, 0x03, 0x00, 0xd2, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xff, 0xff, 0x03, 0x00, 0xd3, 0x01, 0x00, 0x00, 
   
 };
 
@@ -158752,26 +158793,26 @@ static const u8 data_segment_data_1086[] = {
 };
 
 static const u8 data_segment_data_1087[] = {
-  0x20, 0xc5, 0x00, 0x00, 0xd3, 0x01, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1088[] = {
   0x20, 0xc5, 0x00, 0x00, 0xd4, 0x01, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1088[] = {
+  0x20, 0xc5, 0x00, 0x00, 0xd5, 0x01, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1089[] = {
-  0x38, 0xd5, 0x00, 0x00, 0x0c, 0x00, 0x33, 0x01, 0xd5, 0x01, 0x00, 0x00, 
-  0xd6, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd7, 0x01, 0x00, 0x00, 
-  0xd8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x38, 0xd5, 0x00, 0x00, 0x0c, 0x00, 0x33, 0x01, 0xd6, 0x01, 0x00, 0x00, 
+  0xd7, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd8, 0x01, 0x00, 0x00, 
+  0xd9, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1090[] = {
-  0x38, 0xd5, 0x00, 0x00, 0x0c, 0x00, 0x89, 0x01, 0xd9, 0x01, 0x00, 0x00, 
-  0xda, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xdb, 0x01, 0x00, 0x00, 
-  0xdc, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x38, 0xd5, 0x00, 0x00, 0x0c, 0x00, 0x89, 0x01, 0xda, 0x01, 0x00, 0x00, 
+  0xdb, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xdc, 0x01, 0x00, 0x00, 
+  0xdd, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   
@@ -158849,307 +158890,307 @@ static const u8 data_segment_data_1093[] = {
 };
 
 static const u8 data_segment_data_1094[] = {
-  0x20, 0xc5, 0x00, 0x00, 0xdd, 0x01, 0x00, 0x00, 
+  0x20, 0xc5, 0x00, 0x00, 0xde, 0x01, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1095[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xde, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xdf, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1096[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xdf, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xe0, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1097[] = {
-  0x20, 0xc5, 0x00, 0x00, 0xe0, 0x01, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1098[] = {
   0x20, 0xc5, 0x00, 0x00, 0xe1, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1099[] = {
+static const u8 data_segment_data_1098[] = {
   0x20, 0xc5, 0x00, 0x00, 0xe2, 0x01, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1099[] = {
+  0x20, 0xc5, 0x00, 0x00, 0xe3, 0x01, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1100[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe3, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe4, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1101[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xe4, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xe5, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1102[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xe5, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xe6, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1103[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe6, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe7, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1104[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe7, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe8, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1105[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe8, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1106[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe9, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1107[] = {
+static const u8 data_segment_data_1106[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xea, 0x01, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1107[] = {
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xeb, 0x01, 0x00, 0x00, 
+  
+};
+
 static const u8 data_segment_data_1108[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xeb, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xec, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1109[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xec, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xed, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1110[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xed, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1111[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xee, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1112[] = {
+static const u8 data_segment_data_1111[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xef, 0x01, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1112[] = {
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf0, 0x01, 0x00, 0x00, 
+  
+};
+
 static const u8 data_segment_data_1113[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xf0, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xf1, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1114[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xf1, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xf2, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1115[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf2, 0x01, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf3, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1116[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf3, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1117[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf4, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1118[] = {
+static const u8 data_segment_data_1117[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf5, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1119[] = {
+static const u8 data_segment_data_1118[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf6, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1120[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf7, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1119[] = {
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf7, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1121[] = {
+static const u8 data_segment_data_1120[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf8, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1122[] = {
-  0x20, 0xc5, 0x00, 0x00, 0xf9, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1121[] = {
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf9, 0x01, 0x00, 0x00, 
+  
 };
 
-static const u8 data_segment_data_1123[] = {
+static const u8 data_segment_data_1122[] = {
   0x20, 0xc5, 0x00, 0x00, 0xfa, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1124[] = {
+static const u8 data_segment_data_1123[] = {
   0x20, 0xc5, 0x00, 0x00, 0xfb, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1125[] = {
+static const u8 data_segment_data_1124[] = {
   0x20, 0xc5, 0x00, 0x00, 0xfc, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1126[] = {
+static const u8 data_segment_data_1125[] = {
   0x20, 0xc5, 0x00, 0x00, 0xfd, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1127[] = {
+static const u8 data_segment_data_1126[] = {
   0x20, 0xc5, 0x00, 0x00, 0xfe, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1128[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0xff, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1127[] = {
+  0x20, 0xc5, 0x00, 0x00, 0xff, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1129[] = {
+static const u8 data_segment_data_1128[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1130[] = {
+static const u8 data_segment_data_1129[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1131[] = {
+static const u8 data_segment_data_1130[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x02, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1131[] = {
+  0x5c, 0xc5, 0x00, 0x00, 0x03, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1132[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x03, 0x02, 0x00, 0x00, 
+  0x98, 0xc5, 0x00, 0x00, 0x04, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1133[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x04, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1134[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x05, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1135[] = {
+static const u8 data_segment_data_1134[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x06, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1136[] = {
+static const u8 data_segment_data_1135[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x07, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1137[] = {
+static const u8 data_segment_data_1136[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x08, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1138[] = {
+static const u8 data_segment_data_1137[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x09, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1139[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x0a, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1138[] = {
+  0x5c, 0xc5, 0x00, 0x00, 0x0a, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1140[] = {
+static const u8 data_segment_data_1139[] = {
   0x98, 0xc5, 0x00, 0x00, 0x0b, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1140[] = {
+  0x98, 0xc5, 0x00, 0x00, 0x0c, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1141[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x0c, 0x02, 0x00, 0x00, 
+  0x5c, 0xc5, 0x00, 0x00, 0x0d, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1142[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x0d, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1143[] = {
   0x98, 0xc5, 0x00, 0x00, 0x0e, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1144[] = {
+static const u8 data_segment_data_1143[] = {
   0x98, 0xc5, 0x00, 0x00, 0x0f, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1145[] = {
+static const u8 data_segment_data_1144[] = {
   0x98, 0xc5, 0x00, 0x00, 0x10, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1145[] = {
+  0x98, 0xc5, 0x00, 0x00, 0x11, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1146[] = {
-  0xd4, 0xc5, 0x00, 0x00, 0x11, 0x02, 0x00, 0x00, 
+  0xd4, 0xc5, 0x00, 0x00, 0x12, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1147[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x12, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1148[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x13, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1149[] = {
+static const u8 data_segment_data_1148[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x14, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1150[] = {
+static const u8 data_segment_data_1149[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x15, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1150[] = {
+  0x5c, 0xc5, 0x00, 0x00, 0x16, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1151[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x16, 0x02, 0x00, 0x00, 
+  0x98, 0xc5, 0x00, 0x00, 0x17, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1152[] = {
-  0xd4, 0xc5, 0x00, 0x00, 0x17, 0x02, 0x00, 0x00, 
+  0xd4, 0xc5, 0x00, 0x00, 0x18, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1153[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x18, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1154[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x19, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1155[] = {
+static const u8 data_segment_data_1154[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x1a, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1156[] = {
+static const u8 data_segment_data_1155[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x1b, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1156[] = {
+  0x5c, 0xc5, 0x00, 0x00, 0x1c, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1157[] = {
-  0xd4, 0xc5, 0x00, 0x00, 0x1c, 0x02, 0x00, 0x00, 
+  0xd4, 0xc5, 0x00, 0x00, 0x1d, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1158[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x1d, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1159[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x1e, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1160[] = {
+static const u8 data_segment_data_1159[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x1f, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1161[] = {
+static const u8 data_segment_data_1160[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x20, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1161[] = {
+  0x5c, 0xc5, 0x00, 0x00, 0x21, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1162[] = {
-  0xd4, 0xc5, 0x00, 0x00, 0x21, 0x02, 0x00, 0x00, 
+  0xd4, 0xc5, 0x00, 0x00, 0x22, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1163[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x22, 0x02, 0x00, 0x00, 
+  0x98, 0xc5, 0x00, 0x00, 0x23, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1164[] = {
@@ -159158,55 +159199,55 @@ static const u8 data_segment_data_1164[] = {
 };
 
 static const u8 data_segment_data_1165[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x23, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1166[] = {
   0x98, 0xc5, 0x00, 0x00, 0x24, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1167[] = {
+static const u8 data_segment_data_1166[] = {
   0x98, 0xc5, 0x00, 0x00, 0x25, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1168[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x26, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1167[] = {
+  0x98, 0xc5, 0x00, 0x00, 0x26, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1169[] = {
+static const u8 data_segment_data_1168[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x27, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1170[] = {
+static const u8 data_segment_data_1169[] = {
   0x5c, 0xc5, 0x00, 0x00, 0x28, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1170[] = {
+  0x5c, 0xc5, 0x00, 0x00, 0x29, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1171[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x29, 0x02, 0x00, 0x00, 
+  0x98, 0xc5, 0x00, 0x00, 0x2a, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1172[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x2a, 0x02, 0x00, 0x00, 
+  0x5c, 0xc5, 0x00, 0x00, 0x2b, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1173[] = {
-  0x98, 0xc5, 0x00, 0x00, 0x2b, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1174[] = {
   0x98, 0xc5, 0x00, 0x00, 0x2c, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1175[] = {
+static const u8 data_segment_data_1174[] = {
   0x98, 0xc5, 0x00, 0x00, 0x2d, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1176[] = {
+static const u8 data_segment_data_1175[] = {
   0x98, 0xc5, 0x00, 0x00, 0x2e, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1176[] = {
+  0x98, 0xc5, 0x00, 0x00, 0x2f, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1177[] = {
-  0x5c, 0xc5, 0x00, 0x00, 0x2f, 0x02, 0x00, 0x00, 
+  0x5c, 0xc5, 0x00, 0x00, 0x30, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1178[] = {
@@ -159241,9 +159282,9 @@ static const u8 data_segment_data_1180[] = {
 };
 
 static const u8 data_segment_data_1181[] = {
-  0x38, 0xd5, 0x00, 0x00, 0x00, 0x00, 0xcf, 0x01, 0x30, 0x02, 0x00, 0x00, 
-  0x31, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x32, 0x02, 0x00, 0x00, 
-  0x33, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x38, 0xd5, 0x00, 0x00, 0x00, 0x00, 0xcf, 0x01, 0x31, 0x02, 0x00, 0x00, 
+  0x32, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x02, 0x00, 0x00, 
+  0x34, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0xc8, 0x00, 0x00, 
   
@@ -159254,22 +159295,22 @@ static const u8 data_segment_data_1182[] = {
 };
 
 static const u8 data_segment_data_1183[] = {
-  0x10, 0xc6, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x34, 0x02, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x35, 0x02, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1184[] = {
-  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x35, 0x02, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1185[] = {
   0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x36, 0x02, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1185[] = {
+  0x10, 0xc6, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x37, 0x02, 0x00, 0x00, 
+  
+};
+
 static const u8 data_segment_data_1186[] = {
-  0x10, 0xc6, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x37, 0x02, 0x00, 0x00, 
+  0x10, 0xc6, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x38, 0x02, 0x00, 0x00, 
   
 };
 
@@ -160513,7 +160554,7 @@ static void init_memory(void) {
 
 static void init_table(void) {
   uint32_t offset;
-  wasm_rt_allocate_table((&T0), 568, 568);
+  wasm_rt_allocate_table((&T0), 569, 569);
   offset = 1u;
   T0.data[offset + 0] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&vstr_add_strn)};
   T0.data[offset + 1] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&plat_print_strn)};
@@ -160980,108 +161021,109 @@ static void init_table(void) {
   T0.data[offset + 462] = (wasm_rt_elem_t){func_types[9], (wasm_rt_anyfunc_t)(&init_micropython)};
   T0.data[offset + 463] = (wasm_rt_elem_t){func_types[23], (wasm_rt_anyfunc_t)(&micropython_apply)};
   T0.data[offset + 464] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&mp_js_init)};
-  T0.data[offset + 465] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_builtin_open)};
-  T0.data[offset + 466] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_hello_say_hello)};
-  T0.data[offset + 467] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_hello_say_hello2)};
-  T0.data[offset + 468] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&bigint_print)};
-  T0.data[offset + 469] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&bigint_make_new)};
-  T0.data[offset + 470] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&bigint_unary_op)};
-  T0.data[offset + 471] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&bigint_binary_op)};
-  T0.data[offset + 472] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&float128_print)};
-  T0.data[offset + 473] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&float128_make_new)};
-  T0.data[offset + 474] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&float128_unary_op)};
-  T0.data[offset + 475] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&float128_binary_op)};
-  T0.data[offset + 476] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_action_data)};
-  T0.data[offset + 477] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_inline)};
-  T0.data[offset + 478] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline)};
-  T0.data[offset + 479] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_publication_time)};
-  T0.data[offset + 480] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_receiver)};
-  T0.data[offset + 481] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_active_producers)};
-  T0.data[offset + 482] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_new)};
-  T0.data[offset + 483] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_add_permission)};
-  T0.data[offset + 484] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_new)};
-  T0.data[offset + 485] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_send)};
-  T0.data[offset + 486] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i64)};
-  T0.data[offset + 487] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i64)};
-  T0.data[offset + 488] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i64)};
-  T0.data[offset + 489] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i64)};
-  T0.data[offset + 490] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i64)};
-  T0.data[offset + 491] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i256)};
-  T0.data[offset + 492] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i256)};
-  T0.data[offset + 493] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i256)};
-  T0.data[offset + 494] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i256)};
-  T0.data[offset + 495] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i256)};
-  T0.data[offset + 496] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_store)};
-  T0.data[offset + 497] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_update)};
-  T0.data[offset + 498] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_primary)};
-  T0.data[offset + 499] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_secondary)};
-  T0.data[offset + 500] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_lowerbound)};
-  T0.data[offset + 501] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_upperbound)};
-  T0.data[offset + 502] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_end)};
-  T0.data[offset + 503] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_resource_limits)};
-  T0.data[offset + 504] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_blockchain_parameters)};
-  T0.data[offset + 505] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_time)};
-  T0.data[offset + 506] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_transaction)};
-  T0.data[offset + 507] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_num)};
-  T0.data[offset + 508] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_prefix)};
-  T0.data[offset + 509] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_expiration)};
-  T0.data[offset + 510] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_s2n)};
-  T0.data[offset + 511] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_n2s)};
-  T0.data[offset + 512] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_recipient)};
-  T0.data[offset + 513] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_auth)};
-  T0.data[offset + 514] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_require_auth2)};
-  T0.data[offset + 515] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_has_auth)};
-  T0.data[offset + 516] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_account)};
-  T0.data[offset + 517] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_inline_raw)};
-  T0.data[offset + 518] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline_raw)};
-  T0.data[offset + 519] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_send)};
-  T0.data[offset + 520] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_free)};
-  T0.data[offset + 521] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_action)};
-  T0.data[offset + 522] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_context_free_action)};
-  T0.data[offset + 523] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_transaction_free)};
-  T0.data[offset + 524] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha256)};
-  T0.data[offset + 525] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha1)};
-  T0.data[offset + 526] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha512)};
-  T0.data[offset + 527] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_ripemd160)};
-  T0.data[offset + 528] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_assert_recover_key)};
-  T0.data[offset + 529] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha256)};
-  T0.data[offset + 530] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha1)};
-  T0.data[offset + 531] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha512)};
-  T0.data[offset + 532] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_ripemd160)};
-  T0.data[offset + 533] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_recover_key)};
-  T0.data[offset + 534] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i64)};
-  T0.data[offset + 535] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i64)};
-  T0.data[offset + 536] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i64)};
-  T0.data[offset + 537] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i64)};
-  T0.data[offset + 538] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i64)};
-  T0.data[offset + 539] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i256)};
-  T0.data[offset + 540] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i256)};
-  T0.data[offset + 541] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i256)};
-  T0.data[offset + 542] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i256)};
-  T0.data[offset + 543] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i256)};
-  T0.data[offset + 544] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_get_table_count)};
-  T0.data[offset + 545] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_call_contract)};
-  T0.data[offset + 546] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_remove)};
-  T0.data[offset + 547] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_next)};
-  T0.data[offset + 548] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_previous)};
-  T0.data[offset + 549] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_resource_limits)};
-  T0.data[offset + 550] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_proposed_producers)};
-  T0.data[offset + 551] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_privileged)};
-  T0.data[offset + 552] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_privileged)};
-  T0.data[offset + 553] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_blockchain_parameters)};
-  T0.data[offset + 554] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert)};
-  T0.data[offset + 555] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_message)};
-  T0.data[offset + 556] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_code)};
-  T0.data[offset + 557] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_get_action)};
-  T0.data[offset + 558] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_context_free_data)};
-  T0.data[offset + 559] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&mp_obj_name_print)};
-  T0.data[offset + 560] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&mp_obj_name_make_new)};
-  T0.data[offset + 561] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_obj_name_unary_op)};
-  T0.data[offset + 562] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_obj_name_binary_op)};
-  T0.data[offset + 563] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_bytes)};
-  T0.data[offset + 564] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_int)};
-  T0.data[offset + 565] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_name_to_str)};
-  T0.data[offset + 566] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_from_bytes)};
+  T0.data[offset + 465] = (wasm_rt_elem_t){func_types[3], (wasm_rt_anyfunc_t)(&micropython_init)};
+  T0.data[offset + 466] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_builtin_open)};
+  T0.data[offset + 467] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_hello_say_hello)};
+  T0.data[offset + 468] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_hello_say_hello2)};
+  T0.data[offset + 469] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&bigint_print)};
+  T0.data[offset + 470] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&bigint_make_new)};
+  T0.data[offset + 471] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&bigint_unary_op)};
+  T0.data[offset + 472] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&bigint_binary_op)};
+  T0.data[offset + 473] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&float128_print)};
+  T0.data[offset + 474] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&float128_make_new)};
+  T0.data[offset + 475] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&float128_unary_op)};
+  T0.data[offset + 476] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&float128_binary_op)};
+  T0.data[offset + 477] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_action_data)};
+  T0.data[offset + 478] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_inline)};
+  T0.data[offset + 479] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline)};
+  T0.data[offset + 480] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_publication_time)};
+  T0.data[offset + 481] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_receiver)};
+  T0.data[offset + 482] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_active_producers)};
+  T0.data[offset + 483] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_new)};
+  T0.data[offset + 484] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_add_permission)};
+  T0.data[offset + 485] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_new)};
+  T0.data[offset + 486] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_send)};
+  T0.data[offset + 487] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i64)};
+  T0.data[offset + 488] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i64)};
+  T0.data[offset + 489] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i64)};
+  T0.data[offset + 490] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i64)};
+  T0.data[offset + 491] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i64)};
+  T0.data[offset + 492] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i256)};
+  T0.data[offset + 493] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i256)};
+  T0.data[offset + 494] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i256)};
+  T0.data[offset + 495] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i256)};
+  T0.data[offset + 496] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i256)};
+  T0.data[offset + 497] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_store)};
+  T0.data[offset + 498] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_update)};
+  T0.data[offset + 499] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_primary)};
+  T0.data[offset + 500] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_secondary)};
+  T0.data[offset + 501] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_lowerbound)};
+  T0.data[offset + 502] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_upperbound)};
+  T0.data[offset + 503] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_end)};
+  T0.data[offset + 504] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_resource_limits)};
+  T0.data[offset + 505] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_blockchain_parameters)};
+  T0.data[offset + 506] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_time)};
+  T0.data[offset + 507] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_transaction)};
+  T0.data[offset + 508] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_num)};
+  T0.data[offset + 509] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_prefix)};
+  T0.data[offset + 510] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_expiration)};
+  T0.data[offset + 511] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_s2n)};
+  T0.data[offset + 512] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_n2s)};
+  T0.data[offset + 513] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_recipient)};
+  T0.data[offset + 514] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_auth)};
+  T0.data[offset + 515] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_require_auth2)};
+  T0.data[offset + 516] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_has_auth)};
+  T0.data[offset + 517] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_account)};
+  T0.data[offset + 518] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_inline_raw)};
+  T0.data[offset + 519] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline_raw)};
+  T0.data[offset + 520] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_send)};
+  T0.data[offset + 521] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_free)};
+  T0.data[offset + 522] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_action)};
+  T0.data[offset + 523] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_context_free_action)};
+  T0.data[offset + 524] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_transaction_free)};
+  T0.data[offset + 525] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha256)};
+  T0.data[offset + 526] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha1)};
+  T0.data[offset + 527] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha512)};
+  T0.data[offset + 528] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_ripemd160)};
+  T0.data[offset + 529] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_assert_recover_key)};
+  T0.data[offset + 530] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha256)};
+  T0.data[offset + 531] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha1)};
+  T0.data[offset + 532] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha512)};
+  T0.data[offset + 533] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_ripemd160)};
+  T0.data[offset + 534] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_recover_key)};
+  T0.data[offset + 535] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i64)};
+  T0.data[offset + 536] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i64)};
+  T0.data[offset + 537] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i64)};
+  T0.data[offset + 538] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i64)};
+  T0.data[offset + 539] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i64)};
+  T0.data[offset + 540] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i256)};
+  T0.data[offset + 541] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i256)};
+  T0.data[offset + 542] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i256)};
+  T0.data[offset + 543] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i256)};
+  T0.data[offset + 544] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i256)};
+  T0.data[offset + 545] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_get_table_count)};
+  T0.data[offset + 546] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_call_contract)};
+  T0.data[offset + 547] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_remove)};
+  T0.data[offset + 548] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_next)};
+  T0.data[offset + 549] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_previous)};
+  T0.data[offset + 550] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_resource_limits)};
+  T0.data[offset + 551] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_proposed_producers)};
+  T0.data[offset + 552] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_privileged)};
+  T0.data[offset + 553] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_privileged)};
+  T0.data[offset + 554] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_blockchain_parameters)};
+  T0.data[offset + 555] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert)};
+  T0.data[offset + 556] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_message)};
+  T0.data[offset + 557] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_code)};
+  T0.data[offset + 558] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_get_action)};
+  T0.data[offset + 559] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_context_free_data)};
+  T0.data[offset + 560] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&mp_obj_name_print)};
+  T0.data[offset + 561] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&mp_obj_name_make_new)};
+  T0.data[offset + 562] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_obj_name_unary_op)};
+  T0.data[offset + 563] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_obj_name_binary_op)};
+  T0.data[offset + 564] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_bytes)};
+  T0.data[offset + 565] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_int)};
+  T0.data[offset + 566] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_name_to_str)};
+  T0.data[offset + 567] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_from_bytes)};
 }
 
 /* export: 'apply' */
