@@ -1,6 +1,10 @@
 import os
 import sys
-import ujson as json
+try:
+    import orjson as json
+except:
+    import ujson as json
+
 import shutil
 import tempfile
 import unittest
