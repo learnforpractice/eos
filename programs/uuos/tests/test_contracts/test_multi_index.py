@@ -137,7 +137,7 @@ class MyData(object):
         a, b, c, d = struct.unpack('Q16s32sd', data)
         b = int.from_bytes(b, 'little')
         c = int.from_bytes(c, 'little')
-        return MyData(a, b, c, d)
+        return cls(a, b, c, d)
 
     def get_primary_key(self):
         return self.a
@@ -145,8 +145,8 @@ class MyData(object):
     def get_secondary_values(self):
         return (self.a, self.b, self.c, self.d)
 
-    @classmethod
-    def get_secondary_indexes(cls):
+    @staticmethod
+    def get_secondary_indexes():
         return (idx64, idx128, idx256, idx_double)
 
 class MyData2(object):
@@ -172,8 +172,8 @@ class MyData2(object):
     def get_secondary_values(self):
         return (self.a, self.b, self.c, self.d)
 
-    @classmethod
-    def get_secondary_indexes(cls):
+    @staticmethod
+    def get_secondary_indexes():
         return (idx64, idx128, idx256, idx_double)
 
     def __repr__(self):
