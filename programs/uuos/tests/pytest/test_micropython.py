@@ -51,6 +51,7 @@ def apply(a, b, c):
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
             assert e.args[0]['except']['name'] == 'deadline_exception'
+        self.chain.produce_block()
 
     def test_call_depth(self):
         code = '''
@@ -332,37 +333,26 @@ def apply(a, b, c):
         self.chain.produce_block()
         print(total_time/count, 1e6/(total_time/count))
 
-    def test_call(self):
+    def test_call_contract(self):
         # print(os.getpid())
         # input('<<<')
-        code = r'''
-#include <eosio/eosio.hpp>
-#include <eosio/action.hpp>
-#include <eosio/print.hpp>
-
-extern "C" {
-    __attribute__((eosio_wasm_import))
-    int call_contract_get_args(void* args, size_t size1);
-
-    __attribute__((eosio_wasm_import))
-    int call_contract_set_results(void* result, size_t size1);
-
-    void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
-         uint64_t args[2];
-         int args_size = ::call_contract_get_args(&args, sizeof(args));
-         eosio::print("+++++++++++call: arg count:", args_size, "\n");
-         eosio::check(args_size == 16, "bad args size");
-         if (args[0] == eosio::name("calltest1").value) {
-            eosio::print("+++++++++++call: args[1]:", args[1], "\n");
-            args[1] += 1;
-            ::call_contract_set_results(&args[1], sizeof(uint64_t));
-         }
-    }
-}
-        '''
-
+        code_file = os.path.join(test_dir, '..', 'test_contracts', 'test_call_contract.cpp')
+        wasm_file = os.path.join(test_dir, '..', 'test_contracts', 'test_call_contract.wasm')
+        need_compile = True
+        try:
+            t1 = os.path.getmtime(code_file)
+            t2 = os.path.getmtime(wasm_file)
+            if t1 < t2:
+                need_compile = False
+        except:
+            pass
+        code = None
+        if need_compile:
+            code = wasmcompiler.compile_cpp_file(code_file)
+        else:
+            with open(wasm_file, 'rb') as f:
+                code = f.read()
         contract_name = 'bob'
-        code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
         self.chain.deploy_contract(contract_name, code, b'')
         self.chain.produce_block()
 
@@ -428,6 +418,7 @@ def apply(a, b, c):
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+        self.chain.produce_block()
 
     def test_json(self):
         code = r'''
@@ -449,7 +440,7 @@ def apply(a, b, c):
             logger.info('+++elapsed: %s', r['elapsed'])
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
-
+        self.chain.produce_block()
 
     def test_oob(self):
         code = r'''
@@ -463,6 +454,7 @@ def apply(a, b, c):
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'vm error out of bounds'
+        self.chain.produce_block()
 
     def test_memory(self):
         code = r'''
@@ -489,3 +481,4 @@ def apply(a, b, c):
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
+        self.chain.produce_block()
