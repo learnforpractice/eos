@@ -107,6 +107,16 @@ void *get_memory_ptr(uint32_t offset, uint32_t size) {
 int micropython_init() {
   init();
   mp_js_init(64*1024);
+  const char *init_script = "import struct\n" \
+  "import json\n";
+
+  size_t size = strlen(init_script)+1;
+  u32 script_offset = malloc(size);
+  char *ptr = (char *)get_memory_ptr(script_offset, size);
+  ptr[size-1] = '\0';
+  memcpy(ptr, init_script, size);
+
+  micropython_run_script(script_offset);
   return 1;
 }
 
