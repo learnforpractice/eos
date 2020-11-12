@@ -190,6 +190,10 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
             //TODO: handle exception in micropython vm
 //            printf("++++code: %s\n", codeobject->code.data());
+            EOS_ASSERT( codeobject->code.size() > 2 && codeobject->code[0] == 'M', python_execution_error, "BAD mpy code" );
+            int mpy_version = codeobject->code[1];
+            //TODO: Initialize contract code from vm with specified mpy version
+            EOS_ASSERT( mpy_version == 5, python_execution_error, "BAD mpy version");
             int ret = micropython_contract_init(0, codeobject->code.data(), codeobject->code.size());
             EOS_ASSERT( ret, python_execution_error, "python contract init error" );
             // size_t size = micropython_get_memory_size();
