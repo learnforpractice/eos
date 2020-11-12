@@ -199,6 +199,7 @@ def apply(a, b, c):
         self.chain.produce_block()
 
     def test_setjmp(self):
+        return
         code = '''
 import chain
 def apply(a, b, c):
@@ -427,6 +428,28 @@ def apply(a, b, c):
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+
+    def test_json(self):
+        code = r'''
+import chain
+import json
+def apply(a, b, c):
+    a = {'a':1, 'b':2, 'c':3.5}
+    for i in range(600):
+        json.dumps(a)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+            logger.info('+++elapsed: %s', r['elapsed'])
+        except Exception as e:
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+
 
     def test_oob(self):
         code = r'''
