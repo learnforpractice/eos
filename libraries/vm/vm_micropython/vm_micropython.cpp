@@ -37,21 +37,21 @@ void setjmp_clear_stack() {
   setjmp_stack.clear();
 }
 
-void setjmp_push(char *buf, size_t size) {
+void setjmp_push(jmp_buf buf) {
   std::vector<uint8_t> _buf(sizeof(jmp_buf));
   memcpy(_buf.data(), buf, sizeof(jmp_buf));
   setjmp_stack.push_back(_buf);
 }
 
-void setjmp_pop(char *buf, size_t size) {
+void setjmp_pop(jmp_buf buf) {
   if (setjmp_stack.empty()) {
     get_vm_api()->eosio_assert(false, "setjmp stack empty!");
     return;
   }
 
-  std::vector<uint8_t> _buf = setjmp_stack.back();
-  setjmp_stack.pop_back();
+  std::vector<uint8_t>& _buf = setjmp_stack.back();
   memcpy(buf, _buf.data(), sizeof(jmp_buf));
+  setjmp_stack.pop_back();
 }
 
 void setjmp_discard_top() {

@@ -22,27 +22,25 @@ void print_hex(char *data, size_t size);
 #include <setjmp.h>
 #include <stdio.h>
 
-void setjmp_push(char *buf, size_t size);
-void setjmp_pop(char *buf, size_t size);
+void setjmp_push(jmp_buf buf);
+void setjmp_pop(jmp_buf buf);
 
 #define setjmp_ex(i0) \
   i0; \
   { \
-    jmp_buf *buf = (jmp_buf*)get_memory_ptr(i0, 128); \
-    int n = setjmp(*buf); \
+    jmp_buf buf; \
+    int n = setjmp(buf); \
     if (n == 0) { \
-      setjmp_push((char *)buf, sizeof(jmp_buf)); \
+      setjmp_push(buf); \
     } \
     i0 = n; \
   }
 
 #define longjmp_ex(p0, p1) \
 { \
-  void *ptr = get_memory_ptr(p0, 128); \
   jmp_buf buf; \
-  setjmp_pop((char *)buf, sizeof(buf)); \
+  setjmp_pop(buf); \
   longjmp(buf, p1); \
-  longjmp(*(jmp_buf*)ptr, p1); \
 }
 ''')
 
