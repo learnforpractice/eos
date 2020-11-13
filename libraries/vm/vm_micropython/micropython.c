@@ -104,22 +104,6 @@ void *get_memory_ptr(uint32_t offset, uint32_t size) {
   return M0.data + offset;
 }
 
-int micropython_init() {
-  init();
-  mp_js_init(64*1024);
-  const char *init_script = "import struct\n" \
-  "import json\n";
-
-  size_t size = strlen(init_script)+1;
-  u32 script_offset = malloc(size);
-  char *ptr = (char *)get_memory_ptr(script_offset, size);
-  ptr[size-1] = '\0';
-  memcpy(ptr, init_script, size);
-
-  micropython_run_script(script_offset);
-  return 1;
-}
-
 static void *offset_to_ptr(u32 offset, u32 size) {
   return get_memory_ptr(offset, size);
 }
@@ -129,6 +113,31 @@ static void *offset_to_char_ptr(u32 offset) {
 }
 
 #include <vm_api4c.h>
+
+int micropython_init() {
+  init_vm_api4c();
+  set_memory_converter(offset_to_ptr, offset_to_char_ptr);
+
+  init();
+  mp_js_init(64*1024);
+  const char *init_script = "import struct\n" \
+  "import json\n"
+  "import chain\n"
+  "import foo\n"
+  "import db\n"
+  ;
+
+  size_t size = strlen(init_script)+1;
+  u32 script_offset = malloc(size);
+  char *ptr = (char *)get_memory_ptr(script_offset, size);
+  ptr[size-1] = '\0';
+  memcpy(ptr, init_script, size);
+
+  micropython_run_script(script_offset);
+  // printf("+++++++++++malloc current position:%lld\n", malloc(1));
+  return 1;
+}
+
 void setjmp_clear_stack();
 
 int micropython_contract_init(int type, const char *py_src, size_t size) {
@@ -137,8 +146,6 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
 //  printf("++++++++++++memory start %p\n", ptr);
-  init_vm_api4c();
-  set_memory_converter(offset_to_ptr, offset_to_char_ptr);
   return micropython_init_module(type, offset, size);
 }
 
