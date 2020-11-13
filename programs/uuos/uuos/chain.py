@@ -10,7 +10,8 @@ class Chain(object):
     def new(self, config, genesis, protocol_features_dir, snapshot_dir):
         self.ptr = _uuos.chain_new(config, genesis, protocol_features_dir, snapshot_dir)
         if not self.ptr:
-            raise Exception('chain initialization failture!')
+            error = _uuos.get_last_error()
+            raise Exception(error)
         _uuos.chain_set_current_ptr(self.ptr)
 
     def startup(self, initdb):
