@@ -482,3 +482,45 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         self.chain.produce_block()
+
+    def test_frozen(self):
+        code = r'''
+def apply(a, b, c):
+    import foo
+    foo.say_hello()
+    import bar
+    bar.say_hello()
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
+        self.chain.produce_block()
+
+    def test_mpy_frozen(self):
+        code = r'''
+import db
+def apply(a, b, c):
+    db.idx64
+    # print(db)
+    # print(db.db_previous_i256, 'hello,world')
+    # print(db.idx64)
+    # print(db.idx128)
+    # print(db.idx256)
+    # print(db.idx_double)
+    # print(db.idx_long_double)
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+            logger.info('+++elapsed: %s', r['elapsed'])
+            r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
+            logger.info('+++elapsed: %s', r['elapsed'])
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
+        self.chain.produce_block()
