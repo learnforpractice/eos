@@ -80,20 +80,30 @@ void set_apply_context(apply_context *ctx) {
 }
 
 apply_context *get_apply_context() {
-   eosio_assert(s_ctx != nullptr, "not in apply context");
+   if (s_ctx == nullptr) {
+      print_stacktrace();
+      eosio_assert(false, "not in apply context");
+   }
    return s_ctx;
+}
+
+bool is_in_apply_context() {
+   return s_ctx != nullptr;
 }
 
 apply_context& ctx() {
    if (!_vm_api.allow_access_apply_context) {
-//      print_stacktrace();
+      print_stacktrace();
       _vm_api.eosio_assert(0, "access apply context not allowed!");
    }
    return *s_ctx;
 }
 
 static inline apply_context& get_ctx_no_access_check() {
-   eosio_assert(s_ctx != nullptr, "not in apply context");
+   if (s_ctx == nullptr) {
+      print_stacktrace();
+      eosio_assert(false, "not in apply context");
+   }
    return *s_ctx;
 }
 

@@ -13,7 +13,13 @@ void prints( const char* cstr ) {
 }
 
 void prints_l( const char* cstr, uint32_t len) {
-//   wlog("++++++${n}", ("n", cstr));
+   if (!is_in_apply_context()) {
+//      wlog("++++++${n}", ("n", string(cstr, len)));
+      for (int i=0;i<len;i++) {
+         printf("%c", cstr[i]);
+      }
+      return;
+   }
    if (!get_ctx_no_access_check().control.contracts_console()) {
       return;
    }
@@ -128,6 +134,13 @@ void printn( uint64_t n ) {
 
 void printhex( const void* data, uint32_t datalen ) {
 //   wlog("++++++${n}", ("n", (uint64_t)data));
+   if (!is_in_apply_context()) {
+//      wlog("++++++${n}", ("n", string(cstr, len)));
+      for (int i=0;i<datalen;i++) {
+         printf("%02x", ((uint8_t *)data)[i]);
+      }
+      return;
+   }
    if (!get_ctx_no_access_check().control.contracts_console()) {
       return;
    }
