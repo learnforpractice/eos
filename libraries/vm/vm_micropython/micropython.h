@@ -40,8 +40,6 @@ extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
-/* import: 'env' 'eosio_assert' */
-extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'prints' */
 extern void (*Z_envZ_printsZ_vi)(u32);
 /* import: 'env' '__fixtfsi' */
@@ -258,6 +256,8 @@ extern u64 (*Z_envZ_set_proposed_producersZ_jii)(u32, u32);
 extern u32 (*Z_envZ_is_privilegedZ_ij)(u64);
 /* import: 'env' 'set_privileged' */
 extern void (*Z_envZ_set_privilegedZ_vji)(u64, u32);
+/* import: 'env' 'eosio_assert' */
+extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'eosio_assert_message' */
 extern void (*Z_envZ_eosio_assert_messageZ_viii)(u32, u32, u32);
 /* import: 'env' 'eosio_assert_code' */
