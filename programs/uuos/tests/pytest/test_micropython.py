@@ -488,8 +488,6 @@ def apply(a, b, c):
 def apply(a, b, c):
     import foo
     foo.say_hello()
-    import bar
-    bar.say_hello()
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
