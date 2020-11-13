@@ -16,7 +16,7 @@ set(SRCS
 
 add_library(vm_micropython SHARED ${SRCS})
 
-target_link_libraries(vm_micropython PRIVATE vm_api frozen chain_api vm_api4c mpy-cross)
+target_link_libraries(vm_micropython PRIVATE vm_api vm_api4c)
 set_target_properties(vm_micropython  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 target_include_directories(vm_micropython PRIVATE ${Boost_INCLUDE_DIR}
