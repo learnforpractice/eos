@@ -322,7 +322,7 @@ def apply(a, b, c):
         self.chain.produce_block()
         logger.info('+++++++++++++++get_balance("alice") %s', self.chain.get_balance('alice'))
         total_time = 0
-        count = 6000
+        count = 10
         start = time.time()
         for i in range(count):
             r = self.chain.push_action('alice', 'sayhello', str(i).encode('utf8'))
