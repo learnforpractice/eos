@@ -5,13 +5,19 @@
 
 using namespace eosio::chain;
 
+#ifdef PAGE_SIZE
+#undef PAGE_SIZE
+#endif
+
+#define PAGE_SIZE 65536
+
 extern "C" {
     int micropython_init();
     void *micropython_get_memory();
     size_t micropython_get_memory_size();
     size_t micropython_backup_memory(void *backup, size_t size);
     size_t micropython_restore_memory(void *backup, size_t size);
-
+    void micropython_init_memory(size_t initial_pages);
     int micropython_contract_init(int type, const char *py_src, size_t size);
     int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
 }
@@ -130,6 +136,7 @@ void micropython_interface::take_snapshoot(micropython_instantiated_module& modu
     char *ptr1 = (char *)initial_vm_memory.data();
     char *ptr2 = (char *)vm_start_memory_address;
 
+    module.backup.initial_pages = vm_memory_size / PAGE_SIZE;
     int pos = 0;
     while(pos<vm_memory_size) {
         if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
@@ -151,10 +158,8 @@ void micropython_interface::take_snapshoot(micropython_instantiated_module& modu
         segment.data.resize(pos-start);
         memcpy(segment.data.data(), vm_start_memory_address + start, pos-start);
         module.backup.segments.emplace_back(segment);
-//                printf("++++offset %d, size %d\n", start, pos-start);
         pos += block_size;
     }
-//            printf("++++++++total_backup_size: %d\n", total_count * block_size);
 }
 
 const std::unique_ptr<micropython_instantiated_module>& micropython_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
@@ -187,6 +192,7 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
                 get_vm_api()->allow_access_apply_context = true;
             });
             get_vm_api()->allow_access_apply_context = false;
+            micropython_init_memory(initial_vm_memory.size()/PAGE_SIZE);
             micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
             //TODO: handle exception in micropython vm
 //            printf("++++code: %s\n", codeobject->code.data());
@@ -202,6 +208,7 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             take_snapshoot(*c.module);
         });
     } else {
+        micropython_init_memory(it->module->backup.initial_pages);
         char *vm_start_memory_address = (char *)micropython_get_memory();
         int pos = 0;
         for (memory_segment& segment: it->module->backup.segments) {

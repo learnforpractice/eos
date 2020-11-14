@@ -132,7 +132,7 @@ with open('micropython.c.bin', 'r') as f:
     origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'
     if data.find(origin) < 0:
       origin = 'wasm_rt_allocate_memory((&M0), 2, 65536);'
-    patch = 'wasm_rt_allocate_memory((&M0), 2, 16);'
+    patch = 'memset(&M0, 0, sizeof(M0));wasm_rt_allocate_memory((&M0), 2, 32);'
     data = patch_micropython(data, origin, patch)
     data = data.replace('__fpclassifyl', '____fpclassifyl')
 

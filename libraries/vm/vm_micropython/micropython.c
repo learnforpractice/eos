@@ -97,10 +97,17 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   init_table();
   init_exports();
   memcpy(&(M0.data[0]), &g1, 4);
+  __wasm_call_ctors();
 }
 
+void vm_print_stacktrace(void);
+
 void *get_memory_ptr(uint32_t offset, uint32_t size) {
-  eosio_assert(offset + size <= M0.size && offset + size >= offset, "memory access out of bound!");
+  int test = offset + size <= M0.size && offset + size >= offset;
+  // if (!test) {
+  //   vm_print_stacktrace();
+  // }
+  eosio_assert(test, "memory access out of bound!");
   return M0.data + offset;
 }
 
@@ -130,8 +137,7 @@ int micropython_init() {
   size_t size = strlen(init_script)+1;
   u32 script_offset = malloc(size);
   char *ptr = (char *)get_memory_ptr(script_offset, size);
-  ptr[size-1] = '\0';
-  memcpy(ptr, init_script, size);
+  strcpy(ptr, init_script);
 
   micropython_run_script(script_offset);
   // printf("+++++++++++malloc current position:%lld\n", malloc(1));
@@ -183,6 +189,10 @@ void wasm_rt_on_trap(wasm_rt_trap_t code) {
          EOSIO_THROW("vm unknown error");
          break;
    }
+}
+
+void micropython_init_memory(size_t initial_pages) {
+  wasm_rt_allocate_memory((&M0), initial_pages, 32);
 }
 
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {

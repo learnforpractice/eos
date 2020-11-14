@@ -32,6 +32,10 @@ extern "C" void print_hex(char *data, size_t size) {
 }
 
 extern "C" {
+#include <stacktrace.h>
+void vm_print_stacktrace(void) {
+   print_stacktrace();
+}
 
 void setjmp_clear_stack() {
   setjmp_stack.clear();

@@ -5,3 +5,4 @@ _micropython_backup_memory
 _micropython_restore_memory
 _micropython_contract_init
 _micropython_contract_apply
+_micropython_init_memory

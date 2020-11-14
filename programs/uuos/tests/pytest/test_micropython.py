@@ -13,6 +13,9 @@ test_dir = os.path.dirname(__file__)
 
 logger = application.get_logger(__name__)
 
+# print(os.getpid())
+# input('<<<')
+
 class Test(object):
 
     @classmethod
@@ -458,16 +461,70 @@ def apply(a, b, c):
 
     def test_memory(self):
         code = r'''
+large_str = 'a'*(1024)
 def apply(a, b, c):
-    a = 'a'*(1024*128)
+    print(large_str[1024-1])
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+        code = r'''
+large_str = 'a'*(1024*512)
+def apply(a, b, c):
+    pass
+    print(large_str[1024*200])
+#    large_str[1024*512-1]
+#    print(large_str[1024*512-1])
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        self.chain.produce_block()
+
+#allolc a large memory
+        code = r'''
+large_data = bytearray(512*1024)
+def apply(a, b, c):
+    pass
+    print(large_data[1024*512-1])
+#    large_str[1024*512-1]
+#    print(large_str[1024*512-1])
+'''
+        code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        self.chain.produce_block()
+
+#out of memory test
+        code = r'''
+def apply(a, b, c):
+    a = 'a'*(1024*1024*2)
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+            assert 0
         except Exception as e:
+            logger.info(e.args[0]['except']['stack'][0]['data']['s'])
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'failed to allocate pages'
         self.chain.produce_block()
 
         code = r'''
@@ -500,16 +557,111 @@ def apply(a, b, c):
 
     def test_mpy_frozen(self):
         code = r'''
-import db
-def apply(a, b, c):
-    db.idx64
-    # print(db)
-    # print(db.db_previous_i256, 'hello,world')
-    # print(db.idx64)
-    # print(db.idx128)
-    # print(db.idx256)
-    # print(db.idx_double)
-    # print(db.idx_long_double)
+import json
+import struct
+from db import *
+
+class MyData(object):
+    def __init__(self, a: int, b: int, c: int, d: float):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.payer = 0
+
+    def pack(self):
+        b = int.to_bytes(self.b, 16, 'little')
+        c = int.to_bytes(self.c, 32, 'little')
+        return struct.pack('Q16s32sd', self.a, b, c, self.d)
+
+    @classmethod
+    def unpack(cls, data):
+        a, b, c, d = struct.unpack('Q16s32sd', data)
+        b = int.from_bytes(b, 'little')
+        c = int.from_bytes(c, 'little')
+        return cls(a, b, c, d)
+
+    def get_primary_key(self):
+        return self.a
+
+    def get_secondary_values(self):
+        return (self.a, self.b, self.c, self.d)
+
+    @staticmethod
+    def get_secondary_indexes():
+        return (idx64, idx128, idx256, idx_double)
+
+class MyData2(object):
+    def __init__(self, a: int, b: int, c: int, d: float):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.payer = 0
+
+    def pack(self):
+        data = (self.a, self.b, self.c, self.d)
+        return json.dumps(data)
+
+    @classmethod
+    def unpack(cls, data):
+        data = json.loads(data)
+        return cls(data[0], data[1], data[2], data[3])
+
+    def get_primary_key(self):
+        return self.a
+
+    def get_secondary_values(self):
+        return (self.a, self.b, self.c, self.d)
+
+    @staticmethod
+    def get_secondary_indexes():
+        return (idx64, idx128, idx256, idx_double)
+
+    def __repr__(self):
+        return (self.a, self.b, self.c, self.d)
+
+    def __str__(self):
+        data = (self.a, self.b, self.c, self.d)
+        return json.dumps(data)
+
+def apply(receiver, code, action):
+    code = name('alice')
+    scope = name('scope1')
+    table = name('table')
+    payer = name('alice')
+
+    if True:
+        mi = MultiIndex(code, scope, table, MyData)
+
+        try:
+            itr = mi.find(1)
+            if itr >= 0:
+                data = mi.get(itr)
+                print(data.a, data.b, data.c, data.d)
+        except Exception as e:
+            print(e)
+
+        d = MyData(1, 2, 3, 5.0)
+        d.payer = payer
+        mi[1] = d
+
+        itr, primary = mi.idx_find(3, 4.0)
+        print(itr, primary)
+
+        itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
+        print(itr, primary, secondary)
+
+    if True:
+        table = name('table2')
+        mi = MultiIndex(code, scope, table, MyData2)
+        d = MyData2(1, 2, 3, 5.0)
+        d.payer = payer
+        mi[1] = d
+
+        print(mi[1])
+        itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
+        print(itr, primary, secondary)
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
@@ -519,6 +671,10 @@ def apply(a, b, c):
             r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
             logger.info('+++elapsed: %s', r['elapsed'])
         except Exception as e:
-            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
+            name = e.args[0]['except']['name']
+            # == 'eosio_assert_message_exception'
+            msg = e.args[0]['except']['stack'][0]['data']['s']
+            logger.info(name)
+            logger.info(msg)
+#             == 'no free vm memory left!'
         self.chain.produce_block()

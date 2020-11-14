@@ -26,6 +26,7 @@ namespace eosio { namespace chain {
    struct vm_micropython_state {
       vector<uint8_t> data;
       vector<memory_segment> segments;
+      size_t initial_pages;
    };
 
    class micropython_instantiated_module {
