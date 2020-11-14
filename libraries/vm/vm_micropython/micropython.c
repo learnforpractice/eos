@@ -1,3 +1,4 @@
+#include "micropython_vm_config.h"
 #include "micropython.c.bin"
 #include <wasm-rt-impl.h>
 
@@ -140,7 +141,6 @@ int micropython_init() {
   strcpy(ptr, init_script);
 
   micropython_run_script(script_offset);
-  // printf("+++++++++++malloc current position:%lld\n", malloc(1));
   return 1;
 }
 
@@ -152,7 +152,8 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   char *ptr = (char *)get_memory_ptr(offset, size);
   memcpy(ptr, py_src, size);
 //  printf("++++++++++++memory start %p\n", ptr);
-  return micropython_init_module(type, offset, size);
+  int ret = micropython_init_module(type, offset, size);
+  return ret;
 }
 
 #define EOSIO_THROW(msg) eosio_assert(0, msg)
@@ -192,12 +193,10 @@ void wasm_rt_on_trap(wasm_rt_trap_t code) {
 }
 
 void micropython_init_memory(size_t initial_pages) {
-  wasm_rt_allocate_memory((&M0), initial_pages, 32);
+  wasm_rt_allocate_memory((&M0), initial_pages, PYTHON_VM_MAX_MEMORY_SIZE/65536);
 }
 
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
-  // u32 ptr_offset = malloc(1);
-  // printf("+++++++++free_memory start pos: %d\n", ptr_offset);
   setjmp_clear_stack();
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();

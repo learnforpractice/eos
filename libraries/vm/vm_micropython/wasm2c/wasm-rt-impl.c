@@ -15,6 +15,7 @@
  */
 
 #include "wasm-rt-impl.h"
+#include "micropython_vm_config.h"
 
 #include <assert.h>
 #include <stdarg.h>
@@ -95,11 +96,11 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
                              uint32_t initial_pages,
                              uint32_t max_pages) {
   memory->pages = initial_pages;
-  memory->max_pages = MAX_VM_MEMORY/PAGE_SIZE;//max_pages;
+  memory->max_pages = PYTHON_VM_MAX_MEMORY_SIZE/PAGE_SIZE;//max_pages;
   memory->size = initial_pages * PAGE_SIZE;
 
   if (!memory->data) {
-    memory->data = calloc(MAX_VM_MEMORY, 1);
+    memory->data = calloc(PYTHON_VM_MAX_MEMORY_SIZE, 1);
   }
 }
 

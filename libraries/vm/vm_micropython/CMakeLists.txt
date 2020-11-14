@@ -1,4 +1,6 @@
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/micropython_vm_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/micropython_vm_config.h)
+
 if (APPLE)
     set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
     set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
@@ -31,7 +33,6 @@ target_include_directories(vm_micropython PRIVATE ${Boost_INCLUDE_DIR}
 )
 
 target_compile_options(vm_micropython PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300)
-
 
 # add_dependencies(vm_micropython pythonvm_project)
 
