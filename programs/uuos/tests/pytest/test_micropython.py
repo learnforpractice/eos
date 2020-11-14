@@ -194,7 +194,13 @@ def apply(a, b, c):
     raise Exception('oops!')
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            logger.info(e.args[0]['action_traces'][0]['console'])
+            assert e.args[0]['except']['name'] == 'python_execution_error'
+
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
@@ -415,7 +421,11 @@ def apply(a, b, c):
         a * b
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
 
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
@@ -493,10 +503,9 @@ def apply(a, b, c):
 
 #allolc a large memory
         code = r'''
-large_data = bytearray(512*1024)
+large_data = bytearray(5*1024*1024)
 def apply(a, b, c):
-    pass
-    print(large_data[1024*512-1])
+    print(large_data[5*1024*1024-1])
 #    large_str[1024*512-1]
 #    print(large_str[1024*512-1])
 '''
@@ -514,7 +523,7 @@ def apply(a, b, c):
 #out of memory test
         code = r'''
 def apply(a, b, c):
-    a = 'a'*(1024*1024*2)
+    a = 'a'*(1024*1024*10)
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
@@ -526,6 +535,7 @@ def apply(a, b, c):
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'failed to allocate pages'
         self.chain.produce_block()
+        return
 
         code = r'''
 g_a = 1
@@ -678,3 +688,25 @@ def apply(receiver, code, action):
             logger.info(msg)
 #             == 'no free vm memory left!'
         self.chain.produce_block()
+
+    def test_performance(self):
+        code = '''
+def apply(a, b, c):
+    a = bytearray(5*1024*1024)
+'''
+        code = self.compile(code)
+        r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        logger.info('+++elapsed: %s', r['elapsed'])
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+
+        code = '''
+def apply(a, b, c):
+    return
+'''
+        code = self.compile(code)
+        r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        logger.info('+++elapsed: %s', r['elapsed'])
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
