@@ -2,7 +2,7 @@
 #include <eosio/chain/apply_context.hpp>
 #include <vm_api/vm_api.h>
 
-#include <python_vm_config.h>
+#include "../vm/vm_micropython/micropython_vm_config.h"
 
 using namespace eosio::chain;
 
