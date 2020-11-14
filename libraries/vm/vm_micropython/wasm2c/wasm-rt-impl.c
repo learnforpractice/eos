@@ -94,20 +94,12 @@ uint32_t wasm_rt_register_func_type(uint32_t param_count,
 void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
                              uint32_t initial_pages,
                              uint32_t max_pages) {
-  if (memory->data) {
-    if (memory->pages != initial_pages) {
-      //realloc, avoid data copy
-      free(memory->data);
-      memory->pages = initial_pages;
-      memory->max_pages = max_pages;
-      memory->size = initial_pages * PAGE_SIZE;
-      memory->data = malloc(memory->size);
-    }
-  } else {
-    memory->pages = initial_pages;
-    memory->max_pages = max_pages;
-    memory->size = initial_pages * PAGE_SIZE;
-    memory->data = calloc(memory->size, 1);
+  memory->pages = initial_pages;
+  memory->max_pages = MAX_VM_MEMORY/PAGE_SIZE;//max_pages;
+  memory->size = initial_pages * PAGE_SIZE;
+
+  if (!memory->data) {
+    memory->data = calloc(MAX_VM_MEMORY, 1);
   }
 }
 
@@ -119,7 +111,7 @@ uint32_t wasm_rt_grow_memory(wasm_rt_memory_t* memory, uint32_t delta) {
   }
   memory->pages = new_pages;
   memory->size = new_pages * PAGE_SIZE;
-  memory->data = realloc(memory->data, memory->size);
+//  memory->data = realloc(memory->data, memory->size);
   memset(memory->data + old_pages * PAGE_SIZE, 0, delta * PAGE_SIZE);
   return old_pages;
 }
