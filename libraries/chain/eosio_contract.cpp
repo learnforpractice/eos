@@ -189,13 +189,16 @@ void apply_eosio_setcode(apply_context& context) {
    EOS_ASSERT( code_size > 0 || existing_code, set_exact_code, "contract is already cleared" );
 
    int64_t old_size  = 0;
-   int64_t new_size  = code_size * config::setcode_ram_bytes_multiplier;
 
    if( existing_code ) {
       const code_object& old_code_entry = db.get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
       EOS_ASSERT( old_code_entry.code_hash != code_hash, set_exact_code,
                   "contract is already running this version of code" );
-      old_size  = (int64_t)old_code_entry.code.size() * config::setcode_ram_bytes_multiplier;
+      if (account.vm_type == 3) {
+         old_size = (int64_t)old_code_entry.code.size() + context.control.get_micropython_interface().get_snapshoot_size(old_code_entry.code_hash, account.vm_type, account.vm_version, context);
+      } else {
+         old_size  = (int64_t)old_code_entry.code.size() * config::setcode_ram_bytes_multiplier;
+      }
       if( old_code_entry.code_ref_count == 1 ) {
          db.remove(old_code_entry);
          if (account.vm_type == 0) {
@@ -238,6 +241,13 @@ void apply_eosio_setcode(apply_context& context) {
       a.vm_version = act.vmversion;
       a.last_code_update = context.control.pending_block_time();
    });
+
+   int64_t new_size;
+   if (act.vmtype == 3) {
+      new_size = code_size + context.control.get_micropython_interface().get_snapshoot_size(code_hash, act.vmtype, act.vmversion, context);
+   } else {
+      new_size  = code_size * config::setcode_ram_bytes_multiplier;
+   }
 
    if (new_size != old_size) {
       context.add_ram_usage( act.account, new_size - old_size );

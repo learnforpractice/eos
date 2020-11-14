@@ -2,6 +2,7 @@
 #include <eosio/chain/apply_context.hpp>
 #include <vm_api/vm_api.h>
 
+#include <python_vm_config.h>
 
 using namespace eosio::chain;
 
@@ -136,9 +137,10 @@ void micropython_interface::take_snapshoot(micropython_instantiated_module& modu
     char *ptr1 = (char *)initial_vm_memory.data();
     char *ptr2 = (char *)vm_start_memory_address;
 
+    int initial_memory_size = initial_vm_memory.size();
     module.backup.initial_pages = vm_memory_size / PAGE_SIZE;
-    int pos = 0;
-    while(pos<vm_memory_size) {
+    int pos = PYTHON_VM_STACK_SIZE; //do not save stack data as it's temperately
+    while(pos<initial_memory_size) {
         if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
             pos += block_size;
             continue;
@@ -146,20 +148,38 @@ void micropython_interface::take_snapshoot(micropython_instantiated_module& modu
         int start = pos;
         total_count += 1;
         pos += block_size;
-        while (pos<vm_memory_size) {
+        while (pos<initial_memory_size) {
             if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
                 break;
             }
             pos += block_size;
             total_count += 1;
         }
+
         memory_segment segment;
+        int copy_size = pos-start;
         segment.offset = start;
-        segment.data.resize(pos-start);
-        memcpy(segment.data.data(), vm_start_memory_address + start, pos-start);
+        segment.data.resize(copy_size);
+        memcpy(segment.data.data(), vm_start_memory_address + start, copy_size);
         module.backup.segments.emplace_back(segment);
         pos += block_size;
+        module.backup.total_segment_size += copy_size;
+//        elog("+++++++${n1}, ${n2}", ("n1", start)("n2", copy_size));
     }
+
+    int remain_size = vm_memory_size - initial_memory_size;
+    if (remain_size > 0) {
+        memory_segment segment;
+        segment.offset = initial_memory_size;
+        segment.data.resize(remain_size);
+        memcpy(segment.data.data(), vm_start_memory_address + initial_memory_size, remain_size);
+        module.backup.segments.emplace_back(segment);
+    }
+}
+
+size_t micropython_interface::get_snapshoot_size(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, apply_context& context) {
+    uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
+    return get_instantiated_module(code_hash, vm_type, vm_version, context)->backup.total_segment_size;
 }
 
 const std::unique_ptr<micropython_instantiated_module>& micropython_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
