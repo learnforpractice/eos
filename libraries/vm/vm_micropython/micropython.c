@@ -145,17 +145,6 @@ int micropython_init() {
 }
 
 void setjmp_clear_stack();
-
-int micropython_contract_init(int type, const char *py_src, size_t size) {
-  setjmp_clear_stack();
-  u32 offset = malloc(size);
-  char *ptr = (char *)get_memory_ptr(offset, size);
-  memcpy(ptr, py_src, size);
-//  printf("++++++++++++memory start %p\n", ptr);
-  int ret = micropython_init_module(type, offset, size);
-  return ret;
-}
-
 #define EOSIO_THROW(msg) eosio_assert(0, msg)
 
 void wasm_rt_on_trap(wasm_rt_trap_t code) {
@@ -196,15 +185,40 @@ void micropython_init_memory(size_t initial_pages) {
   wasm_rt_allocate_memory((&M0), initial_pages, PYTHON_VM_MAX_MEMORY_SIZE/65536);
 }
 
+
+int micropython_contract_init(int type, const char *py_src, size_t size) {
+  setjmp_clear_stack();
+
+  init_globals();
+  
+  int trap_code = wasm_rt_impl_try();
+  if (trap_code == 0) {
+    u32 offset = malloc(size);
+    char *ptr = (char *)get_memory_ptr(offset, size);
+    memcpy(ptr, py_src, size);
+  //  printf("++++++++++++memory start %p\n", ptr);
+    int ret = micropython_init_module(type, offset, size);
+    return ret;
+  } else {
+    printf("++++micropython_contract_init:trap code: %d\n", trap_code);
+    wasm_rt_on_trap((wasm_rt_trap_t)trap_code);
+  }
+  return 0;
+}
+
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
   setjmp_clear_stack();
+
+  init_globals();
+
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
     return micropython_apply(receiver, code, action);
   } else {
-    printf("++++trap code: %d\n", trap_code);
+    printf("++++micropython_contract_apply:trap code: %d\n", trap_code);
     wasm_rt_on_trap((wasm_rt_trap_t)trap_code);
+    return trap_code;
   }
   return 0;
 }
