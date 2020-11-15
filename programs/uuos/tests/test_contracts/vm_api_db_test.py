@@ -95,6 +95,11 @@ def apply(receiver, code, action):
 
     itrs_64 = (itr2, itr3, itr4, itr5)
 
+    db_remove_i64(itr2)
+    db_remove_i64(itr3)
+    db_remove_i64(itr4)
+    db_remove_i64(itr5)
+
 
 #+++++++++++++++++++db i256++++++++++++++++++++++++++++++++++
     itr1 = db_store_i256(scope, table, payer, 1, '1')
@@ -168,7 +173,8 @@ def apply(receiver, code, action):
     assert db_get_i256(itr4) == b'7'
     assert db_get_i256(itr5) == b'world'
 
-    assert 8 == db_get_table_count(code, scope, table)
+    ret = db_get_table_count(code, scope, table)
+    assert 4 == ret
 
 #++++++++++cleanup++++++++++++++++++++++++
     db_remove_i256(itr2)
@@ -176,8 +182,8 @@ def apply(receiver, code, action):
     db_remove_i256(itr4)
     db_remove_i256(itr5)
 
-    for itr in itrs_64:
-        db_remove_i64(itr)
+    # for itr in itrs_64:
+    #     db_remove_i64(itr)
 
     itr0 = db_idx_store(idx64, scope, table, payer, 1, 11)
     itr1 = db_idx_store(idx64, scope, table, payer, 3, 33)
@@ -205,6 +211,11 @@ def apply(receiver, code, action):
     assert (1, 3, 33) == db_idx_upperbound(idx64, code, scope, table, 11)
     assert (-2, 0, 0) == db_idx_lowerbound(idx64, code, scope, table, 88)
     assert (-2, 0, 0) == db_idx_upperbound(idx64, code, scope, table, 88)
+
+    db_idx_remove(idx64, itr0)
+    db_idx_remove(idx64, itr1)
+    db_idx_remove(idx64, itr2)
+    db_idx_remove(idx64, itr3)
 
     secondary0 = 0x0102030405060708090a0b0c0d0e0f11
     secondary1 = 0x0102030405060708090a0b0c0d0e0f33
@@ -243,6 +254,11 @@ def apply(receiver, code, action):
     ret = db_idx_find_primary(idx128, code, scope, table, 1)
     print(ret, secondary_0_update)
     assert (0, secondary_0_update) == db_idx_find_primary(idx128, code, scope, table, 1)
+
+    db_idx_remove(idx128, itr0)
+    db_idx_remove(idx128, itr1)
+    db_idx_remove(idx128, itr2)
+    db_idx_remove(idx128, itr3)
 
 #+++++++++++++++++++++idx256+++++++++++++++++++++++++++++++++++++
     secondary0 = 0x0102030405060708090a0b0c0d0e0f1122
@@ -283,6 +299,12 @@ def apply(receiver, code, action):
     assert (0, 1) == db_idx_find_secondary(idx256, code, scope, table, secondary_0_update)
     assert (0, secondary_0_update) == db_idx_find_primary(idx256, code, scope, table, 1)
 
+    db_idx_remove(idx256, itr0)
+    db_idx_remove(idx256, itr1)
+    db_idx_remove(idx256, itr2)
+    db_idx_remove(idx256, itr3)
+
+
 #++++++++++++++idx double++++++++++++++++=
     itr0 = db_idx_store(idx_double, scope, table, payer, 1, 11.1)
     itr1 = db_idx_store(idx_double, scope, table, payer, 3, 33.3)
@@ -314,6 +336,11 @@ def apply(receiver, code, action):
     db_idx_update(idx_double, itr0, payer, secondary_0_update)
     assert (0, 1) == db_idx_find_secondary(idx_double, code, scope, table, secondary_0_update)
     assert (0, secondary_0_update) == db_idx_find_primary(idx_double, code, scope, table, 1)
+
+    db_idx_remove(idx_double, itr0)
+    db_idx_remove(idx_double, itr1)
+    db_idx_remove(idx_double, itr2)
+    db_idx_remove(idx_double, itr3)
 
 #++++++++++++++idx long double++++++++++++++++=
     itr0 = db_idx_store(idx_long_double, scope, table, payer, 1, float128(11.1))
@@ -349,3 +376,7 @@ def apply(receiver, code, action):
     assert itr == 0
     print(secondary, float128(11.111), secondary == float128(11.111))
 #    assert abs(secondary - float128(11.111)) <= 0.000001
+    db_idx_remove(idx_long_double, itr0)
+    db_idx_remove(idx_long_double, itr1)
+    db_idx_remove(idx_long_double, itr2)
+    db_idx_remove(idx_long_double, itr3)

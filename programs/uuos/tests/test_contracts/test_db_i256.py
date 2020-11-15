@@ -24,3 +24,9 @@ def apply(a, b, c):
 
     ret = db_get_i256(itr1)
     print(itr1, ret)
+
+    db_remove_i256(itr1)
+    db_remove_i256(itr2)
+    db_remove_i256(itr3)
+    db_remove_i256(itr4)
+
