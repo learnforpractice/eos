@@ -14,7 +14,7 @@ void eosio_abort() {
 }
 
 void  eosio_assert( uint32_t test, const char* msg ) {
-   EOSIO_ASSERT( test, msg );
+   get_vm_api()->eosio_assert( test, msg );
 }
 
 void  eosio_assert_message( uint32_t test, const char* msg, uint32_t msg_len ) {

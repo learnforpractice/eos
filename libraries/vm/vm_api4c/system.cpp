@@ -1,4 +1,4 @@
-#include <stacktrace.h>
+#include "stacktrace.h"
 static void eosio_assert( u32 test, u32 msg_offset ) {
    if (test) {
    } else {
