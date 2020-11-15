@@ -98,7 +98,6 @@ def apply(receiver, code, action):
 
 #+++++++++++++++++++db i256++++++++++++++++++++++++++++++++++
     itr1 = db_store_i256(scope, table, payer, 1, '1')
-    return
     itr2 = db_store_i256(scope, table, payer, 3, '3')
     itr3 = db_store_i256(scope, table, payer, 5, '5')
     itr4 = db_store_i256(scope, table, payer, 7, '7')
@@ -315,3 +314,38 @@ def apply(receiver, code, action):
     db_idx_update(idx_double, itr0, payer, secondary_0_update)
     assert (0, 1) == db_idx_find_secondary(idx_double, code, scope, table, secondary_0_update)
     assert (0, secondary_0_update) == db_idx_find_primary(idx_double, code, scope, table, 1)
+
+#++++++++++++++idx long double++++++++++++++++=
+    itr0 = db_idx_store(idx_long_double, scope, table, payer, 1, float128(11.1))
+    itr1 = db_idx_store(idx_long_double, scope, table, payer, 3, float128(33.3))
+    itr2 = db_idx_store(idx_long_double, scope, table, payer, 5, float128(55.5))
+    itr3 = db_idx_store(idx_long_double, scope, table, payer, 7, float128(77.7))
+
+    assert (1, 3) == db_idx_next(idx_long_double, itr0)
+    assert (-1, 0) == db_idx_previous(idx_long_double, itr0)
+    assert (2, 5) == db_idx_next(idx_long_double, itr1)
+    assert (0, 1) == db_idx_previous(idx_long_double, itr1)
+    assert (2, 5) == db_idx_previous(idx_long_double, itr3)
+
+    assert (0, 11.1) == db_idx_find_primary(idx_long_double, code, scope, table, 1)
+    assert (1, 33.3) == db_idx_find_primary(idx_long_double, code, scope, table, 3)
+    assert (2, 55.5) == db_idx_find_primary(idx_long_double, code, scope, table, 5)
+    assert (3, 77.7) == db_idx_find_primary(idx_long_double, code, scope, table, 7)
+
+    assert (0, 1) == db_idx_find_secondary(idx_long_double, code, scope, table, float128(11.1))
+    assert (1, 3) == db_idx_find_secondary(idx_long_double, code, scope, table, float128(33.3))
+    assert (2, 5) == db_idx_find_secondary(idx_long_double, code, scope, table, float128(55.5))
+    assert (3, 7) == db_idx_find_secondary(idx_long_double, code, scope, table, float128(77.7))
+
+    assert (0, 1, 11.1) == db_idx_lowerbound(idx_long_double, code, scope, table, float128(11.1))
+    assert (1, 3, 33.3) == db_idx_upperbound(idx_long_double, code, scope, table, float128(11.1))
+    assert (-2, 0, 0.0) == db_idx_lowerbound(idx_long_double, code, scope, table, float128(88.0))
+    assert (-2, 0, 0.0) == db_idx_upperbound(idx_long_double, code, scope, table, float128(88.0))
+
+    secondary_0_update = float128(11.111)
+    db_idx_update(idx_long_double, itr0, payer, secondary_0_update)
+    assert (0, 1) == db_idx_find_secondary(idx_long_double, code, scope, table, secondary_0_update)
+    itr, secondary = db_idx_find_primary(idx_long_double, code, scope, table, 1)
+    assert itr == 0
+    print(secondary, float128(11.111), secondary == float128(11.111))
+#    assert abs(secondary - float128(11.111)) <= 0.000001
