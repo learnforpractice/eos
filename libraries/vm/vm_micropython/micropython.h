@@ -38,6 +38,8 @@ extern u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 /* import: 'env' 'memmove' */
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
+/* import: 'env' '__extenddftf2' */
+extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' 'prints' */
@@ -46,12 +48,10 @@ extern void (*Z_envZ_printsZ_vi)(u32);
 extern u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
 /* import: 'env' 'printqf' */
 extern void (*Z_envZ_printqfZ_vi)(u32);
-/* import: 'env' '__trunctfdf2' */
-extern f64 (*Z_envZ___trunctfdf2Z_djj)(u64, u64);
 /* import: 'env' '__eqtf2' */
 extern u32 (*Z_envZ___eqtf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' '__extenddftf2' */
-extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
+/* import: 'env' '__trunctfdf2' */
+extern f64 (*Z_envZ___trunctfdf2Z_djj)(u64, u64);
 /* import: 'env' '__floatsitf' */
 extern void (*Z_envZ___floatsitfZ_vii)(u32, u32);
 /* import: 'env' '__addtf3' */
