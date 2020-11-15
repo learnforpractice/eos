@@ -27,7 +27,7 @@ class Test(object):
         cls.chain.free()
 
     def setup_method(self, method):
-        pass
+        logger.info(method)
 
     def teardown_method(self, method):
         pass
@@ -52,8 +52,10 @@ def apply(a, b, c):
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+            assert 0
         except Exception as e:
-            assert e.args[0]['except']['name'] == 'deadline_exception'
+            exception_name = e.args[0]['except']['name']
+            assert exception_name in ('deadline_exception', 'tx_cpu_usage_exceeded')
         self.chain.produce_block()
 
     def test_call_depth(self):
@@ -194,19 +196,9 @@ def apply(a, b, c):
     raise Exception('oops!')
 '''
         code = self.compile(code)
-        try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=3)
-            assert 0
-        except Exception as e:
-            logger.info(e.args[0]['action_traces'][0]['console'])
-            assert e.args[0]['except']['name'] == 'python_execution_error'
-
-        try:
-            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        except Exception as e:
-            logger.info(e.args[0]['action_traces'][0]['console'])
-            assert e.args[0]['except']['name'] == 'python_execution_error'
-        self.chain.produce_block()
+        e = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        logger.info(e.args[0]['action_traces'][0]['console'])
+        assert e.args[0]['except']['name'] == 'python_execution_error'
 
     def test_setjmp(self):
         return
@@ -422,17 +414,10 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=3)
-            assert 0
+            e = self.chain.deploy_contract('alice', code, b'', vmtype=3)
         except Exception as e:
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
-
-        try:
-            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        except Exception as e:
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
-        self.chain.produce_block()
-
+           assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+ 
     def test_json(self):
         code = r'''
 import chain
@@ -696,7 +681,7 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        logger.info('+++elapsed: %s', r['elapsed'])
+        # logger.info('+++elapsed: %s', r['elapsed'])
         r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
         logger.info('+++elapsed: %s', r['elapsed'])
 
@@ -706,7 +691,11 @@ def apply(a, b, c):
     return
 '''
         code = self.compile(code)
-        r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        logger.info('+++elapsed: %s', r['elapsed'])
+        try:
+            r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            logger.info('+++elapsed: %s', r['elapsed'])
+        except:
+            pass
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
