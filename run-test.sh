@@ -20,6 +20,8 @@ fi
 if [[ "$1" == "" ]]; then
     ./build/programs/uuos/uuos -m pytest programs/uuos/tests/pytest #--pyeos
 else
-    ./build/programs/uuos/uuos -m pytest -s $1 $2 $3 $4 #--pyeos
+    r=$RANDOM
+    echo $r
+    ./build/programs/uuos/uuos -m pytest --randomly-seed=$r -s $1 $2 $3 $4 $5 $6 $7 $8 #--pyeos
 fi
 
