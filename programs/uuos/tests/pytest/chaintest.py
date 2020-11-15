@@ -450,7 +450,11 @@ class ChainTest(object):
 #        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
 
         actions = json.dumps(actions)
-        expiration = datetime.utcnow() + timedelta(seconds=60)
+        expiration = datetime.utcnow() + timedelta(seconds=60*60)
+
+        expiration = self.chain.fork_db_pending_head_block_time()
+        expiration = datetime.strptime(expiration, "%Y-%m-%dT%H:%M:%S.%f")
+        expiration = expiration + timedelta(microseconds=10000000)
         expiration = isoformat(expiration)
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_keys)
         # signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
@@ -458,7 +462,7 @@ class ChainTest(object):
         # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
         # logger.info(r)
 
-        deadline = datetime.utcnow() + timedelta(microseconds=100000)
+        deadline = datetime.utcnow() + timedelta(microseconds=10000000)
         billed_cpu_time_us = 100
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
         result = json.loads(result)
@@ -578,11 +582,14 @@ class ChainTest(object):
         }
         actions.append(setabi)
         # logger.info(actions)
-        ret = self.push_actions(actions)
-        elapsed = ret.elapsed
-        logger.info(f'+++++deploy contract: {account} {elapsed}')
-        # logger.info(ret)
-        return ret
+        try:
+            ret = self.push_actions(actions)
+            elapsed = ret.elapsed
+            logger.info(f'+++++deploy contract: {account} {elapsed}')
+            # logger.info(ret)
+            return ret
+        except Exception as e:
+            return e
 
     def update_auth(self, account, accounts, keys, perm='active', parent='owner'):
         a = {
@@ -656,8 +663,14 @@ class ChainTest(object):
         }
         actions.append(action)
         actions = json.dumps(actions)
-        expiration = datetime.utcnow() + timedelta(seconds=60)
+        expiration = datetime.utcnow() + timedelta(seconds=60*60)
         expiration = isoformat(expiration)
+
+        expiration = self.chain.fork_db_pending_head_block_time()
+        expiration = datetime.strptime(expiration, "%Y-%m-%dT%H:%M:%S.%f")
+        expiration = expiration + timedelta(microseconds=10000000)
+        expiration = isoformat(expiration)
+        
         r = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_keys)
 #        logger.info(r)
         return r
@@ -671,7 +684,7 @@ class ChainTest(object):
             self.chain.abort_block()
             self.chain.start_block(isoformat(self.calc_pending_block_time()))
             trx = self.gen_trx()
-            deadline = datetime.utcnow() + timedelta(microseconds=30000)
+            deadline = datetime.utcnow() + timedelta(microseconds=3000000)
             billed_cpu_time_us = 2000
             ret, result = self.chain.push_transaction(trx, isoformat(deadline), billed_cpu_time_us)
             print(ret, result)
