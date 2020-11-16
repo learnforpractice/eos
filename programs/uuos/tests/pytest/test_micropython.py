@@ -196,9 +196,10 @@ def apply(a, b, c):
     raise Exception('oops!')
 '''
         code = self.compile(code)
-        e = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        logger.info(e.args[0]['action_traces'][0]['console'])
-        assert e.args[0]['except']['name'] == 'python_execution_error'
+        error, ret = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        assert not error
+        logger.info(ret.args[0]['action_traces'][0]['console'])
+        assert ret.args[0]['except']['name'] == 'python_execution_error'
 
     def test_setjmp(self):
         return
@@ -392,12 +393,18 @@ def apply(receiver, code, action):
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
 
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        r = self.chain.push_action('alice', 'test1', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        r = self.chain.push_action('alice', 'test2', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'test3', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'test4', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
         self.chain.produce_block()
 
 # test for out of context
@@ -413,10 +420,9 @@ def apply(a, b, c):
         a * b
 '''
         code = self.compile(code)
-        try:
-            e = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        except Exception as e:
-           assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+        success, e = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        assert not success
+        assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
  
     def test_json(self):
         code = r'''
@@ -587,11 +593,7 @@ def apply(a, b, c):
     return
 '''
         code = self.compile(code)
-        try:
-            r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-            logger.info('+++elapsed: %s', r['elapsed'])
-        except:
-            pass
+        r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
         self.chain.produce_block()
@@ -602,8 +604,6 @@ def apply(a, b, c):
             code = f.read()
         code = self.compile(code)
         r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        # print(r)
-        assert not isinstance(r, Exception) or r.args[0]['except']['name'] == 'set_exact_code', r
 
         r = self.chain.push_action('alice', 'test1', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -630,3 +630,10 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
         logger.info(self.chain.get_balance('alice'))
         self.chain.produce_block()
+    
+    def test_deploy_contract(self):
+        code = '''
+def apply(a, b, c):
+    return
+'''
+        code = self.compile(code)
