@@ -587,9 +587,11 @@ class ChainTest(object):
             elapsed = ret.elapsed
             logger.info(f'+++++deploy contract: {account} {elapsed}')
             # logger.info(ret)
-            return ret
+            return (True, ret)
         except Exception as e:
-            return e
+            # if not e.args[0]['except']['name'] == 'set_exact_code':
+            #     raise e
+            return (False, e)
 
     def update_auth(self, account, accounts, keys, perm='active', parent='owner'):
         a = {
