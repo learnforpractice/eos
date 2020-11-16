@@ -9,6 +9,9 @@
 #include "vm_api_wrap/db.cpp"
 #include "vm_api_wrap/permission.cpp"
 #include "vm_api_wrap/print.cpp"
+#include "vm_api_wrap/privileged.cpp"
+#include "vm_api_wrap/system.cpp"
+#include "vm_api_wrap/transaction.cpp"
 #include "vm_api_wrap/vm_api.cpp"
 
 struct function_info {
