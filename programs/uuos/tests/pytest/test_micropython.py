@@ -6,12 +6,12 @@ import logging
 import subprocess
 
 from chaintest import ChainTest
-from uuos import application
+from uuos import log
 from uuos import wasmcompiler
 
 test_dir = os.path.dirname(__file__)
 
-logger = application.get_logger(__name__)
+logger = log.get_logger(__name__)
 
 # print(os.getpid())
 # input('<<<')
@@ -20,17 +20,17 @@ class Test(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest(uuos_network=True)
+        cls.chain = ChainTest(uuos_network=True, jit=True)
 
     @classmethod
     def teardown_class(cls):
         cls.chain.free()
 
     def setup_method(self, method):
-        logger.info(method)
+        logger.warning('test start: %s', method.__name__)
 
     def teardown_method(self, method):
-        pass
+        logger.warning('test end: %s', method.__name__)
 
     def compile(self, code):
         with open('tmp.py', 'w') as f:
@@ -698,4 +698,39 @@ def apply(a, b, c):
             pass
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.produce_block()
+
+    def test_token(self):
+        code = os.path.join(test_dir, '..', 'test_contracts', 'test_token.py')
+        with open(code, 'r') as f:
+            code = f.read()
+        code = self.compile(code)
+        r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+        # print(r)
+        assert not isinstance(r, Exception) or r.args[0]['except']['name'] == 'set_exact_code', r
+
+        r = self.chain.push_action('alice', 'test1', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'test2', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'test2', b'hello,world3')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'test3', b'hello,world3')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        r = self.chain.push_action('alice', 'test3', b'hello,world4')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        logger.info(self.chain.get_balance('alice'))
+        r = self.chain.transfer('alice', 'bob', 1)
+        logger.info('+++elapsed: %s', r['elapsed'])
+        logger.info(self.chain.get_balance('alice'))
+
+        logger.info(self.chain.get_balance('alice'))
+        r = self.chain.transfer('alice', 'bob', 2)
+        logger.info('+++elapsed: %s', r['elapsed'])
+        logger.info(self.chain.get_balance('alice'))
         self.chain.produce_block()
