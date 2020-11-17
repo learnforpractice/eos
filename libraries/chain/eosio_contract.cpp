@@ -31,6 +31,7 @@ using namespace std;
 
 extern "C" {
    bool system_contract_is_vm_activated( uint8_t vmtype, uint8_t vmversion );
+   int micropython_validate_frozen_code(const char *contract_code, size_t code_size);
 }
 
 namespace eosio { namespace chain {
@@ -181,6 +182,8 @@ void apply_eosio_setcode(apply_context& context) {
       code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
       if (act.vmtype == 0) {
          wasm_interface::validate(context.control, act.code);
+      } else if (act.vmtype == 3) {
+         micropython_validate_frozen_code(act.code.data(), act.code.size());
       }
    }
 

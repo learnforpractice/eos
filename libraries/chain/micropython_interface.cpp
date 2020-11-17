@@ -21,7 +21,7 @@ extern "C" {
     void micropython_init_memory(size_t initial_pages);
     int micropython_contract_init(int type, const char *py_src, size_t size);
     int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
-    size_t micropython_load_code(const char *str, size_t len, char *content, size_t content_size);
+    size_t micropython_load_frozen_code(const char *str, size_t len, char *content, size_t content_size);
 }
 
 micropython_instantiated_module::micropython_instantiated_module()
@@ -223,10 +223,10 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             micropython_init_memory(initial_vm_memory.size()/PAGE_SIZE);
             micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
             //TODO: handle exception in micropython vm            
-            size_t code_size = micropython_load_code("main.mpy", strlen("main.mpy"), NULL, 0);
+            size_t code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), NULL, 0);
+            EOS_ASSERT( code_size > 0, python_execution_error, "main module not found!" );
             vector<char> content(code_size);
-            micropython_load_code("main.mpy", strlen("main.mpy"), content.data(), content.size());
-//            EOS_ASSERT( codeobject->code.size() > 2 && codeobject->code[0] == 'M', python_execution_error, "BAD mpy code" );
+            code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), content.data(), content.size());
             EOS_ASSERT( code_size > 2 && content[0] == 'M', python_execution_error, "BAD mpy code" );
             int mpy_version = content[1];
             //TODO: Initialize contract code from vm with specified mpy version

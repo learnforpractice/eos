@@ -19,6 +19,7 @@ code_region:
 #define CODE_HEADER_SIZE 64
 #define REGION_SIZES 12
 #define SIZE_LIMIT 10*1024*1024
+#define MAX_FORZEN_MODULE 100
 
 typedef enum {
     MP_IMPORT_STAT_NO_EXIST,
@@ -32,7 +33,54 @@ uint32_t load_uint32(const char *data) {
     return n;
 }
 
-size_t micropython_load_code(const char *str, size_t len, char *content, size_t content_size) {
+int micropython_validate_frozen_code(const char *contract_code, size_t code_size) {
+    if (code_size <= 0) {
+        return 0;
+    }
+
+    size_t name_region_size = load_uint32(contract_code + CODE_HEADER_SIZE);
+    size_t code_size_region_size = load_uint32(contract_code + CODE_HEADER_SIZE + 4);
+    size_t code_region_size = load_uint32(contract_code + CODE_HEADER_SIZE + 8);
+
+    size_t total_frozen_module = code_size_region_size/sizeof(uint32_t);
+    get_vm_api()->eosio_assert(total_frozen_module < MAX_FORZEN_MODULE, "frozen module count must <= 100");
+
+    get_vm_api()->eosio_assert(name_region_size < SIZE_LIMIT, "name region size too large!");
+    get_vm_api()->eosio_assert(code_size_region_size < SIZE_LIMIT, "code size region too large!");
+    get_vm_api()->eosio_assert(code_region_size < SIZE_LIMIT, "code region size too large!");
+
+    uint32_t total_size = name_region_size + code_size_region_size + code_region_size;
+    total_size += CODE_HEADER_SIZE + REGION_SIZES;
+    get_vm_api()->eosio_assert(code_size == total_size, "contract_code not valid!");
+
+    const char *name_region = contract_code + CODE_HEADER_SIZE + REGION_SIZES;
+    const uint32_t *code_size_region = (uint32_t *)(contract_code + CODE_HEADER_SIZE + REGION_SIZES + name_region_size);
+    const char *code_region = contract_code + CODE_HEADER_SIZE + REGION_SIZES + name_region_size + code_size_region_size;
+    //validate name region
+    
+    size_t max_name_size = name_region_size;
+    size_t name_count = 0;
+    for (int i=0;i<name_region_size;i++) {
+        if (name_region[i] == '\0') {
+            name_count += 1;
+        }
+    }
+    get_vm_api()->eosio_assert(name_count == total_frozen_module, "invalid module name count!");
+
+    //validate code region size
+    total_size = 0;
+    for (size_t i=0;i<total_frozen_module;i++) {
+        size_t module_size = code_size_region[i];
+        get_vm_api()->eosio_assert(module_size < SIZE_LIMIT, "module_size too large!");
+        total_size += module_size;
+    }
+
+    get_vm_api()->eosio_assert(total_size == code_region_size, "invalid code region size!");
+
+    return 1;
+}
+
+size_t micropython_load_frozen_code(const char *str, size_t len, char *content, size_t content_size) {
     if (!get_vm_api()->is_in_apply_context) {
         return 0;
     }
@@ -169,7 +217,7 @@ uint32_t vm_frozen_stat(const char *str) {
 }
 
 size_t vm_load_frozen_module(const char *str, size_t len, char *content, size_t content_size) {
-    size_t code_size = micropython_load_code(str, len, content, content_size);
+    size_t code_size = micropython_load_frozen_code(str, len, content, content_size);
 
     if (code_size) {
         return code_size;

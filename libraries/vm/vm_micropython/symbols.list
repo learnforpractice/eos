@@ -6,4 +6,5 @@ _micropython_restore_memory
 _micropython_contract_init
 _micropython_contract_apply
 _micropython_init_memory
-_micropython_load_code
+_micropython_load_frozen_code
+_micropython_validate_frozen_code
