@@ -65,6 +65,42 @@ class Test(object):
         frozen_code = header + region_sizes + name_region + code_size_region + code_region
         return frozen_code
 
+    def compile_all(self, code_info):
+#        code = eosapi.compile_py_src(code)
+        mpy_code = []
+        os.mkdir('tmp')
+        for name, code in code_info:
+            py_file = f'tmp/{name}.py'
+            mpy_file = f'tmp/{name}.mpy'
+
+            with open(py_file, 'w') as f:
+                f.write(code)
+            subprocess.check_output(['mpy-cross', '-o', mpy_file, py_file])
+            with open(mpy_file, 'rb') as f:
+                code = f.read()
+            os.remove(py_file)
+            os.remove(mpy_file)
+
+            mpy_code.append((name, code, len(code)))
+        os.rmdir('tmp')
+        name_region = b''
+        code_region = b''
+        code_size_region = b''
+        for name, code, size in mpy_code:
+            code_region += code
+            code_size_region += int.to_bytes(size, 4, 'little')
+            name_region += b'%s.mpy\x00'%(name.encode(),)
+
+        region_sizes = b''
+        region_sizes += int.to_bytes(len(name_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_size_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_region), 4, 'little')
+
+        header = int.to_bytes(5, 4, 'little')
+        header += bytearray(60)
+        frozen_code = header + region_sizes + name_region + code_size_region + code_region
+        return frozen_code
+
     def test_loop(self):
         code = '''
 def apply(a, b, c):
@@ -619,12 +655,23 @@ def apply(a, b, c):
         logger.info(self.chain.get_balance('alice'))
     
     def test_deploy_contract(self):
-        code = '''
-def apply(a, b, c):
-    print(a, b, 88)
-    return
+        hello = '''
+def say_hello():
+    print('hello')
 '''
-        code = self.compile(code)
+        world = '''
+def say_world():
+    print('world')
+'''
+        main = '''
+import hello
+import world
+def apply(a, b, c):
+    hello.say_hello()
+    world.say_world()
+'''
+        code = (('hello',hello),('world', world), ('main', main))
+        code = self.compile_all(code)
         r1, r2 = self.chain.deploy_contract('alice', code, b'', vmtype=3)
 #        print(r2)
 #        assert r1
