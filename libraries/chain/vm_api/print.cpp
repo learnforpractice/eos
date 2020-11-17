@@ -5,7 +5,10 @@
 #include <sstream>
 
 void prints( const char* cstr ) {
-//   wlog("++++++${n}", ("n", cstr));
+   if (!is_in_apply_context()) {
+      wlog("++++++${n}", ("n", cstr));
+      return;
+   }
    if (!get_ctx_no_access_check().control.contracts_console()) {
       return;
    }
@@ -27,17 +30,25 @@ void prints_l( const char* cstr, uint32_t len) {
 }
 
 void printi( int64_t val ) {
-//   wlog("++++++${n}", ("n", val));
+   if (!is_in_apply_context()) {
+      wlog("++++++${n}", ("n", val));
+      return;
+   }
+
    if (!get_ctx_no_access_check().control.contracts_console()) {
       return;
    }
+   
    std::ostringstream oss;
    oss << val;
    get_ctx_no_access_check().console_append( oss.str() );
 }
 
 void printui( uint64_t val ) {
-//   wlog("++++++${n}", ("n", val));
+   if (!is_in_apply_context()) {
+      wlog("++++++${n}", ("n", val));
+      return;
+   }
    if (!ctx().control.contracts_console()) {
       return;
    }

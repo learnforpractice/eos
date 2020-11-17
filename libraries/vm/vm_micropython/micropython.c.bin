@@ -114363,7 +114363,7 @@ static u32 mp_find_frozen_str(u32 p0, u32 p1) {
   i1 = i32_load((&M0), (u64)(i1));
   i2 = 0u;
   i3 = 0u;
-  i0 = (*Z_envZ_mp_load_frozen_moduleZ_iiiii)(i0, i1, i2, i3);
+  i0 = (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(i0, i1, i2, i3);
   l3 = i0;
   i0 = !(i0);
   if (i0) {goto B0;}
@@ -114375,7 +114375,10 @@ static u32 mp_find_frozen_str(u32 p0, u32 p1) {
   i1 = i32_load((&M0), (u64)(i1));
   i2 = l2;
   i3 = l3;
-  i0 = (*Z_envZ_mp_load_frozen_moduleZ_iiiii)(i0, i1, i2, i3);
+  i0 = (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(i0, i1, i2, i3);
+  i0 = p1;
+  i1 = l3;
+  i32_store((&M0), (u64)(i0), i1);
   i0 = l2;
   goto Bfunc;
   B0:;
@@ -114442,94 +114445,100 @@ static u32 mp_find_frozen_str(u32 p0, u32 p1) {
 }
 
 static u32 mp_frozen_stat(u32 p0) {
-  u32 l1 = 0, l2 = 0, l3 = 0, l4 = 0;
+  u32 l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0;
   FUNC_PROLOGUE;
   u32 i0, i1, i2;
   i0 = p0;
+  i0 = (*Z_envZ_vm_frozen_statZ_ii)(i0);
+  l1 = i0;
+  if (i0) {goto B3;}
+  i0 = p0;
   i0 = strlen_0(i0);
+  l2 = i0;
+  i0 = 0u;
   l1 = i0;
   i0 = 0u;
   i0 = i32_load8_u((&M0), (u64)(i0 + 53640));
   i0 = !(i0);
-  if (i0) {goto B3;}
+  if (i0) {goto B4;}
   i0 = 53640u;
-  l2 = i0;
-  L4: vm_checktime();
-    i0 = l2;
+  l3 = i0;
+  L5: vm_checktime();
+    i0 = l3;
     i0 = strlen_0(i0);
-    l3 = i0;
-    i1 = l1;
-    i0 = i0 < i1;
-    if (i0) {goto B5;}
-    i0 = p0;
+    l4 = i0;
     i1 = l2;
-    i2 = l1;
+    i0 = i0 < i1;
+    if (i0) {goto B6;}
+    i0 = p0;
+    i1 = l3;
+    i2 = l2;
     i0 = memcmp_0(i0, i1, i2);
-    if (i0) {goto B5;}
-    i0 = l2;
-    i1 = l1;
+    if (i0) {goto B6;}
+    i0 = l3;
+    i1 = l2;
     i0 += i1;
     i0 = i32_load8_u((&M0), (u64)(i0));
-    l4 = i0;
+    l5 = i0;
     i0 = !(i0);
     if (i0) {goto B1;}
-    i0 = l4;
+    i0 = l5;
     i1 = 47u;
     i0 = i0 == i1;
     if (i0) {goto B2;}
-    B5:;
-    i0 = l2;
-    i1 = l3;
+    B6:;
+    i0 = l3;
+    i1 = l4;
     i0 += i1;
     i1 = 1u;
     i0 += i1;
-    l2 = i0;
+    l3 = i0;
     i0 = i32_load8_u((&M0), (u64)(i0));
-    if (i0) {goto L4;}
-  B3:;
+    if (i0) {goto L5;}
+  B4:;
   i0 = p0;
   i0 = strlen_0(i0);
-  l1 = i0;
+  l2 = i0;
   i0 = 0u;
   i0 = i32_load8_u((&M0), (u64)(i0));
   i0 = !(i0);
-  if (i0) {goto B6;}
+  if (i0) {goto B3;}
   i0 = 0u;
-  l2 = i0;
+  l3 = i0;
   L7: vm_checktime();
-    i0 = l2;
+    i0 = l3;
     i0 = strlen_0(i0);
-    l3 = i0;
-    i1 = l1;
+    l4 = i0;
+    i1 = l2;
     i0 = i0 < i1;
     if (i0) {goto B8;}
     i0 = p0;
-    i1 = l2;
-    i2 = l1;
+    i1 = l3;
+    i2 = l2;
     i0 = memcmp_0(i0, i1, i2);
     if (i0) {goto B8;}
-    i0 = l2;
-    i1 = l1;
+    i0 = l3;
+    i1 = l2;
     i0 += i1;
     i0 = i32_load8_u((&M0), (u64)(i0));
-    l4 = i0;
+    l5 = i0;
     i0 = !(i0);
     if (i0) {goto B0;}
-    i0 = l4;
+    i0 = l5;
     i1 = 47u;
     i0 = i0 == i1;
     if (i0) {goto B2;}
     B8:;
-    i0 = l2;
-    i1 = l3;
+    i0 = l3;
+    i1 = l4;
     i0 += i1;
     i1 = 1u;
     i0 += i1;
-    l2 = i0;
+    l3 = i0;
     i0 = i32_load8_u((&M0), (u64)(i0));
     if (i0) {goto L7;}
-  B6:;
-  i0 = 0u;
+  B3:;
+  i0 = l1;
   goto Bfunc;
   B2:;
   i0 = 1u;

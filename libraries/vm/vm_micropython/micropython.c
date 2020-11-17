@@ -2,7 +2,6 @@
 #include "micropython.c.bin"
 #include <wasm-rt-impl.h>
 
-//libwasm2c_contracts.a
 uint32_t wasm_rt_call_stack_depth = 0;
 uint32_t g_saved_call_stack_depth = 0;
 jmp_buf g_jmp_buf;
@@ -13,23 +12,20 @@ u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
 u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
-void (*Z_envZ_abortZ_vv)(void);
 
-void (*Z_envZ_prints_lZ_vii)(u32, u32);
 void (*Z_envZ_setjmp_discard_topZ_vv)(void);
-u32 (*Z_envZ_mp_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
-
+u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
+u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
 
 uint64_t s2n( const char *str, size_t str_size );
 int n2s(uint64_t value, char *str, size_t str_size);
 u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset);
 
 
-void prints_l( const char* cstr, uint32_t len);
 void eosio_assert( uint32_t test, const char* msg );
-void eosio_abort(void);
 void setjmp_discard_top(void);
-size_t mp_load_frozen_module(const char *str, size_t len, char *content, size_t content_size);
+size_t vm_load_frozen_module(const char *str, size_t len, char *content, size_t content_size);
+uint32_t vm_frozen_stat(const char *str);
 
 static u64 _s2n(u32 str_offset, u32 str_size) {
   char *str = get_memory_ptr(str_offset, str_size);
@@ -67,15 +63,6 @@ static u32 _memmove(u32 dest_offset, u32 src_offset, u32 num) {
   return dest_offset;
 }
 
-static void _prints_l(u32 src_offset, u32 len) {
-  char *src_ptr = get_memory_ptr(src_offset, len);
-  prints_l(src_ptr, len);
-}
-
-static void _abort(void) {
-  eosio_abort();
-}
-
 static void _setjmp_discard_top() {
   setjmp_discard_top();
 }
@@ -83,15 +70,18 @@ static void _setjmp_discard_top() {
 u32 _load_frozen_module(u32 str_offset, u32 len, u32 content_offset, u32 content_size) {
   char *src = get_memory_ptr(str_offset, len);
   char *content = get_memory_ptr(content_offset, content_size);
-  return mp_load_frozen_module(src, len, content, content_size);
+  return vm_load_frozen_module(src, len, content, content_size);
+}
+
+u32 _vm_frozen_stat(u32 str_offset) {
+  char *src = get_memory_ptr(str_offset, 64);
+  return vm_frozen_stat(src);
 }
 
 void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_memsetZ_iiii = _memset;
   Z_envZ_memcpyZ_iiii = _memcpy;
   Z_envZ_memmoveZ_iiii = _memmove;
-  Z_envZ_prints_lZ_vii = _prints_l;
-  Z_envZ_abortZ_vv = _abort;
 
   Z_envZ_call_vm_apiZ_iiiii = _call_vm_api;
 
@@ -99,7 +89,8 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_n2sZ_ijii = _n2s;
 
   Z_envZ_setjmp_discard_topZ_vv = _setjmp_discard_top;
-  Z_envZ_mp_load_frozen_moduleZ_iiiii = _load_frozen_module;
+  Z_envZ_vm_load_frozen_moduleZ_iiiii = _load_frozen_module;
+  Z_envZ_vm_frozen_statZ_ii = _vm_frozen_stat;
 
   init_func_types();
   init_globals();
