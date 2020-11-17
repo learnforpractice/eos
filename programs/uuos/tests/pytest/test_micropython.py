@@ -242,10 +242,6 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        logger.info(r['action_traces'][0]['console'])
-        logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
@@ -256,15 +252,11 @@ def apply(a, b, c):
 def apply(a, b, c):
     a = bigint(0xffffffffffffffff)
     b = bigint(0xffffffffffffffff)
-    for i in range(500):
+    for i in range(600):
         a * b
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        logger.info(r['action_traces'][0]['console'])
-        logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
