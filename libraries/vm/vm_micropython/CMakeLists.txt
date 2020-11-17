@@ -14,7 +14,7 @@ set(SRCS
     vm_api.c
     vm_micropython.cpp
     ./wasm2c/wasm-rt-impl.c
-    ./frozen/frozen.c
+    code_loader.c
 )
 
 add_library(vm_micropython SHARED ${SRCS})

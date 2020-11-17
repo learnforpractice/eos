@@ -1,6 +1,11 @@
 #ifndef __VM_API_H__
 #define __VM_API_H__
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -240,7 +245,10 @@ struct vm_api {
 
    int (*call_native)(int main_type, int sub_type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size);
 
+   size_t (*get_code)(const char **code);
+
    bool is_in_apply_context;
+
    bool allow_access_apply_context;
    bool read_only;
    char reserved[sizeof(char*)*128]; //for forward compatibility

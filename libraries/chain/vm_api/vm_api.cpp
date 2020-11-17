@@ -93,7 +93,7 @@ bool is_in_apply_context() {
 
 apply_context& ctx() {
    if (!_vm_api.allow_access_apply_context) {
-      // print_stacktrace();
+      print_stacktrace();
       _vm_api.eosio_assert(0, "access apply context not allowed!");
    }
    return *s_ctx;
@@ -218,6 +218,43 @@ int _call_native(int main_type, int sub_type, const uint8_t *input, size_t input
    eosio_assert(0, "bad native call" );
    return 0;
 }
+
+size_t _get_code(const char **code) {
+   if (!is_in_apply_context()) {
+      return 0;
+   }
+
+   auto& _ctx = get_ctx_no_access_check();
+   auto& act = _ctx.get_action();
+   account_name contract;
+   if (act.account == config::system_account_name
+       && act.name == N( setcode )
+       && _ctx.get_receiver() == config::system_account_name) {
+      auto setcode_act = _ctx.get_action().data_as<setcode>();
+      contract = setcode_act.account;
+   } else {
+      contract = _ctx.get_receiver();
+   }
+
+   const auto& d = _ctx.control.db();
+   try {
+      const auto& accnt_obj          = d.get<account_object,by_name>( contract );
+      const auto& accnt_metadata_obj = d.get<account_metadata_object,by_name>( contract );
+
+      if( accnt_metadata_obj.code_hash == digest_type() ) {
+         return 0;
+      }
+
+      const auto& code_obj = d.get<code_object, by_code_hash>(accnt_metadata_obj.code_hash);
+      *code = code_obj.code.data();
+      return code_obj.code.size();
+
+   } catch (...) {
+      return 0;
+   }
+   return 0;
+}
+
 
 using namespace eosio;
 
@@ -418,6 +455,7 @@ extern "C" void vm_api_init() {
 
       _vm_api.get_code_version = get_code_version;
       _vm_api.call_native = _call_native;
+      _vm_api.get_code = _get_code;
 
       _vm_api.log = log_;
       _vm_api.is_in_apply_context = false;

@@ -21,6 +21,7 @@ extern "C" {
     void micropython_init_memory(size_t initial_pages);
     int micropython_contract_init(int type, const char *py_src, size_t size);
     int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
+    size_t micropython_load_code(const char *str, size_t len, char *content, size_t content_size);
 }
 
 micropython_instantiated_module::micropython_instantiated_module()
@@ -182,6 +183,13 @@ size_t micropython_interface::get_snapshoot_size(const digest_type& code_hash, c
     return get_instantiated_module(code_hash, vm_type, vm_version, context)->backup.total_segment_size;
 }
 
+static void print_hex(const char *data, size_t size) {
+  for (int i=0;i<size;i++) {
+    printf("%02x", data[i]);
+  }
+  printf("\n");
+}
+
 const std::unique_ptr<micropython_instantiated_module>& micropython_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
                                                                             const uint8_t& vm_version, apply_context& context )
 {
@@ -214,13 +222,16 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
             get_vm_api()->allow_access_apply_context = false;
             micropython_init_memory(initial_vm_memory.size()/PAGE_SIZE);
             micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
-            //TODO: handle exception in micropython vm
-//            printf("++++code: %s\n", codeobject->code.data());
-            EOS_ASSERT( codeobject->code.size() > 2 && codeobject->code[0] == 'M', python_execution_error, "BAD mpy code" );
-            int mpy_version = codeobject->code[1];
+            //TODO: handle exception in micropython vm            
+            size_t code_size = micropython_load_code("main.mpy", strlen("main.mpy"), NULL, 0);
+            vector<char> content(code_size);
+            micropython_load_code("main.mpy", strlen("main.mpy"), content.data(), content.size());
+//            EOS_ASSERT( codeobject->code.size() > 2 && codeobject->code[0] == 'M', python_execution_error, "BAD mpy code" );
+            EOS_ASSERT( code_size > 2 && content[0] == 'M', python_execution_error, "BAD mpy code" );
+            int mpy_version = content[1];
             //TODO: Initialize contract code from vm with specified mpy version
             EOS_ASSERT( mpy_version == 5, python_execution_error, "BAD mpy version");
-            int ret = micropython_contract_init(0, codeobject->code.data(), codeobject->code.size());
+            int ret = micropython_contract_init(0, content.data(), content.size());
             EOS_ASSERT( ret, python_execution_error, "python contract init error" );
             // size_t size = micropython_get_memory_size();
             // c.module->backup.data.resize(size);

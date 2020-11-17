@@ -1173,8 +1173,6 @@ static void mp_hal_stdout_tx_strn_cooked(u32, u32);
 static void mp_hal_stdout_tx_str(u32);
 static void readline_auto_indent(void);
 static u32 readline(u32, u32);
-static u32 mod_hello_say_hello(void);
-static u32 mod_hello_say_hello2(void);
 static u32 mp_obj_bigint_to_bytes_impl(u32, u32, u32, u32);
 static void bigint_print(u32, u32, u32);
 static u32 bigint_make_new(u32, u32, u32, u32);
@@ -1420,8 +1418,8 @@ static u32 g2;
 
 static void init_globals(void) {
   g0 = 10240u;
-  g1 = 53650u;
-  g2 = 53650u;
+  g1 = 53586u;
+  g2 = 53586u;
 }
 
 static wasm_rt_memory_t M0;
@@ -69991,7 +69989,7 @@ static u32 mp_obj_float_binary_op(u32 p0, f64 p1, u32 p2) {
   if (i0) {goto B27;}
   i0 = p2;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 51316u;
+  i1 = 51252u;
   i0 = i0 == i1;
   if (i0) {goto B26;}
   B27:;
@@ -72393,11 +72391,11 @@ static u32 mp_obj_int_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = i0 == i1;
   if (i0) {goto B14;}
   i0 = p2;
-  i1 = 52892u;
+  i1 = 52828u;
   i0 = i0 == i1;
   if (i0) {goto B13;}
   i0 = p2;
-  i1 = 51256u;
+  i1 = 51192u;
   i0 = i0 != i1;
   if (i0) {goto B6;}
   i0 = 0u;
@@ -80440,7 +80438,7 @@ static u32 mp_obj_str_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = i0 == i1;
   if (i0) {goto B5;}
   i0 = p2;
-  i1 = 52892u;
+  i1 = 52828u;
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = p1;
@@ -100724,10 +100722,10 @@ static u32 mp_builtin_help(u32 p0, u32 p1) {
     if (i0) {goto L6;}
   B5:;
   i0 = 0u;
-  i0 = i32_load8_u((&M0), (u64)(i0 + 53640));
+  i0 = i32_load8_u((&M0), (u64)(i0 + 53576));
   i0 = !(i0);
   if (i0) {goto B8;}
-  i0 = 53640u;
+  i0 = 53576u;
   p0 = i0;
   L9: vm_checktime();
     i0 = p1;
@@ -114383,14 +114381,14 @@ static u32 mp_find_frozen_str(u32 p0, u32 p1) {
   goto Bfunc;
   B0:;
   i0 = 0u;
-  i0 = i32_load8_u((&M0), (u64)(i0 + 53640));
+  i0 = i32_load8_u((&M0), (u64)(i0 + 53576));
   i0 = !(i0);
   if (i0) {goto B1;}
-  i0 = 53640u;
+  i0 = 53576u;
   l3 = i0;
   i0 = 0u;
   l4 = i0;
-  i0 = 53644u;
+  i0 = 53580u;
   l2 = i0;
   L3: vm_checktime();
     i0 = l3;
@@ -114434,7 +114432,7 @@ static u32 mp_find_frozen_str(u32 p0, u32 p1) {
   i1 = i32_load((&M0), (u64)(i1));
   i32_store((&M0), (u64)(i0), i1);
   i0 = l4;
-  i1 = 53648u;
+  i1 = 53584u;
   i0 += i1;
   l2 = i0;
   B1:;
@@ -114458,10 +114456,10 @@ static u32 mp_frozen_stat(u32 p0) {
   i0 = 0u;
   l1 = i0;
   i0 = 0u;
-  i0 = i32_load8_u((&M0), (u64)(i0 + 53640));
+  i0 = i32_load8_u((&M0), (u64)(i0 + 53576));
   i0 = !(i0);
   if (i0) {goto B4;}
-  i0 = 53640u;
+  i0 = 53576u;
   l3 = i0;
   L5: vm_checktime();
     i0 = l3;
@@ -134339,24 +134337,6 @@ static u32 readline(u32 p0, u32 p1) {
   return i0;
 }
 
-static u32 mod_hello_say_hello(void) {
-  FUNC_PROLOGUE;
-  u32 i0;
-  i0 = 12345678u;
-  i0 = mp_obj_new_int(i0);
-  FUNC_EPILOGUE;
-  return i0;
-}
-
-static u32 mod_hello_say_hello2(void) {
-  FUNC_PROLOGUE;
-  u32 i0;
-  i0 = 87654321u;
-  i0 = mp_obj_new_int(i0);
-  FUNC_EPILOGUE;
-  return i0;
-}
-
 static u32 mp_obj_bigint_to_bytes_impl(u32 p0, u32 p1, u32 p2, u32 p3) {
   FUNC_PROLOGUE;
   u32 i0, i1, i2, i3, i4, i5;
@@ -134476,7 +134456,7 @@ static u32 bigint_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 32u;
@@ -134526,7 +134506,7 @@ static u32 bigint_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 32u;
@@ -134576,7 +134556,7 @@ static u32 bigint_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   if (i0) {goto B7;}
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 51256u;
+  i1 = 51192u;
   i0 = i0 == i1;
   if (i0) {goto B6;}
   B7:;
@@ -134634,7 +134614,7 @@ static u32 bigint_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = l4;
@@ -134690,7 +134670,7 @@ static u32 bigint_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 32u;
@@ -134755,7 +134735,7 @@ static u32 bigint_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 32u;
@@ -134865,7 +134845,7 @@ static u32 bigint_unary_op(u32 p0, u32 p1) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 32u;
@@ -135040,7 +135020,7 @@ static u32 mp_obj_bigint_binary_op(u32 p0, u32 p1, u32 p2) {
   if (i0) {goto B7;}
   i0 = p2;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 51256u;
+  i1 = 51192u;
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = l3;
@@ -135167,7 +135147,7 @@ static u32 mp_obj_bigint_binary_op(u32 p0, u32 p1, u32 p2) {
   i0 = 40u;
   i0 = m_malloc(i0);
   l4 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l4;
   i1 = 32u;
@@ -135283,7 +135263,7 @@ static u32 mp_obj_bigint_binary_op(u32 p0, u32 p1, u32 p2) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p2 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p2;
   i1 = 32u;
@@ -135319,7 +135299,7 @@ static u32 mp_obj_bigint_binary_op(u32 p0, u32 p1, u32 p2) {
   i0 = 40u;
   i0 = m_malloc(i0);
   p2 = i0;
-  i1 = 51256u;
+  i1 = 51192u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p2;
   i1 = 32u;
@@ -135550,7 +135530,7 @@ static u32 float128_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   j1 = 0ull;
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = p1;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 24u;
@@ -135582,7 +135562,7 @@ static u32 float128_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 32u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l4;
   i1 = 16u;
@@ -135614,7 +135594,7 @@ static u32 float128_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i0 = 32u;
   i0 = m_malloc(i0);
   p1 = i0;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l4;
   d1 = l5;
@@ -135677,7 +135657,7 @@ static u32 float128_unary_op(u32 p0, u32 p1) {
   j1 = l3;
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = p1;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 24u;
@@ -135723,7 +135703,7 @@ static u32 float128_unary_op(u32 p0, u32 p1) {
   j1 = l3;
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = p1;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
   i1 = 24u;
@@ -135844,7 +135824,7 @@ static u32 mp_obj_float128_binary_op(u32 p0, u64 p1, u64 p2, u32 p3) {
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = l8;
-  i1 = 51316u;
+  i1 = 51252u;
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = p3;
@@ -136243,7 +136223,7 @@ static u32 mp_obj_float128_binary_op(u32 p0, u64 p1, u64 p2, u32 p3) {
   i0 = 32u;
   i0 = m_malloc(i0);
   l7 = i0;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l7;
   j1 = l6;
@@ -136265,7 +136245,7 @@ static u32 mp_obj_float128_binary_op(u32 p0, u64 p1, u64 p2, u32 p3) {
   i0 = 32u;
   i0 = m_malloc(i0);
   l7 = i0;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l7;
   j1 = l6;
@@ -136426,7 +136406,7 @@ static u32 mp_obj_float128_binary_op(u32 p0, u64 p1, u64 p2, u32 p3) {
   j1 = p1;
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = l7;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l7;
   i1 = 24u;
@@ -136455,7 +136435,7 @@ static u32 mp_obj_new_float128(u64 p0, u64 p1) {
   j1 = p0;
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = l2;
-  i1 = 51316u;
+  i1 = 51252u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l2;
   i1 = 24u;
@@ -139134,7 +139114,7 @@ static void parse_secondary_value(u32 p0, u32 p1, u32 p2) {
   if (i0) {goto B2;}
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 51316u;
+  i1 = 51252u;
   i0 = i0 != i1;
   if (i0) {goto B2;}
   i0 = l3;
@@ -139175,7 +139155,7 @@ static void parse_secondary_value(u32 p0, u32 p1, u32 p2) {
   i0 = i0 == i1;
   if (i0) {goto B4;}
   i0 = p0;
-  i1 = 51256u;
+  i1 = 51192u;
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = l3;
@@ -139832,7 +139812,7 @@ static u32 mod_chain_db_idx_find_primary(u32 p0, u32 p1) {
   i1 = l3;
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 52768u;
+  i2 = 52704u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   i2 = l2;
@@ -140228,7 +140208,7 @@ static u32 mod_chain_db_idx_lowerbound(u32 p0, u32 p1) {
   i1 = l3;
   i2 = p1;
   i1 <<= (i2 & 31);
-  i2 = 52768u;
+  i2 = 52704u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   i2 = l2;
@@ -140446,7 +140426,7 @@ static u32 mod_chain_db_idx_upperbound(u32 p0, u32 p1) {
   i1 = l3;
   i2 = p1;
   i1 <<= (i2 & 31);
-  i2 = 52768u;
+  i2 = 52704u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   i2 = l2;
@@ -145776,7 +145756,7 @@ static u64 mp_obj_int_get_ull(u32 p0) {
   i0 = i0 == i1;
   if (i0) {goto B3;}
   i0 = l3;
-  i1 = 51256u;
+  i1 = 51192u;
   i0 = i0 != i1;
   if (i0) {goto B0;}
   i0 = p0;
@@ -145827,7 +145807,7 @@ static u64 obj_to_u64(u32 p0) {
   if (i0) {goto B3;}
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 52892u;
+  i1 = 52828u;
   i0 = i0 == i1;
   if (i0) {goto B2;}
   B3:;
@@ -146690,7 +146670,7 @@ static u32 mp_obj_name_from_bytes_impl(u32 p0, u32 p1, u32 p2) {
   j1 = l4;
   i64_store((&M0), (u64)(i0 + 8), j1);
   i0 = p0;
-  i1 = 52892u;
+  i1 = 52828u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
   goto Bfunc;
@@ -146714,7 +146694,7 @@ static u32 mp_obj_new_name_from_ull(u64 p0) {
   j1 = p0;
   i64_store((&M0), (u64)(i0 + 8), j1);
   i0 = l1;
-  i1 = 52892u;
+  i1 = 52828u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l1;
   FUNC_EPILOGUE;
@@ -146871,7 +146851,7 @@ static u32 mp_obj_name_binary_op(u32 p0, u32 p1, u32 p2) {
   if (i0) {goto B6;}
   i0 = p2;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 52892u;
+  i1 = 52828u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
   B6:;
@@ -146979,7 +146959,7 @@ static u32 mp_obj_new_name_from_uint(u32 p0) {
   j1 = (u64)(i1);
   i64_store((&M0), (u64)(i0 + 8), j1);
   i0 = l1;
-  i1 = 52892u;
+  i1 = 52828u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l1;
   Bfunc:;
@@ -147387,7 +147367,7 @@ static void intx__div_result_intx__uint_256u____intx__udivrem_256u__intx__uint_2
   i2 &= i3;
   i3 = 1u;
   i2 <<= (i3 & 31);
-  i3 = 53008u;
+  i3 = 52944u;
   i2 += i3;
   j2 = i32_load16_u((&M0), (u64)(i2));
   l12 = j2;
@@ -148071,7 +148051,7 @@ static u64 intx___anonymous_namespace___udivrem_by1_unsigned_long_long___int__un
   i2 &= i3;
   i3 = 1u;
   i2 <<= (i3 & 31);
-  i3 = 53008u;
+  i3 = 52944u;
   i2 += i3;
   j2 = i32_load16_u((&M0), (u64)(i2));
   l4 = j2;
@@ -148304,7 +148284,7 @@ static void intx___anonymous_namespace___udivrem_knuth_unsigned_long_long___unsi
   i2 &= i3;
   i3 = 1u;
   i2 <<= (i3 & 31);
-  i3 = 53008u;
+  i3 = 52944u;
   i2 += i3;
   j2 = i32_load16_u((&M0), (u64)(i2));
   l8 = j2;
@@ -151645,22 +151625,22 @@ static void apply(u64 p0, u64 p1, u64 p2) {
   goto Bfunc;
   B0:;
   i0 = 0u;
-  i1 = 563u;
+  i1 = 561u;
   i32_store((&M0), (u64)(i0 + 15048), i1);
   i0 = 0u;
-  i1 = 564u;
+  i1 = 562u;
   i32_store((&M0), (u64)(i0 + 15044), i1);
   i0 = 0u;
-  i1 = 565u;
+  i1 = 563u;
   i32_store((&M0), (u64)(i0 + 15052), i1);
   i0 = 0u;
-  i1 = 566u;
+  i1 = 564u;
   i32_store((&M0), (u64)(i0 + 15056), i1);
   i0 = 0u;
-  i1 = 567u;
+  i1 = 565u;
   i32_store((&M0), (u64)(i0 + 15060), i1);
   i0 = 0u;
-  i1 = 568u;
+  i1 = 566u;
   i32_store((&M0), (u64)(i0 + 15064), i1);
   i0 = 0u;
   __cxa_finalize(i0);
@@ -156958,9 +156938,9 @@ static const u8 data_segment_data_692[] = {
 
 static const u8 data_segment_data_693[] = {
   0xaa, 0x02, 0x00, 0x00, 0x40, 0xa0, 0x00, 0x00, 0xe2, 0x04, 0x00, 0x00, 
-  0x48, 0xa0, 0x00, 0x00, 0xaa, 0x02, 0x00, 0x00, 0xd8, 0xce, 0x00, 0x00, 
-  0xe2, 0x04, 0x00, 0x00, 0xe0, 0xce, 0x00, 0x00, 0xfa, 0x10, 0x00, 0x00, 
-  0xec, 0xce, 0x00, 0x00, 0x02, 0x11, 0x00, 0x00, 0xf8, 0xce, 0x00, 0x00, 
+  0x48, 0xa0, 0x00, 0x00, 0xaa, 0x02, 0x00, 0x00, 0x98, 0xce, 0x00, 0x00, 
+  0xe2, 0x04, 0x00, 0x00, 0xa0, 0xce, 0x00, 0x00, 0xfa, 0x10, 0x00, 0x00, 
+  0xac, 0xce, 0x00, 0x00, 0x02, 0x11, 0x00, 0x00, 0xb8, 0xce, 0x00, 0x00, 
   
 };
 
@@ -157102,9 +157082,9 @@ static const u8 data_segment_data_717[] = {
   0x62, 0x11, 0x00, 0x00, 0xf8, 0xc3, 0x00, 0x00, 0x42, 0x11, 0x00, 0x00, 
   0x90, 0xc5, 0x00, 0x00, 0xb2, 0x11, 0x00, 0x00, 0xfc, 0xc5, 0x00, 0x00, 
   0xc2, 0x11, 0x00, 0x00, 0xe4, 0xc6, 0x00, 0x00, 0x6a, 0x0c, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0xda, 0x11, 0x00, 0x00, 0x1c, 0xd1, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xda, 0x11, 0x00, 0x00, 0xdc, 0xd0, 0x00, 0x00, 
   0x3a, 0x11, 0x00, 0x00, 0x20, 0xb1, 0x00, 0x00, 0x0a, 0x0d, 0x00, 0x00, 
-  0xf8, 0xc7, 0x00, 0x00, 0xea, 0x09, 0x00, 0x00, 0xb0, 0xc8, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xea, 0x09, 0x00, 0x00, 0x70, 0xc8, 0x00, 0x00, 
   
 };
 
@@ -158044,10 +158024,10 @@ static const u8 data_segment_data_881[] = {
   0xa0, 0x93, 0x00, 0x00, 0x5a, 0x02, 0x00, 0x00, 0xdc, 0x93, 0x00, 0x00, 
   0xd2, 0x0b, 0x00, 0x00, 0xdc, 0x95, 0x00, 0x00, 0x3a, 0x0c, 0x00, 0x00, 
   0x84, 0x9c, 0x00, 0x00, 0x42, 0x0c, 0x00, 0x00, 0xc0, 0x9c, 0x00, 0x00, 
-  0x4a, 0x0c, 0x00, 0x00, 0x74, 0xc8, 0x00, 0x00, 0x82, 0x0c, 0x00, 0x00, 
+  0x4a, 0x0c, 0x00, 0x00, 0x34, 0xc8, 0x00, 0x00, 0x82, 0x0c, 0x00, 0x00, 
   0x74, 0xa5, 0x00, 0x00, 0xf2, 0x02, 0x00, 0x00, 0xb0, 0x9f, 0x00, 0x00, 
-  0x9a, 0x09, 0x00, 0x00, 0x38, 0xc8, 0x00, 0x00, 0x72, 0x0e, 0x00, 0x00, 
-  0x9c, 0xce, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x90, 0xa0, 0x00, 0x00, 
+  0x9a, 0x09, 0x00, 0x00, 0xf8, 0xc7, 0x00, 0x00, 0x72, 0x0e, 0x00, 0x00, 
+  0x5c, 0xce, 0x00, 0x00, 0x62, 0x03, 0x00, 0x00, 0x90, 0xa0, 0x00, 0x00, 
   0x92, 0x03, 0x00, 0x00, 0x9c, 0xa1, 0x00, 0x00, 0x22, 0x0e, 0x00, 0x00, 
   0x98, 0x85, 0x00, 0x00, 0xaa, 0x03, 0x00, 0x00, 0xec, 0xa2, 0x00, 0x00, 
   0xea, 0x0e, 0x00, 0x00, 0xa4, 0xa3, 0x00, 0x00, 0xe2, 0x03, 0x00, 0x00, 
@@ -158102,7 +158082,7 @@ static const u8 data_segment_data_881[] = {
   0xe4, 0x96, 0x00, 0x00, 0xb2, 0x01, 0x00, 0x00, 0xd0, 0x9b, 0x00, 0x00, 
   0xd2, 0x08, 0x00, 0x00, 0x48, 0x9c, 0x00, 0x00, 0xba, 0x01, 0x00, 0x00, 
   0x0c, 0x9c, 0x00, 0x00, 0xc2, 0x01, 0x00, 0x00, 0x88, 0x98, 0x00, 0x00, 
-  0xb2, 0x03, 0x00, 0x00, 0x10, 0xd1, 0x00, 0x00, 
+  0xb2, 0x03, 0x00, 0x00, 0xd0, 0xd0, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_882[] = {
@@ -158140,7 +158120,7 @@ static const u8 data_segment_data_888[] = {
 
 static const u8 data_segment_data_889[] = {
   0xba, 0x00, 0x00, 0x00, 0x72, 0x11, 0x00, 0x00, 0xb2, 0x03, 0x00, 0x00, 
-  0x10, 0xd1, 0x00, 0x00, 0x8a, 0x08, 0x00, 0x00, 0x78, 0xab, 0x00, 0x00, 
+  0xd0, 0xd0, 0x00, 0x00, 0x8a, 0x08, 0x00, 0x00, 0x78, 0xab, 0x00, 0x00, 
   0x32, 0x07, 0x00, 0x00, 0xc4, 0xab, 0x00, 0x00, 
 };
 
@@ -159183,512 +159163,489 @@ static const u8 data_segment_data_1078[] = {
 };
 
 static const u8 data_segment_data_1079[] = {
-  0xd8, 0xa1, 0x00, 0x00, 0x18, 0xc8, 0x00, 0x00, 
+  0x38, 0xad, 0x00, 0x00, 0x0c, 0x00, 0x33, 0x01, 0xce, 0x01, 0x00, 0x00, 
+  0xcf, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd0, 0x01, 0x00, 0x00, 
+  0xd1, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  
 };
 
 static const u8 data_segment_data_1080[] = {
-  0xba, 0x00, 0x00, 0x00, 0x0a, 0x0d, 0x00, 0x00, 0x9a, 0x0f, 0x00, 0x00, 
-  0x28, 0xc8, 0x00, 0x00, 0xa2, 0x0f, 0x00, 0x00, 0x30, 0xc8, 0x00, 0x00, 
+  0x38, 0xad, 0x00, 0x00, 0x0c, 0x00, 0x89, 0x01, 0xd2, 0x01, 0x00, 0x00, 
+  0xd3, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd4, 0x01, 0x00, 0x00, 
+  0xd5, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1081[] = {
-  0xdc, 0x93, 0x00, 0x00, 0x1f, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 
-  0x00, 0xc8, 0x00, 0x00, 
+  0xd8, 0xa1, 0x00, 0x00, 0x38, 0xcb, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1082[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xce, 0x01, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1083[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xcf, 0x01, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1084[] = {
-  0x38, 0xad, 0x00, 0x00, 0x0c, 0x00, 0x33, 0x01, 0xd0, 0x01, 0x00, 0x00, 
-  0xd1, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd2, 0x01, 0x00, 0x00, 
-  0xd3, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0xba, 0x00, 0x00, 0x00, 0xea, 0x09, 0x00, 0x00, 0x92, 0x0f, 0x00, 0x00, 
+  0xb8, 0xcc, 0x00, 0x00, 0x6a, 0x0e, 0x00, 0x00, 0xc0, 0xcc, 0x00, 0x00, 
+  0x2a, 0x0f, 0x00, 0x00, 0x48, 0xcb, 0x00, 0x00, 0x72, 0x0f, 0x00, 0x00, 
+  0xc8, 0xcc, 0x00, 0x00, 0x62, 0x0f, 0x00, 0x00, 0xd0, 0xcc, 0x00, 0x00, 
+  0x6a, 0x0f, 0x00, 0x00, 0xd8, 0xcc, 0x00, 0x00, 0xea, 0x0c, 0x00, 0x00, 
+  0xe0, 0xcc, 0x00, 0x00, 0x5a, 0x0d, 0x00, 0x00, 0xe8, 0xcc, 0x00, 0x00, 
+  0xe2, 0x0f, 0x00, 0x00, 0x50, 0xcb, 0x00, 0x00, 0xea, 0x0f, 0x00, 0x00, 
+  0xf0, 0xcc, 0x00, 0x00, 0xd2, 0x0f, 0x00, 0x00, 0x5c, 0xcb, 0x00, 0x00, 
+  0xda, 0x0f, 0x00, 0x00, 0xf8, 0xcc, 0x00, 0x00, 0xd2, 0x0f, 0x00, 0x00, 
+  0x5c, 0xcb, 0x00, 0x00, 0xf2, 0x0e, 0x00, 0x00, 0x68, 0xcb, 0x00, 0x00, 
+  0x4a, 0x0a, 0x00, 0x00, 0x70, 0xcb, 0x00, 0x00, 0xaa, 0x0c, 0x00, 0x00, 
+  0x78, 0xcb, 0x00, 0x00, 0x12, 0x09, 0x00, 0x00, 0x80, 0xcb, 0x00, 0x00, 
+  0x02, 0x09, 0x00, 0x00, 0x8c, 0xcb, 0x00, 0x00, 0x1a, 0x09, 0x00, 0x00, 
+  0x00, 0xcd, 0x00, 0x00, 0x0a, 0x09, 0x00, 0x00, 0x08, 0xcd, 0x00, 0x00, 
+  0x22, 0x11, 0x00, 0x00, 0x98, 0xcb, 0x00, 0x00, 0x0a, 0x11, 0x00, 0x00, 
+  0x10, 0xcd, 0x00, 0x00, 0x12, 0x11, 0x00, 0x00, 0x18, 0xcd, 0x00, 0x00, 
+  0x2a, 0x11, 0x00, 0x00, 0xa4, 0xcb, 0x00, 0x00, 0x1a, 0x11, 0x00, 0x00, 
+  0x20, 0xcd, 0x00, 0x00, 0x6a, 0x09, 0x00, 0x00, 0x28, 0xcd, 0x00, 0x00, 
+  0x62, 0x09, 0x00, 0x00, 0x30, 0xcd, 0x00, 0x00, 0x72, 0x09, 0x00, 0x00, 
+  0x38, 0xcd, 0x00, 0x00, 0x5a, 0x09, 0x00, 0x00, 0x40, 0xcd, 0x00, 0x00, 
+  0x52, 0x09, 0x00, 0x00, 0x48, 0xcd, 0x00, 0x00, 0x22, 0x10, 0x00, 0x00, 
+  0x50, 0xcd, 0x00, 0x00, 0x1a, 0x10, 0x00, 0x00, 0x58, 0xcd, 0x00, 0x00, 
+  0x2a, 0x10, 0x00, 0x00, 0x60, 0xcd, 0x00, 0x00, 0x82, 0x0f, 0x00, 0x00, 
+  0x68, 0xcd, 0x00, 0x00, 0x42, 0x0f, 0x00, 0x00, 0x70, 0xcd, 0x00, 0x00, 
+  0x2a, 0x0b, 0x00, 0x00, 0xb0, 0xcb, 0x00, 0x00, 0x3a, 0x0b, 0x00, 0x00, 
+  0x78, 0xcd, 0x00, 0x00, 0x1a, 0x0b, 0x00, 0x00, 0x80, 0xcd, 0x00, 0x00, 
+  0x82, 0x0a, 0x00, 0x00, 0x88, 0xcd, 0x00, 0x00, 0xfa, 0x0a, 0x00, 0x00, 
+  0x90, 0xcd, 0x00, 0x00, 0x0a, 0x0b, 0x00, 0x00, 0x98, 0xcd, 0x00, 0x00, 
+  0x72, 0x0a, 0x00, 0x00, 0xbc, 0xcb, 0x00, 0x00, 0xea, 0x0a, 0x00, 0x00, 
+  0xc8, 0xcb, 0x00, 0x00, 0x4a, 0x0b, 0x00, 0x00, 0xd4, 0xcb, 0x00, 0x00, 
+  0x72, 0x0a, 0x00, 0x00, 0xbc, 0xcb, 0x00, 0x00, 0x62, 0x0a, 0x00, 0x00, 
+  0xe0, 0xcb, 0x00, 0x00, 0x22, 0x0b, 0x00, 0x00, 0xec, 0xcb, 0x00, 0x00, 
+  0x32, 0x0b, 0x00, 0x00, 0xa0, 0xcd, 0x00, 0x00, 0x12, 0x0b, 0x00, 0x00, 
+  0xa8, 0xcd, 0x00, 0x00, 0x7a, 0x0a, 0x00, 0x00, 0xb0, 0xcd, 0x00, 0x00, 
+  0xf2, 0x0a, 0x00, 0x00, 0xb8, 0xcd, 0x00, 0x00, 0x02, 0x0b, 0x00, 0x00, 
+  0xc0, 0xcd, 0x00, 0x00, 0x6a, 0x0a, 0x00, 0x00, 0xf8, 0xcb, 0x00, 0x00, 
+  0xe2, 0x0a, 0x00, 0x00, 0x04, 0xcc, 0x00, 0x00, 0x42, 0x0b, 0x00, 0x00, 
+  0x10, 0xcc, 0x00, 0x00, 0x6a, 0x0a, 0x00, 0x00, 0xf8, 0xcb, 0x00, 0x00, 
+  0x5a, 0x0a, 0x00, 0x00, 0x1c, 0xcc, 0x00, 0x00, 0x8a, 0x0a, 0x00, 0x00, 
+  0xc8, 0xcd, 0x00, 0x00, 0xd2, 0x09, 0x00, 0x00, 0xd0, 0xcd, 0x00, 0x00, 
+  0xca, 0x0a, 0x00, 0x00, 0x28, 0xcc, 0x00, 0x00, 0xd2, 0x0a, 0x00, 0x00, 
+  0x34, 0xcc, 0x00, 0x00, 0xc2, 0x0a, 0x00, 0x00, 0xf4, 0xcd, 0x00, 0x00, 
+  0xb2, 0x0a, 0x00, 0x00, 0xfc, 0xcd, 0x00, 0x00, 0xba, 0x0a, 0x00, 0x00, 
+  0x04, 0xce, 0x00, 0x00, 0x9a, 0x0a, 0x00, 0x00, 0x40, 0xcc, 0x00, 0x00, 
+  0xa2, 0x0a, 0x00, 0x00, 0x4c, 0xcc, 0x00, 0x00, 0xaa, 0x0a, 0x00, 0x00, 
+  0x58, 0xcc, 0x00, 0x00, 0xda, 0x0a, 0x00, 0x00, 0x64, 0xcc, 0x00, 0x00, 
+  0x92, 0x0a, 0x00, 0x00, 0x70, 0xcc, 0x00, 0x00, 0xc2, 0x0c, 0x00, 0x00, 
+  0x0c, 0xce, 0x00, 0x00, 0x0a, 0x10, 0x00, 0x00, 0x7c, 0xcc, 0x00, 0x00, 
+  0x02, 0x10, 0x00, 0x00, 0x14, 0xce, 0x00, 0x00, 0x62, 0x0d, 0x00, 0x00, 
+  0x1c, 0xce, 0x00, 0x00, 0xfa, 0x0f, 0x00, 0x00, 0x24, 0xce, 0x00, 0x00, 
+  0xf2, 0x0f, 0x00, 0x00, 0x2c, 0xce, 0x00, 0x00, 0xb2, 0x0c, 0x00, 0x00, 
+  0x88, 0xcc, 0x00, 0x00, 0xda, 0x0b, 0x00, 0x00, 0x34, 0xce, 0x00, 0x00, 
+  0xea, 0x0b, 0x00, 0x00, 0x3c, 0xce, 0x00, 0x00, 0xe2, 0x0b, 0x00, 0x00, 
+  0x44, 0xce, 0x00, 0x00, 0x52, 0x0a, 0x00, 0x00, 0x90, 0xcc, 0x00, 0x00, 
+  0x32, 0x0f, 0x00, 0x00, 0x98, 0xcc, 0x00, 0x00, 0xba, 0x10, 0x00, 0x00, 
+  0xa0, 0xcc, 0x00, 0x00, 0xc2, 0x10, 0x00, 0x00, 0xa8, 0xcc, 0x00, 0x00, 
+  0x22, 0x0c, 0x00, 0x00, 0xb0, 0xcc, 0x00, 0x00, 0xa2, 0x0c, 0x00, 0x00, 
+  0x4c, 0xce, 0x00, 0x00, 0xba, 0x0c, 0x00, 0x00, 0x54, 0xce, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1083[] = {
+  0xdc, 0x93, 0x00, 0x00, 0xbf, 0x02, 0x00, 0x00, 0x57, 0x00, 0x00, 0x00, 
+  0x80, 0xc8, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1084[] = {
+  0x20, 0x9d, 0x00, 0x00, 0xd6, 0x01, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1085[] = {
-  0x38, 0xad, 0x00, 0x00, 0x0c, 0x00, 0x89, 0x01, 0xd4, 0x01, 0x00, 0x00, 
-  0xd5, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xd6, 0x01, 0x00, 0x00, 
-  0xd7, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xd7, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1086[] = {
-  0xd8, 0xa1, 0x00, 0x00, 0x78, 0xcb, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1087[] = {
-  0xba, 0x00, 0x00, 0x00, 0xea, 0x09, 0x00, 0x00, 0x92, 0x0f, 0x00, 0x00, 
-  0xf8, 0xcc, 0x00, 0x00, 0x6a, 0x0e, 0x00, 0x00, 0x00, 0xcd, 0x00, 0x00, 
-  0x2a, 0x0f, 0x00, 0x00, 0x88, 0xcb, 0x00, 0x00, 0x72, 0x0f, 0x00, 0x00, 
-  0x08, 0xcd, 0x00, 0x00, 0x62, 0x0f, 0x00, 0x00, 0x10, 0xcd, 0x00, 0x00, 
-  0x6a, 0x0f, 0x00, 0x00, 0x18, 0xcd, 0x00, 0x00, 0xea, 0x0c, 0x00, 0x00, 
-  0x20, 0xcd, 0x00, 0x00, 0x5a, 0x0d, 0x00, 0x00, 0x28, 0xcd, 0x00, 0x00, 
-  0xe2, 0x0f, 0x00, 0x00, 0x90, 0xcb, 0x00, 0x00, 0xea, 0x0f, 0x00, 0x00, 
-  0x30, 0xcd, 0x00, 0x00, 0xd2, 0x0f, 0x00, 0x00, 0x9c, 0xcb, 0x00, 0x00, 
-  0xda, 0x0f, 0x00, 0x00, 0x38, 0xcd, 0x00, 0x00, 0xd2, 0x0f, 0x00, 0x00, 
-  0x9c, 0xcb, 0x00, 0x00, 0xf2, 0x0e, 0x00, 0x00, 0xa8, 0xcb, 0x00, 0x00, 
-  0x4a, 0x0a, 0x00, 0x00, 0xb0, 0xcb, 0x00, 0x00, 0xaa, 0x0c, 0x00, 0x00, 
-  0xb8, 0xcb, 0x00, 0x00, 0x12, 0x09, 0x00, 0x00, 0xc0, 0xcb, 0x00, 0x00, 
-  0x02, 0x09, 0x00, 0x00, 0xcc, 0xcb, 0x00, 0x00, 0x1a, 0x09, 0x00, 0x00, 
-  0x40, 0xcd, 0x00, 0x00, 0x0a, 0x09, 0x00, 0x00, 0x48, 0xcd, 0x00, 0x00, 
-  0x22, 0x11, 0x00, 0x00, 0xd8, 0xcb, 0x00, 0x00, 0x0a, 0x11, 0x00, 0x00, 
-  0x50, 0xcd, 0x00, 0x00, 0x12, 0x11, 0x00, 0x00, 0x58, 0xcd, 0x00, 0x00, 
-  0x2a, 0x11, 0x00, 0x00, 0xe4, 0xcb, 0x00, 0x00, 0x1a, 0x11, 0x00, 0x00, 
-  0x60, 0xcd, 0x00, 0x00, 0x6a, 0x09, 0x00, 0x00, 0x68, 0xcd, 0x00, 0x00, 
-  0x62, 0x09, 0x00, 0x00, 0x70, 0xcd, 0x00, 0x00, 0x72, 0x09, 0x00, 0x00, 
-  0x78, 0xcd, 0x00, 0x00, 0x5a, 0x09, 0x00, 0x00, 0x80, 0xcd, 0x00, 0x00, 
-  0x52, 0x09, 0x00, 0x00, 0x88, 0xcd, 0x00, 0x00, 0x22, 0x10, 0x00, 0x00, 
-  0x90, 0xcd, 0x00, 0x00, 0x1a, 0x10, 0x00, 0x00, 0x98, 0xcd, 0x00, 0x00, 
-  0x2a, 0x10, 0x00, 0x00, 0xa0, 0xcd, 0x00, 0x00, 0x82, 0x0f, 0x00, 0x00, 
-  0xa8, 0xcd, 0x00, 0x00, 0x42, 0x0f, 0x00, 0x00, 0xb0, 0xcd, 0x00, 0x00, 
-  0x2a, 0x0b, 0x00, 0x00, 0xf0, 0xcb, 0x00, 0x00, 0x3a, 0x0b, 0x00, 0x00, 
-  0xb8, 0xcd, 0x00, 0x00, 0x1a, 0x0b, 0x00, 0x00, 0xc0, 0xcd, 0x00, 0x00, 
-  0x82, 0x0a, 0x00, 0x00, 0xc8, 0xcd, 0x00, 0x00, 0xfa, 0x0a, 0x00, 0x00, 
-  0xd0, 0xcd, 0x00, 0x00, 0x0a, 0x0b, 0x00, 0x00, 0xd8, 0xcd, 0x00, 0x00, 
-  0x72, 0x0a, 0x00, 0x00, 0xfc, 0xcb, 0x00, 0x00, 0xea, 0x0a, 0x00, 0x00, 
-  0x08, 0xcc, 0x00, 0x00, 0x4a, 0x0b, 0x00, 0x00, 0x14, 0xcc, 0x00, 0x00, 
-  0x72, 0x0a, 0x00, 0x00, 0xfc, 0xcb, 0x00, 0x00, 0x62, 0x0a, 0x00, 0x00, 
-  0x20, 0xcc, 0x00, 0x00, 0x22, 0x0b, 0x00, 0x00, 0x2c, 0xcc, 0x00, 0x00, 
-  0x32, 0x0b, 0x00, 0x00, 0xe0, 0xcd, 0x00, 0x00, 0x12, 0x0b, 0x00, 0x00, 
-  0xe8, 0xcd, 0x00, 0x00, 0x7a, 0x0a, 0x00, 0x00, 0xf0, 0xcd, 0x00, 0x00, 
-  0xf2, 0x0a, 0x00, 0x00, 0xf8, 0xcd, 0x00, 0x00, 0x02, 0x0b, 0x00, 0x00, 
-  0x00, 0xce, 0x00, 0x00, 0x6a, 0x0a, 0x00, 0x00, 0x38, 0xcc, 0x00, 0x00, 
-  0xe2, 0x0a, 0x00, 0x00, 0x44, 0xcc, 0x00, 0x00, 0x42, 0x0b, 0x00, 0x00, 
-  0x50, 0xcc, 0x00, 0x00, 0x6a, 0x0a, 0x00, 0x00, 0x38, 0xcc, 0x00, 0x00, 
-  0x5a, 0x0a, 0x00, 0x00, 0x5c, 0xcc, 0x00, 0x00, 0x8a, 0x0a, 0x00, 0x00, 
-  0x08, 0xce, 0x00, 0x00, 0xd2, 0x09, 0x00, 0x00, 0x10, 0xce, 0x00, 0x00, 
-  0xca, 0x0a, 0x00, 0x00, 0x68, 0xcc, 0x00, 0x00, 0xd2, 0x0a, 0x00, 0x00, 
-  0x74, 0xcc, 0x00, 0x00, 0xc2, 0x0a, 0x00, 0x00, 0x34, 0xce, 0x00, 0x00, 
-  0xb2, 0x0a, 0x00, 0x00, 0x3c, 0xce, 0x00, 0x00, 0xba, 0x0a, 0x00, 0x00, 
-  0x44, 0xce, 0x00, 0x00, 0x9a, 0x0a, 0x00, 0x00, 0x80, 0xcc, 0x00, 0x00, 
-  0xa2, 0x0a, 0x00, 0x00, 0x8c, 0xcc, 0x00, 0x00, 0xaa, 0x0a, 0x00, 0x00, 
-  0x98, 0xcc, 0x00, 0x00, 0xda, 0x0a, 0x00, 0x00, 0xa4, 0xcc, 0x00, 0x00, 
-  0x92, 0x0a, 0x00, 0x00, 0xb0, 0xcc, 0x00, 0x00, 0xc2, 0x0c, 0x00, 0x00, 
-  0x4c, 0xce, 0x00, 0x00, 0x0a, 0x10, 0x00, 0x00, 0xbc, 0xcc, 0x00, 0x00, 
-  0x02, 0x10, 0x00, 0x00, 0x54, 0xce, 0x00, 0x00, 0x62, 0x0d, 0x00, 0x00, 
-  0x5c, 0xce, 0x00, 0x00, 0xfa, 0x0f, 0x00, 0x00, 0x64, 0xce, 0x00, 0x00, 
-  0xf2, 0x0f, 0x00, 0x00, 0x6c, 0xce, 0x00, 0x00, 0xb2, 0x0c, 0x00, 0x00, 
-  0xc8, 0xcc, 0x00, 0x00, 0xda, 0x0b, 0x00, 0x00, 0x74, 0xce, 0x00, 0x00, 
-  0xea, 0x0b, 0x00, 0x00, 0x7c, 0xce, 0x00, 0x00, 0xe2, 0x0b, 0x00, 0x00, 
-  0x84, 0xce, 0x00, 0x00, 0x52, 0x0a, 0x00, 0x00, 0xd0, 0xcc, 0x00, 0x00, 
-  0x32, 0x0f, 0x00, 0x00, 0xd8, 0xcc, 0x00, 0x00, 0xba, 0x10, 0x00, 0x00, 
-  0xe0, 0xcc, 0x00, 0x00, 0xc2, 0x10, 0x00, 0x00, 0xe8, 0xcc, 0x00, 0x00, 
-  0x22, 0x0c, 0x00, 0x00, 0xf0, 0xcc, 0x00, 0x00, 0xa2, 0x0c, 0x00, 0x00, 
-  0x8c, 0xce, 0x00, 0x00, 0xba, 0x0c, 0x00, 0x00, 0x94, 0xce, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xd8, 0x01, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1087[] = {
+  0x20, 0x9d, 0x00, 0x00, 0xd9, 0x01, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1088[] = {
-  0xdc, 0x93, 0x00, 0x00, 0xbf, 0x02, 0x00, 0x00, 0x57, 0x00, 0x00, 0x00, 
-  0xc0, 0xc8, 0x00, 0x00, 
+  0x20, 0x9d, 0x00, 0x00, 0xda, 0x01, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1089[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xd8, 0x01, 0x00, 0x00, 
+  0x20, 0x9d, 0x00, 0x00, 0xdb, 0x01, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1090[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xd9, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xdc, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1091[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xda, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xdd, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1092[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xdb, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xde, 0x01, 0x00, 0x00, 
+  
 };
 
 static const u8 data_segment_data_1093[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xdc, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xdf, 0x01, 0x00, 0x00, 
+  
 };
 
 static const u8 data_segment_data_1094[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xdd, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe0, 0x01, 0x00, 0x00, 
+  
 };
 
 static const u8 data_segment_data_1095[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xde, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1096[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xdf, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1097[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xe0, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1098[] = {
   0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe1, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1099[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe2, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1096[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe2, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1100[] = {
+static const u8 data_segment_data_1097[] = {
   0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe3, 0x01, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1098[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xe4, 0x01, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1099[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe5, 0x01, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1100[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe6, 0x01, 0x00, 0x00, 
+  
+};
+
 static const u8 data_segment_data_1101[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe4, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe7, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1102[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe5, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1103[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xe6, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1104[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xe7, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1105[] = {
   0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe8, 0x01, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1103[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xe9, 0x01, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1104[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xea, 0x01, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1105[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xeb, 0x01, 0x00, 0x00, 
+  
+};
+
 static const u8 data_segment_data_1106[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xe9, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xec, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1107[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xea, 0x01, 0x00, 0x00, 
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xed, 0x01, 0x00, 0x00, 
   
 };
 
 static const u8 data_segment_data_1108[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x07, 0x00, 0xeb, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1109[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0d, 0x00, 0xec, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1110[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xed, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1111[] = {
   0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xee, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1112[] = {
+static const u8 data_segment_data_1109[] = {
   0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xef, 0x01, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1113[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf0, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1110[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf0, 0x01, 0x00, 0x00, 
   
+};
+
+static const u8 data_segment_data_1111[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf1, 0x01, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1112[] = {
+  0x20, 0x9d, 0x00, 0x00, 0xf2, 0x01, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1113[] = {
+  0x20, 0x9d, 0x00, 0x00, 0xf3, 0x01, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1114[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x0b, 0x00, 0xf1, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1115[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf2, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1116[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x09, 0x00, 0xf3, 0x01, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1117[] = {
   0x20, 0x9d, 0x00, 0x00, 0xf4, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1118[] = {
+static const u8 data_segment_data_1115[] = {
   0x20, 0x9d, 0x00, 0x00, 0xf5, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1119[] = {
+static const u8 data_segment_data_1116[] = {
   0x20, 0x9d, 0x00, 0x00, 0xf6, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1120[] = {
+static const u8 data_segment_data_1117[] = {
   0x20, 0x9d, 0x00, 0x00, 0xf7, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1121[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xf8, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1118[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0xf8, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1122[] = {
-  0x20, 0x9d, 0x00, 0x00, 0xf9, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1119[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0xf9, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1123[] = {
+static const u8 data_segment_data_1120[] = {
   0x5c, 0x9d, 0x00, 0x00, 0xfa, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1124[] = {
+static const u8 data_segment_data_1121[] = {
   0x5c, 0x9d, 0x00, 0x00, 0xfb, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1125[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0xfc, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1122[] = {
+  0x98, 0x9d, 0x00, 0x00, 0xfc, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1126[] = {
+static const u8 data_segment_data_1123[] = {
   0x5c, 0x9d, 0x00, 0x00, 0xfd, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1127[] = {
-  0x98, 0x9d, 0x00, 0x00, 0xfe, 0x01, 0x00, 0x00, 
+static const u8 data_segment_data_1124[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0xfe, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1128[] = {
+static const u8 data_segment_data_1125[] = {
   0x5c, 0x9d, 0x00, 0x00, 0xff, 0x01, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1129[] = {
+static const u8 data_segment_data_1126[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1130[] = {
+static const u8 data_segment_data_1127[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1131[] = {
+static const u8 data_segment_data_1128[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x02, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1129[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x03, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1130[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x04, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1131[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x05, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1132[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x03, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1133[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x04, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1134[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x05, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1135[] = {
   0x98, 0x9d, 0x00, 0x00, 0x06, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1136[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x07, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1133[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x07, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1137[] = {
+static const u8 data_segment_data_1134[] = {
   0x98, 0x9d, 0x00, 0x00, 0x08, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1138[] = {
+static const u8 data_segment_data_1135[] = {
   0x98, 0x9d, 0x00, 0x00, 0x09, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1136[] = {
+  0xd4, 0x9d, 0x00, 0x00, 0x0a, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1137[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x0b, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1138[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x0c, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1139[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x0a, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1140[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x0b, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1141[] = {
-  0xd4, 0x9d, 0x00, 0x00, 0x0c, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1142[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x0d, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1143[] = {
+static const u8 data_segment_data_1140[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x0e, 0x02, 0x00, 0x00, 
 };
 
+static const u8 data_segment_data_1141[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x0f, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1142[] = {
+  0xd4, 0x9d, 0x00, 0x00, 0x10, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1143[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x11, 0x02, 0x00, 0x00, 
+};
+
 static const u8 data_segment_data_1144[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x0f, 0x02, 0x00, 0x00, 
+  0x5c, 0x9d, 0x00, 0x00, 0x12, 0x02, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_1145[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x10, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1146[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x11, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1147[] = {
-  0xd4, 0x9d, 0x00, 0x00, 0x12, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1148[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x13, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1149[] = {
+static const u8 data_segment_data_1146[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x14, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1150[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x15, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1147[] = {
+  0xd4, 0x9d, 0x00, 0x00, 0x15, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1151[] = {
+static const u8 data_segment_data_1148[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x16, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1152[] = {
-  0xd4, 0x9d, 0x00, 0x00, 0x17, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1149[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x17, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1153[] = {
+static const u8 data_segment_data_1150[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x18, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1154[] = {
+static const u8 data_segment_data_1151[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x19, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1155[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x1a, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1152[] = {
+  0xd4, 0x9d, 0x00, 0x00, 0x1a, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1156[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x1b, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1153[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x1b, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1157[] = {
-  0xd4, 0x9d, 0x00, 0x00, 0x1c, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1158[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x1d, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1159[] = {
+static const u8 data_segment_data_1154[] = {
   0x08, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 
   0x08, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1160[] = {
+static const u8 data_segment_data_1155[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x1c, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1156[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x1d, 0x02, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1157[] = {
   0x98, 0x9d, 0x00, 0x00, 0x1e, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1161[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x1f, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1158[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x1f, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1162[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x20, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1159[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x20, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1163[] = {
+static const u8 data_segment_data_1160[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x21, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1164[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x22, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1161[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x22, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1165[] = {
+static const u8 data_segment_data_1162[] = {
   0x5c, 0x9d, 0x00, 0x00, 0x23, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1166[] = {
+static const u8 data_segment_data_1163[] = {
   0x98, 0x9d, 0x00, 0x00, 0x24, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1167[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x25, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1164[] = {
+  0x98, 0x9d, 0x00, 0x00, 0x25, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1168[] = {
+static const u8 data_segment_data_1165[] = {
   0x98, 0x9d, 0x00, 0x00, 0x26, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1169[] = {
+static const u8 data_segment_data_1166[] = {
   0x98, 0x9d, 0x00, 0x00, 0x27, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1170[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x28, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1167[] = {
+  0x5c, 0x9d, 0x00, 0x00, 0x28, 0x02, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1171[] = {
-  0x98, 0x9d, 0x00, 0x00, 0x29, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1172[] = {
-  0x5c, 0x9d, 0x00, 0x00, 0x2a, 0x02, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1173[] = {
-  0x38, 0xad, 0x00, 0x00, 0x00, 0x00, 0xce, 0x01, 0x2b, 0x02, 0x00, 0x00, 
-  0x2c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x02, 0x00, 0x00, 
-  0x2e, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+static const u8 data_segment_data_1168[] = {
+  0x38, 0xad, 0x00, 0x00, 0x00, 0x00, 0xce, 0x01, 0x29, 0x02, 0x00, 0x00, 
+  0x2a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2b, 0x02, 0x00, 0x00, 
+  0x2c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0xa0, 0x00, 0x00, 
   
 };
 
+static const u8 data_segment_data_1169[] = {
+  0xfc, 0xad, 0x00, 0x00, 0xc4, 0xce, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_1170[] = {
+  0x10, 0x9e, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x2d, 0x02, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1171[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x2e, 0x02, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1172[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x2f, 0x02, 0x00, 0x00, 
+  
+};
+
+static const u8 data_segment_data_1173[] = {
+  0x10, 0x9e, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x30, 0x02, 0x00, 0x00, 
+  
+};
+
 static const u8 data_segment_data_1174[] = {
-  0xfc, 0xad, 0x00, 0x00, 0x04, 0xcf, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_1175[] = {
-  0x10, 0x9e, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x2f, 0x02, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1176[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x30, 0x02, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1177[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xfe, 0xff, 0x03, 0x00, 0x31, 0x02, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1178[] = {
-  0x10, 0x9e, 0x00, 0x00, 0x08, 0x00, 0x06, 0x00, 0x32, 0x02, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_1179[] = {
   0xfd, 0x07, 0xf5, 0x07, 0xed, 0x07, 0xe5, 0x07, 0xdd, 0x07, 0xd5, 0x07, 
   0xce, 0x07, 0xc6, 0x07, 0xbf, 0x07, 0xb7, 0x07, 0xb0, 0x07, 0xa8, 0x07, 
   0xa1, 0x07, 0x9a, 0x07, 0x92, 0x07, 0x8b, 0x07, 0x84, 0x07, 0x7d, 0x07, 
@@ -159734,16 +159691,16 @@ static const u8 data_segment_data_1179[] = {
   0x06, 0x04, 0x04, 0x04, 0x02, 0x04, 0x00, 0x04, 
 };
 
-static const u8 data_segment_data_1180[] = {
-  0x10, 0x9e, 0x00, 0x00, 0xff, 0xff, 0x03, 0x00, 0x39, 0x02, 0x00, 0x00, 
+static const u8 data_segment_data_1175[] = {
+  0x10, 0x9e, 0x00, 0x00, 0xff, 0xff, 0x03, 0x00, 0x37, 0x02, 0x00, 0x00, 
   
 };
 
-static const u8 data_segment_data_1181[] = {
-  0xd8, 0xa1, 0x00, 0x00, 0x78, 0xd1, 0x00, 0x00, 
+static const u8 data_segment_data_1176[] = {
+  0xd8, 0xa1, 0x00, 0x00, 0x38, 0xd1, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1182[] = {
+static const u8 data_segment_data_1177[] = {
   0xba, 0x00, 0x00, 0x00, 0xda, 0x11, 0x00, 0x00, 0x52, 0x10, 0x00, 0x00, 
   0xb8, 0xc7, 0x00, 0x00, 0x5a, 0x10, 0x00, 0x00, 0xc0, 0xc7, 0x00, 0x00, 
   0x62, 0x10, 0x00, 0x00, 0xc8, 0xc7, 0x00, 0x00, 0xea, 0x10, 0x00, 0x00, 
@@ -159753,20 +159710,20 @@ static const u8 data_segment_data_1182[] = {
   
 };
 
-static const u8 data_segment_data_1183[] = {
+static const u8 data_segment_data_1178[] = {
   0xdc, 0x93, 0x00, 0x00, 0x4f, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 
-  0x30, 0xd1, 0x00, 0x00, 
+  0xf0, 0xd0, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1184[] = {
+static const u8 data_segment_data_1179[] = {
   0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1185[] = {
+static const u8 data_segment_data_1180[] = {
   0x00, 0x00, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_1186[] = {
+static const u8 data_segment_data_1181[] = {
   0x00, 0x00, 
 };
 
@@ -160851,119 +160808,114 @@ static void init_memory(void) {
   memcpy(&(M0.data[51168u]), data_segment_data_1076, 8);
   memcpy(&(M0.data[51176u]), data_segment_data_1077, 8);
   memcpy(&(M0.data[51184u]), data_segment_data_1078, 8);
-  memcpy(&(M0.data[51192u]), data_segment_data_1079, 8);
-  memcpy(&(M0.data[51200u]), data_segment_data_1080, 24);
-  memcpy(&(M0.data[51224u]), data_segment_data_1081, 16);
-  memcpy(&(M0.data[51240u]), data_segment_data_1082, 8);
-  memcpy(&(M0.data[51248u]), data_segment_data_1083, 8);
-  memcpy(&(M0.data[51256u]), data_segment_data_1084, 60);
-  memcpy(&(M0.data[51316u]), data_segment_data_1085, 60);
-  memcpy(&(M0.data[51376u]), data_segment_data_1086, 8);
-  memcpy(&(M0.data[51392u]), data_segment_data_1087, 696);
-  memcpy(&(M0.data[52088u]), data_segment_data_1088, 16);
-  memcpy(&(M0.data[52104u]), data_segment_data_1089, 8);
-  memcpy(&(M0.data[52112u]), data_segment_data_1090, 12);
-  memcpy(&(M0.data[52124u]), data_segment_data_1091, 12);
-  memcpy(&(M0.data[52136u]), data_segment_data_1092, 8);
-  memcpy(&(M0.data[52144u]), data_segment_data_1093, 8);
-  memcpy(&(M0.data[52152u]), data_segment_data_1094, 8);
-  memcpy(&(M0.data[52160u]), data_segment_data_1095, 12);
-  memcpy(&(M0.data[52172u]), data_segment_data_1096, 12);
-  memcpy(&(M0.data[52184u]), data_segment_data_1097, 12);
-  memcpy(&(M0.data[52196u]), data_segment_data_1098, 12);
-  memcpy(&(M0.data[52208u]), data_segment_data_1099, 12);
-  memcpy(&(M0.data[52220u]), data_segment_data_1100, 12);
-  memcpy(&(M0.data[52232u]), data_segment_data_1101, 12);
-  memcpy(&(M0.data[52244u]), data_segment_data_1102, 12);
-  memcpy(&(M0.data[52256u]), data_segment_data_1103, 12);
-  memcpy(&(M0.data[52268u]), data_segment_data_1104, 12);
-  memcpy(&(M0.data[52280u]), data_segment_data_1105, 12);
-  memcpy(&(M0.data[52292u]), data_segment_data_1106, 12);
-  memcpy(&(M0.data[52304u]), data_segment_data_1107, 12);
-  memcpy(&(M0.data[52316u]), data_segment_data_1108, 12);
-  memcpy(&(M0.data[52328u]), data_segment_data_1109, 12);
-  memcpy(&(M0.data[52340u]), data_segment_data_1110, 12);
-  memcpy(&(M0.data[52352u]), data_segment_data_1111, 12);
-  memcpy(&(M0.data[52364u]), data_segment_data_1112, 12);
-  memcpy(&(M0.data[52376u]), data_segment_data_1113, 12);
-  memcpy(&(M0.data[52388u]), data_segment_data_1114, 12);
-  memcpy(&(M0.data[52400u]), data_segment_data_1115, 12);
-  memcpy(&(M0.data[52412u]), data_segment_data_1116, 12);
-  memcpy(&(M0.data[52424u]), data_segment_data_1117, 8);
-  memcpy(&(M0.data[52432u]), data_segment_data_1118, 8);
-  memcpy(&(M0.data[52440u]), data_segment_data_1119, 8);
-  memcpy(&(M0.data[52448u]), data_segment_data_1120, 8);
-  memcpy(&(M0.data[52456u]), data_segment_data_1121, 8);
-  memcpy(&(M0.data[52464u]), data_segment_data_1122, 8);
-  memcpy(&(M0.data[52472u]), data_segment_data_1123, 8);
-  memcpy(&(M0.data[52480u]), data_segment_data_1124, 8);
-  memcpy(&(M0.data[52488u]), data_segment_data_1125, 8);
-  memcpy(&(M0.data[52496u]), data_segment_data_1126, 8);
-  memcpy(&(M0.data[52504u]), data_segment_data_1127, 8);
-  memcpy(&(M0.data[52512u]), data_segment_data_1128, 8);
-  memcpy(&(M0.data[52520u]), data_segment_data_1129, 8);
-  memcpy(&(M0.data[52528u]), data_segment_data_1130, 8);
-  memcpy(&(M0.data[52536u]), data_segment_data_1131, 8);
-  memcpy(&(M0.data[52544u]), data_segment_data_1132, 8);
-  memcpy(&(M0.data[52552u]), data_segment_data_1133, 8);
-  memcpy(&(M0.data[52560u]), data_segment_data_1134, 8);
-  memcpy(&(M0.data[52568u]), data_segment_data_1135, 8);
-  memcpy(&(M0.data[52576u]), data_segment_data_1136, 8);
-  memcpy(&(M0.data[52584u]), data_segment_data_1137, 8);
-  memcpy(&(M0.data[52592u]), data_segment_data_1138, 8);
-  memcpy(&(M0.data[52600u]), data_segment_data_1139, 8);
-  memcpy(&(M0.data[52608u]), data_segment_data_1140, 8);
-  memcpy(&(M0.data[52616u]), data_segment_data_1141, 8);
-  memcpy(&(M0.data[52624u]), data_segment_data_1142, 8);
-  memcpy(&(M0.data[52632u]), data_segment_data_1143, 8);
-  memcpy(&(M0.data[52640u]), data_segment_data_1144, 8);
-  memcpy(&(M0.data[52648u]), data_segment_data_1145, 8);
-  memcpy(&(M0.data[52656u]), data_segment_data_1146, 8);
-  memcpy(&(M0.data[52664u]), data_segment_data_1147, 8);
-  memcpy(&(M0.data[52672u]), data_segment_data_1148, 8);
-  memcpy(&(M0.data[52680u]), data_segment_data_1149, 8);
-  memcpy(&(M0.data[52688u]), data_segment_data_1150, 8);
-  memcpy(&(M0.data[52696u]), data_segment_data_1151, 8);
-  memcpy(&(M0.data[52704u]), data_segment_data_1152, 8);
-  memcpy(&(M0.data[52712u]), data_segment_data_1153, 8);
-  memcpy(&(M0.data[52720u]), data_segment_data_1154, 8);
-  memcpy(&(M0.data[52728u]), data_segment_data_1155, 8);
-  memcpy(&(M0.data[52736u]), data_segment_data_1156, 8);
-  memcpy(&(M0.data[52744u]), data_segment_data_1157, 8);
-  memcpy(&(M0.data[52752u]), data_segment_data_1158, 8);
-  memcpy(&(M0.data[52768u]), data_segment_data_1159, 20);
-  memcpy(&(M0.data[52788u]), data_segment_data_1160, 8);
-  memcpy(&(M0.data[52796u]), data_segment_data_1161, 8);
-  memcpy(&(M0.data[52804u]), data_segment_data_1162, 8);
-  memcpy(&(M0.data[52812u]), data_segment_data_1163, 8);
-  memcpy(&(M0.data[52820u]), data_segment_data_1164, 8);
-  memcpy(&(M0.data[52828u]), data_segment_data_1165, 8);
-  memcpy(&(M0.data[52836u]), data_segment_data_1166, 8);
-  memcpy(&(M0.data[52844u]), data_segment_data_1167, 8);
-  memcpy(&(M0.data[52852u]), data_segment_data_1168, 8);
-  memcpy(&(M0.data[52860u]), data_segment_data_1169, 8);
-  memcpy(&(M0.data[52868u]), data_segment_data_1170, 8);
-  memcpy(&(M0.data[52876u]), data_segment_data_1171, 8);
-  memcpy(&(M0.data[52884u]), data_segment_data_1172, 8);
-  memcpy(&(M0.data[52892u]), data_segment_data_1173, 60);
-  memcpy(&(M0.data[52952u]), data_segment_data_1174, 8);
-  memcpy(&(M0.data[52960u]), data_segment_data_1175, 12);
-  memcpy(&(M0.data[52972u]), data_segment_data_1176, 12);
-  memcpy(&(M0.data[52984u]), data_segment_data_1177, 12);
-  memcpy(&(M0.data[52996u]), data_segment_data_1178, 12);
-  memcpy(&(M0.data[53008u]), data_segment_data_1179, 512);
-  memcpy(&(M0.data[53520u]), data_segment_data_1180, 12);
-  memcpy(&(M0.data[53532u]), data_segment_data_1181, 8);
-  memcpy(&(M0.data[53552u]), data_segment_data_1182, 72);
-  memcpy(&(M0.data[53624u]), data_segment_data_1183, 16);
-  memcpy(&(M0.data[53640u]), data_segment_data_1184, 2);
-  memcpy(&(M0.data[53644u]), data_segment_data_1185, 4);
-  memcpy(&(M0.data[53648u]), data_segment_data_1186, 2);
+  memcpy(&(M0.data[51192u]), data_segment_data_1079, 60);
+  memcpy(&(M0.data[51252u]), data_segment_data_1080, 60);
+  memcpy(&(M0.data[51312u]), data_segment_data_1081, 8);
+  memcpy(&(M0.data[51328u]), data_segment_data_1082, 696);
+  memcpy(&(M0.data[52024u]), data_segment_data_1083, 16);
+  memcpy(&(M0.data[52040u]), data_segment_data_1084, 8);
+  memcpy(&(M0.data[52048u]), data_segment_data_1085, 12);
+  memcpy(&(M0.data[52060u]), data_segment_data_1086, 12);
+  memcpy(&(M0.data[52072u]), data_segment_data_1087, 8);
+  memcpy(&(M0.data[52080u]), data_segment_data_1088, 8);
+  memcpy(&(M0.data[52088u]), data_segment_data_1089, 8);
+  memcpy(&(M0.data[52096u]), data_segment_data_1090, 12);
+  memcpy(&(M0.data[52108u]), data_segment_data_1091, 12);
+  memcpy(&(M0.data[52120u]), data_segment_data_1092, 12);
+  memcpy(&(M0.data[52132u]), data_segment_data_1093, 12);
+  memcpy(&(M0.data[52144u]), data_segment_data_1094, 12);
+  memcpy(&(M0.data[52156u]), data_segment_data_1095, 12);
+  memcpy(&(M0.data[52168u]), data_segment_data_1096, 12);
+  memcpy(&(M0.data[52180u]), data_segment_data_1097, 12);
+  memcpy(&(M0.data[52192u]), data_segment_data_1098, 12);
+  memcpy(&(M0.data[52204u]), data_segment_data_1099, 12);
+  memcpy(&(M0.data[52216u]), data_segment_data_1100, 12);
+  memcpy(&(M0.data[52228u]), data_segment_data_1101, 12);
+  memcpy(&(M0.data[52240u]), data_segment_data_1102, 12);
+  memcpy(&(M0.data[52252u]), data_segment_data_1103, 12);
+  memcpy(&(M0.data[52264u]), data_segment_data_1104, 12);
+  memcpy(&(M0.data[52276u]), data_segment_data_1105, 12);
+  memcpy(&(M0.data[52288u]), data_segment_data_1106, 12);
+  memcpy(&(M0.data[52300u]), data_segment_data_1107, 12);
+  memcpy(&(M0.data[52312u]), data_segment_data_1108, 12);
+  memcpy(&(M0.data[52324u]), data_segment_data_1109, 12);
+  memcpy(&(M0.data[52336u]), data_segment_data_1110, 12);
+  memcpy(&(M0.data[52348u]), data_segment_data_1111, 12);
+  memcpy(&(M0.data[52360u]), data_segment_data_1112, 8);
+  memcpy(&(M0.data[52368u]), data_segment_data_1113, 8);
+  memcpy(&(M0.data[52376u]), data_segment_data_1114, 8);
+  memcpy(&(M0.data[52384u]), data_segment_data_1115, 8);
+  memcpy(&(M0.data[52392u]), data_segment_data_1116, 8);
+  memcpy(&(M0.data[52400u]), data_segment_data_1117, 8);
+  memcpy(&(M0.data[52408u]), data_segment_data_1118, 8);
+  memcpy(&(M0.data[52416u]), data_segment_data_1119, 8);
+  memcpy(&(M0.data[52424u]), data_segment_data_1120, 8);
+  memcpy(&(M0.data[52432u]), data_segment_data_1121, 8);
+  memcpy(&(M0.data[52440u]), data_segment_data_1122, 8);
+  memcpy(&(M0.data[52448u]), data_segment_data_1123, 8);
+  memcpy(&(M0.data[52456u]), data_segment_data_1124, 8);
+  memcpy(&(M0.data[52464u]), data_segment_data_1125, 8);
+  memcpy(&(M0.data[52472u]), data_segment_data_1126, 8);
+  memcpy(&(M0.data[52480u]), data_segment_data_1127, 8);
+  memcpy(&(M0.data[52488u]), data_segment_data_1128, 8);
+  memcpy(&(M0.data[52496u]), data_segment_data_1129, 8);
+  memcpy(&(M0.data[52504u]), data_segment_data_1130, 8);
+  memcpy(&(M0.data[52512u]), data_segment_data_1131, 8);
+  memcpy(&(M0.data[52520u]), data_segment_data_1132, 8);
+  memcpy(&(M0.data[52528u]), data_segment_data_1133, 8);
+  memcpy(&(M0.data[52536u]), data_segment_data_1134, 8);
+  memcpy(&(M0.data[52544u]), data_segment_data_1135, 8);
+  memcpy(&(M0.data[52552u]), data_segment_data_1136, 8);
+  memcpy(&(M0.data[52560u]), data_segment_data_1137, 8);
+  memcpy(&(M0.data[52568u]), data_segment_data_1138, 8);
+  memcpy(&(M0.data[52576u]), data_segment_data_1139, 8);
+  memcpy(&(M0.data[52584u]), data_segment_data_1140, 8);
+  memcpy(&(M0.data[52592u]), data_segment_data_1141, 8);
+  memcpy(&(M0.data[52600u]), data_segment_data_1142, 8);
+  memcpy(&(M0.data[52608u]), data_segment_data_1143, 8);
+  memcpy(&(M0.data[52616u]), data_segment_data_1144, 8);
+  memcpy(&(M0.data[52624u]), data_segment_data_1145, 8);
+  memcpy(&(M0.data[52632u]), data_segment_data_1146, 8);
+  memcpy(&(M0.data[52640u]), data_segment_data_1147, 8);
+  memcpy(&(M0.data[52648u]), data_segment_data_1148, 8);
+  memcpy(&(M0.data[52656u]), data_segment_data_1149, 8);
+  memcpy(&(M0.data[52664u]), data_segment_data_1150, 8);
+  memcpy(&(M0.data[52672u]), data_segment_data_1151, 8);
+  memcpy(&(M0.data[52680u]), data_segment_data_1152, 8);
+  memcpy(&(M0.data[52688u]), data_segment_data_1153, 8);
+  memcpy(&(M0.data[52704u]), data_segment_data_1154, 20);
+  memcpy(&(M0.data[52724u]), data_segment_data_1155, 8);
+  memcpy(&(M0.data[52732u]), data_segment_data_1156, 8);
+  memcpy(&(M0.data[52740u]), data_segment_data_1157, 8);
+  memcpy(&(M0.data[52748u]), data_segment_data_1158, 8);
+  memcpy(&(M0.data[52756u]), data_segment_data_1159, 8);
+  memcpy(&(M0.data[52764u]), data_segment_data_1160, 8);
+  memcpy(&(M0.data[52772u]), data_segment_data_1161, 8);
+  memcpy(&(M0.data[52780u]), data_segment_data_1162, 8);
+  memcpy(&(M0.data[52788u]), data_segment_data_1163, 8);
+  memcpy(&(M0.data[52796u]), data_segment_data_1164, 8);
+  memcpy(&(M0.data[52804u]), data_segment_data_1165, 8);
+  memcpy(&(M0.data[52812u]), data_segment_data_1166, 8);
+  memcpy(&(M0.data[52820u]), data_segment_data_1167, 8);
+  memcpy(&(M0.data[52828u]), data_segment_data_1168, 60);
+  memcpy(&(M0.data[52888u]), data_segment_data_1169, 8);
+  memcpy(&(M0.data[52896u]), data_segment_data_1170, 12);
+  memcpy(&(M0.data[52908u]), data_segment_data_1171, 12);
+  memcpy(&(M0.data[52920u]), data_segment_data_1172, 12);
+  memcpy(&(M0.data[52932u]), data_segment_data_1173, 12);
+  memcpy(&(M0.data[52944u]), data_segment_data_1174, 512);
+  memcpy(&(M0.data[53456u]), data_segment_data_1175, 12);
+  memcpy(&(M0.data[53468u]), data_segment_data_1176, 8);
+  memcpy(&(M0.data[53488u]), data_segment_data_1177, 72);
+  memcpy(&(M0.data[53560u]), data_segment_data_1178, 16);
+  memcpy(&(M0.data[53576u]), data_segment_data_1179, 2);
+  memcpy(&(M0.data[53580u]), data_segment_data_1180, 4);
+  memcpy(&(M0.data[53584u]), data_segment_data_1181, 2);
 }
 
 static void init_table(void) {
   uint32_t offset;
-  wasm_rt_allocate_table((&T0), 570, 570);
+  wasm_rt_allocate_table((&T0), 568, 568);
   offset = 1u;
   T0.data[offset + 0] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&vstr_add_strn)};
   T0.data[offset + 1] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&plat_print_strn)};
@@ -161426,114 +161378,112 @@ static void init_table(void) {
   T0.data[offset + 458] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&time_ticks_cpu)};
   T0.data[offset + 459] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&time_ticks_diff)};
   T0.data[offset + 460] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&time_ticks_add)};
-  T0.data[offset + 461] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_hello_say_hello)};
-  T0.data[offset + 462] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_hello_say_hello2)};
-  T0.data[offset + 463] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&bigint_print)};
-  T0.data[offset + 464] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&bigint_make_new)};
-  T0.data[offset + 465] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&bigint_unary_op)};
-  T0.data[offset + 466] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&bigint_binary_op)};
-  T0.data[offset + 467] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&float128_print)};
-  T0.data[offset + 468] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&float128_make_new)};
-  T0.data[offset + 469] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&float128_unary_op)};
-  T0.data[offset + 470] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&float128_binary_op)};
-  T0.data[offset + 471] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_action_data)};
-  T0.data[offset + 472] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_inline)};
-  T0.data[offset + 473] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline)};
-  T0.data[offset + 474] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_publication_time)};
-  T0.data[offset + 475] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_receiver)};
-  T0.data[offset + 476] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_active_producers)};
-  T0.data[offset + 477] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_new)};
-  T0.data[offset + 478] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_add_permission)};
-  T0.data[offset + 479] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_new)};
-  T0.data[offset + 480] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_send)};
-  T0.data[offset + 481] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i64)};
-  T0.data[offset + 482] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i64)};
-  T0.data[offset + 483] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i64)};
-  T0.data[offset + 484] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i64)};
-  T0.data[offset + 485] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i64)};
-  T0.data[offset + 486] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i256)};
-  T0.data[offset + 487] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i256)};
-  T0.data[offset + 488] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i256)};
-  T0.data[offset + 489] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i256)};
-  T0.data[offset + 490] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i256)};
-  T0.data[offset + 491] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_store)};
-  T0.data[offset + 492] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_update)};
-  T0.data[offset + 493] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_primary)};
-  T0.data[offset + 494] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_secondary)};
-  T0.data[offset + 495] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_lowerbound)};
-  T0.data[offset + 496] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_upperbound)};
-  T0.data[offset + 497] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_end)};
-  T0.data[offset + 498] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_resource_limits)};
-  T0.data[offset + 499] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_blockchain_parameters)};
-  T0.data[offset + 500] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_time)};
-  T0.data[offset + 501] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_transaction)};
-  T0.data[offset + 502] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_num)};
-  T0.data[offset + 503] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_prefix)};
-  T0.data[offset + 504] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_expiration)};
-  T0.data[offset + 505] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_s2n)};
-  T0.data[offset + 506] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_n2s)};
-  T0.data[offset + 507] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_recipient)};
-  T0.data[offset + 508] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_auth)};
-  T0.data[offset + 509] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_require_auth2)};
-  T0.data[offset + 510] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_has_auth)};
-  T0.data[offset + 511] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_account)};
-  T0.data[offset + 512] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_inline_raw)};
-  T0.data[offset + 513] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline_raw)};
-  T0.data[offset + 514] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_send)};
-  T0.data[offset + 515] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_free)};
-  T0.data[offset + 516] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_action)};
-  T0.data[offset + 517] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_context_free_action)};
-  T0.data[offset + 518] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_transaction_free)};
-  T0.data[offset + 519] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha256)};
-  T0.data[offset + 520] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha1)};
-  T0.data[offset + 521] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha512)};
-  T0.data[offset + 522] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_ripemd160)};
-  T0.data[offset + 523] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_assert_recover_key)};
-  T0.data[offset + 524] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha256)};
-  T0.data[offset + 525] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha1)};
-  T0.data[offset + 526] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha512)};
-  T0.data[offset + 527] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_ripemd160)};
-  T0.data[offset + 528] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_recover_key)};
-  T0.data[offset + 529] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i64)};
-  T0.data[offset + 530] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i64)};
-  T0.data[offset + 531] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i64)};
-  T0.data[offset + 532] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i64)};
-  T0.data[offset + 533] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i64)};
-  T0.data[offset + 534] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i256)};
-  T0.data[offset + 535] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i256)};
-  T0.data[offset + 536] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i256)};
-  T0.data[offset + 537] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i256)};
-  T0.data[offset + 538] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i256)};
-  T0.data[offset + 539] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_get_table_count)};
-  T0.data[offset + 540] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_call_contract)};
-  T0.data[offset + 541] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_remove)};
-  T0.data[offset + 542] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_next)};
-  T0.data[offset + 543] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_previous)};
-  T0.data[offset + 544] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_resource_limits)};
-  T0.data[offset + 545] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_proposed_producers)};
-  T0.data[offset + 546] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_privileged)};
-  T0.data[offset + 547] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_privileged)};
-  T0.data[offset + 548] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_blockchain_parameters)};
-  T0.data[offset + 549] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert)};
-  T0.data[offset + 550] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_message)};
-  T0.data[offset + 551] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_code)};
-  T0.data[offset + 552] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_get_action)};
-  T0.data[offset + 553] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_context_free_data)};
-  T0.data[offset + 554] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&mp_obj_name_print)};
-  T0.data[offset + 555] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&mp_obj_name_make_new)};
-  T0.data[offset + 556] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_obj_name_unary_op)};
-  T0.data[offset + 557] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_obj_name_binary_op)};
-  T0.data[offset + 558] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_bytes)};
-  T0.data[offset + 559] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_int)};
-  T0.data[offset + 560] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_name_to_str)};
-  T0.data[offset + 561] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_from_bytes)};
-  T0.data[offset + 562] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&micropython_init_module)};
-  T0.data[offset + 563] = (wasm_rt_elem_t){func_types[9], (wasm_rt_anyfunc_t)(&init_micropython)};
-  T0.data[offset + 564] = (wasm_rt_elem_t){func_types[23], (wasm_rt_anyfunc_t)(&micropython_apply)};
-  T0.data[offset + 565] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&mp_js_init)};
-  T0.data[offset + 566] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&micropython_init_with_script)};
-  T0.data[offset + 567] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&micropython_run_script)};
-  T0.data[offset + 568] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_builtin_open)};
+  T0.data[offset + 461] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&bigint_print)};
+  T0.data[offset + 462] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&bigint_make_new)};
+  T0.data[offset + 463] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&bigint_unary_op)};
+  T0.data[offset + 464] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&bigint_binary_op)};
+  T0.data[offset + 465] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&float128_print)};
+  T0.data[offset + 466] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&float128_make_new)};
+  T0.data[offset + 467] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&float128_unary_op)};
+  T0.data[offset + 468] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&float128_binary_op)};
+  T0.data[offset + 469] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_action_data)};
+  T0.data[offset + 470] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_inline)};
+  T0.data[offset + 471] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline)};
+  T0.data[offset + 472] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_publication_time)};
+  T0.data[offset + 473] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_receiver)};
+  T0.data[offset + 474] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_active_producers)};
+  T0.data[offset + 475] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_new)};
+  T0.data[offset + 476] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_action_add_permission)};
+  T0.data[offset + 477] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_new)};
+  T0.data[offset + 478] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_send)};
+  T0.data[offset + 479] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i64)};
+  T0.data[offset + 480] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i64)};
+  T0.data[offset + 481] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i64)};
+  T0.data[offset + 482] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i64)};
+  T0.data[offset + 483] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i64)};
+  T0.data[offset + 484] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_store_i256)};
+  T0.data[offset + 485] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_find_i256)};
+  T0.data[offset + 486] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_lowerbound_i256)};
+  T0.data[offset + 487] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_upperbound_i256)};
+  T0.data[offset + 488] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_end_i256)};
+  T0.data[offset + 489] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_store)};
+  T0.data[offset + 490] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_update)};
+  T0.data[offset + 491] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_primary)};
+  T0.data[offset + 492] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_find_secondary)};
+  T0.data[offset + 493] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_lowerbound)};
+  T0.data[offset + 494] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_upperbound)};
+  T0.data[offset + 495] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_end)};
+  T0.data[offset + 496] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_resource_limits)};
+  T0.data[offset + 497] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_get_blockchain_parameters)};
+  T0.data[offset + 498] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_current_time)};
+  T0.data[offset + 499] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_read_transaction)};
+  T0.data[offset + 500] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_num)};
+  T0.data[offset + 501] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_tapos_block_prefix)};
+  T0.data[offset + 502] = (wasm_rt_elem_t){func_types[8], (wasm_rt_anyfunc_t)(&mod_chain_expiration)};
+  T0.data[offset + 503] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_s2n)};
+  T0.data[offset + 504] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_n2s)};
+  T0.data[offset + 505] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_recipient)};
+  T0.data[offset + 506] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_require_auth)};
+  T0.data[offset + 507] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_require_auth2)};
+  T0.data[offset + 508] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_has_auth)};
+  T0.data[offset + 509] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_account)};
+  T0.data[offset + 510] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_inline_raw)};
+  T0.data[offset + 511] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_send_context_free_inline_raw)};
+  T0.data[offset + 512] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_send)};
+  T0.data[offset + 513] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_action_free)};
+  T0.data[offset + 514] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_action)};
+  T0.data[offset + 515] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_transaction_add_context_free_action)};
+  T0.data[offset + 516] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_transaction_free)};
+  T0.data[offset + 517] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha256)};
+  T0.data[offset + 518] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha1)};
+  T0.data[offset + 519] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_sha512)};
+  T0.data[offset + 520] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_assert_ripemd160)};
+  T0.data[offset + 521] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_assert_recover_key)};
+  T0.data[offset + 522] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha256)};
+  T0.data[offset + 523] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha1)};
+  T0.data[offset + 524] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_sha512)};
+  T0.data[offset + 525] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_ripemd160)};
+  T0.data[offset + 526] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_recover_key)};
+  T0.data[offset + 527] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i64)};
+  T0.data[offset + 528] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i64)};
+  T0.data[offset + 529] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i64)};
+  T0.data[offset + 530] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i64)};
+  T0.data[offset + 531] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i64)};
+  T0.data[offset + 532] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_update_i256)};
+  T0.data[offset + 533] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_remove_i256)};
+  T0.data[offset + 534] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_get_i256)};
+  T0.data[offset + 535] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_next_i256)};
+  T0.data[offset + 536] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_db_previous_i256)};
+  T0.data[offset + 537] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mod_chain_db_get_table_count)};
+  T0.data[offset + 538] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_call_contract)};
+  T0.data[offset + 539] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_remove)};
+  T0.data[offset + 540] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_next)};
+  T0.data[offset + 541] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_db_idx_previous)};
+  T0.data[offset + 542] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_resource_limits)};
+  T0.data[offset + 543] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_proposed_producers)};
+  T0.data[offset + 544] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_is_privileged)};
+  T0.data[offset + 545] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_set_privileged)};
+  T0.data[offset + 546] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_set_blockchain_parameters)};
+  T0.data[offset + 547] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert)};
+  T0.data[offset + 548] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_message)};
+  T0.data[offset + 549] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_eosio_assert_code)};
+  T0.data[offset + 550] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mod_chain_get_action)};
+  T0.data[offset + 551] = (wasm_rt_elem_t){func_types[1], (wasm_rt_anyfunc_t)(&mod_chain_get_context_free_data)};
+  T0.data[offset + 552] = (wasm_rt_elem_t){func_types[0], (wasm_rt_anyfunc_t)(&mp_obj_name_print)};
+  T0.data[offset + 553] = (wasm_rt_elem_t){func_types[7], (wasm_rt_anyfunc_t)(&mp_obj_name_make_new)};
+  T0.data[offset + 554] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_obj_name_unary_op)};
+  T0.data[offset + 555] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_obj_name_binary_op)};
+  T0.data[offset + 556] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_bytes)};
+  T0.data[offset + 557] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_to_int)};
+  T0.data[offset + 558] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&mp_name_to_str)};
+  T0.data[offset + 559] = (wasm_rt_elem_t){func_types[5], (wasm_rt_anyfunc_t)(&name_from_bytes)};
+  T0.data[offset + 560] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&micropython_init_module)};
+  T0.data[offset + 561] = (wasm_rt_elem_t){func_types[9], (wasm_rt_anyfunc_t)(&init_micropython)};
+  T0.data[offset + 562] = (wasm_rt_elem_t){func_types[23], (wasm_rt_anyfunc_t)(&micropython_apply)};
+  T0.data[offset + 563] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&mp_js_init)};
+  T0.data[offset + 564] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&micropython_init_with_script)};
+  T0.data[offset + 565] = (wasm_rt_elem_t){func_types[2], (wasm_rt_anyfunc_t)(&micropython_run_script)};
+  T0.data[offset + 566] = (wasm_rt_elem_t){func_types[6], (wasm_rt_anyfunc_t)(&mp_builtin_open)};
 }
 
 /* export: 'apply' */
