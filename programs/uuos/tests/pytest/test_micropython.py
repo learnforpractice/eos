@@ -31,9 +31,13 @@ class Test(object):
         logger.warning('test start: %s', method.__name__)
 
     def teardown_method(self, method):
-        logger.warning('test end: %s', method.__name__)
-        self.chain.deploy_contract('alice', b'', b'', vmtype=3)
+        try:
+            self.chain.deploy_contract('alice', b'', b'', vmtype=3)
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'set_exact_code'
+            assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
         self.chain.produce_block()
+        logger.warning('test end: %s', method.__name__)
 
     def compile(self, code):
 #        code = eosapi.compile_py_src(code)
@@ -246,10 +250,12 @@ def apply(a, b, c):
     raise Exception('oops!')
 '''
         code = self.compile(code)
-        error, ret = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        assert not error
-        logger.info(ret.args[0]['action_traces'][0]['console'])
-        assert ret.args[0]['except']['name'] == 'python_execution_error'
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            logger.info(e.args[0]['action_traces'][0]['console'])
+            assert e.args[0]['except']['name'] == 'python_execution_error'
 
     def test_setjmp(self):
         return
@@ -450,9 +456,11 @@ def apply(a, b, c):
         a * b
 '''
         code = self.compile(code)
-        success, e = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        assert not success
-        assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
  
     def test_json(self):
         code = r'''
@@ -554,7 +562,6 @@ def apply(a, b, c):
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'failed to allocate pages'
         self.chain.produce_block()
-        return
 
         code = r'''
 g_a = 1
@@ -672,9 +679,171 @@ def apply(a, b, c):
 '''
         code = (('hello',hello),('world', world), ('main', main))
         code = self.compile_all(code)
-        r1, r2 = self.chain.deploy_contract('alice', code, b'', vmtype=3)
-#        print(r2)
-#        assert r1
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
         r = self.chain.push_action('alice', 'test3', b'hello,world4')
         logger.info('+++elapsed: %s', r['elapsed'])
 
+    def gen_mpy_code(self, code_info):
+        mpy_code = []
+        os.mkdir('tmp')
+        for name, code in code_info:
+            py_file = f'tmp/{name}.py'
+            mpy_file = f'tmp/{name}.mpy'
+
+            with open(py_file, 'w') as f:
+                f.write(code)
+            subprocess.check_output(['mpy-cross', '-o', mpy_file, py_file])
+            with open(mpy_file, 'rb') as f:
+                code = f.read()
+            os.remove(py_file)
+            os.remove(mpy_file)
+
+            mpy_code.append((name, code, len(code)))
+        os.rmdir('tmp')
+        return mpy_code
+
+    def gen_bad_name_frozen(self, code_info):
+#        code = eosapi.compile_py_src(code)
+        mpy_code = self.gen_mpy_code(code_info)
+        name_region = b''
+        code_region = b''
+        code_size_region = b''
+        for name, code, size in mpy_code:
+            code_region += code
+            code_size_region += int.to_bytes(size, 4, 'little')
+#            name_region += b'%s.mpy\x00'%(name.encode(),)
+            name_region += b'%s.mpy'%(name.encode(),)
+
+        region_sizes = b''
+        region_sizes += int.to_bytes(len(name_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_size_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_region), 4, 'little')
+
+        header = int.to_bytes(5, 4, 'little')
+        header += bytearray(60)
+        frozen_code = header + region_sizes + name_region + code_size_region + code_region
+        return frozen_code
+
+    def gen_bad_code_size_frozen(self, code_info):
+#        code = eosapi.compile_py_src(code)
+        mpy_code = self.gen_mpy_code(code_info)
+        name_region = b''
+        code_region = b''
+        code_size_region = b''
+        for name, code, size in mpy_code:
+            code_region += code
+            code_size_region += int.to_bytes(size+1, 4, 'little')
+#            code_size_region += int.to_bytes(size, 4, 'little')
+            name_region += b'%s.mpy\x00'%(name.encode(),)
+
+        region_sizes = b''
+        region_sizes += int.to_bytes(len(name_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_size_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_region), 4, 'little')
+
+        header = int.to_bytes(5, 4, 'little')
+        header += bytearray(60)
+        frozen_code = header + region_sizes + name_region + code_size_region + code_region
+        return frozen_code
+
+    def gen_large_code_size_frozen(self, code_info):
+#        code = eosapi.compile_py_src(code)
+        mpy_code = self.gen_mpy_code(code_info)
+        name_region = b''
+        code_region = b''
+        code_size_region = b''
+        for name, code, size in mpy_code:
+            code_region += code
+            code_size_region += int.to_bytes(11*1024*1024, 4, 'little')
+#            code_size_region += int.to_bytes(size, 4, 'little')
+            name_region += b'%s.mpy\x00'%(name.encode(),)
+
+        region_sizes = b''
+        region_sizes += int.to_bytes(len(name_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_size_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_region), 4, 'little')
+
+        header = int.to_bytes(5, 4, 'little')
+        header += bytearray(60)
+        frozen_code = header + region_sizes + name_region + code_size_region + code_region
+        return frozen_code
+
+    def test_bad_frozen(self):
+        hello = '''
+def say_hello():
+    print('hello')
+'''
+        world = '''
+def say_world():
+    print('world')
+'''
+        main = '''
+import hello
+import world
+def apply(a, b, c):
+    hello.say_hello()
+    world.say_world()
+'''
+        code = (('hello',hello),('world', world))
+        code = self.compile_all(code)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'python_execution_error'
+            assert e.args[0]['except']['stack'][0]['format'] == 'main module not found!'
+
+        code = (('hello',hello),('world', world), ('main', main))
+        code = self.gen_bad_name_frozen(code)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'invalid module name count!'
+
+        code = (('hello',hello),('world', world), ('main', main))
+        code = self.gen_bad_code_size_frozen(code)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'invalid code region size!'
+
+        code = []
+        for i in range(100):
+            code.append(('hello'+str(i), hello))
+        code = self.compile_all(code)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'frozen module count must <= 100'
+
+        code = (('hello',hello),('world', world), ('main', main))
+        code = self.gen_large_code_size_frozen(code)
+        try:
+            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'module_size too large!'
+
+    def test_clear_code(self):
+        code = r'''
+def apply(a, b, c):
+    print('hello,world')
+'''
+        code = self.compile(code)
+        
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
+        self.chain.deploy_contract('alice', b'', b'', vmtype=3)
+        self.chain.produce_block()
+
+        return
