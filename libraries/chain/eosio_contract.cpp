@@ -245,9 +245,11 @@ void apply_eosio_setcode(apply_context& context) {
       a.last_code_update = context.control.pending_block_time();
    });
 
-   int64_t new_size;
+   int64_t new_size = 0;
    if (act.vmtype == 3) {
-      new_size = code_size + context.control.get_micropython_interface().get_snapshoot_size(code_hash, act.vmtype, act.vmversion, context);
+      if (code_size > 0) {
+         new_size = code_size + context.control.get_micropython_interface().get_snapshoot_size(code_hash, act.vmtype, act.vmversion, context);
+      }
    } else {
       new_size  = code_size * config::setcode_ram_bytes_multiplier;
    }
