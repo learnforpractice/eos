@@ -112,7 +112,7 @@ size_t mp_load_frozen_module(const char *str, size_t len, char *content, size_t 
     size_t offset = 0;
     for (int i = 0; *name != 0; i++) {
         size_t l = strlen(name);
-        if (l == *len && !memcmp(str, name, l)) {
+        if (l == len && !memcmp(str, name, l)) {
             size_t str_size = mp_frozen_str_sizes[i];
             if (content == NULL || content_size == 0) {
                 return str_size;
