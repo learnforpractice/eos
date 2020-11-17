@@ -161,6 +161,7 @@ def apply(a, b, c):
 
         r = self.chain.push_action(contract_name, 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.deploy_contract('bob', b'', b'', vmtype=3)
 
         # r = self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
         # logger.info(r['elapsed'])
@@ -423,6 +424,7 @@ def apply(receiver, code, action):
 
         r = self.chain.push_action(contract_name, 'sayhello', b'c')
         logger.info('+++elapsed: %s', r['elapsed'])
+        self.chain.deploy_contract('bob', b'', b'')
 
     def test_multi_index(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_multi_index.py')
