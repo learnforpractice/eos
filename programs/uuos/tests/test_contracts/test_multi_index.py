@@ -61,11 +61,11 @@ class ChainDB(object):
             raise IndexError
         self.db_remove(itr)
 
-class ChainDBI64(ChainDB):
+class ChainDBKey64(ChainDB):
     def __init__(self, code, scope, table, data_type):
         ChainDB.__init__(self, primary_type_i64, code, scope, table, data_type)
 
-class ChainDBI256(ChainDB):
+class ChainDBKey256(ChainDB):
     def __init__(self, code, scope, table, data_type):
         ChainDB.__init__(self, primary_type_i256, code, scope, table, data_type)
 
@@ -348,7 +348,7 @@ def apply(receiver, code, action):
         print(itr, primary, secondary)
     elif action == test3:
         table = name('table3')
-        db = ChainDBI64(code, scope, table, MyDataI64)
+        db = ChainDBKey64(code, scope, table, MyDataI64)
         d = MyDataI64(1, 2, 3, 5.0)
         d.payer = payer
         db.store(d)
@@ -356,7 +356,7 @@ def apply(receiver, code, action):
         print(db.load(1))
     elif action == test4:
         table = name('table3')
-        db = ChainDBI256(code, scope, table, MyDataI64)
+        db = ChainDBKey256(code, scope, table, MyDataI64)
 
         primary_key = 0xffffffffffffffffff
         d = MyDataI256(0xffffffffffffffffff, 2, 3, 5.0)
