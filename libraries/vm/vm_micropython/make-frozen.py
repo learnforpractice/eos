@@ -57,6 +57,9 @@ output = sys.argv[2]
 output = open(output, 'w')
 
 print("#include <stdint.h>", file=output)
+print("#include <stdlib.h>", file=output)
+print("#include <string.h>", file=output)
+
 print("const char mp_frozen_str_names[] = {", file=output)
 for f, st in modules:
     m = module_name(f)
@@ -101,5 +104,34 @@ for f, st in modules:
     print("".join(chrs), file=output)
 
 print('"\\0"};', file=output)
+
+s = '''
+size_t mp_load_frozen_module(const char *str, size_t len, char *content, size_t content_size) {
+    const char *name = mp_frozen_str_names;
+
+    size_t offset = 0;
+    for (int i = 0; *name != 0; i++) {
+        size_t l = strlen(name);
+        if (l == *len && !memcmp(str, name, l)) {
+            size_t str_size = mp_frozen_str_sizes[i];
+            if (content == NULL || content_size == 0) {
+                return str_size;
+            }
+            size_t copy_size = str_size;
+            if (copy_size > content_size) {
+                copy_size = content_size;
+            }
+            memcpy(content, mp_frozen_str_content + offset, copy_size);
+            return copy_size;
+        }
+        name += l + 1;
+        offset += mp_frozen_str_sizes[i] + 1;
+    }
+    return 0;
+}
+'''
+
+print(s, file=output)
+
 output.close()
 

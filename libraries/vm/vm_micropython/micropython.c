@@ -17,6 +17,7 @@ void (*Z_envZ_abortZ_vv)(void);
 
 void (*Z_envZ_prints_lZ_vii)(u32, u32);
 void (*Z_envZ_setjmp_discard_topZ_vv)(void);
+u32 (*Z_envZ_mp_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 
 
 uint64_t s2n( const char *str, size_t str_size );
@@ -28,6 +29,7 @@ void prints_l( const char* cstr, uint32_t len);
 void eosio_assert( uint32_t test, const char* msg );
 void eosio_abort(void);
 void setjmp_discard_top(void);
+size_t mp_load_frozen_module(const char *str, size_t len, char *content, size_t content_size);
 
 static u64 _s2n(u32 str_offset, u32 str_size) {
   char *str = get_memory_ptr(str_offset, str_size);
@@ -78,6 +80,12 @@ static void _setjmp_discard_top() {
   setjmp_discard_top();
 }
 
+u32 _load_frozen_module(u32 str_offset, u32 len, u32 content_offset, u32 content_size) {
+  char *src = get_memory_ptr(str_offset, len);
+  char *content = get_memory_ptr(content_offset, content_size);
+  return mp_load_frozen_module(src, len, content, content_size);
+}
+
 void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_memsetZ_iiii = _memset;
   Z_envZ_memcpyZ_iiii = _memcpy;
@@ -91,6 +99,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_n2sZ_ijii = _n2s;
 
   Z_envZ_setjmp_discard_topZ_vv = _setjmp_discard_top;
+  Z_envZ_mp_load_frozen_moduleZ_iiiii = _load_frozen_module;
 
   init_func_types();
   init_globals();

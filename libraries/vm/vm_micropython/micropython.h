@@ -40,6 +40,8 @@ extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' '__extenddftf2' */
 extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
+/* import: 'env' 'mp_load_frozen_module' */
+extern u32 (*Z_envZ_mp_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' 'prints' */
