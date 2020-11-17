@@ -582,16 +582,11 @@ class ChainTest(object):
         }
         actions.append(setabi)
         # logger.info(actions)
-        try:
-            ret = self.push_actions(actions)
-            elapsed = ret.elapsed
-            logger.info(f'+++++deploy contract: {account} {elapsed}')
-            # logger.info(ret)
-            return (True, ret)
-        except Exception as e:
-            # if not e.args[0]['except']['name'] == 'set_exact_code':
-            #     raise e
-            return (False, e)
+        ret = self.push_actions(actions)
+        elapsed = ret.elapsed
+        logger.info(f'+++++deploy contract: {account} {elapsed}')
+        # logger.info(ret)
+        return ret
 
     def update_auth(self, account, accounts, keys, perm='active', parent='owner'):
         a = {
