@@ -8,6 +8,7 @@ import subprocess
 from chaintest import ChainTest
 from uuos import log
 from uuos import wasmcompiler
+from pyeoskit import eosapi
 
 test_dir = os.path.dirname(__file__)
 
@@ -31,8 +32,11 @@ class Test(object):
 
     def teardown_method(self, method):
         logger.warning('test end: %s', method.__name__)
+        self.chain.deploy_contract('alice', b'', b'', vmtype=3)
+        self.chain.produce_block()
 
     def compile(self, code):
+#        code = eosapi.compile_py_src(code)
         with open('tmp.py', 'w') as f:
             f.write(code)
         subprocess.check_output(['mpy-cross', '-o', 'tmp.mpy', 'tmp.py'])
@@ -40,7 +44,26 @@ class Test(object):
             code = f.read()
         os.remove('tmp.py')
         os.remove('tmp.mpy')
-        return code
+
+        mpy_code = ((code, len(code)),)
+
+        code_region = b''
+        code_size_region = b''
+        for code, size in mpy_code:
+            code_region += code
+            code_size_region += int.to_bytes(size, 4, 'little')
+
+        name_region = b'main.mpy\x00'
+
+        region_sizes = b''
+        region_sizes += int.to_bytes(len(name_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_size_region), 4, 'little')
+        region_sizes += int.to_bytes(len(code_region), 4, 'little')
+
+        header = int.to_bytes(5, 4, 'little')
+        header += bytearray(60)
+        frozen_code = header + region_sizes + name_region + code_size_region + code_region
+        return frozen_code
 
     def test_loop(self):
         code = '''
@@ -56,7 +79,6 @@ def apply(a, b, c):
         except Exception as e:
             exception_name = e.args[0]['except']['name']
             assert exception_name in ('deadline_exception', 'tx_cpu_usage_exceeded')
-        self.chain.produce_block()
 
     def test_call_depth(self):
         code = '''
@@ -103,8 +125,6 @@ def apply(a, b, c):
         # r = self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
         # logger.info(r['elapsed'])
 
-        self.chain.produce_block()
-
     def test_action(self):
         # print(os.getpid())
         # input('<<<')
@@ -149,8 +169,6 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'testaction', b'hello,world from context free inline')
         logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.produce_block()
-
     def test_db_api(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'vm_api_db_test.py')
         with open(code, 'r') as f:
@@ -161,8 +179,6 @@ def apply(a, b, c):
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.produce_block()
-
     def test_db_i256(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_db_i256.py')
         with open(code, 'r') as f:
@@ -172,7 +188,6 @@ def apply(a, b, c):
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
     def test_exception(self):
         code = '''
@@ -187,7 +202,6 @@ def apply(a, b, c):
             logger.info(e.args[0]['action_traces'][0]['console'])
             assert e.args[0]['except']['name'] == 'python_execution_error'
             assert e.args[0]['except']['message'] == 'Python execution error'
-        self.chain.produce_block()
 
     def test_init_exception(self):
         code = '''
@@ -218,7 +232,6 @@ def apply(a, b, c):
             logger.info(e.args[0]['action_traces'][0]['console'])
             logger.info(e.args[0]['except']['name'])
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
-        self.chain.produce_block()
 
     def test_bigint(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_bigint.py')
@@ -229,8 +242,6 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
-
-        self.chain.produce_block()
 
     def test_bigint_performance(self):
         code = r'''
@@ -261,7 +272,6 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
     def test_float128(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_float128.py')
@@ -272,7 +282,6 @@ def apply(a, b, c):
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
     def test_name(self):
         code = r'''
@@ -303,8 +312,6 @@ def apply(a, b, c):
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.produce_block()
-
     def test_trx(self):
         code = r'''
 from chain import *
@@ -324,7 +331,6 @@ def apply(a, b, c):
         print('duration:', time.time() - start)
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
         print(total_time/count, 1e6/(total_time/count))
 
     def test_call_contract(self):
@@ -376,8 +382,6 @@ def apply(receiver, code, action):
         r = self.chain.push_action(contract_name, 'sayhello', b'c')
         logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.produce_block()
-
     def test_multi_index(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_multi_index.py')
         with open(code, 'r') as f:
@@ -396,8 +400,6 @@ def apply(receiver, code, action):
 
         r = self.chain.push_action('alice', 'test4', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
-
-        self.chain.produce_block()
 
 # test for out of context
 # calling vm_api from module level not allowed!
@@ -436,7 +438,6 @@ def apply(a, b, c):
             logger.info('+++elapsed: %s', r['elapsed'])
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
-        self.chain.produce_block()
 
     def test_oob(self):
         code = r'''
@@ -450,7 +451,6 @@ def apply(a, b, c):
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'vm error out of bounds'
-        self.chain.produce_block()
 
     def test_memory(self):
         code = r'''
@@ -531,7 +531,6 @@ def apply(a, b, c):
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
-        self.chain.produce_block()
 
     def test_frozen(self):
         code = r'''
@@ -546,7 +545,6 @@ def apply(a, b, c):
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
-        self.chain.produce_block()
 
     def test_mpy_frozen(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_frozen.py')
@@ -566,7 +564,6 @@ def apply(a, b, c):
             logger.info(name)
             logger.info(msg)
 #             == 'no free vm memory left!'
-        self.chain.produce_block()
 
     def test_performance(self):
         code = '''
@@ -588,7 +585,6 @@ def apply(a, b, c):
         r = self.chain.deploy_contract('alice', code, b'', vmtype=3)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
 
     def test_token(self):
         code = os.path.join(test_dir, '..', 'test_contracts', 'test_token.py')
@@ -621,11 +617,17 @@ def apply(a, b, c):
         r = self.chain.transfer('alice', 'bob', 2)
         logger.info('+++elapsed: %s', r['elapsed'])
         logger.info(self.chain.get_balance('alice'))
-        self.chain.produce_block()
     
     def test_deploy_contract(self):
         code = '''
 def apply(a, b, c):
+    print(a, b, 88)
     return
 '''
         code = self.compile(code)
+        r1, r2 = self.chain.deploy_contract('alice', code, b'', vmtype=3)
+#        print(r2)
+#        assert r1
+        r = self.chain.push_action('alice', 'test3', b'hello,world4')
+        logger.info('+++elapsed: %s', r['elapsed'])
+
