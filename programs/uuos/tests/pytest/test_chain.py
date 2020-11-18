@@ -55,8 +55,8 @@ class Test(object):
 
         r = self.chain.push_action(self.chain.system_contract, 'updateauth', a, actor='alice')
 
-        code_file = os.path.join(test_dir, '..', 'test_contracts', 'test_send_deffered.cpp')
-        wasm_file = os.path.join(test_dir, '..', 'test_contracts', 'test_send_deffered.wasm')
+        code_file = os.path.join(test_dir, 'test_contracts', 'test_send_deffered.cpp')
+        wasm_file = os.path.join(test_dir, 'test_contracts', 'test_send_deffered.wasm')
         need_compile = True
         try:
             t1 = os.path.getmtime(code_file)

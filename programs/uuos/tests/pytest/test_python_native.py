@@ -22,7 +22,7 @@ class Test(object):
 
         contract_name = 'testmetestme'
         code = cls.chain.compile_py_code_from_file('token2.py')
-        abi_file = os.path.join(test_dir, '..', 'test_contracts', 'token.abi')
+        abi_file = os.path.join(test_dir, 'test_contracts', 'token.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
         cls.chain.deploy_contract(contract_name, code, abi, vmtype=2)

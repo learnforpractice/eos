@@ -868,7 +868,7 @@ def apply(receiver, code, action):
             self.produce_block()
 
     def compile_py_code_from_file(self, code_file):
-        db_test = os.path.join(test_dir, '..', 'test_contracts', code_file)
+        db_test = os.path.join(test_dir, 'test_contracts', code_file)
         with open(db_test, 'r') as f:
             code = f.read()
         code = compile(code, "contract", 'exec')

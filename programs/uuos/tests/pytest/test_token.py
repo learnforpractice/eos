@@ -20,7 +20,7 @@ class Test(object):
         cls.chain = chain = ChainTest(uuos_network=True)
         contract_name = 'testmetestme'
         code = chain.compile_py_code_from_file('token.py')
-        abi_file = os.path.join(test_dir, '..', 'test_contracts', 'token.abi')
+        abi_file = os.path.join(test_dir, 'test_contracts', 'token.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
         chain.deploy_contract(contract_name, code, abi, vmtype=1)

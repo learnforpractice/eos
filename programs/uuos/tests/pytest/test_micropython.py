@@ -146,7 +146,7 @@ def apply(a, b, c):
         }
         self.chain.push_action('uuos', 'setpriv', args)
 
-        code = os.path.join(test_dir, '..', 'test_contracts', 'vm_api_test.py')
+        code = os.path.join(test_dir, 'test_contracts', 'vm_api_test.py')
         with open(code, 'r') as f:
             code = f.read()
 #subprocess.CalledProcessError
@@ -188,7 +188,7 @@ def apply(a, b, c):
 
         r = self.chain.push_action(self.chain.system_contract, 'updateauth', a, actor='alice')
 
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_action.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_action.py')
         with open(code, 'r') as f:
             code = f.read()
 
@@ -211,7 +211,7 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_db_api(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'vm_api_db_test.py')
+        code = os.path.join(test_dir, 'test_contracts', 'vm_api_db_test.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
@@ -221,7 +221,7 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_db_i256(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_db_i256.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_db_i256.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
@@ -277,7 +277,7 @@ def apply(a, b, c):
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
 
     def test_bigint(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_bigint.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_bigint.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
@@ -317,7 +317,7 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_float128(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_float128.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_float128.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
@@ -379,8 +379,8 @@ def apply(a, b, c):
     def test_call_contract(self):
         # print(os.getpid())
         # input('<<<')
-        code_file = os.path.join(test_dir, '..', 'test_contracts', 'test_call_contract.cpp')
-        wasm_file = os.path.join(test_dir, '..', 'test_contracts', 'test_call_contract.wasm')
+        code_file = os.path.join(test_dir, 'test_contracts', 'test_call_contract.cpp')
+        wasm_file = os.path.join(test_dir, 'test_contracts', 'test_call_contract.wasm')
         need_compile = True
         try:
             t1 = os.path.getmtime(code_file)
@@ -427,7 +427,7 @@ def apply(receiver, code, action):
         self.chain.deploy_contract('bob', b'', b'')
 
     def test_multi_index(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_multi_index.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_multi_index.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
@@ -592,7 +592,7 @@ def apply(a, b, c):
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
 
     def test_mpy_frozen(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_frozen.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_frozen.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
@@ -632,7 +632,7 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_token(self):
-        code = os.path.join(test_dir, '..', 'test_contracts', 'test_token.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_token.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
