@@ -833,6 +833,20 @@ def apply(a, b, c):
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'module_size too large!'
 
+        try:
+            self.chain.deploy_contract('alice', bytearray(76), b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'invalid code size!'
+
+        try:
+            self.chain.deploy_contract('alice', bytearray(77), b'', vmtype=3)
+            assert 0
+        except Exception as e:
+            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'contract_code not valid!'
+
     def test_clear_code(self):
         code = r'''
 def apply(a, b, c):

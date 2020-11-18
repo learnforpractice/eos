@@ -34,9 +34,8 @@ uint32_t load_uint32(const char *data) {
 }
 
 int micropython_validate_frozen_code(const char *contract_code, size_t code_size) {
-    if (code_size <= 0) {
-        return 0;
-    }
+    
+    get_vm_api()->eosio_assert(code_size > CODE_HEADER_SIZE + REGION_SIZES, "invalid code size!");
 
     size_t name_region_size = load_uint32(contract_code + CODE_HEADER_SIZE);
     size_t code_size_region_size = load_uint32(contract_code + CODE_HEADER_SIZE + 4);
