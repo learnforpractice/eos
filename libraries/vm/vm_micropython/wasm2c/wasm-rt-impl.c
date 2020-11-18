@@ -104,12 +104,7 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
   memory->size = initial_pages * PAGE_SIZE;
 
   if (!memory->data) {
-    char *raw  = (char*)mmap(NULL, PYTHON_VM_MAX_MEMORY_SIZE, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    eosio_assert( raw != MAP_FAILED, "mmap failed to alloca pages" );
-    int err = mprotect(raw, PYTHON_VM_MAX_MEMORY_SIZE, PROT_READ | PROT_WRITE);
-    eosio_assert(err == 0, "mprotect failed");
-    memory->data = raw;
-//    memory->data = calloc(PYTHON_VM_MAX_MEMORY_SIZE, 1);
+    memory->data = calloc(PYTHON_VM_MAX_MEMORY_SIZE, 1);
   }
 }
 
