@@ -241,7 +241,7 @@ struct vm_api {
 
    void (*__ashlti3)(__int128* ret, uint64_t low, uint64_t high, uint32_t shift);
    void (*__lshrti3)(__int128* ret, uint64_t low, uint64_t high, uint32_t shift);
-   bool (*get_code_version)(uint64_t account, char *hash, size_t size);
+   bool (*get_code_hash)(uint64_t account, char *hash, size_t size);
 
    int (*call_native)(int main_type, int sub_type, const uint8_t *input, size_t input_size, uint8_t *output, size_t output_size);
 

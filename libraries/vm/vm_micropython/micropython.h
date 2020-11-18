@@ -150,6 +150,8 @@ extern u32 (*Z_envZ_db_get_table_countZ_ijjj)(u64, u64, u64);
 extern void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
 /* import: 'env' 'call_contract_get_results' */
 extern u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
+/* import: 'env' 'get_code_hash' */
+extern u32 (*Z_envZ_get_code_hashZ_ijii)(u64, u32, u32);
 /* import: 'env' 'db_idx64_store' */
 extern u32 (*Z_envZ_db_idx64_storeZ_ijjjji)(u64, u64, u64, u64, u32);
 /* import: 'env' 'db_idx_long_double_store' */

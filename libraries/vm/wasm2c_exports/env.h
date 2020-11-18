@@ -391,6 +391,8 @@ extern u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
 extern u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
 extern u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
 
+extern u32 (*Z_envZ_get_code_hashZ_ijii)(u64, u32, u32);
+
 #ifdef __cplusplus
 }
 #endif

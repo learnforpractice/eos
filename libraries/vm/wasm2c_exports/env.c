@@ -373,3 +373,5 @@ u32 (*Z_envZ_db_previous_i256Z_iiii)(u32, u32, u32);
 u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
 u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
 u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
+
+u32 (*Z_envZ_get_code_hashZ_ijii)(u64, u32, u32);

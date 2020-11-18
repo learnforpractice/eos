@@ -893,7 +893,7 @@ def apply(a, b, c):
 
         sender_id = 0x1ffffffffffffffff
         r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
-        print('get_scheduled_transaction:', r)
+        # print('get_scheduled_transaction:', r)
         assert r and r['sender'] == 'alice' and r['sender_id'] == str(sender_id)
 
         for _ in range(10):
@@ -915,3 +915,19 @@ def apply(a, b, c):
         r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
         assert not r
 
+
+    def test_get_code_hash(self):
+        code = '''
+import chain
+def apply(a, b, c):
+    hash = chain.get_code_hash('alice')
+    assert hash
+    print(hash)
+    hash = chain.get_code_hash('eosio.ramfee')
+    assert not hash
+'''
+        code = self.compile(code)
+
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        self.chain.push_action('alice', 'sayhello', b'hello,world')

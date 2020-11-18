@@ -60,7 +60,7 @@ void vm_on_trap(wasm_rt_trap_t code) {
 extern "C" wasm_rt_memory_t* get_wasm_rt_memory() {
     uint64_t receiver = get_vm_api()->current_receiver();
     std::array<uint8_t,32> hash;
-    get_vm_api()->get_code_version(receiver, (char *)hash.data(), 32);
+    get_vm_api()->get_code_hash(receiver, (char *)hash.data(), 32);
    return get_contract_memory(hash);
 }
 

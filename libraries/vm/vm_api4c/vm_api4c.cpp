@@ -197,6 +197,7 @@ void init_vm_api4c() {
     Z_envZ_current_timeZ_jv = current_time;
     Z_envZ_call_contractZ_vjii = call_contract;
     Z_envZ_call_contract_get_resultsZ_iii = call_contract_get_results;
+    Z_envZ_get_code_hashZ_ijii = get_code_hash;
 
 //transaction.cpp
     Z_envZ_send_deferredZ_vijiii = send_deferred;
