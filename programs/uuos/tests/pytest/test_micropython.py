@@ -57,6 +57,25 @@ class Test(object):
         self.chain.produce_block()
         logger.warning('test end: %s', method.__name__)
 
+    def compile_cpp_file(self, name):
+        code_file = os.path.join(test_dir, 'test_contracts', f'{name}.cpp')
+        wasm_file = os.path.join(test_dir, 'test_contracts', f'{name}.wasm')
+        need_compile = True
+        try:
+            t1 = os.path.getmtime(code_file)
+            t2 = os.path.getmtime(wasm_file)
+            if t1 < t2:
+                need_compile = False
+        except:
+            pass
+        code = None
+        if need_compile:
+            code = wasmcompiler.compile_cpp_file(code_file)
+        else:
+            with open(wasm_file, 'rb') as f:
+                code = f.read()
+        return code
+
     def compile(self, code):
 #        code = eosapi.compile_py_src(code)
         with open('tmp.py', 'w') as f:
@@ -914,3 +933,10 @@ def apply(a, b, c):
 
         r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
         assert not r
+
+    def test_vm_api_wasm(self):
+        code = self.compile_cpp_file('test_vm_api')
+        self.chain.deploy_contract('alice', code, b'')
+        self.chain.push_action('alice', 'sayhello', b'hello,world')
+
+

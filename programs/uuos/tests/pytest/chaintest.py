@@ -235,8 +235,6 @@ class ChainTest(object):
                 'uuos.vpay',
                 'uuos.rex',
 
-                'uuos.jit',
-                'uuos.jitfee',
 #                'uuos',
                 'hello',
                 'alice',

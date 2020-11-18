@@ -188,6 +188,9 @@ static bool get_code_hash(uint64_t contract, char *hash, size_t size) {
    try {
       const auto& account = ctx().control.db().get<account_metadata_object,by_name>(name(contract));
       memcpy(hash, account.code_hash.data(), 32);
+      if (account.code_hash == digest_type()) {
+         return false;
+      }
       return true;
    } catch (...) {
    }
