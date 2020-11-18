@@ -584,7 +584,8 @@ class ChainTest(object):
         # logger.info(actions)
         ret = self.push_actions(actions)
         elapsed = ret.elapsed
-        logger.info(f'+++++deploy contract: {account} {elapsed}')
+        if code:
+            logger.info(f'+++++deploy contract: {account} {elapsed}')
         # logger.info(ret)
         return ret
 
