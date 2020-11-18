@@ -116,6 +116,8 @@ struct chain_api_cpp
    bool (*chain_unpack_action_args)(void *ptr, string& name, string& action, string& _binargs, string& result);
    void (*chain_gen_transaction)(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_key, vector<char>& result);
    bool (*chain_push_transaction)(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
+
+   void (*chain_get_scheduled_transactions)(void *ptr, string& ret);
    void (*chain_push_scheduled_transaction)(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
    void (*chain_commit_block)(void *ptr);
    void (*chain_finalize_block)(void *ptr, string& _priv_key);

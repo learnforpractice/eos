@@ -1,6 +1,7 @@
 #include <eosio/chain/global_property_object.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/apply_context.hpp>
+#include <eosio/chain/generated_transaction_object.hpp>
 
 #include "chain_manager.hpp"
 #include <chain_api.hpp>
@@ -470,6 +471,20 @@ void chain_get_unapplied_transactions_(void *ptr, string& result) {
     // result = fc::json::to_string(fc::variant(values), fc::time_point::maximum());
 }
 
+void chain_get_scheduled_transactions_(void *ptr, string& ret) {
+    auto& chain = chain_get_controller(ptr);
+    const auto& idx = chain.db().get_index<generated_transaction_multi_index,by_delay>();
+
+    vector<transaction_id_type> result;
+
+    auto itr = idx.begin();
+    while( itr != idx.end() && itr->delay_until <= chain.pending_block_time() ) {
+        result.emplace_back(itr->trx_id);
+        ++itr;
+    }
+    ret = fc::json::to_string(result, fc::time_point::maximum());
+}
+
 bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _args, vector<char>& result) {
     try {
         auto& chain = chain_get_controller(ptr);
@@ -564,7 +579,7 @@ void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, strin
     auto& chain = chain_get_controller(ptr);
     auto id = transaction_id_type(scheduled_tx_id);
     auto _deadline = fc::time_point::from_iso_string(deadline);
-    auto ret = chain.push_scheduled_transaction(id, _deadline, billed_cpu_time_us, true);
+    auto ret = chain.push_scheduled_transaction(id, _deadline, billed_cpu_time_us, false);
     result = fc::json::to_string(ret, fc::time_point::maximum());
 }
 

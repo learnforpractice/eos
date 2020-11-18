@@ -46,7 +46,10 @@ cdef extern from "uuos.hpp":
     bool chain_unpack_action_args_(void *ptr, string& name, string& action, string& _binargs, string& result);
     void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_keys, vector[char]& result);
     bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
+
+    void chain_get_scheduled_transactions_(void *ptr, string& ret);
     void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
+
     void chain_commit_block_(void *ptr);
     void chain_finalize_block_(void *ptr, string& _priv_key);
     void chain_pop_block_(void *ptr);
@@ -134,6 +137,7 @@ cdef extern from "uuos.hpp":
     void chain_get_scheduled_producer_(void *ptr, string& _block_time, string& result);
 
     void* chain_get_db_interface_(void *ptr);
+
 
     int db_interface_get_i64_(void *ptr, int itr, string& buffer);
     int db_interface_next_i64_(void *ptr, int itr, uint64_t* primary );
@@ -627,6 +631,11 @@ def chain_push_transaction(uint64_t ptr, string& packed_trx, string& deadline, u
     result = <bytes>_result
     result = result.decode('utf8')
     return ret, result
+
+def chain_get_scheduled_transactions(uint64_t ptr):
+    cdef string ret
+    chain_get_scheduled_transactions_(<void *>ptr, ret)
+    return ret
 
 def chain_push_scheduled_transaction(uint64_t ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us):
     cdef string result

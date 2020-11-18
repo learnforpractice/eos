@@ -126,6 +126,8 @@ void uuos_init_chain_api();
 #define chain_get_scheduled_producer_ uuos_get_chain_api()->chain_get_scheduled_producer
 #define chain_get_db_interface_ uuos_get_chain_api()->chain_get_db_interface
 
+#define chain_get_scheduled_transactions_ uuos_get_chain_api()->chain_get_scheduled_transactions
+
 #define db_interface_get_i64_ uuos_get_chain_api()->db_interface_get_i64
 #define db_interface_next_i64_ uuos_get_chain_api()->db_interface_next_i64
 #define db_interface_previous_i64_ uuos_get_chain_api()->db_interface_previous_i64

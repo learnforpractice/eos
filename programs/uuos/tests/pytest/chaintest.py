@@ -699,6 +699,11 @@ class ChainTest(object):
         self.feature_digests.clear()
 
     def produce_block(self):
+        trxs = self.chain.get_scheduled_transactions()
+        deadline = datetime.utcnow() + timedelta(microseconds=10000000)
+        deadline = deadline.isoformat(timespec='milliseconds')
+        for scheduled_tx_id in trxs:
+            self.chain.push_scheduled_transaction(scheduled_tx_id, deadline, 100)
         self.chain.finalize_block(['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'])
         self.chain.commit_block()
         self.start_block()
