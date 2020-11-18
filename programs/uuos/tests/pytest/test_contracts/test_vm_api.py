@@ -69,3 +69,10 @@ def apply(receiver, code, action):
 
     h = sha256('hello,world')
     assert_sha256('hello,world', h)
+
+    hash = get_code_hash('alice')
+    assert hash
+    print(hash)
+    hash = get_code_hash('eosio.ramfee')
+    assert not hash
+

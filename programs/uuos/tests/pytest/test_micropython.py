@@ -164,7 +164,7 @@ def apply(a, b, c):
         }
         self.chain.push_action('uuos', 'setpriv', args)
 
-        code = os.path.join(test_dir, 'test_contracts', 'vm_api_test.py')
+        code = os.path.join(test_dir, 'test_contracts', 'test_vm_api.py')
         with open(code, 'r') as f:
             code = f.read()
 #subprocess.CalledProcessError
@@ -914,20 +914,3 @@ def apply(a, b, c):
 
         r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
         assert not r
-
-
-    def test_get_code_hash(self):
-        code = '''
-import chain
-def apply(a, b, c):
-    hash = chain.get_code_hash('alice')
-    assert hash
-    print(hash)
-    hash = chain.get_code_hash('eosio.ramfee')
-    assert not hash
-'''
-        code = self.compile(code)
-
-        self.chain.deploy_contract('alice', code, b'', vmtype=3)
-
-        self.chain.push_action('alice', 'sayhello', b'hello,world')
