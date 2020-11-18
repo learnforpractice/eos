@@ -387,6 +387,7 @@ void* chain_get_db_interface_(void *ptr);
 
 void chain_get_scheduled_transactions_(void *ptr, string& ret);
 bool chain_push_scheduled_transaction_(void *ptr, string& _trx_id, string& ret);
+bool chain_get_scheduled_transaction_(void *ptr, const unsigned __int128 sender_id, string& sender, string& result );
 
 
 void pack_native_object_(int type, string& msg, string& packed_message);
@@ -593,6 +594,7 @@ extern "C" void chain_api_init() {
       .chain_get_scheduled_producer = chain_get_scheduled_producer_,
       .chain_get_db_interface = chain_get_db_interface_,
 
+      .chain_get_scheduled_transaction = chain_get_scheduled_transaction_,
       .chain_get_scheduled_transactions = chain_get_scheduled_transactions_,
 
       .pack_native_object = pack_native_object_,

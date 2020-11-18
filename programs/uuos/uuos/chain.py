@@ -363,6 +363,11 @@ class Chain(object):
     def push_transaction(self, packed_trx, deadline, billed_cpu_time_us):
         return _uuos.chain_push_transaction(self.ptr, packed_trx, deadline, billed_cpu_time_us)
 
+    def get_scheduled_transaction(self, sender_id, sender):
+        ret = _uuos.chain_get_scheduled_transaction(self.ptr, sender_id, sender)
+        if ret:
+            return json.loads(ret)
+
     def get_scheduled_transactions(self):
         ret = _uuos.chain_get_scheduled_transactions(self.ptr)
         return json.loads(ret)

@@ -485,6 +485,18 @@ void chain_get_scheduled_transactions_(void *ptr, string& ret) {
     ret = fc::json::to_string(result, fc::time_point::maximum());
 }
 
+bool chain_get_scheduled_transaction_(void *ptr, const unsigned __int128 sender_id, string& sender, string& result ) {
+    auto& chain = chain_get_controller(ptr);
+
+    auto& generated_transaction_idx = chain.db().get_index<generated_transaction_multi_index>();
+    const auto* gto = chain.db().find<generated_transaction_object,by_sender_id>(boost::make_tuple(account_name(sender), sender_id));
+    if ( gto ) {
+        result = fc::json::to_string(*gto, fc::time_point::maximum());
+        return true;
+    }
+   return false;
+}
+
 bool chain_pack_action_args_(void *ptr, string& name, string& action, string& _args, vector<char>& result) {
     try {
         auto& chain = chain_get_controller(ptr);

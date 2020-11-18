@@ -118,6 +118,7 @@ struct chain_api_cpp
    bool (*chain_push_transaction)(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
 
    void (*chain_get_scheduled_transactions)(void *ptr, string& ret);
+   bool (*chain_get_scheduled_transaction)(void *ptr, const unsigned __int128 sender_id, string& sender, string& result );
    void (*chain_push_scheduled_transaction)(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
    void (*chain_commit_block)(void *ptr);
    void (*chain_finalize_block)(void *ptr, string& _priv_key);
