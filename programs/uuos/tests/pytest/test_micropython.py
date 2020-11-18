@@ -4,6 +4,7 @@ import json
 import pytest
 import logging
 import subprocess
+import shutil
 
 from chaintest import ChainTest
 from uuos import log
@@ -109,7 +110,8 @@ class Test(object):
     def compile_all(self, code_info):
 #        code = eosapi.compile_py_src(code)
         mpy_code = []
-        os.mkdir('tmp')
+        if not os.path.exists('tmp'):
+            os.mkdir('tmp')
         for name, code in code_info:
             py_file = f'tmp/{name}.py'
             mpy_file = f'tmp/{name}.mpy'
@@ -123,7 +125,8 @@ class Test(object):
             os.remove(mpy_file)
 
             mpy_code.append((name, code, len(code)))
-        os.rmdir('tmp')
+        shutil.rmtree('tmp')
+
         name_region = b''
         code_region = b''
         code_size_region = b''
