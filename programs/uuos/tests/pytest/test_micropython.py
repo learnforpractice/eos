@@ -22,6 +22,24 @@ class Test(object):
     @classmethod
     def setup_class(cls):
         cls.chain = ChainTest(uuos_network=True, jit=True)
+        a = {
+            "account": 'alice',
+            "permission": "active",
+            "parent": "owner",
+            "auth": {
+                "threshold": 1,
+                "keys": [
+                    {
+                        "key": "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+                        "weight": 1
+                    },
+                ],
+                "accounts": [{"permission":{"actor":'alice',"permission":"uuos.code"},"weight":1}],
+                "waits": []
+            }
+        }
+
+        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, actor='alice')
 
     @classmethod
     def teardown_class(cls):
@@ -862,4 +880,17 @@ def apply(a, b, c):
         self.chain.deploy_contract('alice', b'', b'', vmtype=3)
         self.chain.produce_block()
 
-        return
+    def test_transaction(self):
+        code = os.path.join(test_dir, 'test_contracts', 'test_transaction.py')
+        with open(code, 'r') as f:
+            code = f.read()
+        code = self.compile(code)
+
+        self.chain.deploy_contract('alice', code, b'', vmtype=3)
+
+        self.chain.push_action('alice', 'senddefer', b'hello,world')
+        self.chain.produce_block()
+
+        for _ in range(10):
+            self.chain.produce_block()
+
