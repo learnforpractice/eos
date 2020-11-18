@@ -1947,6 +1947,10 @@ class vm_apis : public context_aware_api {
       int call_contract_get_results(array_ptr<char> results, uint32_t size1) {
          return get_vm_api()->call_contract_get_results(results, size1);
       }
+
+      int get_code_hash(uint64_t contract, array_ptr<char> hash, uint32_t hash_size) {
+         return get_vm_api()->get_code_hash(contract, hash, hash_size);
+      }
 };
 
 
@@ -1961,6 +1965,7 @@ REGISTER_INTRINSICS(vm_apis,
    (call_contract_get_args,   int(int, int))
    (call_contract_set_results,      int(int, int))
    (call_contract_get_results,      int(int, int))
+   (get_code_hash,   int(int64_t, int, int))
 );
 
 REGISTER_INJECTED_INTRINSICS(call_depth_api,
