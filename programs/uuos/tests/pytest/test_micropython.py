@@ -891,6 +891,27 @@ def apply(a, b, c):
         self.chain.push_action('alice', 'senddefer', b'hello,world')
         self.chain.produce_block()
 
+        sender_id = 0x1ffffffffffffffff
+        r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
+        print('get_scheduled_transaction:', r)
+        assert r and r['sender'] == 'alice' and r['sender_id'] == str(sender_id)
+
         for _ in range(10):
             self.chain.produce_block()
+
+        r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
+        assert not r
+
+#=============test cancel========================
+        self.chain.push_action('alice', 'senddefer', b'hello,world')
+        self.chain.produce_block()
+
+        r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
+        assert r
+
+        self.chain.push_action('alice', 'cancel', b'hello,world')
+        self.chain.produce_block()
+
+        r = self.chain.chain.get_scheduled_transaction(sender_id, 'alice')
+        assert not r
 

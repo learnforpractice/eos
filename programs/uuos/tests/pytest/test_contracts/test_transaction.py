@@ -1,3 +1,4 @@
+import db
 from chain import *
 self_account = name('alice')
 def apply(receiver, code, action):
@@ -9,7 +10,14 @@ def apply(receiver, code, action):
         transaction_add_action(tx, action_id)
 
         payer = self_account
-        transaction_send(tx, 1, payer, False)
+        transaction_send(tx, 0x1ffffffffffffffff, payer, False)
+    elif action == name('cancel'):
+        r = transaction_cancel(0x1ffffffffffffffff)
+        print(r)
+        r = transaction_cancel(1)
+        print(r)
+        r = transaction_cancel(11)
+        print(r)
     elif action == name('dosomething'):
         data = read_action_data()
         print(data)

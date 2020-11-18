@@ -699,6 +699,9 @@ class ChainTest(object):
         self.chain.start_block(isoformat(self.calc_pending_block_time()), 0, self.feature_digests)
         self.feature_digests.clear()
 
+    def get_scheduled_transactions(self):
+        return self.chain.get_scheduled_transactions()
+
     def produce_block(self):
         trxs = self.chain.get_scheduled_transactions()
         deadline = datetime.utcnow() + timedelta(microseconds=10000000)

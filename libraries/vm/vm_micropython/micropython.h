@@ -286,6 +286,8 @@ extern u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
 extern void (*Z_envZ_abortZ_vv)(void);
 /* import: 'env' 'send_deferred' */
 extern void (*Z_envZ_send_deferredZ_vijiii)(u32, u64, u32, u32, u32);
+/* import: 'env' 'cancel_deferred' */
+extern u32 (*Z_envZ_cancel_deferredZ_ii)(u32);
 /* import: 'env' 'set_blockchain_parameters_packed' */
 extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 /* import: 'env' 'get_blockchain_parameters_packed' */
