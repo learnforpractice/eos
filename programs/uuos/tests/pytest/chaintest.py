@@ -414,6 +414,30 @@ class ChainTest(object):
         #     logger.info(f'+++++{account} {action} {elapsed}')
         return ret
 
+    def push_action_with_multiple_permissions(self, account, action, args, permissions):
+        if not isinstance(args, bytes):
+            _args = self.chain.pack_action_args(account, action, args)
+            if not _args:
+                error = uuos.get_last_error()
+                raise Exception(f'{error}')
+            args = _args
+            # logger.error(f'++++{args}')
+        auth = []
+        for actor in permissions:
+            perm = permissions[actor]
+            auth.append({'actor': actor, 'permission': perm})
+        a = {
+            'account': account,
+            'name': action,
+            'data': args.hex(),
+            'authorization': auth
+        }
+        ret = self.push_actions([a])
+        elapsed = ret.elapsed
+        # if not action == 'activate':
+        #     logger.info(f'+++++{account} {action} {elapsed}')
+        return ret
+
     def find_private_key(self, actor, perm_name):
         params = {'account_name': actor}
         params = json.dumps(params)
@@ -709,6 +733,9 @@ class ChainTest(object):
         self.chain.finalize_block(['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'])
         self.chain.commit_block()
         self.start_block()
+
+    def get_info(self):
+        return self.chain_api.get_info()
 
     def get_account(self, account):
         params = {'account_name':account}

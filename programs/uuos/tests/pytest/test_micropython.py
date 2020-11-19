@@ -42,6 +42,13 @@ class Test(object):
 
         cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, actor='alice')
 
+        cls.chain.buy_ram_bytes('alice', 'alice', 256*1024)
+        cls.chain.buy_ram_bytes('alice', 'bob', 256*1024)
+
+        cls.chain.delegatebw('alice', 'alice', 1.0, 1.0)
+        cls.chain.delegatebw('alice', 'bob', 1.0, 1.0)
+        cls.chain.produce_block()
+
     @classmethod
     def teardown_class(cls):
         cls.chain.free()
@@ -953,4 +960,28 @@ def apply(a, b, c):
         self.chain.deploy_contract('alice', code, b'')
         self.chain.push_action('alice', 'sayhello', b'hello,world')
 
+    def test_permissions(self):
+        args = {
+            'from': 'alice',
+            'to': 'bob',
+            'quantity': '0.1000 UUOS',
+            'memo':'hello'
+        }
+
+        perms = {
+            'bob':'active',
+            'alice':'active'
+        }
+        cpu_limit_alice = self.chain.get_account('alice')['cpu_limit']
+        cpu_limit_bob = self.chain.get_account('bob')['cpu_limit']
+
+        for i in range(1):
+            args['memo'] = str(i)
+            self.chain.push_action_with_multiple_permissions('uuos.token', 'transfer', args, perms)
+
+        cpu_limit_alice2 = self.chain.get_account('alice')['cpu_limit']
+        cpu_limit_bob2 = self.chain.get_account('bob')['cpu_limit']
+
+        assert cpu_limit_alice == cpu_limit_alice2
+        assert not cpu_limit_bob == cpu_limit_bob2
 
