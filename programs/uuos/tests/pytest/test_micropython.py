@@ -167,21 +167,24 @@ def apply(a, b, c):
             exception_name = e.args[0]['except']['name']
             assert exception_name in ('deadline_exception', 'tx_cpu_usage_exceeded')
 
+    # wasm_rt_call_stack_depth should be reset at the beginning of call contract
     def test_call_depth(self):
         code = '''
 def apply(a, b, c):
-    pass
+    for i in range(100):
+        int(a) * int(b) * int(c)
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
         self.chain.produce_block()
 
-        for i in range(300):
+        total_elapsed = 0
+        count = 500
+        for i in range(count):
             r = self.chain.push_action('alice', 'sayhello', str(i).encode('utf8'))
-            if i % 50 == 0:
-                self.chain.produce_block()
+            total_elapsed += r['elapsed']
         self.chain.produce_block()
-        logger.info('+++elapsed: %s', r['elapsed'])
+        logger.info('+++avg elapsed: %s', total_elapsed/count)
 
     def test_vm_api(self):
         # print(os.getpid())
@@ -959,29 +962,3 @@ def apply(a, b, c):
         code = self.compile_cpp_file('test_vm_api')
         self.chain.deploy_contract('alice', code, b'')
         self.chain.push_action('alice', 'sayhello', b'hello,world')
-
-    def test_permissions(self):
-        args = {
-            'from': 'alice',
-            'to': 'bob',
-            'quantity': '0.1000 UUOS',
-            'memo':'hello'
-        }
-
-        perms = {
-            'bob':'active',
-            'alice':'active'
-        }
-        cpu_limit_alice = self.chain.get_account('alice')['cpu_limit']
-        cpu_limit_bob = self.chain.get_account('bob')['cpu_limit']
-
-        for i in range(1):
-            args['memo'] = str(i)
-            self.chain.push_action_with_multiple_permissions('uuos.token', 'transfer', args, perms)
-
-        cpu_limit_alice2 = self.chain.get_account('alice')['cpu_limit']
-        cpu_limit_bob2 = self.chain.get_account('bob')['cpu_limit']
-
-        assert cpu_limit_alice == cpu_limit_alice2
-        assert not cpu_limit_bob == cpu_limit_bob2
-
