@@ -122,24 +122,24 @@ static void *offset_to_char_ptr(u32 offset) {
 
 #include <vm_api4c.h>
 
+void init_frozen_module(const char *name) {
+  size_t size = vm_load_frozen_module(name, strlen(name), NULL, 0);
+  u32 init_script_offset = malloc(size);
+  char *init_script = (char *)get_memory_ptr(init_script_offset, size);
+  vm_load_frozen_module(name, strlen(name), init_script, size);
+  micropython_init_module_from_mpy_with_name(0, init_script_offset, size);
+}
+
 int micropython_init() {
   init_vm_api4c();
   set_memory_converter(offset_to_ptr, offset_to_char_ptr);
 
   init();
   mp_js_init(64*1024);
-  const char *init_script = "import struct\n" \
-  "import json\n"
-  "import chain\n"
-  "import db\n"
-  ;
 
-  size_t size = strlen(init_script)+1;
-  u32 script_offset = malloc(size);
-  char *ptr = (char *)get_memory_ptr(script_offset, size);
-  strcpy(ptr, init_script);
+  init_frozen_module("init.mpy");
 
-  micropython_run_script(script_offset);
+//  micropython_run_script(script_offset);
   return 1;
 }
 
