@@ -131,7 +131,6 @@ int micropython_init() {
   const char *init_script = "import struct\n" \
   "import json\n"
   "import chain\n"
-  "import foo\n"
   "import db\n"
   ;
 

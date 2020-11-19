@@ -945,6 +945,7 @@ static void mp_binary_set_val_array_from_int(u32, u32, u32, u32);
 static u32 mp_obj_is_package(u32);
 static u32 mp_builtin___import__(u32, u32);
 static void do_execute_raw_code(u32, u32, u32);
+static u32 micropython_new_module(void);
 static u32 micropython_init_module_from_mpy(u32, u32);
 static u32 micropython_init_module_from_py(u32, u32);
 static u32 micropython_init_module(u32, u32, u32);
@@ -100084,6 +100085,19 @@ static void do_execute_raw_code(u32 p0, u32 p1, u32 p2) {
   FUNC_EPILOGUE;
 }
 
+static u32 micropython_new_module(void) {
+  FUNC_PROLOGUE;
+  u32 i0, i1;
+  i0 = 0u;
+  i1 = 18365u;
+  i1 = qstr_from_str(i1);
+  i1 = mp_obj_new_module(i1);
+  i32_store((&M0), (u64)(i0 + 10732), i1);
+  i0 = 1u;
+  FUNC_EPILOGUE;
+  return i0;
+}
+
 static u32 micropython_init_module_from_mpy(u32 p0, u32 p1) {
   u32 l2 = 0;
   FUNC_PROLOGUE;
@@ -100114,11 +100128,6 @@ static u32 micropython_init_module_from_mpy(u32 p0, u32 p1) {
   i0 = 0u;
   goto Bfunc;
   B0:;
-  i0 = 0u;
-  i1 = 18365u;
-  i1 = qstr_from_str(i1);
-  i1 = mp_obj_new_module(i1);
-  i32_store((&M0), (u64)(i0 + 10732), i1);
   i0 = p0;
   i1 = p1;
   i0 = mp_raw_code_load_mem(i0, i1);
@@ -151616,6 +151625,7 @@ static void mp_js_init(u32 p0) {
   i0 = 10364u;
   i1 = 0u;
   mp_obj_list_init(i0, i1);
+  i0 = micropython_new_module();
   i0 = l1;
   i1 = 16u;
   i0 += i1;
@@ -151698,6 +151708,7 @@ static void micropython_init_with_script(u32 p0) {
   i0 = 10364u;
   i1 = 0u;
   mp_obj_list_init(i0, i1);
+  i0 = micropython_new_module();
   i0 = p0;
   i1 = 1u;
   i0 = do_str(i0, i1);
