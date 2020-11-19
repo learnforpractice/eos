@@ -3446,7 +3446,7 @@ void controller_impl::on_activation<builtin_protocol_feature_t::pythonvm>() {
 template<>
 void controller_impl::on_activation<builtin_protocol_feature_t::ethereum_vm>() {
    db.modify( db.get<protocol_state_object>(), [&]( auto& ps ) {
-      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "call_native" );
+//      add_intrinsic_to_whitelist( ps.whitelisted_intrinsics, "call_native" );
    } );
 }
 

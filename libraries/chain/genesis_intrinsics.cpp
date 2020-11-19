@@ -193,6 +193,7 @@ const std::vector<const char*> genesis_intrinsics = {
    "call_contract_get_args",
    "call_contract_set_results",
    "call_contract_get_results",
+   "call_native",
    "get_code_hash"
 //   "is_feature_activated",
 //   "preactivate_feature"
