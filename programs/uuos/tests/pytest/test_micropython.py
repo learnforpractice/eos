@@ -485,6 +485,16 @@ def apply(receiver, code, action):
         r = self.chain.push_action('alice', 'test4', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
 
+        r = self.chain.push_action('alice', 'test5', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        console_log = r['action_traces'][0]['console']
+        assert console_log == '+++test.a 1\r\n'
+
+        r = self.chain.push_action('alice', 'test5', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        console_log = r['action_traces'][0]['console']
+        assert console_log == '+++test.a 2\r\n'
+
 # test for out of context
 # calling vm_api from module level not allowed!
     def test_context(self):
