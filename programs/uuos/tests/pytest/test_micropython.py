@@ -641,16 +641,12 @@ def apply(a, b, c):
     def test_frozen(self):
         code = r'''
 def apply(a, b, c):
-    import foo
-    foo.say_hello()
+    import db
 '''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=3)
-        try:
-            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        except Exception as e:
-            assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'no free vm memory left!'
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_mpy_frozen(self):
         code = os.path.join(test_dir, 'test_contracts', 'test_frozen.py')
