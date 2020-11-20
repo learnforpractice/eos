@@ -51,7 +51,7 @@ class Test(object):
 
     def teardown_method(self, method):
         try:
-            self.chain.deploy_contract('alice', b'', b'', vmtype=3)
+            self.chain.deploy_contract('alice', b'', b'', vmtype=1)
         except Exception as e:
             assert e.args[0]['except']['name'] == 'set_exact_code'
             assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
@@ -148,7 +148,14 @@ class Test(object):
     def test_basic(self):
         basic = '/Users/newworld/dev/uuos3/externals/micropython/tests/basics'
         all_tests = []
-        ignore_files = ['class_reverse_op.py', 'syntaxerror.py', 'memoryerror.py', 'memoryview_gc.py']
+        ignore_files = [
+            'class_reverse_op.py', 
+            'syntaxerror.py', 
+            'memoryerror.py', 
+            'memoryview_gc.py',
+            'special_comparisons.py',
+            'assign_expr_syntaxerror.py'
+        ]
         for root, dirs, files in os.walk(basic):
             for file in files:
                 # print(file)
@@ -171,7 +178,7 @@ def apply(a, b, c):
             logger.info('test %s', test_code_name)
             code = (test, ('main', main_code % test_code_name))
             code = self.compile_all(code)
-            self.chain.deploy_contract('alice', code, b'', vmtype=3)
+            self.chain.deploy_contract('alice', code, b'', vmtype=1)
             try:
                 self.chain.push_action('alice', 'sayhello', test_code_name.encode())
             except Exception as e:

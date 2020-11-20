@@ -30,6 +30,40 @@ typedef double f64;
 
 extern void WASM_RT_ADD_PREFIX(init)(void);
 
+/* import: 'eosio_injection' '_eosio_f64_mul' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_add' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_neg' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_negZ_dd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_ne' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_neZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_lt' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_ltZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_ge' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_geZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_abs' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_absZ_dd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_trunc_i32s' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_trunc_i32sZ_id)(f64);
+/* import: 'eosio_injection' '_eosio_f64_trunc' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_truncZ_dd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_sub' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_subZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_div' */
+extern f64 (*Z_eosio_injectionZ__eosio_f64_divZ_ddd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_gt' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_gtZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_le' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_leZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f64_demote' */
+extern f32 (*Z_eosio_injectionZ__eosio_f64_demoteZ_fd)(f64);
+/* import: 'eosio_injection' '_eosio_f64_eq' */
+extern u32 (*Z_eosio_injectionZ__eosio_f64_eqZ_idd)(f64, f64);
+/* import: 'eosio_injection' '_eosio_f32_promote' */
+extern f64 (*Z_eosio_injectionZ__eosio_f32_promoteZ_df)(f32);
+/* import: 'eosio_injection' '_eosio_f32_mul' */
+extern f32 (*Z_eosio_injectionZ__eosio_f32_mulZ_fff)(f32, f32);
 /* import: 'env' 'setjmp_discard_top' */
 extern void (*Z_envZ_setjmp_discard_topZ_vv)(void);
 /* import: 'env' 'memset' */

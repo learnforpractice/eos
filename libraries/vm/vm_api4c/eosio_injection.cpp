@@ -527,8 +527,15 @@ static u32 __lttf2( uint64_t la, uint64_t ha, uint64_t lb, uint64_t hb ) {
     return ___cmptf2(la, ha, lb, hb, 0);
 }
 
+float __eosio_f32_mul( float a, float b ) {
+    float32_t ret = ::f32_mul( to_softfloat32(a), to_softfloat32(b) );
+    return *reinterpret_cast<float*>(&ret);
+}
+
 void init_eosio_injection()
 {
+    Z_eosio_injectionZ__eosio_f32_mulZ_fff = __eosio_f32_mul;
+
     Z_envZ___gttf2Z_ijjjj = __gttf2;
     Z_envZ___getf2Z_ijjjj = __getf2;
     Z_envZ___letf2Z_ijjjj = __letf2;
