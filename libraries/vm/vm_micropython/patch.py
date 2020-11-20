@@ -49,14 +49,6 @@ patch_ticks_ms = ('''static void mp_js_write(u32 p0, u32 p1) {
   FUNC_EPILOGUE;
 }
 
-static u32 mp_js_ticks_ms(void) {
-  FUNC_PROLOGUE;
-  u32 i0;
-  i0 = 0u;
-  FUNC_EPILOGUE;
-  return i0;
-}
-
 static void mp_js_hook(void) {
   FUNC_PROLOGUE;
   FUNC_EPILOGUE;
@@ -86,23 +78,8 @@ static void mp_js_write(u32 p0, u32 len) {
   FUNC_EPILOGUE;
 }
 
-#include <sys/time.h>
 
-long long current_timestamp() {
-    struct timeval te; 
-    gettimeofday(&te, NULL); // get current time
-    long long us = te.tv_sec*1000000LL + te.tv_usec; // calculate milliseconds
-//    printf("us: %lld\n", us);
-    return us/1000;
-}
 
-static u32 mp_js_ticks_ms(void) {
-  FUNC_PROLOGUE;
-  u32 i0;
-  i0 = 0u;
-  FUNC_EPILOGUE;
-  return current_timestamp();
-}
 
 static void mp_js_hook(void) {
   FUNC_PROLOGUE;
