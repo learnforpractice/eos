@@ -27,7 +27,7 @@ extern "C" void execution_start();
 extern "C" void execution_end();
 
 #include "../../../unittests/incbin.h"
-INCBIN(Accounts, "genesis_accounts.bin");
+// INCBIN(Accounts, "genesis_accounts.bin");
 
 /*
  * // const unsigned char gAccountsData[];
@@ -71,19 +71,19 @@ void db_interface::init_key_accounts() {
          i += 1;
       };
    } else {
-      for (int i=0;i<gAccountsSize;i+=42) {
-         uint64_t account;
-         memcpy(&account, &gAccountsData[i], 8);
-         account_name name(account);
-         vector<char> key((char *)&gAccountsData[i+8], (char *)&gAccountsData[i+42]);
-         auto pub_key = fc::raw::unpack<chain::public_key_type>(key);
-         auto itr = key_accounts_map.find(pub_key);
-         if (itr == key_accounts_map.end()) {
-            key_accounts_map[pub_key] = {name};
-         } else {
-            key_accounts_map[pub_key].emplace_back(name);
-         }
-      }
+      // for (int i=0;i<gAccountsSize;i+=42) {
+      //    uint64_t account;
+      //    memcpy(&account, &gAccountsData[i], 8);
+      //    account_name name(account);
+      //    vector<char> key((char *)&gAccountsData[i+8], (char *)&gAccountsData[i+42]);
+      //    auto pub_key = fc::raw::unpack<chain::public_key_type>(key);
+      //    auto itr = key_accounts_map.find(pub_key);
+      //    if (itr == key_accounts_map.end()) {
+      //       key_accounts_map[pub_key] = {name};
+      //    } else {
+      //       key_accounts_map[pub_key].emplace_back(name);
+      //    }
+      // }
    }
    vmilog("+++++++++++init key accounts done!\n");
 }
@@ -710,7 +710,7 @@ vector<account_name> db_interface::get_genesis_accounts(chain::public_key_type p
 }
 
 void db_interface::init_accounts() {
-   init_accounts(gAccountsData, gAccountsSize);
+//   init_accounts(gAccountsData, gAccountsSize);
 }
 
 void db_interface::init_accounts(const uint8_t* raw_data, size_t size) {

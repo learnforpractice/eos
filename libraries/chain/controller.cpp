@@ -1112,9 +1112,10 @@ struct controller_impl {
          string s = conf.genesis_accounts_file.string();
          if (!s.empty()) {
             dbif.init_accounts(s);
-         } else {
-            dbif.init_accounts();
          }
+         // else {
+         //    dbif.init_accounts();
+         // }
       }
    }
 
