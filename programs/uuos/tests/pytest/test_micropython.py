@@ -958,3 +958,25 @@ def apply(a, b, c):
         code = self.compile_cpp_file('test_vm_api')
         self.chain.deploy_contract('alice', code, b'')
         self.chain.push_action('alice', 'sayhello', b'hello,world')
+
+    def test_time(self):
+        code = r'''
+import time
+def apply(a, b, c):
+    print(time.time())
+'''
+        code = self.compile(code)
+        
+        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])        
+        n = r['action_traces'][0]['console'].strip()
+        n = int(n)
+        self.chain.produce_block()
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        m = r['action_traces'][0]['console'].strip()
+        m = int(m)
+        assert n + 1 == m
