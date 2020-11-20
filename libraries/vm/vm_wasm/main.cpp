@@ -147,23 +147,11 @@ int main(int argc, char **argv) {
     ptr += read_u32(ptr, name_type);
 //    ptr2 += write_u32(ptr2, name_type);
 
-    size_t additional_size = 0;
-    for (auto& item:injector_utils::registered_injected) {
-        auto itr = injector_utils::injected_index_mapping.find(item.second);
-        additional_size += calc_size(itr->second);
-        additional_size += calc_size(item.first.size());
-        additional_size += item.first.size();
-    }
-
     uint32_t sub_section_size = 0;
     ptr += read_u32(ptr, sub_section_size);
 
-//    ptr2 += write_u32(ptr2, sub_section_size + additional_size+4+10+3);
-    printf("++++sub_section_size %u, additional_size %u, size: %u\n", sub_section_size, additional_size, module.userSections[1].data.size());
-
     uint32_t num_names = 0;
     ptr += read_u32(ptr, num_names);
-//    ptr2 += write_u32(ptr2, num_names+17);
 
     std::map<uint32_t, std::string> index_name_map;
 
