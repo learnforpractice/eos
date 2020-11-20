@@ -9,4 +9,5 @@ target_include_directories( chain_plugin PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/inc
     "${CMAKE_CURRENT_SOURCE_DIR}/../chain_interface/include" 
     "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/appbase/include"
     "${CMAKE_SOURCE_DIR}/contracts/vm_api"
+    ${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include
 )

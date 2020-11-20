@@ -6,7 +6,6 @@
 #include "vm_api.h"
 #include "stacktrace.h"
 static struct vm_api* s_api = nullptr;
-static struct vm_api* s_api_ro = nullptr;
 
 void vm_register_api(struct vm_api* api) {
    if (!api) {

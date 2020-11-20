@@ -289,13 +289,8 @@ extern "C" int create_accounts_snapshot(int argc, char** argv)
       ilog("${name} data directory is ${d}", ("name", nodeos::config::node_executable_name)("d", app().data_dir().string()));
 //      app().startup();
 
-      vm_api *api_ro = get_vm_api_ro();
-      vm_api *api = get_vm_api();
-      printf("+++++++++++++%p %p\n", api_ro, api);
-
       app().get_plugin<chain_plugin>().plugin_startup();
       auto& db = app().get_plugin<chain_plugin>().chain().db();
-      vm_register_api(api_ro);
 
       const auto& accounts = db.get_index<account_metadata_index, by_name>();
       auto itr = accounts.upper_bound(account_name(0));

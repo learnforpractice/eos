@@ -18,28 +18,3 @@ if (APPLE)
   set(BUILD_PYTHON_VM TRUE)
 endif()
 
-if (BUILD_PYTHON_VM)
-  ExternalProject_Add(
-    pythonvm_project
-    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/python37
-    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/python37
-    CMAKE_ARGS ${PYTHON_VM_MEMORY_DEFINES} -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_CONTRACTS=TRUE
-    UPDATE_COMMAND ""
-    PATCH_COMMAND ""
-    TEST_COMMAND ""
-    INSTALL_COMMAND ""
-    BUILD_ALWAYS 1
-  )
-endif()
-
-# ExternalProject_Add(
-#    native_project
-#    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vm_api/native
-#    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/vm_api/native
-#    CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake -DEOSIO_COMPILE_CONTRACTS=TRUE
-#    UPDATE_COMMAND ""
-#    PATCH_COMMAND ""
-#    TEST_COMMAND ""
-#    INSTALL_COMMAND ""
-#    BUILD_ALWAYS 1
-# )

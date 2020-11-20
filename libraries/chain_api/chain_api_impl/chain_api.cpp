@@ -17,9 +17,6 @@
 using namespace fc;
 using namespace eosio::chain;
 
-extern "C" const unsigned char pythonvm_wasm[];
-extern "C" int pythonvm_wasm_size;
-extern "C" char pythonvm_wasm_hash[];
 void *chain_get_current_ptr();
 static controller::config s_cfg;
 static chain_api_cpp s_api = {};
@@ -132,18 +129,10 @@ int get_code_type( uint64_t receiver) {
 }
 
 static bool get_code_by_code_hash(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, const char** code, size_t* size, uint32_t* first_block_used) {
-//   printf("++++++get_code_by_code_hash\n");
-   if (0 == memcmp(pythonvm_wasm_hash, code_hash.data(), 32)) {
-//      printf("++++++get_code_by_code_hash 111\n");
-      *code = (const char *)pythonvm_wasm;
-      *size = pythonvm_wasm_size;
-      *first_block_used = 0;
-   } else {
-      const code_object& code_entry = ctrl().db().get<code_object, by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
-      *code = code_entry.code.data();
-      *size = code_entry.code.size();
-      *first_block_used = code_entry.first_block_used;
-   }
+   const code_object& code_entry = ctrl().db().get<code_object, by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+   *code = code_entry.code.data();
+   *size = code_entry.code.size();
+   *first_block_used = code_entry.first_block_used;
    return true;
 }
 
