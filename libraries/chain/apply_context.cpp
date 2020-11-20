@@ -4,7 +4,6 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/wasm_interface.hpp>
-#include <eosio/chain/python_interface.hpp>
 #include <eosio/chain/micropython_interface.hpp>
 #include <eosio/chain/generated_transaction_object.hpp>
 #include <eosio/chain/authorization_manager.hpp>
@@ -14,7 +13,6 @@
 #include <eosio/chain/global_property_object.hpp>
 #include <boost/container/flat_set.hpp>
 
-#include <vm_manager.hpp>
 #include <chain_api.hpp>
 
 using boost::container::flat_set;
@@ -122,13 +120,6 @@ void apply_context::exec_one()
                      }
                   }
                } else if (receiver_account->vm_type == 1) {
-                  control.get_python_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
-               } else if (receiver_account->vm_type == 2) {
-                  auto *cb = get_chain_api()->get_vm_callback(receiver_account->vm_type, receiver_account->vm_version);
-                  EOS_ASSERT(cb != nullptr, eosio_assert_message_exception, "vm callback not found!");
-                  string s(receiver_account->code_hash.data(), receiver_account->code_hash.data_size());
-                  cb->apply(s, receiver_account->vm_type, receiver_account->vm_version);
-               } else if (receiver_account->vm_type == 3) {
                   control.get_micropython_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                }
             } catch( const wasm_exit& ) {}

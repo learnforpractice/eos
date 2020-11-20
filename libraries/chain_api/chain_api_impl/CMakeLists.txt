@@ -17,7 +17,6 @@ target_include_directories(chain_api_impl
                                    "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
-                                   "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager"
                                     "${CMAKE_SOURCE_DIR}/contracts/vm_api/include"
                                     "${CMAKE_SOURCE_DIR}/contracts/vm_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
@@ -26,7 +25,5 @@ target_include_directories(chain_api_impl
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                               PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
-                              PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
-                              PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
                               PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
                         )

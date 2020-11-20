@@ -15,7 +15,6 @@
 
 #include <eosio/chain/eosio_contract.hpp>
 #include <eosio/chain/db_api.hpp>
-#include <vm_manager.hpp>
 
 #include <chainbase/environment.hpp>
 

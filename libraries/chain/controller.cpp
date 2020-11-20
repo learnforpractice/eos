@@ -24,7 +24,6 @@
 #include <eosio/chain/resource_limits.hpp>
 #include <eosio/chain/chain_snapshot.hpp>
 #include <eosio/chain/thread_utils.hpp>
-#include <eosio/chain/python_interface.hpp>
 #include <eosio/chain/micropython_interface.hpp>
 #include <eosio/chain/platform_timer.hpp>
 
@@ -240,7 +239,6 @@ struct controller_impl {
    block_state_ptr                head;
    fork_database                  fork_db;
    wasm_interface                 wasmif;
-   python_interface               pythonif;
    micropython_interface          micropythonif;
    db_interface                   dbif;
    resource_limits_manager        resource_limits;
@@ -322,7 +320,6 @@ struct controller_impl {
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
-    pythonif( db ),
     micropythonif( db ),
     dbif( db ), 
     resource_limits( db ),
@@ -349,7 +346,6 @@ struct controller_impl {
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
-         pythonif.current_lib(bsp->block_num);
          micropythonif.current_lib(bsp->block_num);
       });
 
@@ -3150,10 +3146,6 @@ const apply_handler* controller::find_apply_handler( account_name receiver, acco
 
 wasm_interface& controller::get_wasm_interface() {
    return my->wasmif;
-}
-
-python_interface& controller::get_python_interface() {
-   return my->pythonif;
 }
 
 micropython_interface& controller::get_micropython_interface() {

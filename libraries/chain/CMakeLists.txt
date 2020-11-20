@@ -77,9 +77,7 @@ add_library( eosio_chain
               wast_to_wasm.cpp
               wasm_interface.cpp
 
-              python_interface.cpp
               micropython_interface.cpp
-              python_vm/vm_memory.cpp
 
               wasm_eosio_validation.cpp
               wasm_eosio_injection.cpp
@@ -121,7 +119,7 @@ add_library( eosio_chain
 
 target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
-                       vm_api chain_api vm_manager
+                       vm_api chain_api
                        wasm2c_contracts
                        native_contracts
                        ${LIBEVM4EOS}
@@ -134,7 +132,6 @@ target_include_directories( eosio_chain
                                    "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
-                                   "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager"
                                     "${CMAKE_SOURCE_DIR}/contracts/vm_api/include"
                                     "${CMAKE_SOURCE_DIR}/contracts/vm_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
@@ -143,8 +140,6 @@ target_include_directories( eosio_chain
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                               PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
-                              PRIVATE  ${CMAKE_BINARY_DIR}/libraries/vm/vm_python
-                              PRIVATE  ${CMAKE_SOURCE_DIR}/libraries/vm/vm_python
                               PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
                         )
 add_dependencies(eosio_chain contracts_project)
