@@ -87,6 +87,18 @@ static void mp_js_hook(void) {
 }
 ''')
 
+header_patch = (
+'''#include <assert.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+''',
+
+'''#include <math.h>
+#include <string.h>
+'''
+)
+
 def patch_micropython(data, origin, patch):
     index = data.find(origin)
     print(index)
@@ -96,8 +108,10 @@ def patch_micropython(data, origin, patch):
 
 with open('micropython.c.bin', 'r') as f:
     data = f.read()
-    origin, patch = patch_set_jmp
+    origin, patch = header_patch
+    data = patch_micropython(data, origin, patch)
 
+    origin, patch = patch_set_jmp
     data = patch_micropython(data, origin, patch)
 
     origin, patch = patch_init

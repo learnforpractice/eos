@@ -124,7 +124,7 @@ static void *offset_to_char_ptr(u32 offset) {
 
 void init_frozen_module(const char *name) {
   size_t size = vm_load_frozen_module(name, strlen(name), NULL, 0);
-  u32 init_script_offset = malloc(size);
+  u32 init_script_offset = malloc_0(size);
   char *init_script = (char *)get_memory_ptr(init_script_offset, size);
   vm_load_frozen_module(name, strlen(name), init_script, size);
   micropython_init_module_from_mpy_with_name(0, init_script_offset, size);
@@ -192,7 +192,7 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
-    u32 offset = malloc(size);
+    u32 offset = malloc_0(size);
     char *ptr = (char *)get_memory_ptr(offset, size);
     memcpy(ptr, py_src, size);
   //  printf("++++++++++++memory start %p\n", ptr);

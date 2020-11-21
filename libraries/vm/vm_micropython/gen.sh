@@ -6,7 +6,9 @@ popd
 
 mkdir tmp
 pushd tmp
-~/dev/wasm/wabt/build/wasm2c -o micropython.c ../../../../build/externals/micropython/ports/uuosio/micropython_softfloat.wasm
+#~/dev/wasm/wabt/build/wasm2c -o micropython.c ../../../../build/externals/micropython/ports/uuosio/micropython_softfloat.wasm
+./../../../../build/libraries/wabt/wasm2c -o micropython.c ../../../../build/externals/micropython/ports/uuosio/micropython_softfloat.wasm
+
 popd
 mv ./tmp/micropython.h micropython.h
 mv ./tmp/micropython.c micropython.c.bin
