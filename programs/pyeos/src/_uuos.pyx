@@ -195,6 +195,8 @@ cdef extern from "uuos.hpp":
 
     string& uuos_get_last_error_()
 
+    size_t micropython_compile_src_(const char *src, char *output, size_t output_size, const char *source_file);
+
 
 def say_hello():
     return say_hello_()
@@ -884,6 +886,15 @@ def history_get_controlled_accounts(uint64_t ptr, const string& param):
 #+++++++++++++history api end++++++++++++++
 
 
+def compile_py(src, src_type = 0):
+    cdef vector[char] output
+    cdef size_t size
+
+    output.resize(len(src) * 2 + 128)
+    size = micropython_compile_src_(src, output.data(), output.size(), "contract.py")
+    if not size:
+        return None
+    return <bytes>string(output.data(), size)
 
 
 uuos_init_chain_api()

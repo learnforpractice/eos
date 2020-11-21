@@ -42,7 +42,7 @@ int micropython_validate_frozen_code(const char *contract_code, size_t code_size
     size_t code_region_size = load_uint32(contract_code + CODE_HEADER_SIZE + 8);
 
     size_t total_frozen_module = code_size_region_size/sizeof(uint32_t);
-    get_vm_api()->eosio_assert(total_frozen_module < MAX_FORZEN_MODULE, "frozen module count must <= 100");
+    get_vm_api()->eosio_assert(total_frozen_module <= MAX_FORZEN_MODULE, "frozen module count must <= 100");
 
     get_vm_api()->eosio_assert(name_region_size < SIZE_LIMIT, "name region size too large!");
     get_vm_api()->eosio_assert(code_size_region_size < SIZE_LIMIT, "code size region too large!");

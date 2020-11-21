@@ -185,6 +185,8 @@ void uuos_init_chain_api();
 #define n2str_ uuos_get_chain_api()->n2str
 #define str2n_ uuos_get_chain_api()->str2n
 
+#define micropython_compile_src_ uuos_get_chain_api()->micropython_compile_src
+
 /*
 ------------------------------vm_api-------------------------------------
 */
@@ -281,6 +283,8 @@ void uuos_init_chain_api();
 #define db_idx_long_double_lowerbound_ uuos_get_vm_api()->db_idx_long_double_lowerbound
 #define db_idx_long_double_upperbound_ uuos_get_vm_api()->db_idx_long_double_upperbound
 #define db_idx_long_double_end_ uuos_get_vm_api()->db_idx_long_double_end
+
+
 
 extern int cpython_setcode(uint64_t account, string& code);
 extern int cpython_apply(string& hash, uint8_t vmtype, uint8_t vmversion);

@@ -400,6 +400,9 @@ int db_interface_end_i64(void *ptr, uint64_t code, uint64_t scope, uint64_t tabl
 bool db_interface_is_account(void *ptr, uint64_t account);
 const char* db_interface_get_code_ex(void *ptr, uint64_t receiver, size_t* size );
 
+extern "C" size_t micropython_compile_src(const char *src, char *output, size_t output_size, const char *source_file);
+
+
 void *chain_get_current_ptr() {
    if (!s_api.chain_ptr) {
       print_stacktrace();
@@ -607,6 +610,8 @@ extern "C" void chain_api_init() {
       .db_interface_end_i64 = db_interface_end_i64,
       .db_interface_is_account = db_interface_is_account,
       .db_interface_get_code_ex = db_interface_get_code_ex,
+
+      .micropython_compile_src = micropython_compile_src
     };
 
     register_chain_api(&s_api);

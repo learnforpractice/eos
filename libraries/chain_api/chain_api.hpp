@@ -254,6 +254,8 @@ struct chain_api_cpp
    void (*history_get_key_accounts_ex)(void *ptr, const string& param, string& result);
    void (*history_get_controlled_accounts)(void *ptr, const string& param, string& result);
 
+   size_t (*micropython_compile_src)(const char *src, char *output, size_t output_size, const char *source_file);
+
 };
 
 extern "C" void register_chain_api(struct chain_api_cpp* api);

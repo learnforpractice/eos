@@ -7,6 +7,7 @@ import subprocess
 import shutil
 
 from chaintest import ChainTest
+import uuos
 from uuos import log
 from uuos import wasmcompiler
 from pyeoskit import eosapi
@@ -86,14 +87,8 @@ class Test(object):
 
     def compile(self, code):
 #        code = eosapi.compile_py_src(code)
-        with open('tmp.py', 'w') as f:
-            f.write(code)
-        subprocess.check_output(['mpy-cross', '-o', 'tmp.mpy', 'tmp.py'])
-        with open('tmp.mpy', 'rb') as f:
-            code = f.read()
-        os.remove('tmp.py')
-        os.remove('tmp.mpy')
-
+        code = uuos.compile(code)
+        assert code
         mpy_code = ((code, len(code)),)
 
         code_region = b''
@@ -871,7 +866,7 @@ def apply(a, b, c):
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'invalid code region size!'
 
         code = []
-        for i in range(100):
+        for i in range(101):
             code.append(('hello'+str(i), hello))
         code = self.compile_all(code)
         try:
@@ -980,3 +975,8 @@ def apply(a, b, c):
         m = r['action_traces'][0]['console'].strip()
         m = int(m)
         assert n + 1 == m
+
+    def test_compile(self):
+        for i in range(100):
+            code = uuos.compile("print('hello')")
+            assert code

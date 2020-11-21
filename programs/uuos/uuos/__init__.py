@@ -123,6 +123,9 @@ def call_contract_off_chain(params):
 def run_py_func_safe(func, args):
     return _uuos.run_py_func_safe(func, args)
 
+def compile(src):
+    return _uuos.compile_py(src)
+
 api = None
 def init():
     global api
