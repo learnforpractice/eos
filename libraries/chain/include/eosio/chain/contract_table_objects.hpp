@@ -278,7 +278,7 @@ namespace config {
    template<>
    struct billable_size<key256_value_object> {
       static const uint64_t overhead = overhead_per_row_per_index_ram_bytes * 2;  ///< overhead for potentially single-row table, 2x indices internal-key and primary key
-      static const uint64_t value = 24 + 32 + 8 + 4 + overhead; ///< 32 bytes for our constant size fields, 8 for pointer to vector data, 4 bytes for a size of vector + overhead
+      static const uint64_t value = 24 + 32 + 8 + 4 + overhead; ///< 24 + 32 bytes for our constant size fields, 8 for pointer to vector data, 4 bytes for a size of vector + overhead
    };
 
 
