@@ -78,9 +78,6 @@ namespace eosio { namespace chain {
    struct key256_value_object : public chainbase::object<key256_value_object_type, key256_value_object> {
       OBJECT_CTOR(key256_value_object, (value))
 
-      typedef uint64_t key_type;
-      static const int number_of_keys = 1;
-
       id_type               id;
       table_id              t_id;
       std::array<uint128_t, 2>              primary_key;
