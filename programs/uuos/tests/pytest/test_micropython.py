@@ -1,10 +1,12 @@
 import os
+import sys
 import time
 import json
 import pytest
 import logging
 import subprocess
 import shutil
+import gc
 
 from chaintest import ChainTest
 import uuos
@@ -53,6 +55,8 @@ class Test(object):
     @classmethod
     def teardown_class(cls):
         cls.chain.free()
+        shutil.rmtree(cls.chain.options.config_dir)
+        shutil.rmtree(cls.chain.options.data_dir)
 
     def setup_method(self, method):
         logger.warning('test start: %s', method.__name__)
@@ -65,6 +69,7 @@ class Test(object):
             assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
         self.chain.produce_block()
         logger.warning('test end: %s', method.__name__)
+        gc.collect()
 
     def compile_cpp_file(self, name):
         code_file = os.path.join(test_dir, 'test_contracts', f'{name}.cpp')
@@ -897,7 +902,7 @@ def apply(a, b, c):
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'contract_code not valid!'
+            assert e.args[0]['except']['stack'][0]['data']['s'] == 'invalid version'
 
     def test_clear_code(self):
         code = r'''
@@ -980,3 +985,22 @@ def apply(a, b, c):
         for i in range(100):
             code = uuos.compile("print('hello')")
             assert code
+
+    def test_replay(self):
+        return
+        options = self.chain.options
+        logger.info(options.data_dir)
+        logger.info(options.config_dir)
+        logger.info('hello')
+        state_dir = os.path.join(options.data_dir, 'state')
+        for root, dirs, files in os.walk(options.data_dir):
+            for file in files:
+                logger.info('%s %s', root, file)
+            for dir in dirs:
+                logger.info('%s %s', root, dir)
+        self.chain.free()
+        # shutil.rmtree(state_dir)
+        logger.info("++++++replay chain")
+        self.chain = ChainTest(uuos_network=True, jit=True, data_dir=options.data_dir, config_dir=options.config_dir)
+
+
