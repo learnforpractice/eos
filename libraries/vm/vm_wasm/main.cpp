@@ -180,20 +180,20 @@ int main(int argc, char **argv) {
         ptr += name_len;
         // printf("%u %s\n", function_index, name);
 
-        ptr2 += write_u32(ptr2, function_index+17);
+        ptr2 += write_u32(ptr2, function_index+injector_utils::registered_injected.size());
         ptr2 += write_u32(ptr2, name_len);
         memcpy(ptr2, name, name_len);
         ptr2 += name_len;
     }
 
     size_t new_data_size = ptr2 - new_data.data();
-    size_t new_sub_section_size = new_data_size + calc_size(num_names+17);
+    size_t new_sub_section_size = new_data_size + calc_size(num_names+injector_utils::registered_injected.size());
 
     vector<U8> new_section_data(calc_size(name_type) + calc_size(new_sub_section_size) + new_sub_section_size);
     U8 *ptr3 = new_section_data.data();
     ptr3 += write_u32(ptr3, name_type);
     ptr3 += write_u32(ptr3, new_sub_section_size);
-    ptr3 += write_u32(ptr3, num_names+17);
+    ptr3 += write_u32(ptr3, num_names+injector_utils::registered_injected.size());
     memcpy(ptr3, new_data.data(), new_data_size);
 
     module.userSections[1].data = new_section_data;
