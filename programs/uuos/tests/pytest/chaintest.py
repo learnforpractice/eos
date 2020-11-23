@@ -131,7 +131,7 @@ key_map = {
 
 class ChainTest(object):
 
-    def __init__(self, uuos_network=False, jit=True):
+    def __init__(self, uuos_network=False, jit=True, data_dir=None, config_dir=None):
         uuos.set_log_level('default', 0)
         self.feature_digests = []
 
@@ -150,8 +150,15 @@ class ChainTest(object):
         uuos.set_default_log_level(0)
 
         options = Object()
-        options.data_dir = tempfile.mkdtemp()
-        options.config_dir = tempfile.mkdtemp()
+        if data_dir:
+            options.data_dir = data_dir
+        else:
+            options.data_dir = tempfile.mkdtemp()
+
+        if config_dir:
+            options.config_dir = config_dir
+        else:
+            options.config_dir = tempfile.mkdtemp()
 
         logger.debug(f'{options.data_dir}, {options.config_dir}')
         if uuos_network:
@@ -988,9 +995,10 @@ def apply(receiver, code, action):
         self.produce_block()
 
     def free(self):
-        self.chain.free()
-        shutil.rmtree(self.options.config_dir)
-        shutil.rmtree(self.options.data_dir)
+        if self.chain.ptr:
+            self.chain.free()
+            # shutil.rmtree(self.options.config_dir)
+            # shutil.rmtree(self.options.data_dir)
 
     def get_table_rows(self, _json, code, scope, table, table_key, lower_bound,
                        upper_bound, limit, encode_type='dec') -> dict:
