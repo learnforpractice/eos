@@ -33,9 +33,11 @@ extern "C" void print_hex(char *data, size_t size) {
   printf("\n");
 }
 
+typedef std::array<uint8_t, sizeof(jmp_buf)> NlrBuffer;
+
 class JumpStack {
   private:
-    std::vector<std::array<uint8_t, sizeof(jmp_buf)>> jmp_stack;
+    std::vector<NlrBuffer> jmp_stack;
     int top;
     int max_stack;
 
@@ -57,7 +59,7 @@ class JumpStack {
       top -= 1;
     }
 
-    std::array<uint8_t, sizeof(jmp_buf)>& back() {
+    NlrBuffer& back() {
       get_vm_api()->eosio_assert(top >= 0, "empty stack!");
       return jmp_stack[top];
     }
@@ -84,7 +86,7 @@ void setjmp_push(jmp_buf buf) {
 }
 
 void setjmp_pop(jmp_buf buf) {
-  std::array<uint8_t, sizeof(jmp_buf)>& _buf = setjmp_stack.back();
+  NlrBuffer& _buf = setjmp_stack.back();
   memcpy(buf, _buf.data(), sizeof(jmp_buf));
   setjmp_stack.pop_back();
 }
