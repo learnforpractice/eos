@@ -14,6 +14,7 @@ cdef extern from * :
     ctypedef unsigned int uint32_t
     ctypedef unsigned short uint16_t
     ctypedef unsigned char uint8_t
+    ctypedef int __uint128_t
 
 cdef extern from "Python.h":
     ctypedef long long PyLongObject
@@ -22,7 +23,6 @@ cdef extern from "Python.h":
     int _PyLong_AsByteArray(PyLongObject* v, unsigned char* bytes, size_t n, int little_endian, int is_signed)
 
 cdef extern from "uuos.hpp":
-    ctypedef unsigned long long __uint128
 
     void say_hello_();
 
@@ -52,7 +52,7 @@ cdef extern from "uuos.hpp":
     void chain_gen_transaction_(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_keys, vector[char]& result);
     bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, string& result);
 
-    bool chain_get_scheduled_transaction_(void *ptr, __uint128 sender_id, string& sender, string& result );
+    bool chain_get_scheduled_transaction_(void *ptr, __uint128_t sender_id, string& sender, string& result );
     void chain_get_scheduled_transactions_(void *ptr, string& ret);
     void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
 
@@ -642,10 +642,10 @@ def chain_push_transaction(uint64_t ptr, string& packed_trx, string& deadline, u
 
 def chain_get_scheduled_transaction(uint64_t ptr, object _sender_id, string& sender):
     cdef string result
-    cdef __uint128 sender_id
+    cdef __uint128_t sender_id
 
     sender_id = 0
-    _PyLong_AsByteArray(<PyLongObject *><void *>_sender_id, <unsigned char *>&sender_id, sizeof(__uint128), 1, 0);
+    _PyLong_AsByteArray(<PyLongObject *><void *>_sender_id, <unsigned char *>&sender_id, sizeof(__uint128_t), 1, 0);
     chain_get_scheduled_transaction_(<void *>ptr, sender_id, sender, result)
     return result
 
