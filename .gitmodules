@@ -47,3 +47,6 @@
 	path = externals/micropython
 	url = https://github.com/uuosio/micropython
 	branch = uuosio
+[submodule "externals/wasm_lua"]
+	path = externals/wasm_lua
+	url = https://github.com/learnforpractice/wasm_lua_private
