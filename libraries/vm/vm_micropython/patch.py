@@ -29,7 +29,7 @@ void setjmp_pop(jmp_buf buf);
   i0; \
   { \
     jmp_buf buf; \
-    int n = setjmp(buf); \
+    int n = _setjmp(buf); \
     if (n == 0) { \
       setjmp_push(buf); \
     } \
@@ -40,7 +40,7 @@ void setjmp_pop(jmp_buf buf);
 { \
   jmp_buf buf; \
   setjmp_pop(buf); \
-  longjmp(buf, p1); \
+  _longjmp(buf, p1); \
 }
 ''')
 
