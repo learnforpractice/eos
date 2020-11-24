@@ -395,6 +395,8 @@ extern u32 (*Z_envZ_get_code_hashZ_ijii)(u64, u32, u32);
 
 extern f32 (*Z_eosio_injectionZ__eosio_f32_mulZ_fff)(f32, f32);
 
+extern void (*Z_envZ___extendsftf2Z_vif)(u32, f32);
+
 #ifdef __cplusplus
 }
 #endif

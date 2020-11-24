@@ -532,9 +532,17 @@ float __eosio_f32_mul( float a, float b ) {
     return *reinterpret_cast<float*>(&ret);
 }
 
+// conversion long double
+//void __extendsftf2( float128_t& ret, float f ) {
+void __extendsftf2( u32 ret_offset, float f ) {
+    float128_t* ret = (float128_t*)offset_to_ptr(ret_offset, sizeof(float128_t));
+    *ret = f32_to_f128( to_softfloat32(f) );
+}
+
 void init_eosio_injection()
 {
     Z_eosio_injectionZ__eosio_f32_mulZ_fff = __eosio_f32_mul;
+    Z_envZ___extendsftf2Z_vif = __extendsftf2;
 
     Z_envZ___gttf2Z_ijjjj = __gttf2;
     Z_envZ___getf2Z_ijjjj = __getf2;

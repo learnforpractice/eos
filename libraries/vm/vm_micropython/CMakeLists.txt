@@ -14,7 +14,6 @@ set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin
     vm_api.c
     vm_micropython.cpp
-    ./wasm2c/wasm-rt-impl.c
     code_loader.c
 )
 
@@ -31,7 +30,7 @@ target_include_directories(vm_micropython PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/softfloat/source/include
     PUBLIC ${CMAKE_SOURCE_DIR}/libraries/vm/vm_api4c
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/wasm2c
+    PUBLIC ${CMAKE_SOURCE_DIR}/libraries/vm/vm_api4c/wasm2c
 )
 
 target_compile_options(vm_micropython PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300)

@@ -5,8 +5,7 @@ add_library(vm_api4c STATIC
     eosio_injection.cpp
     compiler_builtins.cpp
     privileged.cpp
-#    vm_memory.cpp
-#    wasm-rt-impl.c
+    wasm2c/wasm-rt-impl.c
 )
 
 target_link_libraries(vm_api4c PRIVATE vm_api chain_api wasm2c_exports)
@@ -14,6 +13,7 @@ target_link_libraries(vm_api4c PRIVATE vm_api chain_api wasm2c_exports)
 target_include_directories(vm_api4c PRIVATE ${Boost_INCLUDE_DIR}
     PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
     PRIVATE ${CMAKE_SOURCE_DIR}/contracts
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/wasm2c
     ${CMAKE_SOURCE_DIR}/libraries/wabt
     ${CMAKE_BINARY_DIR}/libraries/wabt
     ${CMAKE_SOURCE_DIR}/libraries/vm/wasm2c_exports
