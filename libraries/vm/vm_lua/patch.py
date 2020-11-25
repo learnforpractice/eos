@@ -116,7 +116,7 @@ with open('vmlua.c.bin', 'r') as f:
     # data = patch_micropython(data, origin, patch)
 
     origin, patch = patch_init
-    # data = patch_micropython(data, origin, patch)
+    data = patch_micropython(data, origin, patch)
 
     data = data.replace('fmodl', '_fmodl')
     data = data.replace('copysignl', '_copysignl')

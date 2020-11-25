@@ -78,3 +78,4 @@ add_dependencies(cppzmq libzmq)
 # add_dependencies(aleth vm_api)
 add_subdirectory(micropython)
 
+add_subdirectory(wasm_lua)

@@ -1,5 +1,5 @@
 CODEABI_1.0 {
-    global: lua_init;
+    global: lua_init;vmlua_run_script
     local: *;
 };
 

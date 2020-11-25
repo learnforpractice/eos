@@ -105605,10 +105605,3 @@ static void init_exports(void) {
   WASM_RT_ADD_PREFIX(Z_applyZ_vjjj) = (&apply);
 }
 
-void WASM_RT_ADD_PREFIX(init)(void) {
-  init_func_types();
-  init_globals();
-  init_memory();
-  init_table();
-  init_exports();
-}

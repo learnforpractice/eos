@@ -3,6 +3,8 @@
 
 #include <string.h>
 
+#include <vm_api4c.h>
+
 void eosio_assert(uint32_t test, const char* msg);
 
 void *get_memory_ptr(uint32_t offset, uint32_t size) {
@@ -14,7 +16,37 @@ void *get_memory_ptr(uint32_t offset, uint32_t size) {
   return M0.data + offset;
 }
 
+void WASM_RT_ADD_PREFIX(init)(void) {
+  init_func_types();
+  init_globals();
+  init_memory();
+  init_table();
+  init_exports();
+  memcpy(&(M0.data[0]), &g1, 4);
+  __wasm_call_ctors();
+}
+
+static void *_offset_to_ptr(u32 offset, u32 size) {
+  return get_memory_ptr(offset, size);
+}
+
+static void *_offset_to_char_ptr(u32 offset) {
+  return get_memory_ptr(offset, 64);
+}
+
+void lua_init()
+{
+  init_vm_api4c();
+  set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
+  WASM_RT_ADD_PREFIX(init)();
+}
+
 int vmlua_run_script() {
+    static int initialized = 0;
+    if (!initialized) {
+        initialized = 1;
+        lua_init();
+    }
     const char *script = "function main ()\n"
     "	print(\"bar\")\n"
     "	return \"foo\"\n"
