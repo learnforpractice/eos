@@ -39,30 +39,6 @@ static u32 _n2s(u64 n, u32 str_offset, u32 str_size) {
   return ret;
 }
 
-//void * memset ( void * ptr, int value, size_t num );
-
-static u32 _memset(u32 ptr_offset, u32 value, u32 num) {
-  char *ptr = get_memory_ptr(ptr_offset, num);
-  memset(ptr, value, num);
-  return ptr_offset;
-}
-
-//void * memcpy ( void * destination, const void * source, size_t num );
-static u32 _memcpy(u32 dest_offset, u32 src_offset, u32 num) {
-  char *src_ptr = get_memory_ptr(src_offset, num);
-  char *dest_ptr = get_memory_ptr(dest_offset, num);
-  memcpy(dest_ptr, src_ptr, num);
-  return dest_offset;
-}
-
-//void * memmove ( void * destination, const void * source, size_t num )
-static u32 _memmove(u32 dest_offset, u32 src_offset, u32 num) {
-  char *src_ptr = get_memory_ptr(src_offset, num);
-  char *dest_ptr = get_memory_ptr(dest_offset, num);
-  memmove(dest_ptr, src_ptr, num);
-  return dest_offset;
-}
-
 static void _setjmp_discard_top() {
   setjmp_discard_top();
 }
@@ -79,10 +55,6 @@ u32 _vm_frozen_stat(u32 str_offset) {
 }
 
 void WASM_RT_ADD_PREFIX(init)(void) {
-  Z_envZ_memsetZ_iiii = _memset;
-  Z_envZ_memcpyZ_iiii = _memcpy;
-  Z_envZ_memmoveZ_iiii = _memmove;
-
   Z_envZ_call_vm_apiZ_iiiii = _call_vm_api;
 
   Z_envZ_s2nZ_jii = _s2n;
@@ -112,11 +84,11 @@ void *get_memory_ptr(uint32_t offset, uint32_t size) {
   return M0.data + offset;
 }
 
-static void *offset_to_ptr(u32 offset, u32 size) {
+static void *_offset_to_ptr(u32 offset, u32 size) {
   return get_memory_ptr(offset, size);
 }
 
-static void *offset_to_char_ptr(u32 offset) {
+static void *_offset_to_char_ptr(u32 offset) {
   return get_memory_ptr(offset, 64);
 }
 
@@ -132,7 +104,7 @@ void init_frozen_module(const char *name) {
 
 int micropython_init() {
   init_vm_api4c();
-  set_memory_converter(offset_to_ptr, offset_to_char_ptr);
+  set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
 
   init();
   mp_js_init(64*1024);
