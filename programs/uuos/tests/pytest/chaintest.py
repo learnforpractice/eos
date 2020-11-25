@@ -581,7 +581,7 @@ class ChainTest(object):
 
         return self.push_actions([act])
 
-    def deploy_contract(self, account, code, abi, vmtype=0):
+    def deploy_contract(self, account, code, abi, vmtype=0, show_elapse=True):
         actions = []
         setcode = {"account": account,
                    "vmtype": vmtype,
@@ -611,7 +611,7 @@ class ChainTest(object):
         # logger.info(actions)
         ret = self.push_actions(actions)
         elapsed = ret.elapsed
-        if code:
+        if show_elapse and code:
             logger.info(f'+++++deploy contract: {account} {elapsed}')
         # logger.info(ret)
         return ret

@@ -154,51 +154,12 @@ class Test(object):
 
     def run_test(self, code):
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vmtype=1, show_elapse=False)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         self.chain.produce_block()
         return r['elapsed']/1e6
 
     def test_bench(self):
-        code = '''
-def apply(a, b, c):
-    def f(x):
-        return x
-    for i in range(10000):
-        f(i)
-    print('done!')
-'''
-        elapsed = self.run_test(code)
-        logger.info("function_call.py: %s", elapsed*100)
-
-        code = '''
-import chain
-def apply(a, b, c):
-    def f(a, b, c, d, e):
-        return 2
-    r = 0
-    for i in range(100000):
-        chain.s2n('hello')
-    print(r)
-'''
-        elapsed = self.run_test(code)
-        logger.info("function_call_builtin.py: %s", elapsed*10)
-        return
-
-        code = '''
-def apply(a, b, c):
-    a = 0
-    for i in range(1000):
-        a = 1
-        a = 1
-        a = 1
-        a = 1
-'''
-        elapsed = self.run_test(code)
-        logger.info("function_call.py: %s", elapsed*1000)
-        return
-
-
         code = '''
 def apply(a, b, c):
     def f():
@@ -208,7 +169,6 @@ def apply(a, b, c):
 '''
         elapsed = self.run_test(code)
         logger.info("assignment.py: %s", elapsed)
-        return
 
         code = '''
 def apply(a, b, c):
@@ -218,6 +178,19 @@ def apply(a, b, c):
 '''
         elapsed = self.run_test(code)
         logger.info("augm_assign.py: %s", elapsed)
+
+        code = '''
+def apply(a, b, c):
+    t = []
+    i = 0
+    while i < 100000:
+        t.append(i)
+        i += 1
+'''
+
+        elapsed = self.run_test(code)
+        logger.info("augmented assignment and list append: %s", elapsed)
+
         code = '''
 def apply(a, b, c):
     for i in range(1000000):
@@ -228,11 +201,31 @@ def apply(a, b, c):
 
         code = '''
 def apply(a, b, c):
+    n = 60
+    for i in range(10000):
+        2 ** n
+'''
+        elapsed = self.run_test(code)
+        logger.info("big integers: %s", elapsed)
+
+
+        code = '''
+def apply(a, b, c):
     for i in range(100000):
         a = {0:0}
 '''
         elapsed = self.run_test(code)
         logger.info("build_dict.py: %s", elapsed*10)
+
+
+        code = '''
+def apply(a, b, c):
+    d = {}
+    for i in range(100000):
+        d[i] = i
+'''
+        elapsed = self.run_test(code)
+        logger.info("build_dict2.py: %s", elapsed)
 
         code = '''
 def apply(a, b, c):
@@ -243,6 +236,14 @@ def apply(a, b, c):
 '''
         elapsed = self.run_test(code)
         logger.info("set_dict_item.py: %s", elapsed)
+
+        code = '''
+def apply(a, b, c):
+    for i in range(10000):
+        a = {0, 2.7, "x"}
+'''
+        elapsed = self.run_test(code)
+        logger.info("build_set.py: %s", elapsed*100)
 
         code = '''
 def apply(a, b, c):
@@ -260,6 +261,15 @@ def apply(a, b, c):
 '''
         elapsed = self.run_test(code)
         logger.info("set_list_item.py: %s", elapsed)
+
+        code = '''
+def apply(a, b, c):
+    a = [1, 2, 3]
+    for i in range(100000):
+        a[:]
+'''
+        elapsed = self.run_test(code)
+        logger.info("list slice.py: %s", elapsed)
 
         code = '''
 def apply(a, b, c):
@@ -296,6 +306,25 @@ def apply(a, b, c):
         elapsed = self.run_test(code)
         logger.info("create_function.py: %s", elapsed*10)
 
+
+        code = '''
+def apply(a, b, c):
+    for i in range(10000):
+        def f(x):
+            pass
+'''
+        elapsed = self.run_test(code)
+        logger.info("create function, single positional argument.py: %s", elapsed*100)
+
+        code = '''
+def apply(a, b, c):
+    for i in range(10000):
+        def f(x, y=1, *args, **kw):
+            pass
+'''
+        elapsed = self.run_test(code)
+        logger.info("create function, complex arguments.py: %s", elapsed*100)
+
         code = '''
 def apply(a, b, c):
     def f():
@@ -305,5 +334,73 @@ def apply(a, b, c):
 '''
         elapsed = self.run_test(code)
         logger.info("function_call.py: %s", elapsed*10)
+
+
+        code = '''
+def apply(a, b, c):
+    def f(x, y=0, *args, **kw):
+        return x
+    for i in range(100000):
+        f(i, 5, 6, a=8)
+'''
+        elapsed = self.run_test(code)
+        logger.info("function call, complex arguments.py: %s", elapsed)
+
+        code = '''
+def apply(a, b, c):
+    for i in range(10000):
+        class A:
+            pass
+'''
+        elapsed = self.run_test(code)
+        logger.info("create simple class.py: %s", elapsed)
+
+        code = '''
+def apply(a, b, c):
+    for i in range(10000):
+        class A:
+            def __init__(self, x):
+                self.x = x
+'''
+        elapsed = self.run_test(code)
+        logger.info("create class with int.py: %s", elapsed)
+
+
+        code = '''
+def apply(a, b, c):
+    class A:
+        pass
+    for i in range(1000):
+        A()
+'''
+        elapsed = self.run_test(code)
+        logger.info("create instance of simple class.py: %s", elapsed*1000)
+
+
+        code = '''
+def apply(a, b, c):
+    class A:
+        def __init__(self, x):
+            self.x = x
+    for i in range(10000):
+        A(i)
+'''
+        elapsed = self.run_test(code)
+        logger.info("create instance of class with init.py: %s", elapsed*100)
+
+        code = '''
+def apply(a, b, c):
+    class A:
+        def __init__(self, x):
+            self.x = x
+
+        def f(self):
+            return self.x
+    a = A(1)
+    for i in range(100000):
+        a.f()
+'''
+        elapsed = self.run_test(code)
+        logger.info("call instance method.py: %s", elapsed)
 
 
