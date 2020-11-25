@@ -6,6 +6,7 @@ add_library(vm_api4c STATIC
     compiler_builtins.cpp
     privileged.cpp
     wasm2c/wasm-rt-impl.c
+    jmp_stack.cpp
 )
 
 target_link_libraries(vm_api4c PRIVATE vm_api chain_api)
