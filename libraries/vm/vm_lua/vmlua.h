@@ -104,12 +104,6 @@ extern f32 (*Z_envZ___trunctfsf2Z_fjj)(u64, u64);
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' 'memcpy' */
 extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
-/* import: 'env' '__unordtf2' */
-extern u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' '__fixunstfsi' */
-extern u32 (*Z_envZ___fixunstfsiZ_ijj)(u64, u64);
-/* import: 'env' '__fixtfsi' */
-extern u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
 /* import: 'env' 'eosio_assert' */
 extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 
