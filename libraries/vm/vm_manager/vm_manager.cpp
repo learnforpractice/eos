@@ -23,12 +23,14 @@ extern "C" {
     int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
     size_t micropython_load_frozen_code(const char *str, size_t len, char *content, size_t content_size);
 
+    void vm_lua_init_memory(size_t initial_pages);
     void *vm_lua_get_memory();
     size_t vm_lua_get_memory_size();
     size_t vm_lua_backup_memory(void *backup, size_t size);
+    size_t vm_lua_restore_memory(void *backup, size_t size);
     void vm_lua_init();
-    int vm_lua_init_contract(const char* script, size_t script_len);
-    int vm_lua_apply(uint64_t receiver, uint64_t code, uint64_t action);
+    int vm_lua_contract_init(const char* script, size_t script_len);
+    int vm_lua_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
 
 }
 
@@ -45,14 +47,18 @@ long long get_time_us() {
     return us;
 }
 
-void vm_instantiated_module::apply(apply_context& context) {
+void vm_instantiated_module::apply(apply_context& context, uint8_t vm_type, uint8_t vm_version) {
     auto receiver = context.get_receiver().to_uint64_t();
     auto account = context.get_action().account.to_uint64_t();
     auto act = context.get_action().name.to_uint64_t();
 
     // long long start = get_time_us();
-    int ret = micropython_contract_apply(receiver, account, act);
-    EOS_ASSERT( ret, python_execution_error, "python vm execution error" );
+    if (vm_type == 1) {
+        int ret = micropython_contract_apply(receiver, account, act);
+        EOS_ASSERT( ret, python_execution_error, "python vm execution error" );
+    } else if(vm_type == 2) {
+        vm_lua_contract_apply(receiver, account, act);
+    }
     // printf("+++++++++apply %lld\n", get_time_us() - start);
 }
 
@@ -85,6 +91,9 @@ vm_manager::vm_manager(const chainbase::database& d): db(d) {
     initial_vm_memory[1] = std::make_shared<vector<uint8_t>>(memory, memory + size);
 
     vm_lua_init();
+    size = vm_lua_get_memory_size();
+    memory = (uint8_t *)vm_lua_get_memory();
+    initial_vm_memory[2] = std::make_shared<vector<uint8_t>>(memory, memory + size);
 }
 
 vm_manager::~vm_manager() {}
@@ -126,7 +135,7 @@ static uint64_t get_microseconds() {
 //Calls apply or error on a given code
 void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
-    get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
+    get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context, vm_type, vm_version);
 //    vmlua_run_script();
 }
 
@@ -139,16 +148,27 @@ void vm_manager::exit() {
 
 }
 
-void vm_manager::take_snapshoot(vm_instantiated_module& module) {
+void vm_manager::take_snapshoot(vm_instantiated_module& module, int vm_type) {
 //            printf("++++++++++++malloc pos %u\n", *(uint32_t *)ptr2);
     int total_count = 0;
     int block_size = 128;
-    int vm_memory_size = micropython_get_memory_size();
-    char *vm_start_memory_address = (char *)micropython_get_memory();
-    char *ptr1 = (char *)initial_vm_memory[1]->data();
+    int vm_memory_size = 0;
+    char *vm_start_memory_address = nullptr;
+
+    EOS_ASSERT( vm_type == 1 || vm_type == 2, wasm_execution_error, "vm type error" );
+
+    if (vm_type == 1) {
+        vm_memory_size = micropython_get_memory_size();
+        vm_start_memory_address = (char *)micropython_get_memory();
+    } else if (vm_type == 2) {
+        vm_memory_size = vm_lua_get_memory_size();
+        vm_start_memory_address = (char *)vm_lua_get_memory();
+    }
+
+    char *ptr1 = (char *)initial_vm_memory[vm_type]->data();
     char *ptr2 = (char *)vm_start_memory_address;
 
-    int initial_memory_size = initial_vm_memory[1]->size();
+    int initial_memory_size = initial_vm_memory[vm_type]->size();
     module.backup.initial_pages = vm_memory_size / PAGE_SIZE;
     int pos = PYTHON_VM_STACK_SIZE; //do not save stack data as it's temperately
     while(pos<initial_memory_size) {
@@ -247,7 +267,14 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
                 EOS_ASSERT( mpy_version == 5, python_execution_error, "BAD mpy version");
                 int ret = micropython_contract_init(0, content.data(), content.size());
                 EOS_ASSERT( ret, python_execution_error, "python contract init error" );
-                take_snapshoot(*c.module);
+                take_snapshoot(*c.module, vm_type);
+            } else if (vm_type == 2) {
+                auto& memory = initial_vm_memory[vm_type];
+                vm_lua_init_memory(memory->size()/PAGE_SIZE);
+                vm_lua_restore_memory(memory->data(), memory->size());
+                int ret = vm_lua_contract_init(codeobject->code.data(), codeobject->code.size());
+                EOS_ASSERT( ret, python_execution_error, "python contract init error" );
+                take_snapshoot(*c.module, vm_type);
             }
         });
     } else {
@@ -261,6 +288,20 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
                 pos = segment.offset + segment.data.size();
             }
             memset(vm_start_memory_address + pos, 0, micropython_get_memory_size() - pos);
+        } else if (vm_type == 2) {
+            // vm_lua_init_memory(it->module->backup.initial_pages);
+            // auto& memory = initial_vm_memory[vm_type];
+            // vm_lua_restore_memory(memory->data(), memory->size());
+            #if 1
+            char *vm_start_memory_address = (char *)vm_lua_get_memory();
+            int pos = 0;
+            for (memory_segment& segment: it->module->backup.segments) {
+                memcpy(vm_start_memory_address + pos, initial_vm_memory[2]->data() + pos, segment.offset - pos);
+                memcpy(vm_start_memory_address + segment.offset, segment.data.data(), segment.data.size());
+                pos = segment.offset + segment.data.size();
+            }
+            memset(vm_start_memory_address + pos, 0, vm_lua_get_memory_size() - pos);
+            #endif
         }
     }
     return it->module;

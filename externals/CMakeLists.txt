@@ -63,7 +63,7 @@ ExternalProject_Add(
    INSTALL_COMMAND ""
    BUILD_ALWAYS 1
 )
-add_dependencies(evmone4eosio wasm2c_exports)
+# add_dependencies(evmone4eosio wasm2c_exports)
 add_dependencies(evmone4eosio vm_api4c)
 
 endif()

@@ -1,6 +1,8 @@
+_vm_lua_init_memory
 _vm_lua_get_memory
 _vm_lua_get_memory_size
 _vm_lua_backup_memory
+_vm_lua_restore_memory
 _vm_lua_init
-_vm_lua_init_contract
-_vm_lua_apply
+_vm_lua_contract_init
+_vm_lua_contract_apply

@@ -1,6 +1,7 @@
 #include "micropython_vm_config.h"
 #include "micropython.c.bin"
 #include <wasm-rt-impl.h>
+#include <vm_api4c.h>
 
 uint32_t wasm_rt_call_stack_depth = 0;
 uint32_t g_saved_call_stack_depth = 0;
@@ -70,8 +71,6 @@ static void *_offset_to_char_ptr(u32 offset) {
   return get_memory_ptr(offset, 64);
 }
 
-#include <vm_api4c.h>
-
 void init_frozen_module(const char *name) {
   size_t size = vm_load_frozen_module(name, strlen(name), NULL, 0);
   u32 init_script_offset = malloc_0(size);
@@ -94,41 +93,6 @@ int micropython_init() {
 }
 
 void setjmp_clear_stack();
-#define EOSIO_THROW(msg) eosio_assert(0, msg)
-
-void wasm_rt_on_trap(wasm_rt_trap_t code) {
-//   vm_print_stacktrace();
-   wasm_rt_call_stack_depth = 0;
-   switch (code) {
-      case WASM_RT_TRAP_NONE:
-         EOSIO_THROW("vm no error");
-         break;
-      case WASM_RT_TRAP_OOB:
-         EOSIO_THROW("vm error out of bounds");
-         break;
-      case WASM_RT_TRAP_INT_OVERFLOW:
-         EOSIO_THROW("vm error int overflow");
-         break;
-      case WASM_RT_TRAP_DIV_BY_ZERO:
-         EOSIO_THROW("vm error divide by zeror");
-         break;
-      case WASM_RT_TRAP_INVALID_CONVERSION:
-         EOSIO_THROW("vm error invalid conversion");
-         break;
-      case WASM_RT_TRAP_UNREACHABLE:
-         EOSIO_THROW("vm error unreachable");
-         break;
-      case WASM_RT_TRAP_CALL_INDIRECT:
-         EOSIO_THROW("vm error call indirect");
-         break;
-      case WASM_RT_TRAP_EXHAUSTION:
-         EOSIO_THROW("vm error exhaustion");
-         break;
-      default:
-         EOSIO_THROW("vm unknown error");
-         break;
-   }
-}
 
 void micropython_init_memory(size_t initial_pages) {
   wasm_rt_allocate_memory((&M0), initial_pages, PYTHON_VM_MAX_MEMORY_SIZE/65536);
@@ -150,7 +114,7 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
     return ret;
   } else {
     printf("++++micropython_contract_init:trap code: %d\n", trap_code);
-    wasm_rt_on_trap((wasm_rt_trap_t)trap_code);
+    wasm_rt_on_trap(trap_code);
   }
   return 0;
 }
@@ -166,7 +130,7 @@ int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action
     return micropython_apply(receiver, code, action);
   } else {
     printf("++++micropython_contract_apply:trap code: %d\n", trap_code);
-    wasm_rt_on_trap((wasm_rt_trap_t)trap_code);
+    wasm_rt_on_trap(trap_code);
     return trap_code;
   }
   return 0;

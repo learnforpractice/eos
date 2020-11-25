@@ -119,7 +119,7 @@ void apply_context::exec_one()
                         control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                      }
                   }
-               } else if (receiver_account->vm_type == 1) {
+               } else if (receiver_account->vm_type == 1 || receiver_account->vm_type == 2) {
                   control.get_vm_manager().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                }
             } catch( const wasm_exit& ) {}

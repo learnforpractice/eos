@@ -27,6 +27,8 @@ void init_vm_api4c();
 void *offset_to_ptr(u32 offset, u32 size);
 void *offset_to_char_ptr(u32 offset);
 
+void wasm_rt_on_trap(int code);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

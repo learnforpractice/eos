@@ -123,6 +123,8 @@ with open('vmlua.c.bin', 'r') as f:
     data = data.replace('scalbnl', '_scalbnl')
     data = data.replace('strnlen', '_strnlen')
     data = data.replace('frexpl', '_frexpl')
+    data = data.replace('setjmp', 'setjmp_ex')
+    data = data.replace('longjmp', 'longjmp_ex')
 
 
     origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'

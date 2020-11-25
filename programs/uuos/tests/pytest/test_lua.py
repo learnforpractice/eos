@@ -153,11 +153,15 @@ class Test(object):
         return frozen_code
 
     def test_hello(self):
-        code = '''
-def apply(a, b, c):
-    pass
+        code = b'''
+function apply(a, b, c)
+    print('hello,world', 1, 2, 3)
+    print('goodbye, world', 1, 2, 3)
+end
 '''
-        code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        # code = self.compile(code)
+        self.chain.deploy_contract('alice', code, b'', vmtype=2)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])

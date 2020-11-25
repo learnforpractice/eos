@@ -221,4 +221,38 @@ void *offset_to_char_ptr(u32 offset) {
     return g_offset_to_char_ptr(offset);
 }
 
+void wasm_rt_on_trap(int code) {
+//   vm_print_stacktrace();
+   wasm_rt_call_stack_depth = 0;
+   switch (code) {
+      case WASM_RT_TRAP_NONE:
+         EOSIO_THROW("vm no error");
+         break;
+      case WASM_RT_TRAP_OOB:
+         EOSIO_THROW("vm error out of bounds");
+         break;
+      case WASM_RT_TRAP_INT_OVERFLOW:
+         EOSIO_THROW("vm error int overflow");
+         break;
+      case WASM_RT_TRAP_DIV_BY_ZERO:
+         EOSIO_THROW("vm error divide by zeror");
+         break;
+      case WASM_RT_TRAP_INVALID_CONVERSION:
+         EOSIO_THROW("vm error invalid conversion");
+         break;
+      case WASM_RT_TRAP_UNREACHABLE:
+         EOSIO_THROW("vm error unreachable");
+         break;
+      case WASM_RT_TRAP_CALL_INDIRECT:
+         EOSIO_THROW("vm error call indirect");
+         break;
+      case WASM_RT_TRAP_EXHAUSTION:
+         EOSIO_THROW("vm error exhaustion");
+         break;
+      default:
+         EOSIO_THROW("vm unknown error");
+         break;
+   }
+}
+
 }

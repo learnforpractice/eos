@@ -318,6 +318,8 @@ class ChainTest(object):
         if self.uuos_network:
             args = {'vmtype': 1, 'vmversion':0} #activate vm python
             self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
+            args = {'vmtype': 2, 'vmversion':0} #activate vm python
+            self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
 
         self.produce_block()
 
