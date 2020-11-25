@@ -6,19 +6,12 @@ uint32_t wasm_rt_call_stack_depth = 0;
 uint32_t g_saved_call_stack_depth = 0;
 jmp_buf g_jmp_buf;
 
-u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
-u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
-u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
-u64 (*Z_envZ_s2nZ_jii)(u32, u32);
-u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 
 void (*Z_envZ_setjmp_discard_topZ_vv)(void);
 u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
 
-uint64_t s2n( const char *str, size_t str_size );
-int n2s(uint64_t value, char *str, size_t str_size);
 u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset);
 
 
@@ -26,18 +19,6 @@ void eosio_assert( uint32_t test, const char* msg );
 void setjmp_discard_top(void);
 size_t vm_load_frozen_module(const char *str, size_t len, char *content, size_t content_size);
 uint32_t vm_frozen_stat(const char *str);
-
-static u64 _s2n(u32 str_offset, u32 str_size) {
-  char *str = get_memory_ptr(str_offset, str_size);
-  return s2n(str, str_size);
-}
-
-static u32 _n2s(u64 n, u32 str_offset, u32 str_size) {
-  char *str = get_memory_ptr(str_offset, str_size);
-  u32 ret = n2s(n, str, str_size);
-//  printf("+++++++++++++_n2s: %s %d\n", str, ret);
-  return ret;
-}
 
 static void _setjmp_discard_top() {
   setjmp_discard_top();
@@ -56,9 +37,6 @@ u32 _vm_frozen_stat(u32 str_offset) {
 
 void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_call_vm_apiZ_iiiii = _call_vm_api;
-
-  Z_envZ_s2nZ_jii = _s2n;
-  Z_envZ_n2sZ_ijii = _n2s;
 
   Z_envZ_setjmp_discard_topZ_vv = _setjmp_discard_top;
   Z_envZ_vm_load_frozen_moduleZ_iiiii = _load_frozen_module;
