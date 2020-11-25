@@ -23,7 +23,13 @@ extern "C" {
     int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
     size_t micropython_load_frozen_code(const char *str, size_t len, char *content, size_t content_size);
 
-    int vmlua_run_script();
+    void *vm_lua_get_memory();
+    size_t vm_lua_get_memory_size();
+    size_t vm_lua_backup_memory(void *backup, size_t size);
+    void vm_lua_init();
+    int vm_lua_init_contract(const char* script, size_t script_len);
+    int vm_lua_apply(uint64_t receiver, uint64_t code, uint64_t action);
+
 }
 
 vm_instantiated_module::vm_instantiated_module()
@@ -75,9 +81,10 @@ vm_manager::vm_manager(const chainbase::database& d): db(d) {
 
     micropython_init();    
     size_t size = micropython_get_memory_size();
-    void *memory = micropython_get_memory();
-    initial_vm_memory.resize(size);
-    memcpy(initial_vm_memory.data(), memory, size);
+    uint8_t *memory = (uint8_t *)micropython_get_memory();
+    initial_vm_memory[1] = std::make_shared<vector<uint8_t>>(memory, memory + size);
+
+    vm_lua_init();
 }
 
 vm_manager::~vm_manager() {}
@@ -120,7 +127,7 @@ static uint64_t get_microseconds() {
 void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
     get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
-    vmlua_run_script();
+//    vmlua_run_script();
 }
 
 void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context ) {
@@ -138,10 +145,10 @@ void vm_manager::take_snapshoot(vm_instantiated_module& module) {
     int block_size = 128;
     int vm_memory_size = micropython_get_memory_size();
     char *vm_start_memory_address = (char *)micropython_get_memory();
-    char *ptr1 = (char *)initial_vm_memory.data();
+    char *ptr1 = (char *)initial_vm_memory[1]->data();
     char *ptr2 = (char *)vm_start_memory_address;
 
-    int initial_memory_size = initial_vm_memory.size();
+    int initial_memory_size = initial_vm_memory[1]->size();
     module.backup.initial_pages = vm_memory_size / PAGE_SIZE;
     int pos = PYTHON_VM_STACK_SIZE; //do not save stack data as it's temperately
     while(pos<initial_memory_size) {
@@ -215,45 +222,46 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
     }
 
     if(!it->module) {
-        if(!codeobject)
+        if(!codeobject) {
             codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+        }
         vm_instantiation_cache.modify(it, [&](auto& c) {
             c.module = runtime_interface->instantiate_module(codeobject->code.data(), codeobject->code.size(), {}, code_hash, vm_type, vm_version);
             auto cleanup = fc::make_scoped_exit([](){
                 get_vm_api()->allow_access_apply_context = true;
             });
             get_vm_api()->allow_access_apply_context = false;
-            micropython_init_memory(initial_vm_memory.size()/PAGE_SIZE);
-            micropython_restore_memory(initial_vm_memory.data(), initial_vm_memory.size());
-            //TODO: handle exception in micropython vm            
-            size_t code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), NULL, 0);
-            EOS_ASSERT( code_size > 0, python_execution_error, "main module not found!" );
-            vector<char> content(code_size);
-            code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), content.data(), content.size());
-            EOS_ASSERT( code_size > 2 && content[0] == 'M', python_execution_error, "BAD mpy code" );
-            int mpy_version = content[1];
-            //TODO: Initialize contract code from vm with specified mpy version
-            EOS_ASSERT( mpy_version == 5, python_execution_error, "BAD mpy version");
-            int ret = micropython_contract_init(0, content.data(), content.size());
-            EOS_ASSERT( ret, python_execution_error, "python contract init error" );
-            // size_t size = micropython_get_memory_size();
-            // c.module->backup.data.resize(size);
-            // micropython_backup_memory(c.module->backup.data.data(), size);
-            take_snapshoot(*c.module);
+
+            if (vm_type == 1) {
+                auto& memory = initial_vm_memory[1];
+                micropython_init_memory(memory->size()/PAGE_SIZE);
+                micropython_restore_memory(memory->data(), memory->size());
+                //TODO: handle exception in micropython vm            
+                size_t code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), NULL, 0);
+                EOS_ASSERT( code_size > 0, python_execution_error, "main module not found!" );
+                vector<char> content(code_size);
+                code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), content.data(), content.size());
+                EOS_ASSERT( code_size > 2 && content[0] == 'M', python_execution_error, "BAD mpy code" );
+                int mpy_version = content[1];
+                //TODO: Initialize contract code from vm with specified mpy version
+                EOS_ASSERT( mpy_version == 5, python_execution_error, "BAD mpy version");
+                int ret = micropython_contract_init(0, content.data(), content.size());
+                EOS_ASSERT( ret, python_execution_error, "python contract init error" );
+                take_snapshoot(*c.module);
+            }
         });
     } else {
-        micropython_init_memory(it->module->backup.initial_pages);
-        char *vm_start_memory_address = (char *)micropython_get_memory();
-        int pos = 0;
-        for (memory_segment& segment: it->module->backup.segments) {
-//            ilog("+++++++offset ${n1}, size ${n2}", ("n1", segment.offset)("n2", segment.data.size()));
-            memcpy(vm_start_memory_address + pos, initial_vm_memory.data() + pos, segment.offset - pos);
-            memcpy(vm_start_memory_address + segment.offset, segment.data.data(), segment.data.size());
-            pos = segment.offset + segment.data.size();
+        if (vm_type == 1) {
+            micropython_init_memory(it->module->backup.initial_pages);
+            char *vm_start_memory_address = (char *)micropython_get_memory();
+            int pos = 0;
+            for (memory_segment& segment: it->module->backup.segments) {
+                memcpy(vm_start_memory_address + pos, initial_vm_memory[1]->data() + pos, segment.offset - pos);
+                memcpy(vm_start_memory_address + segment.offset, segment.data.data(), segment.data.size());
+                pos = segment.offset + segment.data.size();
+            }
+            memset(vm_start_memory_address + pos, 0, micropython_get_memory_size() - pos);
         }
-        memset(vm_start_memory_address + pos, 0, micropython_get_memory_size() - pos);
-//        EOS_ASSERT(memcmp(it->module->backup.data.data(), vm_start_memory_address, it->module->backup.data.size()) == 0, fc::exception, "bad restore!");
-//        micropython_restore_memory(it->module->backup.data.data(), it->module->backup.data.size());
     }
     return it->module;
 }

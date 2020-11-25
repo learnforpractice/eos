@@ -107,7 +107,7 @@ namespace eosio { namespace chain {
          python_cache_index vm_instantiation_cache;
          const chainbase::database& db;
          static std::map<uint16_t, struct vm_python_info> vm_python_map;
-         vector<uint8_t> initial_vm_memory;
+         std::map<int, std::shared_ptr<vector<uint8_t>>> initial_vm_memory;
 //         static std::map<uint16_t, std::shared_ptr<vm_memory>> vm_python_memory_map;
    };
 
