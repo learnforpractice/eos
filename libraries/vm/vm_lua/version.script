@@ -1,5 +1,4 @@
 CODEABI_1.0 {
-    global: lua_init;vmlua_run_script
+    global: vm_lua_get_memory;vm_lua_get_memory_size;vm_lua_backup_memory;vm_lua_init;vm_lua_init_contract;vm_lua_apply
     local: *;
 };
-
