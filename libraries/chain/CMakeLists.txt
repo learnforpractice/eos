@@ -77,8 +77,6 @@ add_library( eosio_chain
               wast_to_wasm.cpp
               wasm_interface.cpp
 
-              micropython_interface.cpp
-
               wasm_eosio_validation.cpp
               wasm_eosio_injection.cpp
               apply_context.cpp
@@ -123,15 +121,16 @@ target_link_libraries( eosio_chain fc chainbase Logging IR WAST WASM Runtime
                        wasm2c_contracts
                        native_contracts
                        ${LIBEVM4EOS}
-                       vm_micropython
+                       vm_manager
                        )
 
 target_include_directories( eosio_chain
-                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"
-                                   "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
-                                   "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
-                                   "${CMAKE_SOURCE_DIR}/libraries/wabt"
-                                   "${CMAKE_BINARY_DIR}/libraries/wabt"
+                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
+                                    "${CMAKE_CURRENT_BINARY_DIR}/include"
+                                    "${CMAKE_CURRENT_SOURCE_DIR}/../wasm-jit/Include"
+                                    "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
+                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
+                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
                                     "${CMAKE_SOURCE_DIR}/contracts/vm_api/include"
                                     "${CMAKE_SOURCE_DIR}/contracts/vm_api"
                               PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
@@ -141,6 +140,7 @@ target_include_directories( eosio_chain
                               PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
                               PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
                               PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
+                              PUBLIC "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager/include"
                         )
 add_dependencies(eosio_chain contracts_project)
 add_dependencies(eosio_chain evmone4eosio)

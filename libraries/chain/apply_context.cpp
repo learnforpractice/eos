@@ -4,7 +4,7 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/wasm_interface.hpp>
-#include <eosio/chain/micropython_interface.hpp>
+#include <eosio/chain/vm_manager.hpp>
 #include <eosio/chain/generated_transaction_object.hpp>
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/resource_limits.hpp>
@@ -120,7 +120,7 @@ void apply_context::exec_one()
                      }
                   }
                } else if (receiver_account->vm_type == 1) {
-                  control.get_micropython_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
+                  control.get_vm_manager().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                }
             } catch( const wasm_exit& ) {}
          }

@@ -1,8 +1,8 @@
-#include <eosio/chain/micropython_interface.hpp>
+#include <eosio/chain/vm_manager.hpp>
 #include <eosio/chain/apply_context.hpp>
 #include <vm_api/vm_api.h>
 
-#include "../vm/vm_micropython/micropython_vm_config.h"
+#include "../vm_micropython/micropython_vm_config.h"
 
 using namespace eosio::chain;
 
@@ -22,9 +22,11 @@ extern "C" {
     int micropython_contract_init(int type, const char *py_src, size_t size);
     int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
     size_t micropython_load_frozen_code(const char *str, size_t len, char *content, size_t content_size);
+
+    int vmlua_run_script();
 }
 
-micropython_instantiated_module::micropython_instantiated_module()
+vm_instantiated_module::vm_instantiated_module()
 {
 
 }
@@ -37,39 +39,39 @@ long long get_time_us() {
     return us;
 }
 
-void micropython_instantiated_module::apply(apply_context& context) {
+void vm_instantiated_module::apply(apply_context& context) {
     auto receiver = context.get_receiver().to_uint64_t();
     auto account = context.get_action().account.to_uint64_t();
     auto act = context.get_action().name.to_uint64_t();
 
-    long long start = get_time_us();
+    // long long start = get_time_us();
     int ret = micropython_contract_apply(receiver, account, act);
     EOS_ASSERT( ret, python_execution_error, "python vm execution error" );
     // printf("+++++++++apply %lld\n", get_time_us() - start);
 }
 
-void micropython_instantiated_module::call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) {
+void vm_instantiated_module::call(uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context) {
     EOS_ASSERT( false, wasm_execution_error, "call not implemented in python vm" );
 }
 
-void micropython_instantiated_module::take_snapshoot() {
+void vm_instantiated_module::take_snapshoot() {
 
 }
 
 
-micropython_runtime::micropython_runtime() {}
+vm_runtime::vm_runtime() {}
 
-std::unique_ptr<micropython_instantiated_module> micropython_runtime::instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory,
+std::unique_ptr<vm_instantiated_module> vm_runtime::instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t> initial_memory,
                                                                                      const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) {
-   return std::make_unique<micropython_instantiated_module>();
+   return std::make_unique<vm_instantiated_module>();
 }
 
-void micropython_runtime::immediately_exit_currently_running_module() {
+void vm_runtime::immediately_exit_currently_running_module() {
    throw wasm_exit();
 }
 
-micropython_interface::micropython_interface(const chainbase::database& d): db(d) {
-    runtime_interface = std::make_unique<micropython_runtime>();
+vm_manager::vm_manager(const chainbase::database& d): db(d) {
+    runtime_interface = std::make_unique<vm_runtime>();
 
     micropython_init();    
     size_t size = micropython_get_memory_size();
@@ -78,34 +80,34 @@ micropython_interface::micropython_interface(const chainbase::database& d): db(d
     memcpy(initial_vm_memory.data(), memory, size);
 }
 
-micropython_interface::~micropython_interface() {}
+vm_manager::~vm_manager() {}
 
 
 //call before dtor to skip what can be minutes of dtor overhead with some runtimes; can cause leaks
-void micropython_interface::indicate_shutting_down() {
+void vm_manager::indicate_shutting_down() {
 
 }
 
-void micropython_interface::validate(const controller& control, const bytes& code) {
+void vm_manager::validate(const controller& control, const bytes& code) {
     
 }
 
 //indicate that a particular code probably won't be used after given block_num
-void micropython_interface::code_block_num_last_used(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, const uint32_t& block_num) {
-    python_cache_index::iterator it = micropython_instantiation_cache.find(boost::make_tuple(code_hash, vm_type, vm_version));
-    if(it != micropython_instantiation_cache.end()) {
-        micropython_instantiation_cache.modify(it, [block_num](micropython_cache_entry& e) {
+void vm_manager::code_block_num_last_used(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, const uint32_t& block_num) {
+    python_cache_index::iterator it = vm_instantiation_cache.find(boost::make_tuple(code_hash, vm_type, vm_version));
+    if(it != vm_instantiation_cache.end()) {
+        vm_instantiation_cache.modify(it, [block_num](vm_cache_entry& e) {
             e.last_block_num_used = block_num;
         });
     }
 }
 
 //indicate the current LIB. evicts old cache entries
-void micropython_interface::current_lib(const uint32_t lib) {
+void vm_manager::current_lib(const uint32_t lib) {
     //anything last used before or on the LIB can be evicted
-    const auto first_it = micropython_instantiation_cache.get<by_last_block_num>().begin();
-    const auto last_it  = micropython_instantiation_cache.get<by_last_block_num>().upper_bound(lib);
-    micropython_instantiation_cache.get<by_last_block_num>().erase(first_it, last_it);
+    const auto first_it = vm_instantiation_cache.get<by_last_block_num>().begin();
+    const auto last_it  = vm_instantiation_cache.get<by_last_block_num>().upper_bound(lib);
+    vm_instantiation_cache.get<by_last_block_num>().erase(first_it, last_it);
 }
 
 static uint64_t get_microseconds() {
@@ -115,21 +117,22 @@ static uint64_t get_microseconds() {
 }
 
 //Calls apply or error on a given code
-void micropython_interface::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
+void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
     get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context);
+    vmlua_run_script();
 }
 
-void micropython_interface::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context ) {
+void vm_manager::call(uint64_t contract, uint64_t func_name, uint64_t arg1, uint64_t arg2, uint64_t arg3, apply_context& context ) {
     EOS_ASSERT( false, wasm_execution_error, "call not implemented in python vm" );
 }
 
 //Immediately exits currently running wasm. UB is called when no wasm running
-void micropython_interface::exit() {
+void vm_manager::exit() {
 
 }
 
-void micropython_interface::take_snapshoot(micropython_instantiated_module& module) {
+void vm_manager::take_snapshoot(vm_instantiated_module& module) {
 //            printf("++++++++++++malloc pos %u\n", *(uint32_t *)ptr2);
     int total_count = 0;
     int block_size = 128;
@@ -178,7 +181,7 @@ void micropython_interface::take_snapshoot(micropython_instantiated_module& modu
     }
 }
 
-size_t micropython_interface::get_snapshoot_size(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, apply_context& context) {
+size_t vm_manager::get_snapshoot_size(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, apply_context& context) {
     uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
     return get_instantiated_module(code_hash, vm_type, vm_version, context)->backup.total_segment_size;
 }
@@ -190,18 +193,18 @@ static void print_hex(const char *data, size_t size) {
   printf("\n");
 }
 
-const std::unique_ptr<micropython_instantiated_module>& micropython_interface::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
+const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_module( const digest_type& code_hash, const uint8_t& vm_type,
                                                                             const uint8_t& vm_version, apply_context& context )
 {
     uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
 
-    python_cache_index::iterator it = micropython_instantiation_cache.find(
+    python_cache_index::iterator it = vm_instantiation_cache.find(
                                         boost::make_tuple(code_hash, vm_type, vm_version) );
     const code_object* codeobject = nullptr;
-    if(it == micropython_instantiation_cache.end()) {
+    if(it == vm_instantiation_cache.end()) {
         codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
 
-        it = micropython_instantiation_cache.emplace( micropython_cache_entry{
+        it = vm_instantiation_cache.emplace( vm_cache_entry{
                                                     .code_hash = code_hash,
                                                     .first_block_num_used = codeobject->first_block_used,
                                                     .last_block_num_used = UINT32_MAX,
@@ -214,7 +217,7 @@ const std::unique_ptr<micropython_instantiated_module>& micropython_interface::g
     if(!it->module) {
         if(!codeobject)
             codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
-        micropython_instantiation_cache.modify(it, [&](auto& c) {
+        vm_instantiation_cache.modify(it, [&](auto& c) {
             c.module = runtime_interface->instantiate_module(codeobject->code.data(), codeobject->code.size(), {}, code_hash, vm_type, vm_version);
             auto cleanup = fc::make_scoped_exit([](){
                 get_vm_api()->allow_access_apply_context = true;

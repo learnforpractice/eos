@@ -21,7 +21,7 @@ namespace boost { namespace asio {
 namespace eosio { namespace chain {
 
    class authorization_manager;
-   class micropython_interface;
+   class vm_manager;
    class db_interface;
    
    namespace resource_limits {
@@ -329,7 +329,7 @@ namespace eosio { namespace chain {
 
          const apply_handler* find_apply_handler( account_name contract, scope_name scope, action_name act )const;
          wasm_interface& get_wasm_interface();
-         micropython_interface& get_micropython_interface();
+         vm_manager& get_vm_manager();
          db_interface& get_db_interface();
 
          optional<abi_serializer> get_abi_serializer( account_name n, const abi_serializer::yield_function_t& yield )const {

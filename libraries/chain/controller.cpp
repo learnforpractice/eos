@@ -24,7 +24,7 @@
 #include <eosio/chain/resource_limits.hpp>
 #include <eosio/chain/chain_snapshot.hpp>
 #include <eosio/chain/thread_utils.hpp>
-#include <eosio/chain/micropython_interface.hpp>
+#include <eosio/chain/vm_manager.hpp>
 #include <eosio/chain/platform_timer.hpp>
 
 #include <chainbase/chainbase.hpp>
@@ -239,7 +239,7 @@ struct controller_impl {
    block_state_ptr                head;
    fork_database                  fork_db;
    wasm_interface                 wasmif;
-   micropython_interface          micropythonif;
+   vm_manager                     vmif;
    db_interface                   dbif;
    resource_limits_manager        resource_limits;
    authorization_manager          authorization;
@@ -320,7 +320,7 @@ struct controller_impl {
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
-    micropythonif( db ),
+    vmif( db ),
     dbif( db ), 
     resource_limits( db ),
     authorization( s, db ),
@@ -346,7 +346,7 @@ struct controller_impl {
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
-         micropythonif.current_lib(bsp->block_num);
+         vmif.current_lib(bsp->block_num);
       });
 
 
@@ -3149,8 +3149,8 @@ wasm_interface& controller::get_wasm_interface() {
    return my->wasmif;
 }
 
-micropython_interface& controller::get_micropython_interface() {
-   return my->micropythonif;
+vm_manager& controller::get_vm_manager() {
+   return my->vmif;
 }
 
 

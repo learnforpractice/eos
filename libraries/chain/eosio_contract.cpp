@@ -15,7 +15,7 @@
 #include <eosio/chain/contract_types.hpp>
 
 #include <eosio/chain/wasm_interface.hpp>
-#include <eosio/chain/micropython_interface.hpp>
+#include <eosio/chain/vm_manager.hpp>
 
 #include <eosio/chain/abi_serializer.hpp>
 
@@ -188,7 +188,7 @@ void apply_eosio_setcode(apply_context& context) {
       EOS_ASSERT( old_code_entry.code_hash != code_hash, set_exact_code,
                   "contract is already running this version of code" );
       if (account.vm_type == 1) {
-         old_size = (int64_t)old_code_entry.code.size() + context.control.get_micropython_interface().get_snapshoot_size(old_code_entry.code_hash, account.vm_type, account.vm_version, context);
+         old_size = (int64_t)old_code_entry.code.size() + context.control.get_vm_manager().get_snapshoot_size(old_code_entry.code_hash, account.vm_type, account.vm_version, context);
       } else {
          old_size  = (int64_t)old_code_entry.code.size() * config::setcode_ram_bytes_multiplier;
       }
@@ -197,7 +197,7 @@ void apply_eosio_setcode(apply_context& context) {
          if (account.vm_type == 0) {
             context.control.get_wasm_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
          } else if (account.vm_type == 1) {
-            context.control.get_micropython_interface().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
+            context.control.get_vm_manager().code_block_num_last_used(account.code_hash, account.vm_type, account.vm_version, context.control.head_block_num() + 1);
          }
       } else {
          db.modify(old_code_entry, [](code_object& o) {
@@ -236,7 +236,7 @@ void apply_eosio_setcode(apply_context& context) {
    int64_t new_size = 0;
    if (act.vmtype == 1) {
       if (code_size > 0) {
-         new_size = code_size + context.control.get_micropython_interface().get_snapshoot_size(code_hash, act.vmtype, act.vmversion, context);
+         new_size = code_size + context.control.get_vm_manager().get_snapshoot_size(code_hash, act.vmtype, act.vmversion, context);
       }
    } else {
       new_size  = code_size * config::setcode_ram_bytes_multiplier;
