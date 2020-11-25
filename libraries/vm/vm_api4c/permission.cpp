@@ -1,3 +1,14 @@
+extern "C" {
+/* import: 'env' 'check_transaction_authorization' */
+u32 (*Z_envZ_check_transaction_authorizationZ_iiiiiii)(u32, u32, u32, u32, u32, u32);
+/* import: 'env' 'check_permission_authorization' */
+u32 (*Z_envZ_check_permission_authorizationZ_ijjiiiij)(u64, u64, u32, u32, u32, u32, u64);
+/* import: 'env' 'get_permission_last_used' */
+u64 (*Z_envZ_get_permission_last_usedZ_jjj)(u64, u64);
+/* import: 'env' 'get_account_creation_time' */
+u64 (*Z_envZ_get_account_creation_timeZ_jj)(u64);
+
+}
 
 static u32 check_transaction_authorization( u32 trx_data_offset, u32 trx_size,
                                  u32 pubkeys_data_offset, u32 pubkeys_size,

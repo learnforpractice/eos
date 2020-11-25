@@ -4,31 +4,34 @@
 #include <softfloat.hpp>
 #include <stdio.h>
 
-/* import: 'env' '__addtf3' */
-void (*Z_envZ___addtf3Z_vijjjj)(u32, u64, u64, u64, u64);
-/* import: 'env' '__eqtf2' */
-u32 (*Z_envZ___eqtf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' '__extenddftf2' */
-void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
-/* import: 'env' '__fixtfsi' */
-u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
-/* import: 'env' '__fixunstfsi' */
-u32 (*Z_envZ___fixunstfsiZ_ijj)(u64, u64);
-/* import: 'env' '__floatsitf' */
-void (*Z_envZ___floatsitfZ_vii)(u32, u32);
-/* import: 'env' '__floatunsitf' */
-void (*Z_envZ___floatunsitfZ_vii)(u32, u32);
-/* import: 'env' '__multf3' */
-void (*Z_envZ___multf3Z_vijjjj)(u32, u64, u64, u64, u64);
-/* import: 'env' '__netf2' */
-u32 (*Z_envZ___netf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' '__subtf3' */
-void (*Z_envZ___subtf3Z_vijjjj)(u32, u64, u64, u64, u64);
-/* import: 'env' '__unordtf2' */
-u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
+extern "C" {
+    /* import: 'env' '__addtf3' */
+    void (*Z_envZ___addtf3Z_vijjjj)(u32, u64, u64, u64, u64);
+    /* import: 'env' '__eqtf2' */
+    u32 (*Z_envZ___eqtf2Z_ijjjj)(u64, u64, u64, u64);
+    /* import: 'env' '__extenddftf2' */
+    void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
+    /* import: 'env' '__fixtfsi' */
+    u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
+    /* import: 'env' '__fixunstfsi' */
+    u32 (*Z_envZ___fixunstfsiZ_ijj)(u64, u64);
+    /* import: 'env' '__floatsitf' */
+    void (*Z_envZ___floatsitfZ_vii)(u32, u32);
+    /* import: 'env' '__floatunsitf' */
+    void (*Z_envZ___floatunsitfZ_vii)(u32, u32);
+    /* import: 'env' '__multf3' */
+    void (*Z_envZ___multf3Z_vijjjj)(u32, u64, u64, u64, u64);
+    /* import: 'env' '__netf2' */
+    u32 (*Z_envZ___netf2Z_ijjjj)(u64, u64, u64, u64);
+    /* import: 'env' '__subtf3' */
+    void (*Z_envZ___subtf3Z_vijjjj)(u32, u64, u64, u64, u64);
+    /* import: 'env' '__unordtf2' */
+    u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
 
-/* import: 'env' '__divtf3' */
-void (*Z_envZ___divtf3Z_vijjjj)(u32, u64, u64, u64, u64);
+    /* import: 'env' '__divtf3' */
+    void (*Z_envZ___divtf3Z_vijjjj)(u32, u64, u64, u64, u64);
+
+}
 
 static bool is_nan( const float32_t f ) {
     return f32_is_nan( f );

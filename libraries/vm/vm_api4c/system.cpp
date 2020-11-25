@@ -1,4 +1,22 @@
 #include "stacktrace.h"
+extern "C" {
+   /* import: 'env' 'eosio_assert' */
+   void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
+   /* import: 'env' 'eosio_assert_message' */
+   void (*Z_envZ_eosio_assert_messageZ_viii)(u32, u32, u32);
+   /* import: 'env' 'eosio_assert_code' */
+   void (*Z_envZ_eosio_assert_codeZ_vij)(u32, u64);
+
+   /* import: 'env' 'call_contract' */
+   void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
+   /* import: 'env' 'call_contract_get_results' */
+   u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
+
+   /* import: 'env' 'current_time' */
+   u64 (*Z_envZ_current_timeZ_jv)(void);
+
+}
+
 static void eosio_assert( u32 test, u32 msg_offset ) {
    if (test) {
    } else {

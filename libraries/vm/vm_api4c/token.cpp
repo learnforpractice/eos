@@ -1,3 +1,16 @@
+extern "C" {
+/* import: 'env' 'token_issue' */
+void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'token_transfer' */
+void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+void (*Z_envZ_token_closeZ_vjj)(u64, u64);
+}
+
 static void token_create(u64 issuer, u64 maximum_supply, u64 symbol) {
     get_vm_api()->token_create(issuer, maximum_supply, symbol);
 }

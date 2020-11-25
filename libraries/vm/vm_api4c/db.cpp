@@ -1,3 +1,144 @@
+extern "C" {
+   /* import: 'env' 'db_store_i64' */
+   u32 (*Z_envZ_db_store_i64Z_ijjjjii)(u64, u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_update_i64' */
+   void (*Z_envZ_db_update_i64Z_vijii)(u32, u64, u32, u32);
+   /* import: 'env' 'db_find_i64' */
+   u32 (*Z_envZ_db_find_i64Z_ijjjj)(u64, u64, u64, u64);
+   /* import: 'env' 'db_get_i64' */
+   u32 (*Z_envZ_db_get_i64Z_iiii)(u32, u32, u32);
+   /* import: 'env' 'db_remove_i64' */
+   void (*Z_envZ_db_remove_i64Z_vi)(u32);
+   /* import: 'env' 'db_next_i64' */
+   u32 (*Z_envZ_db_next_i64Z_iii)(u32, u32);
+   /* import: 'env' 'db_previous_i64' */
+   u32 (*Z_envZ_db_previous_i64Z_iii)(u32, u32);
+   /* import: 'env' 'db_upperbound_i64' */
+   u32 (*Z_envZ_db_upperbound_i64Z_ijjjj)(u64, u64, u64, u64);
+   /* import: 'env' 'db_lowerbound_i64' */
+   u32 (*Z_envZ_db_lowerbound_i64Z_ijjjj)(u64, u64, u64, u64);
+   /* import: 'env' 'db_end_i64' */
+   u32 (*Z_envZ_db_end_i64Z_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_get_table_count' */
+   u32 (*Z_envZ_db_get_table_countZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_idx64_store' */
+   u32 (*Z_envZ_db_idx64_storeZ_ijjjji)(u64, u64, u64, u64, u32);
+   /* import: 'env' 'db_idx64_update' */
+   void (*Z_envZ_db_idx64_updateZ_viji)(u32, u64, u32);
+   /* import: 'env' 'db_idx64_remove' */
+   void (*Z_envZ_db_idx64_removeZ_vi)(u32);
+   /* import: 'env' 'db_idx64_next' */
+   u32 (*Z_envZ_db_idx64_nextZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx64_previous' */
+   u32 (*Z_envZ_db_idx64_previousZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx64_find_primary' */
+   u32 (*Z_envZ_db_idx64_find_primaryZ_ijjjij)(u64, u64, u64, u32, u64);
+   /* import: 'env' 'db_idx64_find_secondary' */
+   u32 (*Z_envZ_db_idx64_find_secondaryZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx64_lowerbound' */
+   u32 (*Z_envZ_db_idx64_lowerboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx64_upperbound' */
+   u32 (*Z_envZ_db_idx64_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx64_end' */
+   u32 (*Z_envZ_db_idx64_endZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_idx128_store' */
+   u32 (*Z_envZ_db_idx128_storeZ_ijjjji)(u64, u64, u64, u64, u32);
+   /* import: 'env' 'db_idx128_update' */
+   void (*Z_envZ_db_idx128_updateZ_viji)(u32, u64, u32);
+   /* import: 'env' 'db_idx128_remove' */
+   void (*Z_envZ_db_idx128_removeZ_vi)(u32);
+   /* import: 'env' 'db_idx128_next' */
+   u32 (*Z_envZ_db_idx128_nextZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx128_previous' */
+   u32 (*Z_envZ_db_idx128_previousZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx128_find_primary' */
+   u32 (*Z_envZ_db_idx128_find_primaryZ_ijjjij)(u64, u64, u64, u32, u64);
+   /* import: 'env' 'db_idx128_find_secondary' */
+   u32 (*Z_envZ_db_idx128_find_secondaryZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx128_lowerbound' */
+   u32 (*Z_envZ_db_idx128_lowerboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx128_upperbound' */
+   u32 (*Z_envZ_db_idx128_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx128_end' */
+   u32 (*Z_envZ_db_idx128_endZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_idx256_update' */
+   void (*Z_envZ_db_idx256_updateZ_vijii)(u32, u64, u32, u32);
+   /* import: 'env' 'db_idx256_remove' */
+   void (*Z_envZ_db_idx256_removeZ_vi)(u32);
+   /* import: 'env' 'db_idx256_next' */
+   u32 (*Z_envZ_db_idx256_nextZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx256_previous' */
+   u32 (*Z_envZ_db_idx256_previousZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx256_find_primary' */
+   u32 (*Z_envZ_db_idx256_find_primaryZ_ijjjiij)(u64, u64, u64, u32, u32, u64);
+   /* import: 'env' 'db_idx256_find_secondary' */
+   u32 (*Z_envZ_db_idx256_find_secondaryZ_ijjjiii)(u64, u64, u64, u32, u32, u32);
+   /* import: 'env' 'db_idx256_lowerbound' */
+   u32 (*Z_envZ_db_idx256_lowerboundZ_ijjjiii)(u64, u64, u64, u32, u32, u32);
+   /* import: 'env' 'db_idx256_upperbound' */
+   u32 (*Z_envZ_db_idx256_upperboundZ_ijjjiii)(u64, u64, u64, u32, u32, u32);
+   /* import: 'env' 'db_idx256_end' */
+   u32 (*Z_envZ_db_idx256_endZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_idx_double_store' */
+   u32 (*Z_envZ_db_idx_double_storeZ_ijjjji)(u64, u64, u64, u64, u32);
+   /* import: 'env' 'db_idx_double_update' */
+   void (*Z_envZ_db_idx_double_updateZ_viji)(u32, u64, u32);
+   /* import: 'env' 'db_idx_double_remove' */
+   void (*Z_envZ_db_idx_double_removeZ_vi)(u32);
+   /* import: 'env' 'db_idx_double_next' */
+   u32 (*Z_envZ_db_idx_double_nextZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx_double_previous' */
+   u32 (*Z_envZ_db_idx_double_previousZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx_double_find_primary' */
+   u32 (*Z_envZ_db_idx_double_find_primaryZ_ijjjij)(u64, u64, u64, u32, u64);
+   /* import: 'env' 'db_idx_double_find_secondary' */
+   u32 (*Z_envZ_db_idx_double_find_secondaryZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx_double_lowerbound' */
+   u32 (*Z_envZ_db_idx_double_lowerboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx_double_upperbound' */
+   u32 (*Z_envZ_db_idx_double_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx_double_end' */
+   u32 (*Z_envZ_db_idx_double_endZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_idx_long_double_store' */
+   u32 (*Z_envZ_db_idx_long_double_storeZ_ijjjji)(u64, u64, u64, u64, u32);
+   /* import: 'env' 'db_idx_long_double_update' */
+   void (*Z_envZ_db_idx_long_double_updateZ_viji)(u32, u64, u32);
+   /* import: 'env' 'db_idx_long_double_remove' */
+   void (*Z_envZ_db_idx_long_double_removeZ_vi)(u32);
+   /* import: 'env' 'db_idx_long_double_next' */
+   u32 (*Z_envZ_db_idx_long_double_nextZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx_long_double_previous' */
+   u32 (*Z_envZ_db_idx_long_double_previousZ_iii)(u32, u32);
+   /* import: 'env' 'db_idx_long_double_find_primary' */
+   u32 (*Z_envZ_db_idx_long_double_find_primaryZ_ijjjij)(u64, u64, u64, u32, u64);
+   /* import: 'env' 'db_idx_long_double_find_secondary' */
+   u32 (*Z_envZ_db_idx_long_double_find_secondaryZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx_long_double_lowerbound' */
+   u32 (*Z_envZ_db_idx_long_double_lowerboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx_long_double_upperbound' */
+   u32 (*Z_envZ_db_idx_long_double_upperboundZ_ijjjii)(u64, u64, u64, u32, u32);
+   /* import: 'env' 'db_idx_long_double_end' */
+   u32 (*Z_envZ_db_idx_long_double_endZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_idx256_store' */
+   u32 (*Z_envZ_db_idx256_storeZ_ijjjjii)(u64, u64, u64, u64, u32, u32);
+
+
+   u32 (*Z_envZ_db_get_countZ_ijjj)(u64, u64, u64);
+
+
+   u32 (*Z_envZ_db_find_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+   void (*Z_envZ_db_update_i256Z_vijii)(u32, u64, u32, u32);
+   u32 (*Z_envZ_db_store_i256Z_ijjjiiii)(u64, u64, u64, u32, u32, u32, u32);
+   u32 (*Z_envZ_db_get_i256Z_iiii)(u32, u32, u32);
+   void (*Z_envZ_db_remove_i256Z_vi)(u32);
+
+   u32 (*Z_envZ_db_next_i256Z_iiii)(u32, u32, u32);
+   u32 (*Z_envZ_db_previous_i256Z_iiii)(u32, u32, u32);
+   u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+   u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+   u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
+}
+
 static u32 db_store_i64(u64 scope, u64 table, u64 payer, u64 id,  u32 data_offset, u32 len) {
    const void* data = (void *)offset_to_ptr(data_offset, len);
    return get_vm_api()->db_store_i64(scope, table, payer, id, (const char*)data, len);

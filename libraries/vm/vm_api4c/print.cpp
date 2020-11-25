@@ -1,48 +1,68 @@
 //prints defined in chain_api.cpp
-#if 0 
-void prints( const char* cstr ) {
-   get_vm_api()->prints(cstr);
-}
-#endif
+extern "C" {
+/* import: 'env' 'prints_l' */
+void (*Z_envZ_prints_lZ_vii)(u32, u32);
+/* import: 'env' 'prints' */
+void (*Z_envZ_printsZ_vi)(u32);
+/* import: 'env' 'printi' */
+void (*Z_envZ_printiZ_vj)(u64);
 
-#if 0 //not used
-void prints_l( const char* cstr, uint32_t len) {
-   get_vm_api()->prints_l( cstr, len);
-}
+void (*Z_envZ_printnZ_vj)(u64);
+void (*Z_envZ_printuiZ_vj)(u64);
 
-void printi( int64_t value ) {
-   get_vm_api()->printi( value );
-}
-
-void printui( uint64_t value ) {
-   get_vm_api()->printui( value );
+/* import: 'env' 'printhex' */
+void (*Z_envZ_printhexZ_vii)(u32, u32);
+void (*Z_envZ_printqfZ_vi)(u32);
 }
 
-void printi128( const int128_t* value ) {
-   get_vm_api()->printi128(value);
+
+
+/*
+static void _printi(u64 v) {
+    get_vm_api()->printi(v);
 }
 
-void printui128( const uint128_t* value ) {
-   get_vm_api()->printui128(value);
+static void _prints(u32 s_offset) {
+    char *s = (char *)offset_to_char_ptr(s_offset);
+    get_vm_api()->prints(s);
+}
+*/
+
+static void _printn(u64 n) {
+    get_vm_api()->printn(n);
 }
 
-void printsf(float value) {
-   get_vm_api()->printsf(value);
+static void _printqf(u32 offset) {
+    float128_t *qf = (float128_t *)offset_to_ptr(offset, sizeof(float128_t));
+    get_vm_api()->printqf(qf);
 }
 
-void printdf(double value) {
-   get_vm_api()->printdf(value);
+static void _prints_l(u32 s_offset, u32 size) {
+    char *s = (char *)offset_to_ptr(s_offset, size);
+    if (get_vm_api()->is_in_apply_context) {
+        get_vm_api()->prints_l(s, size);
+    } else {
+        vmelog("%s", s);
+    }
 }
 
-void printqf(const long double* value) {
-   get_vm_api()->printqf((const float128_t*)value);
+static void _printui(u64 u) {
+    get_vm_api()->printui(u);
 }
 
-void printn( uint64_t name ) {
-   get_vm_api()->printn( name );
+/* import: 'env' 'prints' */
+void _prints(u32 a);
+void _printi(u64 a);
+
+void _printhex(u32 data_offset, u32 data_len) {
+    uint8_t *data = (uint8_t *)offset_to_ptr(data_offset, data_len);
+    get_vm_api()->printhex(data, data_len);
 }
 
-void printhex( const void* data, uint32_t datalen ) {
-   get_vm_api()->printhex( data, datalen );
+void init_print() {
+    Z_envZ_printhexZ_vii = _printhex;
+
+    Z_envZ_printiZ_vj = _printi;
+    Z_envZ_printsZ_vi = _prints;
+    Z_envZ_printqfZ_vi = _printqf;
 }
-#endif

@@ -1,3 +1,25 @@
+extern "C" {
+   /* import: 'env' 'send_deferred' */
+   void (*Z_envZ_send_deferredZ_vijiii)(u32, u64, u32, u32, u32);
+   /* import: 'env' 'cancel_deferred' */
+   u32 (*Z_envZ_cancel_deferredZ_ii)(u32);
+
+   /* import: 'env' 'read_transaction' */
+   u32 (*Z_envZ_read_transactionZ_iii)(u32, u32);
+
+   /* import: 'env' 'transaction_size' */
+   u32 (*Z_envZ_transaction_sizeZ_iv)(void);
+   /* import: 'env' 'tapos_block_num' */
+   u32 (*Z_envZ_tapos_block_numZ_iv)(void);
+   /* import: 'env' 'tapos_block_prefix' */
+   u32 (*Z_envZ_tapos_block_prefixZ_iv)(void);
+   /* import: 'env' 'expiration' */
+   u32 (*Z_envZ_expirationZ_iv)(void);
+
+   u32 (*Z_envZ_get_actionZ_iiiii)(u32, u32, u32, u32);
+   /* import: 'env' 'get_context_free_data' */
+   u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
+}
 
 static void send_deferred(u32 sender_id_offset, u64 payer, u32 serialized_transaction_offset, u32 size, u32 replace_existing) {
    uint128_t *sender_id = (uint128_t *)offset_to_ptr(sender_id_offset, sizeof(uint128_t));
