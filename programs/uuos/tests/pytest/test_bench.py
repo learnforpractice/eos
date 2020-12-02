@@ -25,7 +25,7 @@ class Test(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest(uuos_network=True, jit=True)
+        cls.chain = ChainTest(network_type=1, jit=True)
         a = {
             "account": 'alice',
             "permission": "active",
@@ -157,15 +157,13 @@ class Test(object):
         self.chain.deploy_contract('alice', code, b'', vmtype=1, show_elapse=False)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         self.chain.produce_block()
-        return r['elapsed']/1e6
+        return (r['elapsed']-100)/1e6
 
     def test_bench(self):
         code = '''
 def apply(a, b, c):
-    def f():
-        return 1
-    for i in range(5):
-        f()
+    for i in range(1000000):
+        a = 1
 '''
         elapsed = self.run_test(code)
         logger.info("assignment.py: %s", elapsed)
@@ -283,11 +281,11 @@ def apply(a, b, c):
         code = '''
 def apply(a, b, c):
     a, b, c = 'a', 'b', 'c'
-    for i in range(10000):
+    for i in range(1000):
         a + b + c
 '''
         elapsed = self.run_test(code)
-        logger.info("add_strings.py: %s", elapsed*100)
+        logger.info("add_strings.py: %s", elapsed*1000)
 
         code = '''
 def apply(a, b, c):

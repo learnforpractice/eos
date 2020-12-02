@@ -11,7 +11,7 @@ class Test(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest(uuos_network=True)
+        cls.chain = ChainTest(network_type=1)
 
     @classmethod
     def teardown_class(cls):

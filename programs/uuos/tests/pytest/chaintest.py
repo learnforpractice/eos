@@ -129,13 +129,25 @@ key_map = {
     'EOS5fVw435RSwW3YYWAX9qz548JFTWuFiBcHT3PGLryWaAMmxgjp1':'5K9AZWR2wEwtZii52vHigrxcSwCzLhhJbNpdXpVFKHP5fgFG5Tx'
 }
 
+NETWORK_TYPE_UUOS = 1
+NETWORK_TYPE_EOS = 2
+NETWORK_TYPE_UUOS_TEST = 3
+
+
 class ChainTest(object):
 
-    def __init__(self, uuos_network=False, jit=True, data_dir=None, config_dir=None):
+    def __init__(self, network_type=2, jit=True, data_dir=None, config_dir=None):
         uuos.set_log_level('default', 0)
         self.feature_digests = []
 
+        if network_type == 1 or network_type == 3:
+            uuos_network = True
+        else:
+            uuos_network = False
+
+        self.network_type = network_type
         self.uuos_network = uuos_network
+
         self.feature_activated = False
         if uuos_network:
             self.main_token = 'UUOS'
@@ -287,7 +299,10 @@ class ChainTest(object):
 
         logger.info('deploy eosio.system...')
         if self.uuos_network:
-            self.deploy_eosio_system_uuos()
+            if self.network_type == NETWORK_TYPE_UUOS_TEST:
+                self.deploy_eosio_system_uuos_test()
+            else:
+                self.deploy_eosio_system_uuos()
         else:
             self.deploy_eosio_system()
         self.produce_block()
@@ -653,6 +668,16 @@ class ChainTest(object):
             abi = f.read()
         self.deploy_contract('uuos', code, abi)
 
+    def deploy_eosio_system_uuos_test(self):
+        code_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.test.wasm')
+        abi_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.abi')
+
+        with open(code_path, 'rb') as f:
+            code = f.read()
+        with open(abi_path, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('uuos', code, abi)
+
     def deploy_eosio_system(self):
         code_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.wasm')
         abi_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.abi')
@@ -999,8 +1024,8 @@ def apply(receiver, code, action):
     def free(self):
         if self.chain.ptr:
             self.chain.free()
-            # shutil.rmtree(self.options.config_dir)
-            # shutil.rmtree(self.options.data_dir)
+            shutil.rmtree(self.options.config_dir)
+            shutil.rmtree(self.options.data_dir)
 
     def get_table_rows(self, _json, code, scope, table, table_key, lower_bound,
                        upper_bound, limit, encode_type='dec') -> dict:

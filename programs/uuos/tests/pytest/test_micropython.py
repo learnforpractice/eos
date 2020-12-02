@@ -25,7 +25,7 @@ class Test(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest(uuos_network=True, jit=True)
+        cls.chain = ChainTest(network_type=1, jit=True)
         a = {
             "account": 'alice',
             "permission": "active",
@@ -1001,6 +1001,6 @@ def apply(a, b, c):
         self.chain.free()
         # shutil.rmtree(state_dir)
         logger.info("++++++replay chain")
-        self.chain = ChainTest(uuos_network=True, jit=True, data_dir=options.data_dir, config_dir=options.config_dir)
+        self.chain = ChainTest(network_type=1, jit=True, data_dir=options.data_dir, config_dir=options.config_dir)
 
 

@@ -26,7 +26,7 @@ class Test(object):
 
     def setup_method(self, method):
         pass
-        self.chain = ChainTest(uuos_network=True)
+        self.chain = ChainTest(network_type=1)
 
     def teardown_method(self, method):
         pass

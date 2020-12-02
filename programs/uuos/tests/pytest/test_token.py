@@ -17,7 +17,7 @@ class Test(object):
     @classmethod
     def setup_class(cls):
         cls.main_token = 'UUOS'
-        cls.chain = chain = ChainTest(uuos_network=True)
+        cls.chain = chain = ChainTest(network_type=1)
         contract_name = 'testmetestme'
         code = chain.compile_py_code_from_file('token.py')
         abi_file = os.path.join(test_dir, 'test_contracts', 'token.abi')

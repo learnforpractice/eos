@@ -19,7 +19,7 @@ class Test(object):
     @classmethod
     def setup_class(cls):
         cls.main_token = 'UUOS'
-        cls.chain = ChainTest(uuos_network=True)
+        cls.chain = ChainTest(network_type=1)
         accounts = [
             {
                 "permission": {
