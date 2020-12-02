@@ -43,9 +43,9 @@ print("build_dict.py", get_time()-t0)
 
 t0 = get_time()
 d = {}
-for i in range(100000):
+for i in range(10000):
     d[i] = i
-print("build_dict2.py", get_time()-t0)
+print("build_dict2.py", (get_time()-t0)*10)
 
 
 t0 = get_time()
