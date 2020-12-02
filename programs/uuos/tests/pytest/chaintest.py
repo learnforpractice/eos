@@ -1024,8 +1024,8 @@ def apply(receiver, code, action):
     def free(self):
         if self.chain.ptr:
             self.chain.free()
-            shutil.rmtree(self.options.config_dir)
-            shutil.rmtree(self.options.data_dir)
+            # shutil.rmtree(self.options.config_dir)
+            # shutil.rmtree(self.options.data_dir)
 
     def get_table_rows(self, _json, code, scope, table, table_key, lower_bound,
                        upper_bound, limit, encode_type='dec') -> dict:
