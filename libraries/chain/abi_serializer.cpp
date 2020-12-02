@@ -58,6 +58,20 @@ namespace eosio { namespace chain {
       );
    }
 
+   auto pack_unpack_raw() {
+      return std::make_pair<abi_serializer::unpack_function, abi_serializer::pack_function>(
+         []( fc::datastream<const char*>& stream, bool is_array, bool is_optional, const abi_serializer::yield_function_t& yield) -> fc::variant  {
+               vector<char> v(stream.remaining());
+               stream.read(v.data(), v.size());
+               return variant(v);
+         },
+         []( const fc::variant& var, fc::datastream<char*>& ds, bool is_array, bool is_optional, const abi_serializer::yield_function_t& yield){
+               auto v = var.as<vector<char>>();
+               ds.write( v.data(), v.size() );
+         }
+      );
+   }
+
    template <typename T>
    auto pack_unpack_deadline() {
       return std::make_pair<abi_serializer::unpack_function, abi_serializer::pack_function>(
@@ -88,6 +102,7 @@ namespace eosio { namespace chain {
    }
 
    void abi_serializer::configure_built_in_types() {
+      built_in_types.emplace("raw",                pack_unpack_raw());
 
       built_in_types.emplace("bool",                      pack_unpack<uint8_t>());
       built_in_types.emplace("int8",                      pack_unpack<int8_t>());
