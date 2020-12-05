@@ -171,19 +171,15 @@ int main(int argc, char **argv) {
     for (size_t i=0;i<num_names;i++) {
         uint32_t function_index;
         uint32_t name_len;
-        char name[1024];
 
-        memset(name, 0, sizeof(name));
         ptr += read_u32(ptr, function_index);
         ptr += read_u32(ptr, name_len);
-        memcpy(name, ptr, name_len);
-        ptr += name_len;
         // printf("%u %s\n", function_index, name);
-
         ptr2 += write_u32(ptr2, function_index+injector_utils::registered_injected.size());
         ptr2 += write_u32(ptr2, name_len);
-        memcpy(ptr2, name, name_len);
+        memcpy(ptr2, ptr, name_len);
         ptr2 += name_len;
+        ptr += name_len;
     }
 
     size_t new_data_size = ptr2 - new_data.data();
