@@ -331,7 +331,9 @@ static f64 scalbn_0(f64, u32);
 static f64 pow_0(f64, f64);
 static u32 mp_parse_num_integer(u32, u32, u32, u32);
 static void raise_exc(u32, u32);
+static u32 _mp_parse_num_decimal(u32, u32, u32, u32, u32, u32);
 static u32 mp_parse_num_decimal(u32, u32, u32, u32, u32);
+static u32 mp_parse_num_decimal_float128(u32, u32, u32, u32, u32);
 static u32 mp_emit_glue_new_raw_code(void);
 static void mp_emit_glue_assign_bytecode(u32, u32, u32, u32);
 static u32 mp_make_function_from_raw_code(u32, u32, u32);
@@ -19042,18 +19044,25 @@ static void raise_exc(u32 p0, u32 p1) {
   FUNC_EPILOGUE;
 }
 
-static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
-  u32 l0 = 0, l1 = 0, l2 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0;
-  f64 l3 = 0;
+static u32 _mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4, u32 p5) {
+  u32 l0 = 0, l1 = 0, l2 = 0, l3 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, 
+      l9 = 0;
+  f64 l4 = 0;
   FUNC_PROLOGUE;
   u32 i0, i1, i2, i3;
+  u64 j0, j1;
   f64 d0, d1, d2;
+  i0 = g0;
+  i1 = 16u;
+  i0 -= i1;
+  l0 = i0;
+  g0 = i0;
   i0 = p0;
   i1 = p1;
   i0 += i1;
-  l0 = i0;
-  i0 = 0u;
   l1 = i0;
+  i0 = 0u;
+  l2 = i0;
   i0 = p1;
   i1 = 1u;
   i0 = (u32)((s32)i0 < (s32)i1);
@@ -19068,7 +19077,7 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = 1u;
     i0 += i1;
     p0 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L9;}
     goto B7;
@@ -19084,12 +19093,12 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = i0 != i1;
   if (i0) {goto B7;}
   i0 = 1u;
-  l2 = i0;
+  l3 = i0;
   i0 = p0;
   i1 = 1u;
   i0 += i1;
   p0 = i0;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 < i1;
   if (i0) {goto B6;}
   goto B5;
@@ -19100,9 +19109,9 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   p0 = i0;
   B7:;
   i0 = 0u;
-  l2 = i0;
+  l3 = i0;
   i0 = p0;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 >= i1;
   if (i0) {goto B5;}
   B6:;
@@ -19122,7 +19131,7 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i1 = 2u;
   i0 += i1;
   p1 = i0;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 >= i1;
   if (i0) {goto B1;}
   i0 = p0;
@@ -19144,11 +19153,11 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 += i1;
   p1 = i0;
   d0 = INFINITY;
-  l3 = d0;
+  l4 = d0;
   i0 = p0;
   i1 = 7u;
   i0 += i1;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 >= i1;
   if (i0) {goto B12;}
   i0 = p1;
@@ -19199,7 +19208,7 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i1 = 2u;
   i0 += i1;
   p1 = i0;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 >= i1;
   if (i0) {goto B1;}
   i0 = p0;
@@ -19222,18 +19231,18 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   p1 = i0;
   i0 = 17009u;
   d0 = nan_0(i0);
-  l3 = d0;
+  l4 = d0;
   B12:;
-  d0 = l3;
+  d0 = l4;
   d0 = (*Z_eosio_injectionZ__eosio_f64_negZ_dd)(d0);
-  d1 = l3;
-  i2 = l2;
+  d1 = l4;
+  i2 = l3;
   d0 = i2 ? d0 : d1;
-  l3 = d0;
+  l4 = d0;
   i0 = 0u;
   p2 = i0;
   i0 = p1;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 < i1;
   if (i0) {goto B3;}
   goto B2;
@@ -19242,29 +19251,29 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = !(i0);
   if (i0) {goto B17;}
   d0 = 0;
-  l3 = d0;
+  l4 = d0;
   i0 = 0u;
-  l1 = i0;
-  i0 = 0u;
-  l5 = i0;
+  l2 = i0;
   i0 = 0u;
   l6 = i0;
+  i0 = 0u;
+  l7 = i0;
   i0 = 0u;
   p2 = i0;
   i0 = p0;
   p1 = i0;
   L18: vm_checktime();
     i0 = p1;
-    l4 = i0;
+    l5 = i0;
     i1 = 1u;
     i0 += i1;
     p1 = i0;
-    i0 = l4;
+    i0 = l5;
     i0 = i32_load8_s((&M0), (u64)(i0));
-    l7 = i0;
+    l8 = i0;
     i1 = 4294967248u;
     i0 += i1;
-    l8 = i0;
+    l9 = i0;
     i1 = 255u;
     i0 &= i1;
     i1 = 10u;
@@ -19276,74 +19285,74 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     if (i0) {goto B24;}
     i0 = 2u;
     p2 = i0;
-    i0 = l5;
+    i0 = l6;
     i1 = 107374180u;
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B19;}
-    i0 = l8;
-    i1 = l5;
+    i0 = l9;
+    i1 = l6;
     i2 = 10u;
     i1 *= i2;
     i0 += i1;
-    l5 = i0;
+    l6 = i0;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L18;}
     goto B16;
     B25:;
     i0 = p2;
     if (i0) {goto B23;}
-    i0 = l7;
+    i0 = l8;
     i1 = 46u;
     i0 = i0 != i1;
     if (i0) {goto B23;}
     i0 = 1u;
     p2 = i0;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L18;}
     goto B16;
     B24:;
-    d0 = l3;
+    d0 = l4;
     d1 = 9.9999999999999997e+199;
     i0 = (*Z_eosio_injectionZ__eosio_f64_ltZ_idd)(d0, d1);
     i0 = !(i0);
     if (i0) {goto B22;}
-    i0 = l1;
+    i0 = l2;
     i1 = p2;
     i2 = 1u;
     i1 = i1 == i2;
     i0 -= i1;
-    l1 = i0;
-    d0 = l3;
+    l2 = i0;
+    d0 = l4;
     d1 = 10;
     d0 = (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(d0, d1);
-    i1 = l8;
+    i1 = l9;
     d1 = (f64)(i1);
     d0 = (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(d0, d1);
-    l3 = d0;
+    l4 = d0;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L18;}
     goto B16;
     B23:;
-    i0 = l7;
+    i0 = l8;
     i1 = 32u;
     i0 |= i1;
-    l8 = i0;
+    l9 = i0;
     i0 = p2;
     i1 = 2u;
     i0 = i0 == i1;
     if (i0) {goto B26;}
-    i0 = l8;
+    i0 = l9;
     i1 = 101u;
     i0 = i0 != i1;
     if (i0) {goto B26;}
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 >= i1;
     if (i0) {goto B20;}
     i0 = p1;
@@ -19357,47 +19366,47 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i0 = i0 != i1;
     if (i0) {goto B20;}
     i0 = 1u;
-    l6 = i0;
+    l7 = i0;
     i0 = 2u;
     p2 = i0;
-    i0 = l4;
+    i0 = l5;
     i1 = 2u;
     i0 += i1;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 != i1;
     if (i0) {goto B19;}
     goto B1;
     B26:;
-    i0 = l8;
+    i0 = l9;
     i1 = 106u;
     i0 = i0 == i1;
     if (i0) {goto B15;}
     i0 = p1;
-    i1 = l4;
-    i2 = l7;
+    i1 = l5;
+    i2 = l8;
     i3 = 95u;
     i2 = i2 == i3;
     i0 = i2 ? i0 : i1;
     p1 = i0;
-    i0 = l7;
+    i0 = l8;
     i1 = 95u;
     i0 = i0 == i1;
     if (i0) {goto B19;}
     goto B16;
     B22:;
-    i0 = l1;
+    i0 = l2;
     i1 = p2;
     i1 = !(i1);
     i0 += i1;
-    l1 = i0;
+    l2 = i0;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L18;}
     goto B16;
     B21:;
-    i0 = l4;
+    i0 = l5;
     i1 = 2u;
     i0 += i1;
     p1 = i0;
@@ -19405,24 +19414,24 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i0 = 2u;
     p2 = i0;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 == i1;
     if (i0) {goto B1;}
     B19:;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L18;}
     goto B16;
   B17:;
   d0 = 0;
-  l3 = d0;
+  l4 = d0;
   i0 = 0u;
-  l1 = i0;
-  i0 = 0u;
-  l5 = i0;
+  l2 = i0;
   i0 = 0u;
   l6 = i0;
+  i0 = 0u;
+  l7 = i0;
   i0 = 0u;
   p2 = i0;
   i0 = p0;
@@ -19431,13 +19440,13 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i0 = p1;
     i1 = 1u;
     i0 += i1;
-    l4 = i0;
+    l5 = i0;
     i0 = p1;
     i0 = i32_load8_s((&M0), (u64)(i0));
-    l7 = i0;
+    l8 = i0;
     i1 = 4294967248u;
     i0 += i1;
-    l8 = i0;
+    l9 = i0;
     i1 = 255u;
     i0 &= i1;
     i1 = 9u;
@@ -19449,61 +19458,61 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     if (i0) {goto B34;}
     i0 = 2u;
     p2 = i0;
-    i0 = l5;
+    i0 = l6;
     i1 = 107374180u;
     i0 = (u32)((s32)i0 > (s32)i1);
     if (i0) {goto B36;}
-    i0 = l8;
-    i1 = l5;
+    i0 = l9;
+    i1 = l6;
     i2 = 10u;
     i1 *= i2;
     i0 += i1;
-    l5 = i0;
+    l6 = i0;
     B36:;
-    i0 = l4;
+    i0 = l5;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L27;}
     goto B16;
     B35:;
     i0 = p2;
     if (i0) {goto B33;}
-    i0 = l7;
+    i0 = l8;
     i1 = 46u;
     i0 = i0 != i1;
     if (i0) {goto B33;}
     i0 = 1u;
     p2 = i0;
-    i0 = l4;
+    i0 = l5;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L27;}
     goto B16;
     B34:;
-    d0 = l3;
+    d0 = l4;
     d1 = 9.9999999999999997e+199;
     i0 = (*Z_eosio_injectionZ__eosio_f64_ltZ_idd)(d0, d1);
     i1 = 1u;
     i0 ^= i1;
     if (i0) {goto B32;}
-    i0 = l1;
+    i0 = l2;
     i1 = p2;
     i2 = 1u;
     i1 = i1 == i2;
     i0 -= i1;
-    l1 = i0;
-    d0 = l3;
+    l2 = i0;
+    d0 = l4;
     d1 = 10;
     d0 = (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(d0, d1);
-    i1 = l8;
+    i1 = l9;
     d1 = (f64)(i1);
     d0 = (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(d0, d1);
-    l3 = d0;
-    i0 = l4;
+    l4 = d0;
+    i0 = l5;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L27;}
     goto B16;
@@ -19512,17 +19521,17 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = 2u;
     i0 = i0 == i1;
     if (i0) {goto B31;}
-    i0 = l7;
+    i0 = l8;
     i1 = 32u;
     i0 |= i1;
     i1 = 101u;
     i0 = i0 != i1;
     if (i0) {goto B31;}
-    i0 = l4;
-    i1 = l0;
+    i0 = l5;
+    i1 = l1;
     i0 = i0 >= i1;
     if (i0) {goto B30;}
-    i0 = l4;
+    i0 = l5;
     i0 = i32_load8_u((&M0), (u64)(i0));
     p2 = i0;
     i1 = 45u;
@@ -19538,31 +19547,31 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = 2u;
     i0 += i1;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 != i1;
     if (i0) {goto B28;}
     goto B1;
     B32:;
-    i0 = l1;
+    i0 = l2;
     i1 = p2;
     i1 = !(i1);
     i0 += i1;
-    l1 = i0;
-    i0 = l4;
+    l2 = i0;
+    i0 = l5;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L27;}
     goto B16;
     B31:;
-    i0 = l4;
+    i0 = l5;
     i1 = p1;
-    i2 = l7;
+    i2 = l8;
     i3 = 95u;
     i2 = i2 == i3;
     i0 = i2 ? i0 : i1;
     p1 = i0;
-    i0 = l7;
+    i0 = l8;
     i1 = 95u;
     i0 = i0 == i1;
     if (i0) {goto B28;}
@@ -19570,27 +19579,27 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     B30:;
     i0 = 2u;
     p2 = i0;
-    i0 = l4;
+    i0 = l5;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 == i1;
     if (i0) {goto B1;}
     goto B28;
     B29:;
     i0 = 1u;
-    l6 = i0;
+    l7 = i0;
     i0 = 2u;
     p2 = i0;
     i0 = p1;
     i1 = 2u;
     i0 += i1;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 == i1;
     if (i0) {goto B1;}
     B28:;
     i0 = p1;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L27;}
   B16:;
@@ -19602,83 +19611,83 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   p2 = i0;
   B14:;
   i0 = 0u;
-  i1 = l5;
+  i1 = l6;
   i0 -= i1;
-  i1 = l5;
-  i2 = l6;
+  i1 = l6;
+  i2 = l7;
   i3 = 1u;
   i2 &= i3;
   i0 = i2 ? i0 : i1;
-  l4 = i0;
+  l5 = i0;
   goto B4;
   B5:;
   d0 = 0;
-  l3 = d0;
+  l4 = d0;
   i0 = 0u;
   p2 = i0;
   i0 = p0;
   p1 = i0;
   i0 = 0u;
-  l4 = i0;
+  l5 = i0;
   B4:;
-  d0 = l3;
+  d0 = l4;
   d1 = 9.9999999999999991e-308;
   d0 = (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(d0, d1);
-  d1 = l3;
-  i2 = l4;
-  i3 = l1;
+  d1 = l4;
+  i2 = l5;
+  i3 = l2;
   i2 += i3;
-  l4 = i2;
+  l5 = i2;
   i3 = 4294966989u;
   i2 = (u32)((s32)i2 < (s32)i3);
-  l7 = i2;
+  l8 = i2;
   d0 = i2 ? d0 : d1;
-  l3 = d0;
-  i0 = l4;
+  l4 = d0;
+  i0 = l5;
   i1 = 307u;
   i0 += i1;
-  i1 = l4;
-  i2 = l7;
+  i1 = l5;
+  i2 = l8;
   i0 = i2 ? i0 : i1;
-  l4 = i0;
+  l5 = i0;
   i1 = 4294967274u;
   i0 = i0 < i1;
   if (i0) {goto B38;}
-  d0 = l3;
+  d0 = l4;
   d1 = 10;
   i2 = 0u;
-  i3 = l4;
+  i3 = l5;
   i2 -= i3;
   d2 = (f64)(s32)(i2);
   d1 = pow_0(d1, d2);
   d0 = (*Z_eosio_injectionZ__eosio_f64_divZ_ddd)(d0, d1);
-  l3 = d0;
+  l4 = d0;
   i0 = p1;
   i1 = p0;
   i0 = i0 == i1;
   if (i0) {goto B1;}
   goto B37;
   B38:;
-  d0 = l3;
+  d0 = l4;
   d1 = 10;
-  i2 = l4;
+  i2 = l5;
   d2 = (f64)(s32)(i2);
   d1 = pow_0(d1, d2);
   d0 = (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(d0, d1);
-  l3 = d0;
+  l4 = d0;
   i0 = p1;
   i1 = p0;
   i0 = i0 == i1;
   if (i0) {goto B1;}
   B37:;
-  d0 = l3;
+  d0 = l4;
   d0 = (*Z_eosio_injectionZ__eosio_f64_negZ_dd)(d0);
-  d1 = l3;
-  i2 = l2;
+  d1 = l4;
+  i2 = l3;
   d0 = i2 ? d0 : d1;
-  l3 = d0;
+  l4 = d0;
   i0 = p1;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 >= i1;
   if (i0) {goto B2;}
   B3:;
@@ -19692,28 +19701,40 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = 1u;
     i0 += i1;
     p1 = i0;
-    i1 = l0;
+    i1 = l1;
     i0 = i0 < i1;
     if (i0) {goto L39;}
   B2:;
   i0 = p1;
-  i1 = l0;
+  i1 = l1;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   i0 = p2;
   i0 = !(i0);
   if (i0) {goto B40;}
   d0 = 0;
-  d1 = l3;
+  d1 = l4;
   i0 = mp_obj_new_complex(d0, d1);
+  p1 = i0;
+  i0 = l0;
+  i1 = 16u;
+  i0 += i1;
+  g0 = i0;
+  i0 = p1;
   goto Bfunc;
   B40:;
   i0 = p3;
   i0 = !(i0);
   if (i0) {goto B0;}
-  d0 = l3;
+  d0 = l4;
   d1 = 0;
   i0 = mp_obj_new_complex(d0, d1);
+  p1 = i0;
+  i0 = l0;
+  i1 = 16u;
+  i0 += i1;
+  g0 = i0;
+  i0 = p1;
   goto Bfunc;
   B1:;
   i0 = 36972u;
@@ -19723,9 +19744,64 @@ static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   raise_exc(i0, i1);
   UNREACHABLE;
   B0:;
-  d0 = l3;
+  i0 = p5;
+  i0 = !(i0);
+  if (i0) {goto B41;}
+  i0 = l0;
+  d1 = l4;
+  (*Z_envZ___extenddftf2Z_vid)(i0, d1);
+  i0 = l0;
+  j0 = i64_load((&M0), (u64)(i0));
+  i1 = l0;
+  i2 = 8u;
+  i1 += i2;
+  j1 = i64_load((&M0), (u64)(i1));
+  i0 = mp_obj_new_float128(j0, j1);
+  p1 = i0;
+  i0 = l0;
+  i1 = 16u;
+  i0 += i1;
+  g0 = i0;
+  i0 = p1;
+  goto Bfunc;
+  B41:;
+  d0 = l4;
   i0 = mp_obj_new_float(d0);
+  p1 = i0;
+  i0 = l0;
+  i1 = 16u;
+  i0 += i1;
+  g0 = i0;
+  i0 = p1;
   Bfunc:;
+  FUNC_EPILOGUE;
+  return i0;
+}
+
+static u32 mp_parse_num_decimal(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3, i4, i5;
+  i0 = p0;
+  i1 = p1;
+  i2 = p2;
+  i3 = p3;
+  i4 = p4;
+  i5 = 0u;
+  i0 = _mp_parse_num_decimal(i0, i1, i2, i3, i4, i5);
+  FUNC_EPILOGUE;
+  return i0;
+}
+
+static u32 mp_parse_num_decimal_float128(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
+  FUNC_PROLOGUE;
+  u32 i0, i1, i2, i3, i4, i5;
+  i0 = p0;
+  i1 = p1;
+  i2 = p2;
+  i3 = p3;
+  i4 = p4;
+  i5 = 1u;
+  i0 = _mp_parse_num_decimal(i0, i1, i2, i3, i4, i5);
   FUNC_EPILOGUE;
   return i0;
 }
@@ -101288,7 +101364,7 @@ static u32 float128_make_new(u32 p0, u32 p1, u32 p2, u32 p3) {
   i2 = 0u;
   i3 = 0u;
   i4 = 0u;
-  i0 = mp_parse_num_decimal(i0, i1, i2, i3, i4);
+  i0 = mp_parse_num_decimal_float128(i0, i1, i2, i3, i4);
   p1 = i0;
   i0 = l0;
   i1 = 64u;
