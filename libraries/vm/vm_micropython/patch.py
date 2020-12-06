@@ -94,7 +94,13 @@ header_patch = (
 #include <string.h>
 ''',
 
-'''#include <math.h>
+'''
+#if 100*__GNUC__+__GNUC_MINOR__ >= 303
+#define INFINITY  __builtin_inff()
+#else
+#define INFINITY  1e5000f
+#endif
+
 #include <string.h>
 '''
 )
