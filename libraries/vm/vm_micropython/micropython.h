@@ -138,6 +138,10 @@ extern u64 (*Z_envZ_publication_timeZ_jv)(void);
 extern u64 (*Z_envZ_current_receiverZ_jv)(void);
 /* import: 'env' 'call_vm_api' */
 extern u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
+/* import: 'env' 'assert_recover_key' */
+extern void (*Z_envZ_assert_recover_keyZ_viiiii)(u32, u32, u32, u32, u32);
+/* import: 'env' 'recover_key' */
+extern u32 (*Z_envZ_recover_keyZ_iiiiii)(u32, u32, u32, u32, u32);
 /* import: 'env' 'db_store_i64' */
 extern u32 (*Z_envZ_db_store_i64Z_ijjjjii)(u64, u64, u64, u64, u32, u32);
 /* import: 'env' 'db_update_i64' */
@@ -298,8 +302,6 @@ extern u32 (*Z_envZ_is_privilegedZ_ij)(u64);
 extern void (*Z_envZ_set_privilegedZ_vji)(u64, u32);
 /* import: 'env' 'eosio_assert' */
 extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
-/* import: 'env' 'eosio_assert_message' */
-extern void (*Z_envZ_eosio_assert_messageZ_viii)(u32, u32, u32);
 /* import: 'env' 'eosio_assert_code' */
 extern void (*Z_envZ_eosio_assert_codeZ_vij)(u32, u64);
 /* import: 'env' 'current_time' */
@@ -318,6 +320,18 @@ extern u32 (*Z_envZ_expirationZ_iv)(void);
 extern u32 (*Z_envZ_get_actionZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'get_context_free_data' */
 extern u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
+/* import: 'env' 'token_create' */
+extern void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_issue' */
+extern void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'token_transfer' */
+extern void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+extern void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+extern void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+extern void (*Z_envZ_token_closeZ_vjj)(u64, u64);
 /* import: 'env' 'abort' */
 extern void (*Z_envZ_abortZ_vv)(void);
 /* import: 'env' 'send_deferred' */
