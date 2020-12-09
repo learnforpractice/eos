@@ -20,7 +20,7 @@
 from __future__ import print_function
 import sys
 import os
-from pyeoskit import eosapi
+from uuoskit import uuosapi
 
 def module_name(f):
     return f
@@ -33,14 +33,14 @@ if len(sys.argv) > 1:
     root_len = len(root)
 
     for dirpath, dirnames, filenames in os.walk(root):
-        for f in filenames:
-            if not f.endswith('.py'):
+        for file_name in filenames:
+            if not file_name.endswith('.py'):
                 continue
-            fullpath = dirpath + "/" + f
+            fullpath = dirpath + "/" + file_name
             code = None
             with open(fullpath, 'r') as f:
                 code = f.read()
-                code = eosapi.compile_py_src(code)
+                code = uuosapi.mp_compile(file_name[:-3], code)
             mpy = fullpath[:-3] + '.mpy'
             with open(mpy, 'wb') as f:
                 f.write(code)
