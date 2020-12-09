@@ -104168,6 +104168,10 @@ static u32 mod_chain_db_get_i64(u32 p0) {
   i0 = l0;
   i1 = p0;
   i0 = mp_obj_new_bytes(i0, i1);
+  p0 = i0;
+  i0 = l0;
+  free_0(i0);
+  i0 = p0;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -104472,6 +104476,10 @@ static u32 mod_chain_db_get_i256(u32 p0) {
   i0 = l0;
   i1 = p0;
   i0 = mp_obj_new_bytes(i0, i1);
+  p0 = i0;
+  i0 = l0;
+  free_0(i0);
+  i0 = p0;
   FUNC_EPILOGUE;
   return i0;
 }
