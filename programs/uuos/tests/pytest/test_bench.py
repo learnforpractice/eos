@@ -223,7 +223,7 @@ def apply(a, b, c):
         d[i] = i
 '''
         elapsed = self.run_test(code)
-        logger.info("build_dict2.py: %s", elapsed)
+        logger.info("build_dict2.py: %s", elapsed*10)
 
         code = '''
 def apply(a, b, c):
