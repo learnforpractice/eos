@@ -19,6 +19,7 @@ code_region:
 #define CODE_HEADER_SIZE 64
 #define REGION_SIZES 12
 #define SIZE_LIMIT 10*1024*1024
+#define NAME_REGION_SIZE_LIMIT (256*64) //max frozen modules: 64, max file name size: 256 bytes
 #define MAX_FORZEN_MODULE 100
 
 typedef enum {
@@ -46,7 +47,7 @@ int micropython_validate_frozen_code(const char *contract_code, size_t code_size
     size_t total_frozen_module = code_size_region_size/sizeof(uint32_t);
     get_vm_api()->eosio_assert(total_frozen_module <= MAX_FORZEN_MODULE, "frozen module count must <= 100");
 
-    get_vm_api()->eosio_assert(name_region_size < SIZE_LIMIT, "name region size too large!");
+    get_vm_api()->eosio_assert(name_region_size < NAME_REGION_SIZE_LIMIT, "name region size too large!");
     get_vm_api()->eosio_assert(code_size_region_size < SIZE_LIMIT, "code size region too large!");
     get_vm_api()->eosio_assert(code_region_size < SIZE_LIMIT, "code region size too large!");
 
@@ -64,6 +65,9 @@ int micropython_validate_frozen_code(const char *contract_code, size_t code_size
     for (int i=0;i<name_region_size;i++) {
         if (name_region[i] == '\0') {
             name_count += 1;
+        }
+        if (name_count > total_frozen_module) {
+            get_vm_api()->eosio_assert(false, "name region size exceed module count!");
         }
     }
     get_vm_api()->eosio_assert(name_count == total_frozen_module, "invalid module name count!");
