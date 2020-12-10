@@ -64,8 +64,6 @@ extern u32 (*Z_eosio_injectionZ__eosio_f64_eqZ_idd)(f64, f64);
 extern f64 (*Z_eosio_injectionZ__eosio_f32_promoteZ_df)(f32);
 /* import: 'eosio_injection' '_eosio_f32_mul' */
 extern f32 (*Z_eosio_injectionZ__eosio_f32_mulZ_fff)(f32, f32);
-/* import: 'env' 'setjmp_discard_top' */
-extern void (*Z_envZ_setjmp_discard_topZ_vv)(void);
 /* import: 'env' 'memset' */
 extern u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 /* import: 'env' 'memcpy' */
@@ -74,10 +72,6 @@ extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' '__extenddftf2' */
 extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
-/* import: 'env' 'vm_frozen_stat' */
-extern u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
-/* import: 'env' 'vm_load_frozen_module' */
-extern u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' 'prints' */

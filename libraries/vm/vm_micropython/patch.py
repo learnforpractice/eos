@@ -44,17 +44,7 @@ void setjmp_pop(jmp_buf buf);
 }
 ''')
 
-patch_ticks_ms = ('''static void mp_js_write(u32 p0, u32 p1) {
-  FUNC_PROLOGUE;
-  FUNC_EPILOGUE;
-}
-
-static void mp_js_hook(void) {
-  FUNC_PROLOGUE;
-  FUNC_EPILOGUE;
-}
-
-static u32 setjmp_ex(u32 p0) {
+pathc_setjmp = (r'''static u32 setjmp_ex(u32 p0) {
   FUNC_PROLOGUE;
   u32 i0;
   i0 = 0u;
@@ -69,22 +59,6 @@ static void longjmp_ex(u32 p0, u32 p1) {
 ''',
 
 r'''
-void prints_l( const char* cstr, uint32_t len);
-
-static void mp_js_write(u32 p0, u32 len) {
-  FUNC_PROLOGUE;
-  char *p0_ptr = get_memory_ptr(p0, len);
-  prints_l(p0_ptr, len);
-  FUNC_EPILOGUE;
-}
-
-
-
-
-static void mp_js_hook(void) {
-  FUNC_PROLOGUE;
-  FUNC_EPILOGUE;
-}
 ''')
 
 header_patch = (
@@ -102,6 +76,76 @@ header_patch = (
 #endif
 
 #include <string.h>
+'''
+)
+
+nlr_pop_patch = (
+r'''static void nlr_pop(void) {
+  FUNC_PROLOGUE;
+  u32 i0, i1;
+  i0 = 0u;
+  i1 = 0u;
+  i1 = i32_load((&M0), (u64)(i1 + 10264));
+  i1 = i32_load((&M0), (u64)(i1));
+  i32_store((&M0), (u64)(i0 + 10264), i1);
+  FUNC_EPILOGUE;
+}
+''',
+
+r'''
+static void _nlr_pop(void) {
+  FUNC_PROLOGUE;
+  u32 i0, i1;
+  i0 = 0u;
+  i1 = 0u;
+  i1 = i32_load((&M0), (u64)(i1 + 10264));
+  i1 = i32_load((&M0), (u64)(i1));
+  i32_store((&M0), (u64)(i0 + 10264), i1);
+  FUNC_EPILOGUE;
+}
+
+void setjmp_discard_top();
+static void nlr_pop(void) {
+  _nlr_pop();
+  setjmp_discard_top();
+}
+
+'''
+)
+
+frozen_stat_patch = (
+r'''static u32 export_vm_frozen_stat(u32 p0) {
+  FUNC_PROLOGUE;
+  u32 i0;
+  i0 = 0u;
+  FUNC_EPILOGUE;
+  return i0;
+}
+''',
+
+r'''
+u32 _vm_frozen_stat(u32 str_offset);
+static u32 export_vm_frozen_stat(u32 p0) {
+  return _vm_frozen_stat(p0);
+}
+'''
+)
+
+vm_load_frozen_module_patch = (
+'''static u32 export_vm_load_frozen_module(u32 p0, u32 p1, u32 p2, u32 p3) {
+  FUNC_PROLOGUE;
+  u32 i0;
+  i0 = 0u;
+  FUNC_EPILOGUE;
+  return i0;
+}
+''',
+
+'''
+u32 _load_frozen_module(u32 str_offset, u32 len, u32 content_offset, u32 content_size);
+static u32 export_vm_load_frozen_module(u32 p0, u32 p1, u32 p2, u32 p3) {
+  return _load_frozen_module(p0, p1, p2, p3);
+}
 '''
 )
 
@@ -123,7 +167,16 @@ with open('micropython.c.bin', 'r') as f:
     origin, patch = patch_init
     data = patch_micropython(data, origin, patch)
 
-    origin, patch = patch_ticks_ms
+    origin, patch = pathc_setjmp
+    data = patch_micropython(data, origin, patch)
+
+    origin, patch = nlr_pop_patch
+    data = patch_micropython(data, origin, patch)
+
+    origin, patch = frozen_stat_patch
+    data = patch_micropython(data, origin, patch)
+
+    origin, patch = vm_load_frozen_module_patch
     data = patch_micropython(data, origin, patch)
 
     origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'
