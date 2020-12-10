@@ -113,6 +113,12 @@ class MultiIndex:
         assert primary_key == obj.get_primary_key()
         self.store(obj)
 
+    def load(self, primary_key):
+        itr = self.find(primary_key)
+        if itr < 0:
+            return None
+        return self.get(itr)
+
     def store(self, obj):
         primary = obj.get_primary_key()
         itr = db_find_i64(self.code, self.scope, self.table, primary)        
