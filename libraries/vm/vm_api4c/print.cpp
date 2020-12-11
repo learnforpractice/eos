@@ -42,7 +42,9 @@ static void _prints_l(u32 s_offset, u32 size) {
     if (get_vm_api()->is_in_apply_context) {
         get_vm_api()->prints_l(s, size);
     } else {
-        vmelog("%s", s);
+      for (int i=0;i<size;i++) {
+         printf("%c", s[i]);
+      }
     }
 }
 
