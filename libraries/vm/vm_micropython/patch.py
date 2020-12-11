@@ -173,11 +173,11 @@ with open('micropython.c.bin', 'r') as f:
     origin, patch = nlr_pop_patch
     data = patch_micropython(data, origin, patch)
 
-    origin, patch = frozen_stat_patch
-    data = patch_micropython(data, origin, patch)
+    # origin, patch = frozen_stat_patch
+    # data = patch_micropython(data, origin, patch)
 
-    origin, patch = vm_load_frozen_module_patch
-    data = patch_micropython(data, origin, patch)
+    # origin, patch = vm_load_frozen_module_patch
+    # data = patch_micropython(data, origin, patch)
 
     origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'
     if data.find(origin) < 0:

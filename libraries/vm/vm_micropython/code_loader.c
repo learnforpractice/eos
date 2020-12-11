@@ -207,7 +207,6 @@ static mp_import_stat_t mp_frozen_stat_helper(const char *name, const char *str)
 
 uint32_t vm_frozen_stat(const char *str) {
     mp_import_stat_t stat;
-
     stat = mp_frozen_stat_helper(mp_frozen_str_names, str);
     if (stat != MP_IMPORT_STAT_NO_EXIST) {
         return (uint32_t)stat;
