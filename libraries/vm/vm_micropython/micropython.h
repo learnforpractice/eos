@@ -72,14 +72,14 @@ extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' '__extenddftf2' */
 extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
-/* import: 'env' 'prints' */
-extern void (*Z_envZ_printsZ_vi)(u32);
 /* import: 'env' 'vm_frozen_stat' */
 extern u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
 /* import: 'env' 'vm_load_frozen_module' */
 extern u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
+/* import: 'env' 'prints' */
+extern void (*Z_envZ_printsZ_vi)(u32);
 /* import: 'env' '__fixtfsi' */
 extern u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
 /* import: 'env' 'printqf' */
@@ -180,8 +180,8 @@ extern u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
 extern u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
 /* import: 'env' 'db_end_i256' */
 extern u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
-/* import: 'env' 'db_get_table_count' */
-extern u32 (*Z_envZ_db_get_table_countZ_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_get_table_row_count' */
+extern u32 (*Z_envZ_db_get_table_row_countZ_ijjj)(u64, u64, u64);
 /* import: 'env' 'call_contract' */
 extern void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
 /* import: 'env' 'call_contract_get_results' */

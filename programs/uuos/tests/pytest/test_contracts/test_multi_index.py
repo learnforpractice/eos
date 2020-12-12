@@ -25,12 +25,16 @@ class ChainDB(object):
             self.db_store = db_store_i64
             self.db_update = db_update_i64
             self.db_remove = db_remove_i64
+            self.lowerbound = db_lowerbound_i64
+            self.upperbound = db_upperbound_i64
         else:
             self.db_find = db_find_i256
             self.db_get = db_get_i256
             self.db_store = db_store_i256
             self.db_update = db_update_i256
             self.db_remove = db_remove_i256
+            self.lowerbound = db_lowerbound_i256
+            self.upperbound = db_upperbound_i256
 
     def find(self, primary_key):
         return self.db_find(self.code, self.scope, self.table, primary_key)
@@ -40,6 +44,12 @@ class ChainDB(object):
             raise IndexError
         data = self.db_get(itr)
         return self.data_type.unpack(data)
+
+    def upper_bound(self, primary):
+        return self.upperbound(self.code, self.scope, self.table, primary)
+
+    def lower_bound(self, primary):
+        return self.lowerbound(self.code, self.scope, self.table, primary)
 
     def load(self, primary_key):
         itr = self.find(primary_key)
@@ -321,9 +331,6 @@ class MyDataI64(object):
     def get_primary_key(self):
         return self.a
 
-    def __repr__(self):
-        return (self.a, self.b, self.c, self.d)
-
     def __str__(self):
         data = (self.a, self.b, self.c, self.d)
         return json.dumps(data)
@@ -347,9 +354,6 @@ class MyDataI256(object):
 
     def get_primary_key(self):
         return self.a
-
-    def __repr__(self):
-        return (self.a, self.b, self.c, self.d)
 
     def __str__(self):
         data = (self.a, self.b, self.c, self.d)
@@ -419,16 +423,52 @@ def apply(receiver, code, action):
         d.payer = payer
         db.store(d)
 
-        print(db.load(1))
+        d = MyDataI64(3, 4, 5, 7.0)
+        d.payer = payer
+        db.store(d)
+
+        data = db.load(1)
+        print(data, str(data))
+        assert (data.a, data.b, data.c, data.d) == (1, 2, 3, 5.0)
+
+        data = db.load(3)
+        assert (data.a, data.b, data.c, data.d) == (3, 4, 5, 7.0)
+
+        itr = db.lower_bound(1)
+        data = db.get(itr)
+        print(data)
+        assert (data.a, data.b, data.c, data.d) == (1, 2, 3, 5.0)
+
+        itr = db.upper_bound(1)
+        data = db.get(itr)
+        assert (data.a, data.b, data.c, data.d) == (3, 4, 5, 7.0)
+
     elif action == test4:
         table = name('table3')
         db = ChainDBKey256(code, scope, table, MyDataI64)
 
-        primary_key = 0xffffffffffffffffff
-        d = MyDataI256(0xffffffffffffffffff, 2, 3, 5.0)
+        primary_key = 0xfffffffffffffffff0
+        d = MyDataI256(primary_key, 2, 3, 5.0)
         d.payer = payer
         db.store(d)
-        print(db.load(primary_key))
+        data = db.load(primary_key)
+        assert (data.a, data.b, data.c, data.d) == (0xfffffffffffffffff0, 2, 3, 5.0)
+
+        primary_key = 0xffffffffffffffffff
+        d = MyDataI256(primary_key, 4, 5, 7.0)
+        d.payer = payer
+        db.store(d)
+        data = db.load(primary_key)
+        assert (data.a, data.b, data.c, data.d) == (0xffffffffffffffffff, 4, 5, 7.0)
+
+        itr = db.lower_bound(0xfffffffffffffffff0)
+        data = db.get(itr)
+        assert (data.a, data.b, data.c, data.d) == (0xfffffffffffffffff0, 2, 3, 5.0)
+
+        itr = db.upper_bound(0xfffffffffffffffff0)
+        data = db.get(itr)
+        assert (data.a, data.b, data.c, data.d) == (0xffffffffffffffffff, 4, 5, 7.0)
+
     elif action == name('test5'):
         test = SingletonTest()
         test.load()
