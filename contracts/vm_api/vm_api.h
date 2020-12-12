@@ -85,7 +85,7 @@ struct vm_api {
    int (*db_lowerbound_i256)( uint64_t code, uint64_t scope, uint64_t table, void* id, int size );
    int32_t (*db_end_i256)(uint64_t code, uint64_t scope, uint64_t table);
 
-   uint32_t (*db_get_table_count)(uint64_t code, uint64_t scope, uint64_t table);
+   uint32_t (*db_get_table_row_count)(uint64_t code, uint64_t scope, uint64_t table);
 
    int32_t (*db_idx64_store)(uint64_t scope, uint64_t table, uint64_t payer, uint64_t id, const uint64_t* secondary);
    void (*db_idx64_update)(int32_t iterator, uint64_t payer, const uint64_t* secondary);

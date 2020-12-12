@@ -25,12 +25,16 @@ class ChainDB(object):
             self.db_store = db_store_i64
             self.db_update = db_update_i64
             self.db_remove = db_remove_i64
+            self.lowerbound = db_lowerbound_i64
+            self.upperbound = db_upperbound_i64
         else:
             self.db_find = db_find_i256
             self.db_get = db_get_i256
             self.db_store = db_store_i256
             self.db_update = db_update_i256
             self.db_remove = db_remove_i256
+            self.lowerbound = db_lowerbound_i256
+            self.upperbound = db_upperbound_i256
 
     def find(self, primary_key):
         return self.db_find(self.code, self.scope, self.table, primary_key)
@@ -40,6 +44,12 @@ class ChainDB(object):
             raise IndexError
         data = self.db_get(itr)
         return self.data_type.unpack(data)
+
+    def upper_bound(self, primary):
+        return self.upperbound(self.code, self.scope, self.table, primary)
+
+    def lower_bound(self, primary):
+        return self.lowerbound(self.code, self.scope, self.table, primary)
 
     def load(self, primary_key):
         itr = self.find(primary_key)
@@ -59,6 +69,12 @@ class ChainDB(object):
         itr = self.db_find(self.code, self.scope, self.table, primary_key)
         if itr < 0:
             raise IndexError
+        self.db_remove(itr)
+
+    def __len__(self):
+        return db_get_table_row_count(self.code, self.scope, self.table)
+
+    def remove_by_itr(self, itr):
         self.db_remove(itr)
 
 class ChainDBKey64(ChainDB):

@@ -117,7 +117,7 @@ const std::vector<const char*> genesis_intrinsics = {
    "db_lowerbound_i64",
    "db_upperbound_i64",
    "db_end_i64",
-   "db_get_table_count",
+   "db_get_table_row_count",
 
    "db_store_i256",
    "db_update_i256",

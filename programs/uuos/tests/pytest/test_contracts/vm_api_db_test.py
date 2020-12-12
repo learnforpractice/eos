@@ -173,7 +173,7 @@ def apply(receiver, code, action):
     assert db_get_i256(itr4) == b'7'
     assert db_get_i256(itr5) == b'world'
 
-    ret = db_get_table_count(code, scope, table)
+    ret = db_get_table_row_count(code, scope, table)
     assert 4 == ret
 
 #++++++++++cleanup++++++++++++++++++++++++

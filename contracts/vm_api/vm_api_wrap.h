@@ -54,7 +54,7 @@ enum vm_api_function_type {
    enum_db_upperbound_i256,
    enum_db_lowerbound_i256,
    enum_db_end_i256,
-   enum_db_get_table_count,
+   enum_db_get_table_row_count,
    enum_db_idx64_store,
    enum_db_idx64_update,
    enum_db_idx64_remove,

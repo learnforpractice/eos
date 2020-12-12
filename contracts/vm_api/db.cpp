@@ -310,8 +310,8 @@ int db_end_i256( uint64_t code, uint64_t scope, uint64_t table ) {
    return get_vm_api()->db_end_i256(code, scope, table);
 }
 
-uint32_t db_get_table_count(uint64_t code, uint64_t scope, uint64_t table) {
-   return get_vm_api()->db_get_table_count(code, scope, table);
+uint32_t db_get_table_row_count(uint64_t code, uint64_t scope, uint64_t table) {
+   return get_vm_api()->db_get_table_row_count(code, scope, table);
 }
 
 

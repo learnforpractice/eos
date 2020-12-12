@@ -73,7 +73,7 @@ void init_function_args() {
     SET_FUNCTION_INFO(db_upperbound_i256, 4);
     SET_FUNCTION_INFO(db_lowerbound_i256, 4);
     SET_FUNCTION_INFO(db_end_i256, 3);
-    SET_FUNCTION_INFO(db_get_table_count, 3);
+    SET_FUNCTION_INFO(db_get_table_row_count, 3);
     SET_FUNCTION_INFO(db_idx64_store, 5);
     SET_FUNCTION_INFO(db_idx64_update, 3);
     SET_FUNCTION_INFO(db_idx64_remove, 1);

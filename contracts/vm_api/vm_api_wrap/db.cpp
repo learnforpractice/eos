@@ -339,9 +339,9 @@ static void db_end_i256(vm_api_arg *args, size_t args_count, vm_api_arg *vm_ret)
     vm_ret->i32 = itr;
 }
 
-static void db_get_table_count(vm_api_arg *args, size_t args_count, vm_api_arg *vm_ret)
+static void db_get_table_row_count(vm_api_arg *args, size_t args_count, vm_api_arg *vm_ret)
 {
-    uint32_t n = get_vm_api()->db_get_table_count(args[0].u64, args[1].u64, args[2].u64);
+    uint32_t n = get_vm_api()->db_get_table_row_count(args[0].u64, args[1].u64, args[2].u64);
 
     vm_ret->size = 4;
     vm_ret->type = enum_arg_type_u32;

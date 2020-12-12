@@ -19,8 +19,8 @@ extern "C" {
    u32 (*Z_envZ_db_lowerbound_i64Z_ijjjj)(u64, u64, u64, u64);
    /* import: 'env' 'db_end_i64' */
    u32 (*Z_envZ_db_end_i64Z_ijjj)(u64, u64, u64);
-   /* import: 'env' 'db_get_table_count' */
-   u32 (*Z_envZ_db_get_table_countZ_ijjj)(u64, u64, u64);
+   /* import: 'env' 'db_get_table_row_count' */
+   u32 (*Z_envZ_db_get_table_row_countZ_ijjj)(u64, u64, u64);
    /* import: 'env' 'db_idx64_store' */
    u32 (*Z_envZ_db_idx64_storeZ_ijjjji)(u64, u64, u64, u64, u32);
    /* import: 'env' 'db_idx64_update' */
@@ -185,7 +185,7 @@ static u32 db_end_i64(uint64_t code, uint64_t scope, uint64_t table) {
 }
 
 static u32 db_get_count(uint64_t code, uint64_t scope, uint64_t table) {
-   return get_vm_api()->db_get_table_count(code, scope, table);
+   return get_vm_api()->db_get_table_row_count(code, scope, table);
 }
 
 static u32 db_idx64_store(u64 scope, u64 table, u64 payer, u64 id, u32 secondary_offset) {
@@ -443,8 +443,8 @@ static u32 db_idx_long_double_end(u64 code, u64 scope, u64 table) {
    return get_vm_api()->db_idx_long_double_end(code, scope, table);
 }
 
-static u32 db_get_table_count(u64 code, u64 scope, u64 table) {
-   return get_vm_api()->db_get_table_count(code, scope, table);
+static u32 db_get_table_row_count(u64 code, u64 scope, u64 table) {
+   return get_vm_api()->db_get_table_row_count(code, scope, table);
 }
 
 static u32 db_find_i256( u64 code, u64 scope, u64 table, u32 id_offset, u32 id_size ) {
@@ -566,7 +566,7 @@ static void init_db() {
 
    Z_envZ_db_previous_i64Z_iii = db_previous_i64;
 
-   Z_envZ_db_get_table_countZ_ijjj = db_get_table_count;
+   Z_envZ_db_get_table_row_countZ_ijjj = db_get_table_row_count;
 
 
    Z_envZ_db_find_i256Z_ijjjii = db_find_i256;

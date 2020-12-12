@@ -896,7 +896,7 @@ int apply_context::db_end_i64( name code, name scope, name table ) {
    return keyval_cache.cache_table( *tab );
 }
 
-uint32_t apply_context::db_get_table_count(uint64_t code, uint64_t scope, uint64_t table) {
+uint32_t apply_context::db_get_table_row_count(uint64_t code, uint64_t scope, uint64_t table) {
    const auto* tab = find_table( name(code), name(scope), name(table) );
    if( !tab ) return 0;
    return tab->count;

@@ -1130,8 +1130,8 @@ class database_api : public context_aware_api {
          return API()->db_end_i64( code, scope, table );
       }
 
-      int db_get_table_count( uint64_t code, uint64_t scope, uint64_t table ) {
-         return API()->db_get_table_count( code, scope, table );
+      int db_get_table_row_count( uint64_t code, uint64_t scope, uint64_t table ) {
+         return API()->db_get_table_row_count( code, scope, table );
       }
 
       int db_store_i256( uint64_t scope, uint64_t table, uint64_t payer, array_ptr<char> id, size_t id_size, array_ptr<const char> buffer, size_t buffer_size ) {         
@@ -1782,7 +1782,7 @@ REGISTER_INTRINSICS( database_api,
    (db_upperbound_i64,   int(int64_t,int64_t,int64_t,int64_t))
    (db_end_i64,          int(int64_t,int64_t,int64_t))
 
-   (db_get_table_count,  int(int64_t,int64_t,int64_t))
+   (db_get_table_row_count,  int(int64_t,int64_t,int64_t))
 
    (db_store_i256,        int(int64_t,int64_t,int64_t,int, int,int,int))
    (db_update_i256,       void(int,int64_t,int,int))

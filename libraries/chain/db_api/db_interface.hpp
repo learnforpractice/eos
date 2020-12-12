@@ -609,7 +609,7 @@ class db_interface {
       uint64_t next_global_sequence();
       uint64_t next_recv_sequence( account_name receiver );
       uint64_t next_auth_sequence( account_name actor );
-      uint32_t db_get_table_count(uint64_t code, uint64_t scope, uint64_t table);
+      uint32_t db_get_table_row_count(uint64_t code, uint64_t scope, uint64_t table);
 
       void init_accounts();
       void init_accounts(const uint8_t* raw_data, size_t size);

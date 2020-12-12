@@ -18,7 +18,7 @@ _db_find_i256
 _db_find_i64
 _db_get_i256
 _db_get_i64
-_db_get_table_count
+_db_get_table_row_count
 _db_idx128_end
 _db_idx128_find_primary
 _db_idx128_find_secondary

@@ -319,7 +319,7 @@ extern "C" void vm_api_init() {
       _vm_api.db_lowerbound_i256 = db_lowerbound_i256;
       _vm_api.db_end_i256 = db_end_i256;
 
-      _vm_api.db_get_table_count = db_get_table_count;
+      _vm_api.db_get_table_row_count = db_get_table_row_count;
 
       _vm_api.db_idx64_store = db_idx64_store;
       _vm_api.db_idx64_update = db_idx64_update;

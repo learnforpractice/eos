@@ -569,7 +569,7 @@ class apply_context {
 
       action_name get_sender() const;
 
-      uint32_t db_get_table_count(uint64_t code, uint64_t scope, uint64_t table);
+      uint32_t db_get_table_row_count(uint64_t code, uint64_t scope, uint64_t table);
 
       void call_contract(uint64_t contract, const char *args, size_t args_size);
       int call_contract_get_args(void* args, size_t size);

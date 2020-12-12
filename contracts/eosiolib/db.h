@@ -947,7 +947,7 @@ WASM_IMPORT int db_next_i256( int itr, void* primary, size_t id_size );
 WASM_IMPORT int db_lowerbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t id_size );
 WASM_IMPORT int db_upperbound_i256( uint64_t code, uint64_t scope, uint64_t table, void* id, size_t id_size );
 
-WASM_IMPORT uint32_t db_get_table_count(uint64_t code, uint64_t scope, uint64_t table);
+WASM_IMPORT uint32_t db_get_table_row_count(uint64_t code, uint64_t scope, uint64_t table);
 
 #ifdef __cplusplus
 }

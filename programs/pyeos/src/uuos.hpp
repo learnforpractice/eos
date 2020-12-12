@@ -232,7 +232,7 @@ void uuos_init_chain_api();
 #define db_upperbound_i256_ uuos_get_vm_api()->db_upperbound_i256
 #define db_lowerbound_i256_ uuos_get_vm_api()->db_lowerbound_i256
 #define db_end_i256_ uuos_get_vm_api()->db_end_i256
-#define db_get_table_count_ uuos_get_vm_api()->db_get_table_count
+#define db_get_table_row_count_ uuos_get_vm_api()->db_get_table_row_count
 #define db_idx64_store_ uuos_get_vm_api()->db_idx64_store
 #define db_idx64_update_ uuos_get_vm_api()->db_idx64_update
 #define db_idx64_remove_ uuos_get_vm_api()->db_idx64_remove
