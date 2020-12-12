@@ -187,6 +187,12 @@ class MultiIndex:
             raise StopIteration
         return self.get(self.itr)
 
+    def __len__(self):
+        row_count = db_get_table_row_count(self.code, self.scope, self.table)
+        if self.indexes:
+            row_count /= 2
+        return row_count
+
     def get_secondary_index(self, idx):
         return SecondaryIndex(self, self.indexes[idx], self.data_type)
 

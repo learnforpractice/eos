@@ -71,6 +71,12 @@ class ChainDB(object):
             raise IndexError
         self.db_remove(itr)
 
+    def __len__(self):
+        return db_get_table_row_count(self.code, self.scope, self.table)
+
+    def remove_by_itr(self, itr):
+        self.db_remove(itr)
+
 class ChainDBKey64(ChainDB):
     def __init__(self, code, scope, table, data_type):
         ChainDB.__init__(self, primary_type_i64, code, scope, table, data_type)
@@ -225,6 +231,12 @@ class MultiIndex:
         if self.itr < 0:
             raise StopIteration
         return self.get(self.itr)
+
+    def __len__(self):
+        row_count = db_get_table_row_count(self.code, self.scope, self.table)
+        if self.indexes:
+            row_count /= 2
+        return row_count
 
     def get_secondary_index(self, idx):
         return SecondaryIndex(self, self.indexes[idx], self.data_type)
@@ -385,7 +397,7 @@ def apply(receiver, code, action):
     payer = name('alice')
 
     if action == test1:
-        table = name('table')
+        table = name('tabletest1')
         mi = MultiIndex(code, scope, table, MyData)
 
         try:
@@ -399,6 +411,7 @@ def apply(receiver, code, action):
         d = MyData(1, 2, 3, 5.0)
         d.payer = payer
         mi[1] = d
+        assert len(mi) == 1
 
         itr, primary = mi.idx_find(3, 4.0)
         print(itr, primary)
@@ -407,25 +420,28 @@ def apply(receiver, code, action):
         print(itr, primary, secondary)
 
     elif action == test2:
-        table = name('table2')
+        table = name('tabletest2')
         mi = MultiIndex(code, scope, table, MyData2)
         d = MyData2(1, 2, 3, 5.0)
         d.payer = payer
         mi[1] = d
+        assert len(mi) == 1
 
         print(mi[1])
         itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
         print(itr, primary, secondary)
     elif action == test3:
-        table = name('table3')
+        table = name('tabletest3')
         db = ChainDBKey64(code, scope, table, MyDataI64)
         d = MyDataI64(1, 2, 3, 5.0)
         d.payer = payer
         db.store(d)
+        assert len(db) == 1
 
         d = MyDataI64(3, 4, 5, 7.0)
         d.payer = payer
         db.store(d)
+        assert len(db) == 2
 
         data = db.load(1)
         print(data, str(data))
@@ -444,13 +460,15 @@ def apply(receiver, code, action):
         assert (data.a, data.b, data.c, data.d) == (3, 4, 5, 7.0)
 
     elif action == test4:
-        table = name('table3')
+        table = name('tabletest4')
         db = ChainDBKey256(code, scope, table, MyDataI64)
 
         primary_key = 0xfffffffffffffffff0
         d = MyDataI256(primary_key, 2, 3, 5.0)
         d.payer = payer
         db.store(d)
+        assert len(db) == 1
+
         data = db.load(primary_key)
         assert (data.a, data.b, data.c, data.d) == (0xfffffffffffffffff0, 2, 3, 5.0)
 
@@ -458,6 +476,8 @@ def apply(receiver, code, action):
         d = MyDataI256(primary_key, 4, 5, 7.0)
         d.payer = payer
         db.store(d)
+        assert len(db) == 2
+
         data = db.load(primary_key)
         assert (data.a, data.b, data.c, data.d) == (0xffffffffffffffffff, 4, 5, 7.0)
 
