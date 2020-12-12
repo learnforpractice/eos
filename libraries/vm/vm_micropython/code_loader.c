@@ -5,7 +5,7 @@
 
 #include <vm_api.h>
 
-#include "frozen/frozen.c"
+#include "frozen/frozen.h"
 
 /*
 -----------------contract code struct---------------

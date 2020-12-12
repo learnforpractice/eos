@@ -206,10 +206,12 @@ class MultiIndex:
         idx = self.indexes[index]
         return db_idx_find_secondary(idx, self.code, self.scope, self.table, secondary_key)
 
-    def idx_upperbound(self, index, secondary_key):
+    def idx_upper_bound(self, index, secondary_key):
         idx = self.indexes[index]
-        return db_idx_upperbound(idx, self.code, self.scope, self.table, secondary_key)
+        idx_table = self.idx_tables[index]
+        return db_idx_upperbound(idx, self.code, self.scope, idx_table, secondary_key)
 
-    def idx_lowerbound(self, index, secondary_key):
+    def idx_lower_bound(self, index, secondary_key):
         idx = self.indexes[index]
-        return db_idx_lowerbound(idx, self.code, self.scope, self.table, secondary_key)
+        idx_table = self.idx_tables[index]
+        return db_idx_lowerbound(idx, self.code, self.scope, idx_table, secondary_key)

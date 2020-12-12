@@ -15,6 +15,14 @@ set(SRCS
     vm_api.c
     vm_micropython.cpp
     code_loader.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/frozen/frozen.c
+)
+
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/frozen/frozen.c
+    COMMAND python3 ../make-frozen.py . frozen.c
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/frozen
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/frozen/db.py ${CMAKE_CURRENT_SOURCE_DIR}/frozen/init.py
+    COMMENT "Generating frozen.c"
 )
 
 add_library(vm_micropython SHARED ${SRCS})
