@@ -95,7 +95,7 @@ class MultiIndex:
         self.primary_key = 0
         self.idx_tables = []
         for i in range(len(self.indexes)):
-            table = (int(self.table) & 0xFFFFFFFFFFFFFFF0) or i
+            table = (int(self.table) & 0xFFFFFFFFFFFFFFF0) | i
             self.idx_tables.append(table)
 
     def find(self, primary_key):
