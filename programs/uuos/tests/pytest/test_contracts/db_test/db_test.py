@@ -173,92 +173,92 @@ def bound_tests(receiver, code, action):
     item = mi.get(itr)
     print('upperbound of 33:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_lowerbound(0, 11)
+    itr, primary = mi.idx_lower_bound(0, 11)
     item = mi[primary]
-    print('idx_lowerbound of 0 11:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 0 11:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_lowerbound(0, 22)
+    itr, primary = mi.idx_lower_bound(0, 22)
     item = mi[primary]
-    print('idx_lowerbound of 0 22:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 0 22:', item.a, item.b, item.c, item.d)
 
 
-    itr, primary = mi.idx_lowerbound(1, 1)
+    itr, primary = mi.idx_lower_bound(1, 1)
     item = mi[primary]
-    print('idx_lowerbound of 1 1:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 1 1:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_lowerbound(1, 2)
+    itr, primary = mi.idx_lower_bound(1, 2)
     item = mi[primary]
-    print('idx_lowerbound of 1 2:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 1 2:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_lowerbound(2, 1)
+    itr, primary = mi.idx_lower_bound(2, 1)
     item = mi[primary]
-    print('idx_lowerbound of 2 1:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 2 1:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_lowerbound(2, 2)
+    itr, primary = mi.idx_lower_bound(2, 2)
     item = mi[primary]
-    print('idx_lowerbound of 2 2:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 2 2:', item.a, item.b, item.c, item.d)
 
 
-    itr, primary = mi.idx_lowerbound(3, 1.0)
+    itr, primary = mi.idx_lower_bound(3, 1.0)
     item = mi[primary]
-    print('idx_lowerbound of 3 1.0:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 3 1.0:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_lowerbound(3, 2.0)
+    itr, primary = mi.idx_lower_bound(3, 2.0)
     item = mi[primary]
-    print('idx_lowerbound of 3 2.0:', item.a, item.b, item.c, item.d)
+    print('idx_lower_bound of 3 2.0:', item.a, item.b, item.c, item.d)
 
 
-    itr, primary = mi.idx_upperbound(0, 11)
+    itr, primary = mi.idx_upper_bound(0, 11)
     item = mi[primary]
-    print('idx_upperbound of 0 11:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 0 11:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(0, 22)
+    itr, primary = mi.idx_upper_bound(0, 22)
     item = mi[primary]
-    print('idx_upperbound of 0 22:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 0 22:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(0, 33)
+    itr, primary = mi.idx_upper_bound(0, 33)
     item = mi[primary]
-    print('idx_upperbound of 0 33:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 0 33:', item.a, item.b, item.c, item.d)
 
 
 
-    itr, primary = mi.idx_upperbound(1, 1)
+    itr, primary = mi.idx_upper_bound(1, 1)
     item = mi[primary]
-    print('idx_upperbound of 1 1:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 1 1:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(1, 2)
+    itr, primary = mi.idx_upper_bound(1, 2)
     item = mi[primary]
-    print('idx_upperbound of 1 2:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 1 2:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(1, 3)
+    itr, primary = mi.idx_upper_bound(1, 3)
     item = mi[primary]
-    print('idx_upperbound of 1 3:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 1 3:', item.a, item.b, item.c, item.d)
 
 
-    itr, primary = mi.idx_upperbound(2, 1)
+    itr, primary = mi.idx_upper_bound(2, 1)
     item = mi[primary]
-    print('idx_upperbound of 2 1:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 2 1:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(2, 2)
+    itr, primary = mi.idx_upper_bound(2, 2)
     item = mi[primary]
-    print('idx_upperbound of 2 2:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 2 2:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(2, 3)
+    itr, primary = mi.idx_upper_bound(2, 3)
     item = mi[primary]
-    print('idx_upperbound of 2 3:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 2 3:', item.a, item.b, item.c, item.d)
 
 
-    itr, primary = mi.idx_upperbound(3, 1.0)
+    itr, primary = mi.idx_upper_bound(3, 1.0)
     item = mi[primary]
-    print('idx_upperbound of 3 1.0:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 3 1.0:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(3, 2.0)
+    itr, primary = mi.idx_upper_bound(3, 2.0)
     item = mi[primary]
-    print('idx_upperbound of 3 2.0:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 3 2.0:', item.a, item.b, item.c, item.d)
 
-    itr, primary = mi.idx_upperbound(3, 3.0)
+    itr, primary = mi.idx_upper_bound(3, 3.0)
     item = mi[primary]
-    print('idx_upperbound of 3 3.0:', item.a, item.b, item.c, item.d)
+    print('idx_upper_bound of 3 3.0:', item.a, item.b, item.c, item.d)
 
 
 def apply(receiver, code, action):

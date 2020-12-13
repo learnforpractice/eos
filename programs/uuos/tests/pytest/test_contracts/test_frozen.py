@@ -90,7 +90,7 @@ def apply(receiver, code, action):
         itr, primary = mi.idx_find(3, 4.0)
         print(itr, primary)
 
-        itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
+        itr, primary, secondary = mi.idx_lower_bound(3, 1.0)
         print(itr, primary, secondary)
 
     if True:
@@ -101,5 +101,5 @@ def apply(receiver, code, action):
         mi[1] = d
 
         print(mi[1])
-        itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
+        itr, primary, secondary = mi.idx_lower_bound(3, 1.0)
         print(itr, primary, secondary)

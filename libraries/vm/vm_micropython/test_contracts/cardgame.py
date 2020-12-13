@@ -83,16 +83,16 @@ class MultiIndex:
     def get_secondary_index(self, idx):
         return SecondaryIndex(self, idx, self.data_type)
         
-    def upperbound(self, primary):
+    def upper_bound(self, primary):
         pass
 
-    def lowerbound(self, primary):
+    def lower_bound(self, primary):
         pass
 
-    def idx_upperbound(self, index, secondary_key):
+    def idx_upper_bound(self, index, secondary_key):
         pass
 
-    def idx_lowerbound(self, index, secondary_key):
+    def idx_lower_bound(self, index, secondary_key):
         pass
 
 class MyData(object):
