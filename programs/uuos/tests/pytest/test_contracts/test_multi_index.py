@@ -251,11 +251,11 @@ class MultiIndex:
         idx = self.indexes[index]
         return db_idx_find_secondary(idx, self.code, self.scope, self.table, secondary_key)
 
-    def idx_upperbound(self, index, secondary_key):
+    def idx_upper_bound(self, index, secondary_key):
         idx = self.indexes[index]
         return db_idx_upperbound(idx, self.code, self.scope, self.table, secondary_key)
 
-    def idx_lowerbound(self, index, secondary_key):
+    def idx_lower_bound(self, index, secondary_key):
         idx = self.indexes[index]
         return db_idx_lowerbound(idx, self.code, self.scope, self.table, secondary_key)
 
@@ -416,7 +416,7 @@ def apply(receiver, code, action):
         itr, primary = mi.idx_find(3, 4.0)
         print(itr, primary)
 
-        itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
+        itr, primary, secondary = mi.idx_lower_bound(3, 1.0)
         print(itr, primary, secondary)
 
     elif action == test2:
@@ -428,7 +428,7 @@ def apply(receiver, code, action):
         assert len(mi) == 1
 
         print(mi[1])
-        itr, primary, secondary = mi.idx_lowerbound(3, 1.0)
+        itr, primary, secondary = mi.idx_lower_bound(3, 1.0)
         print(itr, primary, secondary)
     elif action == test3:
         table = name('tabletest3')
@@ -458,6 +458,8 @@ def apply(receiver, code, action):
         itr = db.upper_bound(1)
         data = db.get(itr)
         assert (data.a, data.b, data.c, data.d) == (3, 4, 5, 7.0)
+        db.remove(1)
+        db.remove(3)
 
     elif action == test4:
         table = name('tabletest4')
@@ -488,6 +490,8 @@ def apply(receiver, code, action):
         itr = db.upper_bound(0xfffffffffffffffff0)
         data = db.get(itr)
         assert (data.a, data.b, data.c, data.d) == (0xffffffffffffffffff, 4, 5, 7.0)
+        db.remove(0xfffffffffffffffff0)
+        db.remove(0xffffffffffffffffff)
 
     elif action == name('test5'):
         test = SingletonTest()
