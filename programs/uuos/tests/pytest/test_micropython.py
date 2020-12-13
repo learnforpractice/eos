@@ -377,28 +377,10 @@ def apply(a, b, c):
         logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_name(self):
-        code = r'''
-from chain import *
-def apply(a, b, c):
-    print(type(a) == name, type(b) == name, type(c) == name)
-    print('++++name:', a)
-    assert a == name('alice')
-    assert int(a) == s2n('alice')
-    assert int(b) == s2n('alice')
-    assert str(a) == 'alice'
-    assert name('alice') == name(s2n('alice'))
+        code = os.path.join(test_dir, 'test_contracts', 'test_name.py')
+        with open(code, 'r') as f:
+            code = f.read()
 
-    print(name('alice') , name(s2n('alice')))
-
-    assert a.to_int() == s2n('alice')
-    assert 'alice' == a.to_str()
-    assert name('helloworld111') == name(s2n('helloworld111'))
-    assert name('helloworld111').to_str() == 'helloworld111'
-    assert name('helloworld111').to_int() == s2n('helloworld111')
-
-#    print(name('hello') == s2n('hello'))
-
-'''
         code = self.compile(code)
         self.chain.deploy_contract('alice', code, b'', vmtype=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
