@@ -24,3 +24,7 @@ def apply(a, b, c):
 
     assert float_equal(float128(4722366482869645213695.0/2), 2361183241434822606848.0)
 
+    a = float128(3.14)
+    raw_bytes = bytes(a)
+    assert a.to_bytes() == raw_bytes
+    assert a == float128.from_bytes(raw_bytes)
