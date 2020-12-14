@@ -88,7 +88,8 @@ int micropython_init() {
 
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
-    init_frozen_module("init.mpy");
+    micropython_init_frozen_modules();
+    // init_frozen_module("_init.mpy");
     return 1;
   } else {
     printf("++++init_frozen_module:trap code: %d\n", trap_code);
