@@ -27,6 +27,8 @@ def module_name(f):
 
 
 modules = []
+ignore_files = ['db.mpy']
+ignore_files = []
 
 if len(sys.argv) > 1:
     root = sys.argv[1].rstrip("/")
@@ -34,6 +36,8 @@ if len(sys.argv) > 1:
 
     for dirpath, dirnames, filenames in os.walk(root):
         for file_name in filenames:
+            if file_name in ignore_files:
+                continue
             if not file_name.endswith('.py'):
                 continue
             fullpath = dirpath + "/" + file_name
@@ -47,8 +51,11 @@ if len(sys.argv) > 1:
 
     for dirpath, dirnames, filenames in os.walk(root):
         for f in filenames:
+            if f in ignore_files:
+                continue
             if not f.endswith('.mpy'):
                 continue
+            print(f)
             fullpath = dirpath + "/" + f
             st = os.stat(fullpath)
             modules.append((fullpath[root_len + 1 :], st))
