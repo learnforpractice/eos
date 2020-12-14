@@ -21,8 +21,7 @@ set(SRCS
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/frozen/frozen.c
     COMMAND python3 ../make-frozen.py . frozen.c
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/frozen
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/frozen/init.py
-#    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/frozen/db.py ${CMAKE_CURRENT_SOURCE_DIR}/frozen/init.py
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/frozen/_db.py ${CMAKE_CURRENT_SOURCE_DIR}/frozen/_init.py
     COMMENT "Generating frozen.c"
 )
 
