@@ -86,8 +86,15 @@ int micropython_init() {
   init();
   mp_js_init(64*1024);
 
-  init_frozen_module("init.mpy");
-
+  int trap_code = wasm_rt_impl_try();
+  if (trap_code == 0) {
+    init_frozen_module("init.mpy");
+    return 1;
+  } else {
+    printf("++++init_frozen_module:trap code: %d\n", trap_code);
+    wasm_rt_on_trap(trap_code);
+    return 0;
+  }
 //  micropython_run_script(script_offset);
   return 1;
 }
@@ -123,7 +130,8 @@ int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action
   setjmp_clear_stack();
 
   init_globals();
-
+  // u32 ptr = malloc_0(1);
+  // printf("++++++++++++micropython_contract_apply, current ptr is %ld\n", ptr);
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
