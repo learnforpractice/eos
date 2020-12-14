@@ -85,6 +85,57 @@ class ChainDBKey256(ChainDB):
     def __init__(self, code, scope, table, data_type):
         ChainDB.__init__(self, primary_type_i256, code, scope, table, data_type)
 
+class Singleton(object):
+    def __init__(self, primary_type, code, scope, table, primary_key):
+        self.code = code
+        self.scope = scope
+        self.table = table
+        self.primary_type = primary_type
+        self.primary_key = primary_key
+
+        if primary_type == primary_type_i64:
+            self._db_find = db_find_i64
+            self._db_get = db_get_i64
+            self._db_store = db_store_i64
+            self._db_update = db_update_i64
+            self._db_remove = db_remove_i64
+        else:
+            self._db_find = db_find_i256
+            self._db_get = db_get_i256
+            self._db_store = db_store_i256
+            self._db_update = db_update_i256
+            self._db_remove = db_remove_i256
+
+    def load_default(self):
+        raise 'load_default should be implemented by subclass'
+
+    def load(self):
+        itr = self._db_find(self.code, self.scope, self.table, self.primary_key)
+        if itr < 0:
+            return self.load_default()
+        data = self._db_get(itr)
+        self.unpack(data)
+
+    def store(self, payer = 0):
+        itr = self._db_find(self.code, self.scope, self.table, self.primary_key)
+        if itr < 0:
+            self._db_store(self.scope, self.table, payer, self.primary_key, self.pack())
+        else:
+            self._db_update(itr, payer, self.pack())
+
+    def destory(self):
+        itr = self._db_find(self.code, self.scope, self.table, self.primary_key)
+        if itr < 0:
+            raise IndexError
+        self._db_remove(itr)
+
+    def pack(self):
+        raise 'pack should be implemented by subclass'
+
+    @classmethod
+    def unpack(cls, data):
+        raise 'unpack should be implemented by subclass'
+
 class MultiIndex:
     def __init__(self, code, scope, table, data_type):
         self.code = code
@@ -340,7 +391,8 @@ class SingletonTest(Singleton):
     def pack(self):
         return json.dumps((self.a, self.b, self.c))
 
-    def unpack(self, data):
+    @classmethod
+    def unpack(cls, data):
         self.a, self.b, self.c = json.loads(data)
 
 test1 = name('test1')
