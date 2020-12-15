@@ -80,36 +80,17 @@ header_patch = (
 )
 
 nlr_pop_patch = (
-r'''static void nlr_pop(void) {
-  FUNC_PROLOGUE;
-  u32 i0, i1;
-  i0 = 0u;
-  i1 = 0u;
-  i1 = i32_load((&M0), (u64)(i1 + 10264));
-  i1 = i32_load((&M0), (u64)(i1));
-  i32_store((&M0), (u64)(i0 + 10264), i1);
-  FUNC_EPILOGUE;
-}
-''',
+r'''static void nlr_pop(void) {''',
 
 r'''
-static void _nlr_pop(void) {
-  FUNC_PROLOGUE;
-  u32 i0, i1;
-  i0 = 0u;
-  i1 = 0u;
-  i1 = i32_load((&M0), (u64)(i1 + 10264));
-  i1 = i32_load((&M0), (u64)(i1));
-  i32_store((&M0), (u64)(i0 + 10264), i1);
-  FUNC_EPILOGUE;
-}
-
+static void _nlr_pop(void);
 void setjmp_discard_top();
 static void nlr_pop(void) {
   _nlr_pop();
   setjmp_discard_top();
 }
 
+static void _nlr_pop(void) {
 '''
 )
 
@@ -184,7 +165,7 @@ with open('micropython.c.bin', 'r') as f:
       origin = 'wasm_rt_allocate_memory((&M0), 2, 65536);'
     if data.find(origin) < 0:
       origin = 'wasm_rt_allocate_memory((&M0), 1, 528);'
-    patch = 'memset(&M0, 0, sizeof(M0));wasm_rt_allocate_memory((&M0), 2, PYTHON_VM_MAX_MEMORY_SIZE/65536);'
+    patch = 'memset(&M0, 0, sizeof(M0));wasm_rt_allocate_memory((&M0), 1, PYTHON_VM_MAX_MEMORY_SIZE/65536);'
     data = patch_micropython(data, origin, patch)
     data = data.replace('__fpclassifyl', '____fpclassifyl')
 
