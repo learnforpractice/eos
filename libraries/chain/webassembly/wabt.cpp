@@ -54,12 +54,31 @@ class wabt_instantiated_module : public wasm_instantiated_module_interface {
          _params[0].set_i64(context.get_receiver().to_uint64_t());
          _params[1].set_i64(context.get_action().account.to_uint64_t());
          _params[2].set_i64(context.get_action().name.to_uint64_t());
+         
+         #if 0
+         if (context.get_action().account == N(bob) && context.get_action().name == N(init))
+         {
+            elog("++++++++${a} ${b} ${c}", ("a", context.get_receiver())("b", context.get_action().account)("c", context.get_action().name));
+            FILE *fp = fopen("before_apply_dump.bin", "wb");
+            fwrite(_env->GetMemory(0)->data.data(), 1, _env->GetMemory(0)->data.size(), fp);
+            fclose(fp);
+         }
+         #endif
 
          ExecResult res = _executor.RunStartFunction(_instatiated_module);
          EOS_ASSERT( res.result == interp::Result::Ok, wasm_execution_error, "wabt start function failure (${s})", ("s", ResultToString(res.result)) );
 
          res = _executor.RunExportByName(_instatiated_module, "apply", _params);
          EOS_ASSERT( res.result == interp::Result::Ok, wasm_execution_error, "wabt execution failure (${s})", ("s", ResultToString(res.result)) );
+         #if 0
+         if (context.get_action().account == N(bob) && context.get_action().name == N(init))
+         {
+            elog("++++++++${a} ${b} ${c}", ("a", context.get_receiver())("b", context.get_action().account)("c", context.get_action().name));
+            FILE *fp = fopen("after_apply_dump.bin", "wb");
+            fwrite(_env->GetMemory(0)->data.data(), 1, _env->GetMemory(0)->data.size(), fp);
+            fclose(fp);
+         }
+         #endif
       }
 
    private:

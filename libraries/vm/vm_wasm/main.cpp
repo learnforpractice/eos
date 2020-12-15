@@ -102,7 +102,7 @@ using namespace eosio::chain::wasm_injections;
 #include <stdio.h>
 int main(int argc, char **argv) {
     if (argc != 3) {
-        printf("usage wasm_injector in_wasm_file out_wasm_file");
+        printf("usage wasm_injector in_wasm_file out_wasm_file\n");
         return 0;
     }
     int file_size;

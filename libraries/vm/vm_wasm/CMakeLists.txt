@@ -80,17 +80,17 @@ target_include_directories( wasm_injector
 target_compile_options(wasm_injector  PRIVATE -D_INDEX=1 -DWASM_INJECTOR_FOR_PYTHON_VM)
 
 
-add_executable( wasm_preload main_preload.cpp ${SRCS_INJECTOR} )
-target_link_libraries( wasm_preload wabt ${WASM_INJECTOR_DEPEND_LIBS} fc vm_micropython)
+add_executable( wasm_preloader main_preloader.cpp ${SRCS_INJECTOR} )
+target_link_libraries( wasm_preloader wabt ${WASM_INJECTOR_DEPEND_LIBS} fc vm_micropython)
 
-target_include_directories( wasm_preload
+target_include_directories( wasm_preloader
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" 
                             PRIVATE ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Include
                             PRIVATE ${CMAKE_SOURCE_DIR}/libraries/wasm-jit/Include/WASM
                             PUBLIC ${HEADERS}
                             )
 
-target_compile_options(wasm_preload  PRIVATE -D_INDEX=1 -DWASM_INJECTOR_FOR_PYTHON_VM)
+target_compile_options(wasm_preloader  PRIVATE -DPYTHON_VM_STACK_SIZE=${PYTHON_VM_STACK_SIZE} -DWASM_INJECTOR_FOR_PYTHON_VM)
 
 # install(TARGETS vm_wasm-1
 #     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

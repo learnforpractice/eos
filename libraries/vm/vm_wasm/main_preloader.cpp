@@ -16,6 +16,7 @@
 #include "IR/Validate.h"
 
 #include "./wasm_eosio_injection.hpp"
+#include <stdio.h>
 
 using namespace eosio::chain;
 using namespace fc;
@@ -105,19 +106,75 @@ extern "C" {
     size_t micropython_get_memory_size();
 }
 
-#include <stdio.h>
+using namespace std;
+
+struct data_segment {
+    int offset;
+    vector<uint8_t> data;
+};
+
+vector<data_segment> take_snapshot(const char *inital_memory, const char *current_memory) {
+    vector<data_segment> segments;
+
+    const char *ptr1 = inital_memory;
+    const char *ptr2 = current_memory;
+    int block_size = 64;
+
+    int initial_memory_size = 64*1024;
+    int pos = PYTHON_VM_STACK_SIZE; //do not save stack data as it's temperately
+    int total_size = 0;
+    while(pos<initial_memory_size) {
+        if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+            pos += block_size;
+            continue;
+        }
+        int start = pos;
+        pos += block_size;
+        while (pos<initial_memory_size) {
+            if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+                break;
+            }
+            pos += block_size;
+        }
+
+        int copy_size = pos-start;
+        pos += block_size;
+        total_size += copy_size;
+        data_segment segment;
+        segment.offset = start;
+        segment.data.resize(copy_size);
+        memcpy(segment.data.data(), ptr2 + start, copy_size);
+        segments.push_back(segment);
+        printf("++++++++start: %d, size: %d\n", start, copy_size);
+    }
+    printf("++++++++total_size: %d \n", total_size);
+    return segments;
+}
+
 int main(int argc, char **argv) {
-    if (argc != 3) {
-        printf("usage wasm_injector in_wasm_file out_wasm_file");
+    if (argc != 4) {
+        printf("usage wasm_preloader in_wasm_file in_wasm_memory_dump.bin out_wasm_file\n");
         return 0;
     }
-    micropython_init();
+    
+    int wasm_memory_dump_size;
+    const char *wasm_memory_dump = read_file(argv[2], &wasm_memory_dump_size);
+    if (wasm_memory_dump == nullptr || wasm_memory_dump_size <= 0) {
+        printf("read dump file failed!\n");
+        return -1;
+    }
+
+    char *origin_memory = (char *)malloc(wasm_memory_dump_size);
+    memset(origin_memory, 0, wasm_memory_dump_size);
+    vector<data_segment> segments = take_snapshot(origin_memory, wasm_memory_dump);
+
     int file_size;
     const char *code = read_file(argv[1], &file_size);
     if (code == nullptr || file_size <= 0) {
         printf("read wasm file failed!\n");
         return -1;
     }
+
 
     wasm_constraints::set_maximum_linear_memory_init(6*1024*1024);
     wasm_constraints::set_maximum_table_elements(10240);
@@ -140,73 +197,37 @@ int main(int argc, char **argv) {
         return -1;
     } FC_LOG_AND_DROP()
 
-    try {
-        wasm_injections::wasm_binary_injection<false> injector(module);
-        injector.inject();
-    } FC_LOG_AND_DROP()
+    // int total_size = 0;
+    // for ( const DataSegment& ds : module.dataSegments ) {
+    //     printf("+++++offset:%d, size: %d\n", ds.baseOffset.i32, ds.data.size());
+    //     total_size += ds.data.size();
+    // }
+    // printf("++++total_size %d\n", total_size);
 
-
-	unsigned char *ptr = (unsigned char *)module.userSections[1].data.data();
-    vector<U8> new_data(module.userSections[1].data.size()*2);
-    unsigned char *ptr2 = new_data.data();
-
-    uint32_t name_type = 0;
-    ptr += read_u32(ptr, name_type);
-//    ptr2 += write_u32(ptr2, name_type);
-
-    uint32_t sub_section_size = 0;
-    ptr += read_u32(ptr, sub_section_size);
-
-    uint32_t num_names = 0;
-    ptr += read_u32(ptr, num_names);
-
-    std::map<uint32_t, std::string> index_name_map;
-
-    for (auto& item:injector_utils::registered_injected) {
-        auto itr = injector_utils::injected_index_mapping.find(item.second);
-        uint32_t function_index = itr->second;
-        index_name_map[function_index] = item.first;
+    DataSegment ds = module.dataSegments[0];
+    module.dataSegments.clear();
+    int max_segment_size = 8192/2;
+    for(auto& _ds: segments) {
+        for(int i=0;i<_ds.data.size();i+=max_segment_size) {
+            int segment_size;
+            if (i + max_segment_size > _ds.data.size()) {
+                segment_size = _ds.data.size() - i;
+            } else {
+                segment_size = max_segment_size;
+            }
+            ds.baseOffset.i32 = _ds.offset + i;
+            ds.data.resize(segment_size);
+            memcpy(ds.data.data(), &_ds.data[i], segment_size);
+            module.dataSegments.push_back(ds);
+        }
     }
-
-    for (auto& item: index_name_map) {
-        ptr2 += write_u32(ptr2, item.first);
-        ptr2 += write_u32(ptr2, item.second.size());
-        ptr2 += write_str(ptr2, item.second.c_str(), item.second.size());
-        printf("%u %s\n", item.first, item.second.c_str());
-    }
-
-    for (size_t i=0;i<num_names;i++) {
-        uint32_t function_index;
-        uint32_t name_len;
-
-        ptr += read_u32(ptr, function_index);
-        ptr += read_u32(ptr, name_len);
-        // printf("%u %s\n", function_index, name);
-        ptr2 += write_u32(ptr2, function_index+injector_utils::registered_injected.size());
-        ptr2 += write_u32(ptr2, name_len);
-        memcpy(ptr2, ptr, name_len);
-        ptr2 += name_len;
-        ptr += name_len;
-    }
-
-    size_t new_data_size = ptr2 - new_data.data();
-    size_t new_sub_section_size = new_data_size + calc_size(num_names+injector_utils::registered_injected.size());
-
-    vector<U8> new_section_data(calc_size(name_type) + calc_size(new_sub_section_size) + new_sub_section_size);
-    U8 *ptr3 = new_section_data.data();
-    ptr3 += write_u32(ptr3, name_type);
-    ptr3 += write_u32(ptr3, new_sub_section_size);
-    ptr3 += write_u32(ptr3, num_names+injector_utils::registered_injected.size());
-    memcpy(ptr3, new_data.data(), new_data_size);
-
-    module.userSections[1].data = new_section_data;
 
     std::vector<U8> bytes;
     try {
         Serialization::ArrayOutputStream outstream;
         WASM::serialize(outstream, module);
         bytes = outstream.getBytes();
-        FILE *fp = fopen(argv[2], "wb");
+        FILE *fp = fopen(argv[3], "wb");
         fwrite(bytes.data(), 1, bytes.size(), fp);
         fclose(fp);
     } catch(const Serialization::FatalSerializationException& e) {
