@@ -58,8 +58,11 @@ void *get_memory_ptr(uint32_t offset, uint32_t size) {
   int test = offset + size <= M0.size && offset + size >= offset;
   // if (!test) {
   //   vm_print_stacktrace();
+  //   printf("++++++++offset %u, size %u\n", offset, size);
   // }
-  eosio_assert(test, "memory access out of bound!");
+  if (!test) {
+    eosio_assert(0, "memory access out of bound!");
+  }
   return M0.data + offset;
 }
 
@@ -79,17 +82,82 @@ void init_frozen_module(const char *name) {
   micropython_init_module_from_mpy_with_name(0, init_script_offset, size);
 }
 
+void *micropython_get_memory();
+size_t micropython_get_memory_size();
+
+#include <memory.h>
+#include <string.h>
+
+void take_snapshot(const char *inital_memory, const char *current_memory) {
+    const char *ptr1 = inital_memory;
+    const char *ptr2 = current_memory;
+    int block_size = 64;
+
+    int initial_memory_size = 64*1024;
+    int pos = PYTHON_VM_STACK_SIZE; //do not save stack data as it's temperately
+    int total_size = 0;
+    while(pos<initial_memory_size) {
+        if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+            pos += block_size;
+            continue;
+        }
+        int start = pos;
+        pos += block_size;
+        while (pos<initial_memory_size) {
+            if (memcmp(ptr1+pos, ptr2+pos, block_size) == 0) {
+                break;
+            }
+            pos += block_size;
+        }
+
+        int copy_size = pos-start;
+        pos += block_size;
+        total_size += copy_size;
+        printf("++++++++start: %d, size: %d\n", start, copy_size);
+    }
+    printf("++++++++total_size: %d \n", total_size);
+}
+
+void *malloc(size_t size);
+
+uint64_t get_microseconds();
+
 int micropython_init() {
   init_vm_api4c();
   set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
+  printf("+++++++_offset_to_ptr %p\n", _offset_to_ptr);
 
   init();
+  size_t memory_size = micropython_get_memory_size();
+  char *origin_memory = (char *)malloc(memory_size);
+  memcpy(origin_memory, micropython_get_memory(), memory_size);
+  // u32 ptr = malloc_0(1);
+  // printf("++++++++++++init_frozen_module, current ptr is %u\n", ptr);
+
+  uint64_t n = get_microseconds();
   mp_js_init(64*1024);
 
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
     micropython_init_frozen_modules();
     // init_frozen_module("_init.mpy");
+  // ptr = malloc_0(1);
+  // printf("++++++++++++init_frozen_module, current ptr is %u\n", ptr);
+   printf("++++++duration: %lld\n", get_microseconds() - n);
+
+#if 1
+  size_t current_memory_size = micropython_get_memory_size();
+  char *current_memory = (char *)malloc(current_memory_size);
+  memcpy(current_memory, micropython_get_memory(), current_memory_size);
+  printf("+++%d %d\n", memory_size, current_memory_size);
+
+  take_snapshot(origin_memory, current_memory);
+
+  memset(origin_memory, 0, current_memory_size);
+  printf("+++++++++++++++show segments\n");
+  take_snapshot(origin_memory, current_memory);
+#endif
+
     return 1;
   } else {
     printf("++++init_frozen_module:trap code: %d\n", trap_code);
@@ -136,7 +204,11 @@ int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
-    return micropython_apply(receiver, code, action);
+    int ret = micropython_apply(receiver, code, action);
+
+    u32 ptr = malloc_0(1);
+    printf("++++++++++++micropython_contract_apply, current ptr is %u\n", ptr);
+    return ret;
   } else {
     printf("++++micropython_contract_apply:trap code: %d\n", trap_code);
     wasm_rt_on_trap(trap_code);
