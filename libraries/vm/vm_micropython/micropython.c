@@ -3,6 +3,9 @@
 #include <wasm-rt-impl.h>
 #include <vm_api4c.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+
 uint32_t wasm_rt_call_stack_depth = 0;
 uint32_t g_saved_call_stack_depth = 0;
 jmp_buf g_jmp_buf;
@@ -120,8 +123,6 @@ void take_snapshot(const char *inital_memory, const char *current_memory) {
 
 void *malloc(size_t size);
 
-uint64_t get_microseconds();
-
 int micropython_init() {
   init_vm_api4c();
   set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
@@ -134,7 +135,6 @@ int micropython_init() {
   // u32 ptr = malloc_0(1);
   // printf("++++++++++++init_frozen_module, current ptr is %u\n", ptr);
 
-  uint64_t n = get_microseconds();
   mp_js_init(64*1024);
 
   int trap_code = wasm_rt_impl_try();
@@ -143,7 +143,6 @@ int micropython_init() {
     // init_frozen_module("_init.mpy");
   // ptr = malloc_0(1);
   // printf("++++++++++++init_frozen_module, current ptr is %u\n", ptr);
-   printf("++++++duration: %lld\n", get_microseconds() - n);
 
 #if 1
   size_t current_memory_size = micropython_get_memory_size();
@@ -206,8 +205,8 @@ int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action
   if (trap_code == 0) {
     int ret = micropython_apply(receiver, code, action);
 
-    u32 ptr = malloc_0(1);
-    printf("++++++++++++micropython_contract_apply, current ptr is %u\n", ptr);
+    // u32 ptr = malloc_0(1);
+    // printf("++++++++++++micropython_contract_apply, current ptr is %u\n", ptr);
     return ret;
   } else {
     printf("++++micropython_contract_apply:trap code: %d\n", trap_code);
