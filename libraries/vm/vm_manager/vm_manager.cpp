@@ -205,6 +205,7 @@ void vm_manager::take_snapshoot(vm_instantiated_module& module, int vm_type) {
         segment.data.resize(remain_size);
         memcpy(segment.data.data(), vm_start_memory_address + initial_memory_size, remain_size);
         module.backup.segments.emplace_back(segment);
+        module.backup.total_segment_size += remain_size;
     }
 }
 
