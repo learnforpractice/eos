@@ -44,7 +44,7 @@ void setjmp_pop(jmp_buf buf);
 }
 ''')
 
-pathc_setjmp = (r'''static u32 setjmp_ex(u32 p0) {
+patch_setjmp2 = (r'''static u32 setjmp_ex(u32 p0) {
   FUNC_PROLOGUE;
   u32 i0;
   i0 = 0u;
@@ -142,13 +142,13 @@ with open('micropython.c.bin', 'r') as f:
     origin, patch = header_patch
     data = patch_micropython(data, origin, patch)
 
-    origin, patch = patch_set_jmp
-    data = patch_micropython(data, origin, patch)
-
     origin, patch = patch_init
     data = patch_micropython(data, origin, patch)
 
-    origin, patch = pathc_setjmp
+    origin, patch = patch_set_jmp
+    data = patch_micropython(data, origin, patch)
+
+    origin, patch = patch_setjmp2
     data = patch_micropython(data, origin, patch)
 
     origin, patch = nlr_pop_patch
@@ -159,6 +159,8 @@ with open('micropython.c.bin', 'r') as f:
 
     # origin, patch = vm_load_frozen_module_patch
     # data = patch_micropython(data, origin, patch)
+
+    data = data.replace('posix_memalign', '_posix_memalign')
 
     origin = 'wasm_rt_allocate_memory((&M0), 1, 65536);'
     if data.find(origin) < 0:
