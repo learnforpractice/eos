@@ -30,7 +30,22 @@ static void _abort() {
     get_vm_api()->eosio_abort();
 }
 
+extern "C" void vm_print_stacktrace(void);
+
 static u32 _memcpy(u32 dest_offset, u32 src_offset, u32 size) {
+    int overlap;
+    if (dest_offset > src_offset) {
+        overlap = dest_offset - src_offset < size;
+    } else {
+        overlap = src_offset - dest_offset < size;
+    }
+
+    if (overlap) {
+        printf("++++++++++++dest_offset: %u, src_offset: %u, size: %u\n", dest_offset, src_offset, size);
+        vm_print_stacktrace();
+        get_vm_api()->eosio_assert(false, "memcpy can only accept non-aliasing pointers");
+    }
+    
     char *dest = (char *)offset_to_ptr(dest_offset, size);
     char *src = (char *)offset_to_ptr(src_offset, size);
     ::memcpy(dest, src, size);
