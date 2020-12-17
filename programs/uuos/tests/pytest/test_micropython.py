@@ -963,6 +963,24 @@ def apply(a, b, c):
         m = int(m)
         assert n + 1 == m
 
+    def test_log(self):
+        code = r'''
+import chain
+def apply(a, b, c):
+    chain.enable_log(True)
+    print('hello,world')
+    chain.enable_log(False)
+    log = chain.get_log()
+    assert b'hello,world\r\n' == log
+'''
+        code = self.compile(code)
+        
+        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])        
+        self.chain.produce_block()
+
     def test_compile(self):
         for i in range(100):
             code = uuos.compile("print('hello')")
