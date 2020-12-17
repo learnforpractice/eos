@@ -75,6 +75,10 @@ class Test(object):
     def test_memory_dump(self):
         # print(os.getpid())
         # input('<<<')
+        files = ('after_apply_dump.bin', 'before_apply_dump.bin', 'out.wasm')
+        for f in files:
+            if os.path.exists(f):
+                os.remove(f)
 
         self.chain.buy_ram_bytes('alice', 'bob', 3*1024*1024)
         wasm_file = '/Users/newworld/dev/uuos3/build/externals/micropython/ports/uuosio/micropython_eosio.wasm'
