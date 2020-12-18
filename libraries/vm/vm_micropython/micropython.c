@@ -1,5 +1,7 @@
 #include "micropython_vm_config.h"
 #include "micropython.c.bin"
+#include "vm_api.c"
+
 #include <wasm-rt-impl.h>
 #include <vm_api4c.h>
 
@@ -57,7 +59,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
 
 void vm_print_stacktrace(void);
 
-void *get_memory_ptr(uint32_t offset, uint32_t size) {
+static void *get_memory_ptr(uint32_t offset, uint32_t size) {
   int test = offset + size <= M0.size && offset + size >= offset;
   // if (!test) {
   //   vm_print_stacktrace();
@@ -129,9 +131,6 @@ int micropython_init() {
   printf("+++++++_offset_to_ptr %p\n", _offset_to_ptr);
 
   init();
-  size_t memory_size = micropython_get_memory_size();
-  char *origin_memory = (char *)malloc(memory_size);
-  memcpy(origin_memory, micropython_get_memory(), memory_size);
   // u32 ptr = malloc_0(1);
   // printf("++++++++++++init_frozen_module, current ptr is %u\n", ptr);
 
@@ -143,19 +142,6 @@ int micropython_init() {
     // init_frozen_module("_init.mpy");
   // ptr = malloc_0(1);
   // printf("++++++++++++init_frozen_module, current ptr is %u\n", ptr);
-
-#if 1
-  size_t current_memory_size = micropython_get_memory_size();
-  char *current_memory = (char *)malloc(current_memory_size);
-  memcpy(current_memory, micropython_get_memory(), current_memory_size);
-  printf("+++%d %d\n", memory_size, current_memory_size);
-
-  take_snapshot(origin_memory, current_memory);
-
-  memset(origin_memory, 0, current_memory_size);
-  printf("+++++++++++++++show segments\n");
-  take_snapshot(origin_memory, current_memory);
-#endif
 
     return 1;
   } else {
@@ -178,7 +164,8 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   setjmp_clear_stack();
 
   init_globals();
-  
+  set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
+
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
     u32 offset = malloc_0(size);
@@ -198,6 +185,8 @@ int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action
   setjmp_clear_stack();
 
   init_globals();
+  set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
+
   // u32 ptr = malloc_0(1);
   // printf("++++++++++++micropython_contract_apply, current ptr is %ld\n", ptr);
   wasm_rt_call_stack_depth = 0;

@@ -78,8 +78,6 @@ extern u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
 extern u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
-/* import: 'env' 'prints' */
-extern void (*Z_envZ_printsZ_vi)(u32);
 /* import: 'env' '__fixtfsi' */
 extern u32 (*Z_envZ___fixtfsiZ_ijj)(u64, u64);
 /* import: 'env' 'printqf' */
@@ -340,18 +338,6 @@ extern u32 (*Z_envZ_cancel_deferredZ_ii)(u32);
 extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 /* import: 'env' 'get_blockchain_parameters_packed' */
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
-/* import: 'env' '__multi3' */
-extern void (*Z_envZ___multi3Z_vijjjj)(u32, u64, u64, u64, u64);
-/* import: 'env' '__extendsftf2' */
-extern void (*Z_envZ___extendsftf2Z_vif)(u32, f32);
-/* import: 'env' '__floatunsitf' */
-extern void (*Z_envZ___floatunsitfZ_vii)(u32, u32);
-/* import: 'env' '__trunctfsf2' */
-extern f32 (*Z_envZ___trunctfsf2Z_fjj)(u64, u64);
-/* import: 'env' '__unordtf2' */
-extern u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' '__fixunstfsi' */
-extern u32 (*Z_envZ___fixunstfsiZ_ijj)(u64, u64);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);

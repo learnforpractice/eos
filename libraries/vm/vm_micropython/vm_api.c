@@ -2,7 +2,6 @@
 #include <vm_api_wrap.h>
 #include "micropython.h"
 
-void *get_memory_ptr(uint32_t offset, uint32_t size);
 
 u32 _call_vm_api(u32 function_type, u32 args_offset, u32 args_size, u32 output_offset) {
   struct vm_api_arg *vm_args = 0;
