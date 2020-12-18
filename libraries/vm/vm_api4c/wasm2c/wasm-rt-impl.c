@@ -43,7 +43,10 @@ jmp_buf g_jmp_buf;
 FuncType* g_func_types;
 uint32_t g_func_type_count;
 
+vm_print_stacktrace();
+
 void wasm_rt_trap(wasm_rt_trap_t code) {
+//  vm_print_stacktrace();
   assert(code != WASM_RT_TRAP_NONE);
   wasm_rt_call_stack_depth = g_saved_call_stack_depth;
   longjmp(g_jmp_buf, code);
@@ -105,6 +108,8 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t* memory,
 
   if (!memory->data) {
     memory->data = calloc(VM_MAX_MEMORY_SIZE, 1);
+  } else {
+    memset(memory->data, 0, initial_pages * PAGE_SIZE);
   }
 }
 
