@@ -10,9 +10,11 @@ else()
 endif (APPLE)
 
 set(SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.c.bin
     ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c
     ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin
-    vm_api.c
+    # vm_api.c
     vm_micropython.cpp
     code_loader.c
     ${CMAKE_CURRENT_SOURCE_DIR}/frozen/frozen.c
@@ -56,13 +58,21 @@ add_dependencies(vm_micropython micropython)
 add_dependencies(vm_micropython wasm2c)
 add_dependencies(vm_micropython wasm_injector)
 
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.c.bin
     COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython micropython_softfloat.wasm
     COMMAND ${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c -o micropython.c micropython_softfloat.wasm
     COMMAND mv micropython.c micropython.c.bin
     COMMAND mv micropython.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython.h
+
+    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython_eosio micropython_eosio_softfloat.wasm
+    COMMAND ${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c -o micropython_eosio.c micropython_eosio_softfloat.wasm
+    COMMAND mv micropython_eosio.c micropython_eosio.c.bin
+    COMMAND mv micropython_eosio.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.h
+
     COMMAND python3  ${CMAKE_CURRENT_SOURCE_DIR}/patch.py
     COMMAND mv micropython.c.bin ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin
+    COMMAND mv micropython_eosio.c.bin ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.c.bin
+
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/externals/micropython/ports/uuosio
     DEPENDS micropython
     COMMENT "Generating micropython.c.bin"

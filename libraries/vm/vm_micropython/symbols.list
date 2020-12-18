@@ -9,3 +9,5 @@ _micropython_init_memory
 _micropython_load_frozen_code
 _micropython_validate_frozen_code
 _micropython_compile_src
+_micropython_eosio_apply
+

@@ -15,7 +15,7 @@ static void longjmp_ex(u32, u32);
 r'''
 // static u32 setjmp_ex(u32);
 // static void longjmp_ex(u32, u32);
-void *get_memory_ptr(u32 offset, u32 size);
+static void *get_memory_ptr(u32 offset, u32 size);
 void vm_checktime(void);
 void print_hex(char *data, size_t size);
 
@@ -172,4 +172,13 @@ with open('micropython.c.bin', 'r') as f:
     data = data.replace('__fpclassifyl', '____fpclassifyl')
 
 with open('micropython.c.bin', 'w') as f:
+    f.write(data)
+
+with open('micropython_eosio.c.bin', 'r') as f:
+    data = f.read()
+    data = data.replace('void WASM_RT_ADD_PREFIX(init)(void)', 'void WASM_RT_ADD_PREFIX(init_eosio)(void)')
+    data = data.replace('posix_memalign', '_posix_memalign')
+    data = data.replace('__fpclassifyl', '____fpclassifyl')
+
+with open('micropython_eosio.c.bin', 'w') as f:
     f.write(data)
