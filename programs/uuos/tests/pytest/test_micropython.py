@@ -43,10 +43,10 @@ class Test(object):
             }
         }
 
-        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, actor='alice')
+        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, {'alice':'active'})
 
-        cls.chain.buy_ram_bytes('alice', 'alice', 256*1024)
-        cls.chain.buy_ram_bytes('alice', 'bob', 256*1024)
+        cls.chain.buy_ram_bytes('alice', 'alice', 10*1024*1024)
+        cls.chain.buy_ram_bytes('alice', 'bob', 10*1024*1024)
 
         cls.chain.delegatebw('alice', 'alice', 1.0, 1.0)
         cls.chain.delegatebw('alice', 'bob', 1.0, 1.0)
@@ -63,7 +63,7 @@ class Test(object):
 
     def teardown_method(self, method):
         try:
-            self.chain.deploy_contract('alice', b'', b'', vmtype=1)
+            self.chain.deploy_contract('alice', b'', b'', vm_type=1)
         except Exception as e:
             assert e.args[0]['except']['name'] == 'set_exact_code'
             assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
@@ -159,7 +159,7 @@ def apply(a, b, c):
         pass
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
             assert 0
@@ -175,7 +175,7 @@ def apply(a, b, c):
         int(a) * int(b) * int(c)
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         self.chain.produce_block()
 
         total_elapsed = 0
@@ -201,17 +201,17 @@ def apply(a, b, c):
             code = f.read()
 #subprocess.CalledProcessError
         code = self.compile(code)
-        self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain.deploy_contract(contract_name, code, b'', vm_type=1)
         code = '''
 def apply(a, b, c):
     print('hello world from bob')
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('bob', code, b'', vmtype=1)
+        self.chain.deploy_contract('bob', code, b'', vm_type=1)
 
         r = self.chain.push_action(contract_name, 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.deploy_contract('bob', b'', b'', vmtype=1)
+        self.chain.deploy_contract('bob', b'', b'', vm_type=1)
 
         # r = self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
         # logger.info(r['elapsed'])
@@ -236,14 +236,14 @@ def apply(a, b, c):
             }
         }
 
-        r = self.chain.push_action(self.chain.system_contract, 'updateauth', a, actor='alice')
+        r = self.chain.push_action(self.chain.system_contract, 'updateauth', a, {'alice':'active'})
 
         code = os.path.join(test_dir, 'test_contracts', 'test_action.py')
         with open(code, 'r') as f:
             code = f.read()
 
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sendinline', b'hello,world from inline')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -265,7 +265,7 @@ def apply(a, b, c):
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -275,7 +275,7 @@ def apply(a, b, c):
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -286,7 +286,7 @@ def apply(a, b, c):
     raise Exception('oops!')
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
@@ -302,7 +302,7 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             logger.info(e.args[0]['action_traces'][0]['console'])
@@ -318,7 +318,7 @@ def apply(a, b, c):
     raise Exception('oops!')
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         except Exception as e:
@@ -326,52 +326,52 @@ def apply(a, b, c):
             logger.info(e.args[0]['except']['name'])
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
 
-    def test_bigint(self):
-        code = os.path.join(test_dir, 'test_contracts', 'test_bigint.py')
-        with open(code, 'r') as f:
-            code = f.read()
-        code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        logger.info(r['action_traces'][0]['console'])
-        logger.info('+++elapsed: %s', r['elapsed'])
+#     def test_bigint(self):
+#         code = os.path.join(test_dir, 'test_contracts', 'test_bigint.py')
+#         with open(code, 'r') as f:
+#             code = f.read()
+#         code = self.compile(code)
+#         self.chain.deploy_contract('alice', code, b'', vm_type=1)
+#         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+#         logger.info(r['action_traces'][0]['console'])
+#         logger.info('+++elapsed: %s', r['elapsed'])
 
-    def test_bigint_performance(self):
-        code = r'''
-def apply(a, b, c):
-    a = 0xffffffffffffffff
-    b = 0xffffffffffffffff
-    for i in range(500):
-        a * b
-'''
-        code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+#     def test_bigint_performance(self):
+#         code = r'''
+# def apply(a, b, c):
+#     a = 0xffffffffffffffff
+#     b = 0xffffffffffffffff
+#     for i in range(500):
+#         a * b
+# '''
+#         code = self.compile(code)
+#         self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        logger.info(r['action_traces'][0]['console'])
-        logger.info('+++elapsed: %s', r['elapsed'])
-        self.chain.produce_block()
+#         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+#         logger.info(r['action_traces'][0]['console'])
+#         logger.info('+++elapsed: %s', r['elapsed'])
+#         self.chain.produce_block()
 
-        code = r'''
-def apply(a, b, c):
-    a = bigint(0xffffffffffffffff)
-    b = bigint(0xffffffffffffffff)
-    for i in range(600):
-        a * b
-'''
-        code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+#         code = r'''
+# def apply(a, b, c):
+#     a = bigint(0xffffffffffffffff)
+#     b = bigint(0xffffffffffffffff)
+#     for i in range(600):
+#         a * b
+# '''
+#         code = self.compile(code)
+#         self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
-        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        logger.info(r['action_traces'][0]['console'])
-        logger.info('+++elapsed: %s', r['elapsed'])
+#         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+#         logger.info(r['action_traces'][0]['console'])
+#         logger.info('+++elapsed: %s', r['elapsed'])
 
     def test_float128(self):
         code = os.path.join(test_dir, 'test_contracts', 'test_float128.py')
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -382,7 +382,7 @@ def apply(a, b, c):
             code = f.read()
 
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info(r['action_traces'][0]['console'])
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -394,7 +394,7 @@ def apply(a, b, c):
     float128(128.0) * float128(889.0)
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         self.chain.produce_block()
         logger.info('+++++++++++++++get_balance("alice") %s', self.chain.get_balance('alice'))
         total_time = 0
@@ -446,7 +446,7 @@ def apply(receiver, code, action):
         code = self.compile(code)
 
         contract_name = 'alice'
-        self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain.deploy_contract(contract_name, code, b'', vm_type=1)
 
         r = self.chain.push_action(contract_name, 'sayhello', b'a')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -463,7 +463,7 @@ def apply(receiver, code, action):
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'test1', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -502,7 +502,7 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
@@ -517,7 +517,7 @@ def apply(a, b, c):
         json.dumps(a)
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -528,18 +528,18 @@ def apply(a, b, c):
         except Exception as e:
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'access apply context not allowed!'
 
-    def test_oob(self):
-        code = r'''
-def apply(a, b, c):
-    for i in range(10000):
-        bigint(0xffffffffffffffff) * bigint(0xffffffffffffffff)
-'''
-        code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
-        try:
-            r = self.chain.push_action('alice', 'sayhello', b'hello,world')
-        except Exception as e:
-            assert e.args[0]['except']['stack'][0]['data']['s'] == 'vm error out of bounds'
+#     def test_oob(self):
+#         code = r'''
+# def apply(a, b, c):
+#     for i in range(10000):
+#         bigint(0xffffffffffffffff) * bigint(0xffffffffffffffff)
+# '''
+#         code = self.compile(code)
+#         self.chain.deploy_contract('alice', code, b'', vm_type=1)
+#         try:
+#             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+#         except Exception as e:
+#             assert e.args[0]['except']['stack'][0]['data']['s'] == 'vm error out of bounds'
 
     def test_memory(self):
         code = r'''
@@ -548,7 +548,7 @@ def apply(a, b, c):
     print(large_str[1024-1])
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -563,7 +563,7 @@ def apply(a, b, c):
 #    print(large_str[1024*512-1])
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -582,7 +582,7 @@ def apply(a, b, c):
 #    print(large_str[1024*512-1])
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -598,7 +598,7 @@ def apply(a, b, c):
     a = 'a'*(1024*1024*10)
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
             assert 0
@@ -616,7 +616,7 @@ def apply(a, b, c):
     g_a += 1
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
 
@@ -626,7 +626,7 @@ def apply(a, b, c):
     import db
 '''
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
 
@@ -635,7 +635,7 @@ def apply(a, b, c):
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         try:
             r = self.chain.push_action('alice', 'sayhello', b'hello,world')
             logger.info('+++elapsed: %s', r['elapsed'])
@@ -655,7 +655,7 @@ def apply(a, b, c):
     a = bytearray(5*1024*1024)
 '''
         code = self.compile(code)
-        r = self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        r = self.chain.deploy_contract('alice', code, b'', vm_type=1)
         # logger.info('+++elapsed: %s', r['elapsed'])
         r = self.chain.push_action('alice', 'sayhello', b'hello,world1')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -666,7 +666,7 @@ def apply(a, b, c):
     return
 '''
         code = self.compile(code)
-        r = self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        r = self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'sayhello', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
 
@@ -675,7 +675,7 @@ def apply(a, b, c):
         with open(code, 'r') as f:
             code = f.read()
         code = self.compile(code)
-        r = self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        r = self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'test1', b'hello,world2')
         logger.info('+++elapsed: %s', r['elapsed'])
@@ -720,7 +720,7 @@ def apply(a, b, c):
 '''
         code = (('hello',hello),('world', world), ('main', main))
         code = self.compile_all(code)
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
         r = self.chain.push_action('alice', 'test3', b'hello,world4')
         logger.info('+++elapsed: %s', r['elapsed'])
 
@@ -828,7 +828,7 @@ def apply(a, b, c):
         code = (('hello',hello),('world', world))
         code = self.compile_all(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'python_execution_error'
@@ -837,7 +837,7 @@ def apply(a, b, c):
         code = (('hello',hello),('world', world), ('main', main))
         code = self.gen_bad_name_frozen(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
@@ -846,7 +846,7 @@ def apply(a, b, c):
         code = (('hello',hello),('world', world), ('main', main))
         code = self.gen_bad_code_size_frozen(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
@@ -857,7 +857,7 @@ def apply(a, b, c):
             code.append(('hello'+str(i), hello))
         code = self.compile_all(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
@@ -866,21 +866,21 @@ def apply(a, b, c):
         code = (('hello',hello),('world', world), ('main', main))
         code = self.gen_large_code_size_frozen(code)
         try:
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'module_size too large!'
 
         try:
-            self.chain.deploy_contract('alice', bytearray(76), b'', vmtype=1)
+            self.chain.deploy_contract('alice', bytearray(76), b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
             assert e.args[0]['except']['stack'][0]['data']['s'] == 'invalid code size!'
 
         try:
-            self.chain.deploy_contract('alice', bytearray(77), b'', vmtype=1)
+            self.chain.deploy_contract('alice', bytearray(77), b'', vm_type=1)
             assert 0
         except Exception as e:
             assert e.args[0]['except']['name'] == 'eosio_assert_message_exception'
@@ -893,12 +893,12 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])
 
-        self.chain.deploy_contract('alice', b'', b'', vmtype=1)
+        self.chain.deploy_contract('alice', b'', b'', vm_type=1)
         self.chain.produce_block()
 
     def test_transaction(self):
@@ -907,7 +907,7 @@ def apply(a, b, c):
             code = f.read()
         code = self.compile(code)
 
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         self.chain.push_action('alice', 'senddefer', b'hello,world')
         self.chain.produce_block()
@@ -949,7 +949,7 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])        
@@ -975,7 +975,7 @@ def apply(a, b, c):
 '''
         code = self.compile(code)
         
-        self.chain.deploy_contract('alice', code, b'', vmtype=1)
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
 
         r = self.chain.push_action('alice', 'sayhello', b'hello,world')
         logger.info('+++elapsed: %s', r['elapsed'])        

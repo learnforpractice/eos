@@ -51,7 +51,7 @@ class Test(object):
 
     def teardown_method(self, method):
         try:
-            self.chain.deploy_contract('alice', b'', b'', vmtype=1)
+            self.chain.deploy_contract('alice', b'', b'', vm_type=1)
         except Exception as e:
             assert e.args[0]['except']['name'] == 'set_exact_code'
             assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
@@ -178,7 +178,7 @@ def apply(a, b, c):
             logger.info('test %s', test_code_name)
             code = (test, ('main', main_code % test_code_name))
             code = self.compile_all(code)
-            self.chain.deploy_contract('alice', code, b'', vmtype=1)
+            self.chain.deploy_contract('alice', code, b'', vm_type=1)
             try:
                 self.chain.push_action('alice', 'sayhello', test_code_name.encode())
             except Exception as e:

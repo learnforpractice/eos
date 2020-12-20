@@ -104,7 +104,7 @@ def apply(receiver, code, action):
         '''
         name = 'alice'
         code = self.chain.compile_py_code(code)
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'test', b'')
         r = self.chain.push_action(name, 'test', b'a')
@@ -140,7 +140,7 @@ def apply(receiver, code, action):
         '''
         name = 'alice'
         code = self.chain.compile_py_code(code)
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'test', b'')
         r = self.chain.push_action(name, 'test', b'a')
@@ -158,7 +158,7 @@ def apply(receiver, code, action):
         '''
         name = 'alice'
         code = self.chain.compile_py_code(code)
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'test', b'')
         r = self.chain.push_action(name, 'test', b'a')
@@ -179,7 +179,7 @@ def apply(receiver, code, action):
         '''
         name = 'alice'
         code = self.chain.compile_py_code(code)
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
         self.chain.push_action(name, 'test', b'')
 
         self.chain.produce_block()

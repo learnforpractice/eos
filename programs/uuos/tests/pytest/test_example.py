@@ -37,7 +37,7 @@ def apply(receiver, code, action):
 '''
         code = self.chain.compile_py_code(code)
 
-        self.chain.deploy_contract(contract_name, code, b'', vmtype=2)
+        self.chain.deploy_contract(contract_name, code, b'', vm_type=2)
         self.chain.push_action(contract_name, 'sayhello', b'hello,world')
         self.chain.push_action(contract_name, 'sayhello', b'hello,world again')
         r = self.chain.get_table_rows(True, 'uuos', 'uuos', 'global', 'global', '', '', 10)

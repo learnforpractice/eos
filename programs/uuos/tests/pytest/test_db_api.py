@@ -33,7 +33,7 @@ class Test(object):
     def test_db_i64(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_i64.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'destroy', b'')
         r = self.chain.push_action(name, 'init', b'hello,world')
@@ -49,7 +49,7 @@ class Test(object):
     def test_db_idx64(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx64.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'destroy', b'')
         r = self.chain.push_action(name, 'init', b'hello,world')
@@ -65,7 +65,7 @@ class Test(object):
     def test_db_idx_double(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx_double.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'destroy', b'')
         r = self.chain.push_action(name, 'init', b'hello,world')
@@ -82,7 +82,7 @@ class Test(object):
     def test_db_idx128(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx128.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'destroy', b'')
         r = self.chain.push_action(name, 'init', b'hello,world')
@@ -98,7 +98,7 @@ class Test(object):
     def test_db_idx256(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx256.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'destroy', b'')
         r = self.chain.push_action(name, 'init', b'hello,world')
@@ -114,7 +114,7 @@ class Test(object):
     def test_db_idx_long_double(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test_idx_long_double.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         r = self.chain.push_action(name, 'destroy', b'')
         r = self.chain.push_action(name, 'init', b'hello,world')
@@ -130,7 +130,7 @@ class Test(object):
     def test_db_mi(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         self.chain.push_action(name, 'test', b'')
         self.chain.produce_block()
@@ -138,7 +138,7 @@ class Test(object):
     def test_db_mi2(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test2.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         self.chain.push_action(name, 'store', b'')
         self.chain.push_action(name, 'store', b'a')
@@ -152,7 +152,7 @@ class Test(object):
     def test_db_mi3(self):
         name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('db_test/db_test3.py')
-        self.chain.deploy_contract(name, code, b'', vmtype=1)
+        self.chain.deploy_contract(name, code, b'', vm_type=1)
 
         self.chain.push_action(name, 'store', b'')
         self.chain.push_action(name, 'get', b'')

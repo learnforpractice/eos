@@ -77,7 +77,7 @@ def apply(receiver, code, action):
         code = self.chain.compile_py_code(code)
 
         contract_name = 'testmetestme'
-        self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain.deploy_contract(contract_name, code, b'', vm_type=1)
         self.chain.push_action(contract_name, 'sayhello', b'')
         self.chain.push_action(contract_name, 'sayhello', b'a')
         self.chain.produce_block()
@@ -125,7 +125,7 @@ def apply(receiver, code, action):
         code = self.chain.compile_py_code(code)
 
         contract_name = 'testmetestme'
-        self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain.deploy_contract(contract_name, code, b'', vm_type=1)
         self.chain.push_action(contract_name, 'sayhello', b'')
         self.chain.push_action(contract_name, 'sayhello', b'a')
         self.chain.produce_block()

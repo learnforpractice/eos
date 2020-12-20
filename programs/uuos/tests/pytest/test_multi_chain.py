@@ -83,11 +83,11 @@ def apply(receiver, code, action):
         code = self.chain1.compile_py_code(code)
 
         contract_name = 'testmetestme'
-        self.chain1.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain1.deploy_contract(contract_name, code, b'', vm_type=1)
         self.chain1.push_action(contract_name, 'sayhello', b'hello,world from chain1')
         self.chain1.push_action(contract_name, 'sayhello', b'hello,world from chain1 again')
 
-        self.chain2.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain2.deploy_contract(contract_name, code, b'', vm_type=1)
         self.chain2.push_action(contract_name, 'sayhello', b'hello,world from chain2')
         self.chain2.push_action(contract_name, 'sayhello', b'hello,world from chain2 again')
 

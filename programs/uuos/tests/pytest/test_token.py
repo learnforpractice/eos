@@ -23,7 +23,7 @@ class Test(object):
         abi_file = os.path.join(test_dir, 'test_contracts', 'token.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
-        chain.deploy_contract(contract_name, code, abi, vmtype=1)
+        chain.deploy_contract(contract_name, code, abi, vm_type=1)
 
     @classmethod
     def teardown_class(cls):

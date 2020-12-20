@@ -40,7 +40,7 @@ class Test(object):
         with open(abi_file, 'rb') as f:
             abi = f.read()
 
-        self.chain.deploy_contract(name, code, abi, vmtype=0)
+        self.chain.deploy_contract(name, code, abi, vm_type=0)
 
         args = {'username':'testmetestme'}
         self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
@@ -67,7 +67,7 @@ class Test(object):
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
-        self.chain.deploy_contract(name, code, abi, vmtype=0)
+        self.chain.deploy_contract(name, code, abi, vm_type=0)
 
         name = 'testmetestme'
         code = '''
@@ -85,7 +85,7 @@ def apply(receiver, code, action):
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
-        self.chain.deploy_contract(name, code, abi, vmtype=1)
+        self.chain.deploy_contract(name, code, abi, vm_type=1)
         args = {'username':'testmetestme'}
 
         self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')
@@ -111,7 +111,7 @@ def apply(receiver, code, action):
         abi_file = os.path.join(test_dir, '..', 'test_contracts/cardgame', 'cardgame.abi')
         with open(abi_file, 'rb') as f:
             abi = f.read()
-        self.chain.deploy_contract(name, code, abi, vmtype=1)
+        self.chain.deploy_contract(name, code, abi, vm_type=1)
         args = {'username':'testmetestme'}
 
         self.chain.push_action(name, 'login', args, actor='testmetestme', perm='active')

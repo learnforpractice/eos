@@ -381,7 +381,7 @@ class MyDataI256(object):
 
 class SingletonTest(Singleton):
     def __init__(self):
-        super().__init__(primary_type_i64, name('alice'), name('alice'), name('mytable'), n2s('primary'))
+        super().__init__(primary_type_i64, name('alice'), name('alice'), name('mytable'), s2n('primary'))
 
     def load_default(self):
         self.a = 0
@@ -391,8 +391,7 @@ class SingletonTest(Singleton):
     def pack(self):
         return json.dumps((self.a, self.b, self.c))
 
-    @classmethod
-    def unpack(cls, data):
+    def unpack(self, data):
         self.a, self.b, self.c = json.loads(data)
 
 test1 = name('test1')

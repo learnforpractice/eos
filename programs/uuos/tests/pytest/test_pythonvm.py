@@ -30,7 +30,7 @@ class Test(object):
     def test_api(self):
         contract_name = 'testmetestme'
         code = self.chain.compile_py_code_from_file('pythonvm_test.py')
-        self.chain.deploy_contract(contract_name, code, b'', vmtype=1)
+        self.chain.deploy_contract(contract_name, code, b'', vm_type=1)
         self.chain.produce_block()
 
         self.chain.push_action(contract_name, 'test1', b'hello,world!')

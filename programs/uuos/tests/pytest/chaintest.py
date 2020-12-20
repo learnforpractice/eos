@@ -291,7 +291,7 @@ class ChainTest(object):
         for digest in feature_digests: 
             try:
                 args = {'feature_digest': digest}
-                self.push_action('uuos', 'activate', args, 'uuos', 'active')
+                self.push_action('uuos', 'activate', args, {'uuos':'active'})
                 self.feature_digests.append(digest)
             except Exception as e:
                 logger.info(e)
@@ -308,11 +308,12 @@ class ChainTest(object):
         self.produce_block()
 
         args = {"issuer":"uuos", "maximum_supply":f"11000000000.0000 {self.main_token}"}
-        r = self.push_action('uuos.token', 'create', args, 'uuos.token', 'active')
+        r = self.push_action('uuos.token', 'create', args, {'uuos.token':'active'})
 
         args = {"to":"uuos","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
-        r = self.push_action('uuos.token','issue', args, 'uuos', 'active')
+        r = self.push_action('uuos.token','issue', args, {'uuos':'active'})
         self.transfer('uuos', 'alice', 1000000.0)
+
 
         args = dict(version = 0,
                     core = '4,UUOS',
@@ -324,17 +325,17 @@ class ChainTest(object):
         if self.uuos_network:
             args['min_bp_staking_amount'] = 10000000000
 
-        self.push_action('uuos', 'init', args, 'uuos', 'active')
+        self.push_action('uuos', 'init', args, {'uuos':'active'})
         self.produce_block()
         # 1% inflation rate, 100% producer pay, 25% block pay, 75% vote pay
         args = dict(annual_rate=100, inflation_pay_factor=10000, votepay_factor=40000)
-        self.push_action('uuos', 'setinflation', args, 'uuos', 'active')
+        self.push_action('uuos', 'setinflation', args, {'uuos':'active'})
 
         if self.uuos_network:
             args = {'vmtype': 1, 'vmversion':0} #activate vm python
-            self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
+            self.push_action('uuos', 'activatevm', args, {'uuos':'active'})
             args = {'vmtype': 2, 'vmversion':0} #activate vm python
-            self.push_action('uuos', 'activatevm', args, 'uuos', 'active')
+            self.push_action('uuos', 'activatevm', args, {'uuos':'active'})
 
         self.produce_block()
 
@@ -400,7 +401,14 @@ class ChainTest(object):
     #   vector<permission_level>   authorization;
     #   bytes                      data;
 
-    def gen_action(self, account, action, args, actor, perm='active'):
+    def gen_action(self, account, action, args, permissions={}):
+        auth = []
+        for actor in permissions:
+            perm = permissions[actor]
+            auth.append({'actor': actor, 'permission': perm})
+        if not auth:
+            auth.append({'actor': account, 'permission': 'active'})
+
         if isinstance(args, dict):
             args = self.pack_args(account, action, args)
         assert type(args) is bytes
@@ -408,12 +416,17 @@ class ChainTest(object):
             'account': account,
             'name': action,
             'data': args.hex(),
-            'authorization':[{'actor': actor, 'permission': perm}]
+            'authorization': auth
         }
 
-    def push_action(self, account, action, args, actor=None, perm='active'):
-        if not actor:
-            actor = account
+    def push_action(self, account, action, args, permissions={}):
+        auth = []
+        for actor in permissions:
+            perm = permissions[actor]
+            auth.append({'actor': actor, 'permission': perm})
+        if not auth:
+            auth.append({'actor': account, 'permission': 'active'})
+
         logger.debug(f'{account}, {action}, {args}')
         if not isinstance(args, bytes):
             _args = self.chain.pack_action_args(account, action, args)
@@ -426,7 +439,7 @@ class ChainTest(object):
             'account': account,
             'name': action,
             'data': args.hex(),
-            'authorization':[{'actor': actor, 'permission': perm}]
+            'authorization': auth
         }
         ret = self.push_actions([a])
         elapsed = ret.elapsed
@@ -519,7 +532,7 @@ class ChainTest(object):
         if not token_name:
             token_name = self.main_token
         args = {"from":_from, "to":_to, "quantity":'%.4f %s'%(_amount,token_name), "memo":_memo}
-        return self.push_action(token_account, 'transfer', args, _from, permission)
+        return self.push_action(token_account, 'transfer', args, {_from:permission})
 
     def pack_args(self, account, action , args):
         ret = self.chain.pack_action_args(account, action, args)
@@ -563,7 +576,7 @@ class ChainTest(object):
 
         if ram_bytes:
             args = {'payer':creator, 'receiver':account, 'bytes':ram_bytes}
-            act = self.gen_action('uuos', 'buyrambytes', args, creator, perm='active')
+            act = self.gen_action('uuos', 'buyrambytes', args, {creator:'active'})
             actions.append(act)
 
         if stake_net or stake_cpu:
@@ -574,14 +587,14 @@ class ChainTest(object):
                 'stake_cpu_quantity': '%0.4f %s'%(stake_cpu, self.main_token),
                 'transfer': 1
             }
-            act = self.gen_action('uuos', 'delegatebw', args, creator, perm='active')
+            act = self.gen_action('uuos', 'delegatebw', args, {creator:'active'})
             actions.append(act)
 
         return self.push_actions(actions)
 
     def buy_ram_bytes(self, payer, receiver, _bytes):
         args = {'payer': payer, 'receiver': receiver, 'bytes': _bytes}
-        act = self.gen_action('uuos', 'buyrambytes', args, payer, perm='active')
+        act = self.gen_action('uuos', 'buyrambytes', args, {payer:'active'})
         return self.push_actions([act])
 
     def delegatebw(self, _from, receiver, stake_net, stake_cpu, transfer=0):
@@ -592,14 +605,14 @@ class ChainTest(object):
             'stake_cpu_quantity': '%0.4f %s'%(stake_cpu, self.main_token),
             'transfer': transfer
         }
-        act = self.gen_action('uuos', 'delegatebw', args, _from, perm='active')
+        act = self.gen_action('uuos', 'delegatebw', args, {_from:'active'})
 
         return self.push_actions([act])
 
-    def deploy_contract(self, account, code, abi, vmtype=0, show_elapse=True):
+    def deploy_contract(self, account, code, abi, vm_type=0, show_elapse=True):
         actions = []
         setcode = {"account": account,
-                   "vmtype": vmtype,
+                   "vmtype": vm_type,
                    "vmversion": 0,
                    "code": code.hex()
         }
@@ -1027,7 +1040,7 @@ def apply(receiver, code, action):
             # shutil.rmtree(self.options.config_dir)
             # shutil.rmtree(self.options.data_dir)
 
-    def get_table_rows(self, _json, code, scope, table, table_key, lower_bound,
+    def get_table_rows(self, _json, code, scope, table, lower_bound,
                        upper_bound, limit, encode_type='dec') -> dict:
         """ Fetch smart contract data from an account. """
         params = dict(
@@ -1035,7 +1048,7 @@ def apply(receiver, code, action):
             code=code,
             scope=scope,
             table=table,
-            table_key=table_key,
+#            table_key=table_key,
             lower_bound=lower_bound,
             upper_bound=upper_bound,
             limit=limit,
@@ -1056,5 +1069,6 @@ def apply(receiver, code, action):
         #     optional<bool>  reverse;
         #     optional<bool>  show_payer; // show RAM pyer
         # };
-        return self.chain_api.get_table_rows(json.dumps(params))
-
+        err, ret = self.chain_api.get_table_rows(json.dumps(params))
+        ret = json.loads(ret)
+        return err, ret
