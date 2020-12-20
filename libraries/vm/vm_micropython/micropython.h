@@ -338,6 +338,8 @@ extern u32 (*Z_envZ_cancel_deferredZ_ii)(u32);
 extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 /* import: 'env' 'get_blockchain_parameters_packed' */
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
+/* import: 'env' 'prints' */
+extern void (*Z_envZ_printsZ_vi)(u32);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
