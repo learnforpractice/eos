@@ -43,7 +43,7 @@ class Test(object):
             }
         }
 
-        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, actor='alice')
+        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, {'alice':'active'})
 
         cls.chain.buy_ram_bytes('alice', 'alice', 256*1024)
         cls.chain.buy_ram_bytes('alice', 'bob', 256*1024)
