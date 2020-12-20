@@ -323,13 +323,13 @@ def apply(receiver, code, action):
     print('hello,world')
 '''
         # let data memory exceed the first 64KB
-        fill_code = ''
-        for i in range(64*1024):
-            fill_code += '    pass\n'
+        fill_code = '    count = 1\n'
+        for i in range(32*1024):
+            fill_code += '    count += 1\n'
         fill_code += '    print("hello,world")\n'
         fill_code += '    print("hello,world")\n'
         fill_code += '    print("hello,world")\n'
-
+        fill_code += '    print(count)\n'
         code += fill_code
         code = uuos.compile(code)
         args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little')
