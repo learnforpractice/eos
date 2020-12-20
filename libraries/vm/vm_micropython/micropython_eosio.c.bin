@@ -1154,6 +1154,8 @@ static void exec_code(u64, u64, u64);
 static void apply(u64, u64, u64);
 static void mp_hal_stdout_tx_strn(u32, u32);
 static u32 time_time(void);
+static u32 get_current_memory_pos(void);
+static void set_current_memory_pos(u32);
 static u32 malloc_0(u32);
 static u32 realloc_0(u32, u32);
 static void free_0(u32);
@@ -100798,7 +100800,7 @@ static void exec_code(u64 p0, u64 p1, u64 p2) {
 }
 
 static void apply(u64 p0, u64 p1, u64 p2) {
-  u32 l0 = 0, l1 = 0, l2 = 0;
+  u32 l0 = 0, l1 = 0, l2 = 0, l3 = 0;
   FUNC_PROLOGUE;
   u32 i0, i1, i2, i3, i4;
   u64 j0, j1, j2;
@@ -100944,8 +100946,18 @@ static void apply(u64 p0, u64 p1, u64 p2) {
   i0 = (u32)((s32)i0 > (s32)i1);
   i1 = 13084u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
+  i0 = get_current_memory_pos();
+  l2 = i0;
   i0 = l1;
+  i1 = 2097152u;
+  i0 += i1;
   i0 = malloc_0(i0);
+  l3 = i0;
+  i0 = l2;
+  set_current_memory_pos(i0);
+  i0 = l3;
+  i1 = l1;
+  i0 -= i1;
   l2 = i0;
   i1 = l1;
   i0 = (*Z_envZ_read_action_dataZ_iii)(i0, i1);
@@ -101051,6 +101063,24 @@ static u32 time_time(void) {
   i0 = mp_obj_new_int_from_ull(j0);
   FUNC_EPILOGUE;
   return i0;
+}
+
+static u32 get_current_memory_pos(void) {
+  FUNC_PROLOGUE;
+  u32 i0;
+  i0 = 0u;
+  i0 = i32_load((&M0), (u64)(i0 + 9912));
+  FUNC_EPILOGUE;
+  return i0;
+}
+
+static void set_current_memory_pos(u32 p0) {
+  FUNC_PROLOGUE;
+  u32 i0, i1;
+  i0 = 0u;
+  i1 = p0;
+  i32_store((&M0), (u64)(i0 + 9912), i1);
+  FUNC_EPILOGUE;
 }
 
 static u32 malloc_0(u32 p0) {
