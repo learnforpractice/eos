@@ -126,8 +126,26 @@ extern void (*Z_envZ_send_inlineZ_vii)(u32, u32);
 extern void (*Z_envZ_send_context_free_inlineZ_vii)(u32, u32);
 /* import: 'env' 'publication_time' */
 extern u64 (*Z_envZ_publication_timeZ_jv)(void);
+/* import: 'env' 'get_active_producers' */
+extern u32 (*Z_envZ_get_active_producersZ_iii)(u32, u32);
+/* import: 'env' 'assert_sha256' */
+extern void (*Z_envZ_assert_sha256Z_viii)(u32, u32, u32);
+/* import: 'env' 'assert_sha1' */
+extern void (*Z_envZ_assert_sha1Z_viii)(u32, u32, u32);
+/* import: 'env' 'assert_sha512' */
+extern void (*Z_envZ_assert_sha512Z_viii)(u32, u32, u32);
+/* import: 'env' 'assert_ripemd160' */
+extern void (*Z_envZ_assert_ripemd160Z_viii)(u32, u32, u32);
 /* import: 'env' 'assert_recover_key' */
 extern void (*Z_envZ_assert_recover_keyZ_viiiii)(u32, u32, u32, u32, u32);
+/* import: 'env' 'sha256' */
+extern void (*Z_envZ_sha256Z_viii)(u32, u32, u32);
+/* import: 'env' 'sha1' */
+extern void (*Z_envZ_sha1Z_viii)(u32, u32, u32);
+/* import: 'env' 'sha512' */
+extern void (*Z_envZ_sha512Z_viii)(u32, u32, u32);
+/* import: 'env' 'ripemd160' */
+extern void (*Z_envZ_ripemd160Z_viii)(u32, u32, u32);
 /* import: 'env' 'recover_key' */
 extern u32 (*Z_envZ_recover_keyZ_iiiiii)(u32, u32, u32, u32, u32);
 /* import: 'env' 'db_store_i64' */
