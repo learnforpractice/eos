@@ -33,6 +33,8 @@
 
 #include <eosio/chain/evm.hpp>
 
+extern "C" int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint64_t action);
+
 namespace eosio { namespace chain {
    using namespace webassembly::common;
 
@@ -78,6 +80,15 @@ namespace eosio { namespace chain {
    }
 
    void wasm_interface::apply( const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context ) {
+      // {
+      //    uint64_t receiver = context.get_receiver().to_uint64_t();
+      //    uint64_t account = context.get_action().account.to_uint64_t();
+      //    uint64_t action = context.get_action().name.to_uint64_t();
+      //    int ret = micropython_eosio_apply(receiver, account, action);
+      //    if (ret) {
+      //       return;
+      //    }
+      // }
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
       if(my->eosvmoc) {
          const chain::eosvmoc::code_descriptor* cd = nullptr;
