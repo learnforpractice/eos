@@ -52,6 +52,60 @@ class Test(object):
         cls.chain.delegatebw('alice', 'bob', 1.0, 1.0)
         cls.chain.produce_block()
 
+        cls.deploy_vm()
+
+    @classmethod
+    def deploy_vm(cls):
+        wasm_file = os.path.join(test_dir, '../../../../build', 'externals/micropython/ports/uuosio/micropython_eosio.wasm')
+        abi = '''{
+    "version": "eosio::abi/1.0",
+    "types": [],
+    "structs": [],
+    "actions": [{
+        "name": "sayhello",
+        "type": "string",
+        "ricardian_contract": ""
+    },
+    {
+        "name": "initlog",
+        "type": "string",
+        "ricardian_contract": ""
+    }
+    ],
+    "tables": [
+        {
+            "name": "codecache",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "codetable",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "abitable",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "error_messages": [],
+    "abi_extensions": []
+}
+'''
+        with open(wasm_file, 'rb') as f:
+            code = f.read()
+        contract_name = 'bob'
+        cls.chain.deploy_contract(contract_name, code, abi, vm_type=0)
+        cls.chain.produce_block()
+
     @classmethod
     def teardown_class(cls):
         cls.chain.free()
@@ -196,7 +250,7 @@ class Test(object):
         with open(wasm_file, 'rb') as f:
             code = f.read()
         contract_name = 'bob'
-        self.chain.deploy_contract(contract_name, code, abi)
+#        self.chain.deploy_contract(contract_name, code, abi)
         self.chain.produce_block()
 
         code = '''
@@ -370,3 +424,219 @@ def apply(receiver, code, action):
         logger.info('+++exec: elapsed: %s', r['elapsed'])
         # assert r['action_traces'][0]['console'] == 'hello,world\r\n'
 
+
+    def test_crypto(self):
+        # print(os.getpid())
+        # input('<<<')
+
+        wasm_file = os.path.join(test_dir, '../../../../build', 'externals/micropython/ports/uuosio/micropython_eosio.wasm')
+        abi = '''
+'''
+        with open(wasm_file, 'rb') as f:
+            code = f.read()
+        contract_name = 'bob'
+        self.chain.deploy_contract(contract_name, code, abi, vm_type=0)
+        self.chain.produce_block()
+
+        code = '''
+import chain
+def apply(receiver, code, action):
+    h = chain.sha256('hello,world')
+    print(h)
+'''
+        code = uuos.compile(code)
+        args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little')
+        args += code
+
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        self.chain.produce_block()
+
+        contract_name = 'alice'
+        args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
+        logger.info('+++exec: elapsed: %s', r['elapsed'])
+        # assert r['action_traces'][0]['console'] == 'hello,world\r\n'
+
+    def test_upgrade_vm(self):
+        # print(os.getpid())
+        # input('<<<')
+
+        wasm_file = os.path.join(test_dir, '../../../../build', 'externals/micropython/ports/uuosio/micropython_eosio.wasm')
+        abi = '''{
+    "version": "eosio::abi/1.0",
+    "types": [],
+    "structs": [],
+    "actions": [{
+        "name": "sayhello",
+        "type": "string",
+        "ricardian_contract": ""
+    },
+    {
+        "name": "initlog",
+        "type": "string",
+        "ricardian_contract": ""
+    }
+    ],
+    "tables": [
+        {
+            "name": "codecache",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "codetable",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+    ],
+    "ricardian_clauses": [],
+    "error_messages": [],
+    "abi_extensions": []
+}
+'''
+        with open(wasm_file, 'rb') as f:
+            code = f.read()
+        contract_name = 'bob'
+        self.chain.deploy_contract(contract_name, code, abi)
+        self.chain.produce_block()
+
+        code = '''
+print('+++init module')
+def apply(receiver, code, action):
+    print('hello,world')
+'''
+        # let data memory exceed the first 64KB
+        fill_code = '    count = 1\n'
+        for i in range(32*1024):
+            fill_code += '    count += 1\n'
+        fill_code += '    print("hello,world")\n'
+        fill_code += '    print("hello,world")\n'
+        fill_code += '    print("hello,world")\n'
+        fill_code += '    print(count)\n'
+        code += fill_code
+        code = uuos.compile(code)
+        args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little')
+        args += code
+
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        self.chain.produce_block()
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        logger.info('+++setcode: elapsed: %s', r['elapsed'])
+        err, r = self.chain.get_table_rows(False, 'bob', 'alice', 'codecache', '', 'alice', 1)
+        codecache = r['rows'][0]
+        codecache = bytes.fromhex(codecache)
+        logger.info('%s %s %s %s', len(codecache), codecache.find(code), len(codecache) - codecache.find(code), len(code))
+#42452
+        contract_name = 'alice'
+        args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
+        logger.info('+++exec: elapsed: %s', r['elapsed'])
+        # assert r['action_traces'][0]['console'] == 'hello,world\r\n'
+
+        wasm_file = os.path.join(test_dir, '../../../../build', 'externals/micropython/ports/uuosio/micropython_eosio_test.wasm')
+        with open(wasm_file, 'rb') as f:
+            code = f.read()
+        contract_name = 'bob'
+        self.chain.deploy_contract(contract_name, code, abi)
+        self.chain.produce_block()
+
+        contract_name = 'alice'
+        args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
+        logger.info('+++exec: elapsed: %s', r['elapsed'])
+        # assert r['action_traces'][0]['console'] == 'hello,world\r\n'
+        self.chain.produce_block()
+
+        contract_name = 'alice'
+        args = int.to_bytes(uuosapi.s2n('alice'), 8, 'little') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
+        logger.info('+++exec: elapsed: %s', r['elapsed'])
+        # assert r['action_traces'][0]['console'] == 'hello,world\r\n'
+
+    def test_import(self):
+        # print(os.getpid())
+        # input('<<<')
+
+        code = '''
+def apply(receiver, code, action):
+    import chain
+    from alice import hello
+    hello.say_hello()
+'''
+        code = uuos.compile(code)
+        args = uuosapi.s2b('alice') + code
+
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        self.chain.produce_block()
+
+        code = '''
+def say_hello():
+    print('hello,world, all')
+'''
+        code = uuos.compile(code)
+        args = uuosapi.s2b('alice') + uuosapi.s2b('hello') + code
+        print(args)
+        r = self.chain.push_action('bob', 'setmodule', args, {'alice':'active'})
+
+        try:
+            args = uuosapi.s2b('alice') + b'hello,world'
+            r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
+        except Exception as e:
+            logger.info(e.args[0]['action_traces'][0]['console'])
+
+    def test_setabi(self):
+        abi = '''{
+    "version": "eosio::abi/1.0",
+    "types": [],
+    "structs": [],
+    "actions": [{
+        "name": "sayhello",
+        "type": "string",
+        "ricardian_contract": ""
+    },
+    {
+        "name": "initlog",
+        "type": "string",
+        "ricardian_contract": ""
+    }
+    ],
+    "tables": [
+        {
+            "name": "codecache",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "codetable",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "abitable",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+    ],
+    "ricardian_clauses": [],
+    "error_messages": [],
+    "abi_extensions": []
+}
+'''
+        abi = uuosapi.pack_abi(abi)
+        args = uuosapi.s2b('alice') + abi
+        r = self.chain.push_action('bob', 'setabi', args, {'alice':'active'})
+        err, r = self.chain.get_table_rows(False, 'bob', 'alice', 'abitable', '', 'alice', 1)
+        logger.info(r['rows'][0])
+        abi = bytes.fromhex(r['rows'][0])
+        abi = uuosapi.unpack_abi(abi)
+        logger.info(abi)
