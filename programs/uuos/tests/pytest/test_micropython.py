@@ -986,6 +986,22 @@ def apply(a, b, c):
             code = uuos.compile("print('hello')")
             assert code
 
+    def test_import(self):
+        code = r'''
+def apply(a, b, c):
+    import _db
+    from a import b
+    b.say_hello()
+'''
+        code = self.compile(code)
+        
+        self.chain.deploy_contract('alice', code, b'', vm_type=1)
+
+        r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        logger.info('+++elapsed: %s', r['elapsed'])        
+        self.chain.produce_block()
+
+
     def test_replay(self):
         return
         options = self.chain.options
