@@ -2,21 +2,6 @@ add_library(wasm2c_contracts SHARED
     main.cpp
     wasm-rt-impl.c
     native_contracts.cpp
-
-    contracts/eosio-047c7e09c81da6dec89ab970603696268049d1cc3ded37987ff9b8d89dedd371-1722535.c
-    contracts/eosio-254247a18af399e237f47ea63e7b5970a8f9d6819150efe443d8e711895915ed-12246.c
-    contracts/eosio-254247a18af399e237f47ea63e7b5970a8f9d6819150efe443d8e711895915ed-186.c
-    contracts/eosio-5710f43eca84ffc70bd6f152aad9e10068687c9a18307c586eba68c116766623-1717927.c
-    contracts/eosio-5e8e655a05b34e782467684d7148244404b591a6c1ec2687eacb268926a37e59-11999.c
-    contracts/eosio-5e8e655a05b34e782467684d7148244404b591a6c1ec2687eacb268926a37e59-127.c
-    contracts/eosio.msig-5cf017909547b2d69cee5f01c53fe90f3ab193c57108f81a17f0716a4c83f9c0-176.c
-    contracts/eosio.token-3e0cf4172ab025f9fff5f1db11ee8a34d44779492e1d668ae1dc2d129e865348-180.c
-    contracts/eosio.unregd-51f681f756ded1ebbf2775406fe089138dddc7761885595ec7f885e276393af0-185.c
-    contracts/eosiochaince-3e0cf4172ab025f9fff5f1db11ee8a34d44779492e1d668ae1dc2d129e865348-1488192.c
-
-    contracts/eosio.token-e536996bc480ccc3486b630f0c42ca1ef3b9f477595e885dcf8862848a2185bb-0.c
-    contracts/eosio.token-e536996bc480ccc3486b630f0c42ca1ef3b9f477595e885dcf8862848a2185bb-10.c
-    contracts/eosio.token-e536996bc480ccc3486b630f0c42ca1ef3b9f477595e885dcf8862848a2185bb-17.c
 )
 
 target_link_libraries(wasm2c_contracts PRIVATE vm_api vm_api4c)

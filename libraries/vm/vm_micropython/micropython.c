@@ -7,6 +7,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <vm_api.h>
+
+uint32_t micropython_in_apply_context(void) {
+  return get_vm_api()->is_in_apply_context;
+}
 
 uint32_t wasm_rt_call_stack_depth = 0;
 uint32_t g_saved_call_stack_depth = 0;
@@ -17,6 +22,7 @@ u32 (*Z_envZ_call_vm_apiZ_iiiii)(u32, u32, u32, u32);
 void (*Z_envZ_setjmp_discard_topZ_vv)(void);
 u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
+u32 (*Z_envZ_in_apply_contextZ_iv)(void);
 
 u32 _call_vm_api(u32 function_type, u32 input_offset, u32 input_size, u32 output_offset);
 
@@ -47,6 +53,7 @@ void WASM_RT_ADD_PREFIX(init)(void) {
   Z_envZ_setjmp_discard_topZ_vv = _setjmp_discard_top;
   Z_envZ_vm_load_frozen_moduleZ_iiiii = _load_frozen_module;
   Z_envZ_vm_frozen_statZ_ii = _vm_frozen_stat;
+  Z_envZ_in_apply_contextZ_iv = micropython_in_apply_context;
 
   init_func_types();
   init_globals();

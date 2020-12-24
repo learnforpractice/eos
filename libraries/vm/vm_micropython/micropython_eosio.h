@@ -72,6 +72,8 @@ extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' '__extenddftf2' */
 extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
+/* import: 'env' 'is_account' */
+extern u32 (*Z_envZ_is_accountZ_ij)(u64);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' '__fixtfsi' */
@@ -118,8 +120,6 @@ extern void (*Z_envZ_require_recipientZ_vj)(u64);
 extern void (*Z_envZ_require_authZ_vj)(u64);
 /* import: 'env' 'require_auth2' */
 extern void (*Z_envZ_require_auth2Z_vjj)(u64, u64);
-/* import: 'env' 'is_account' */
-extern u32 (*Z_envZ_is_accountZ_ij)(u64);
 /* import: 'env' 'send_inline' */
 extern void (*Z_envZ_send_inlineZ_vii)(u32, u32);
 /* import: 'env' 'send_context_free_inline' */
@@ -308,6 +308,8 @@ extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
 /* import: 'env' 'prints' */
 extern void (*Z_envZ_printsZ_vi)(u32);
+/* import: 'env' 'printui' */
+extern void (*Z_envZ_printuiZ_vj)(u64);
 /* import: 'env' '__extendsftf2' */
 extern void (*Z_envZ___extendsftf2Z_vif)(u32, f32);
 /* import: 'env' '__floatunsitf' */

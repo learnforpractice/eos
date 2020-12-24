@@ -6,6 +6,7 @@
 static void *get_memory_ptr(uint32_t offset, uint32_t size);
 void vm_checktime(void);
 void eosio_assert( uint32_t test, const char* msg );
+void vm_print_stacktrace(void);
 
 #include "micropython_eosio.c.bin"
 #include <stdio.h>
@@ -48,15 +49,22 @@ void micropython_eosio_init() {
 
 extern uint32_t wasm_rt_call_stack_depth;
 
-void micropython_eosio_apply(uint64_t a, uint64_t b, uint64_t c) {
+int micropython_eosio_apply(uint64_t receiver, uint64_t account, uint64_t action) {
+  return 0;
+  if (receiver != 7684013976526520320) {//hello
+      return 0;
+  }
   set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
   micropython_eosio_init();
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
-    apply(a, b, c);
+    apply(receiver, account, action);
+    return 1;
   } else {
     printf("++++micropython_contract_apply:trap code: %d\n", trap_code);
     wasm_rt_on_trap(trap_code);
+    return 0;
   }
+  return 0;
 }
