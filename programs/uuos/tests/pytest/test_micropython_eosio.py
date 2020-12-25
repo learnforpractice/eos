@@ -664,3 +664,19 @@ def apply(receiver, code, action):
 
         args = uuosapi.s2b('alice') + b'hello,world'
         r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
+
+    def test_s2b(self):
+        code = '''
+import chain
+def apply(receiver, code, action):
+    assert chain.s2b('hello') == int.to_bytes(chain.s2n('hello'), 8, 'little')
+    print('done!')
+'''
+        code = uuos.compile(code)
+        args = uuosapi.s2b('alice') + code
+
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        self.chain.produce_block()
+
+        args = uuosapi.s2b('alice') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
