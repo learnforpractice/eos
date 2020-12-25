@@ -640,3 +640,27 @@ def say_hello():
         abi = bytes.fromhex(r['rows'][0])
         abi = uuosapi.unpack_abi(abi)
         logger.info(abi)
+
+    # testcase for import db module when there is an account named "db"
+    def test_import_db(self):
+        key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
+        self.chain.create_account('uuos', 'db', key, key, 4 * 1024, 1.0, 1.0)
+
+        key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
+        self.chain.create_account('uuos', 'foo', key, key, 4 * 1024, 1.0, 1.0)
+
+        code = '''
+def apply(receiver, code, action):
+    import db
+    print(db)
+    import foo
+    foo.say_hello()
+'''
+        code = uuos.compile(code)
+        args = uuosapi.s2b('alice') + code
+
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        self.chain.produce_block()
+
+        args = uuosapi.s2b('alice') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
