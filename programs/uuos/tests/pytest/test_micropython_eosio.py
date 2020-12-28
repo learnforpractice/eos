@@ -48,8 +48,8 @@ class Test(object):
         cls.chain.buy_ram_bytes('alice', 'alice', 10*1024*1024)
         cls.chain.buy_ram_bytes('alice', 'bob', 10*1024*1024)
 
-        cls.chain.delegatebw('alice', 'alice', 1.0, 1.0)
-        cls.chain.delegatebw('alice', 'bob', 1.0, 1.0)
+        cls.chain.delegatebw('alice', 'alice', 100.0, 100.0)
+        cls.chain.delegatebw('alice', 'bob', 100.0, 100.0)
         cls.chain.produce_block()
 
         cls.deploy_vm()
@@ -89,6 +89,13 @@ class Test(object):
         },
         {
             "name": "abitable",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "modules",
             "type": "string",
             "index_type": "i64",
             "key_names": [],
@@ -492,6 +499,13 @@ def apply(receiver, code, action):
             "key_names": [],
             "key_types": []
         },
+        {
+            "name": "modules",
+            "type": "string",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
     ],
     "ricardian_clauses": [],
     "error_messages": [],
@@ -557,21 +571,18 @@ def apply(receiver, code, action):
         logger.info('+++exec: elapsed: %s', r['elapsed'])
         # assert r['action_traces'][0]['console'] == 'hello,world\r\n'
 
+    def test_set_module(self):
+        code = '''
+def say_hello():
+    print('hello,world, all')
+'''
+        code = uuos.compile(code)
+        args = uuosapi.s2b('alice') + uuosapi.s2b('hello') + b'a'*(256*1024)
+        r = self.chain.push_action('bob', 'setmodule', args, {'alice':'active'})
+
     def test_import(self):
         # print(os.getpid())
         # input('<<<')
-
-        code = '''
-def apply(receiver, code, action):
-    import chain
-    from alice import hello
-    hello.say_hello()
-'''
-        code = uuos.compile(code)
-        args = uuosapi.s2b('alice') + code
-
-        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
-        self.chain.produce_block()
 
         code = '''
 def say_hello():
@@ -581,12 +592,22 @@ def say_hello():
         args = uuosapi.s2b('alice') + uuosapi.s2b('hello') + code
         print(args)
         r = self.chain.push_action('bob', 'setmodule', args, {'alice':'active'})
+        rows = self.chain.get_table_rows(False, 'bob', 'alice', 'modules', '', '', 10)
+        logger.info(rows)
 
-        try:
-            args = uuosapi.s2b('alice') + b'hello,world'
-            r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
-        except Exception as e:
-            logger.info(e.args[0]['action_traces'][0]['console'])
+        code = '''
+def apply(receiver, code, action):
+    from alice import hello
+    hello.say_hello()
+'''
+        code = uuos.compile(code)
+        args = uuosapi.s2b('alice') + code
+
+        r = self.chain.push_action('bob', 'setcode', args, {'alice':'active'})
+        self.chain.produce_block()
+
+        args = uuosapi.s2b('alice') + b'hello,world'
+        r = self.chain.push_action('bob', 'exec', args, {'alice':'active'})
 
     def test_setabi(self):
         abi = '''{
@@ -642,7 +663,7 @@ def say_hello():
         logger.info(abi)
 
     # testcase for import db module when there is an account named "db"
-    def test_import_db(self):
+    def test_db_import(self):
         key = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         self.chain.create_account('uuos', 'db', key, key, 4 * 1024, 1.0, 1.0)
 
@@ -652,9 +673,7 @@ def say_hello():
         code = '''
 def apply(receiver, code, action):
     import db
-    print(db)
-    import foo
-    foo.say_hello()
+    print(db, dir(db))
 '''
         code = uuos.compile(code)
         args = uuosapi.s2b('alice') + code
