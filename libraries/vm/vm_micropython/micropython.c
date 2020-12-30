@@ -1,3 +1,6 @@
+static void *get_memory_ptr(unsigned int offset, unsigned int size);
+void vm_checktime(void);
+
 #include "micropython_vm_config.h"
 #include "micropython.c.bin"
 #include "vm_api.c"
@@ -68,12 +71,12 @@ void vm_print_stacktrace(void);
 
 static void *get_memory_ptr(uint32_t offset, uint32_t size) {
   int test = offset + size <= M0.size && offset + size >= offset;
-  // if (!test) {
-  //   vm_print_stacktrace();
-  //   printf("++++++++offset %u, size %u\n", offset, size);
-  // }
   if (!test) {
-    eosio_assert(0, "memory access out of bound!");
+    vm_print_stacktrace();
+    printf("++++++++offset %u, size %u M0.size %u\n", offset, size, M0.size);
+  }
+  if (!test) {
+    eosio_assert(0, "micropython.c: memory access out of bound!");
   }
   return M0.data + offset;
 }
@@ -163,9 +166,10 @@ int micropython_init() {
 void setjmp_clear_stack();
 
 void micropython_init_memory(size_t initial_pages) {
+  initial_pages = 1;
   wasm_rt_allocate_memory((&M0), initial_pages, PYTHON_VM_MAX_MEMORY_SIZE/65536);
+  printf("++++++++++micropython_init_memory: initial_pages %u, M0.size: %u\n", initial_pages, M0.size);
 }
-
 
 int micropython_contract_init(int type, const char *py_src, size_t size) {
   setjmp_clear_stack();
@@ -188,6 +192,8 @@ int micropython_contract_init(int type, const char *py_src, size_t size) {
   return 0;
 }
 
+void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
+
 int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action) {
   setjmp_clear_stack();
 
@@ -199,7 +205,9 @@ int micropython_contract_apply(uint64_t receiver, uint64_t code, uint64_t action
   wasm_rt_call_stack_depth = 0;
   int trap_code = wasm_rt_impl_try();
   if (trap_code == 0) {
-    int ret = micropython_apply(receiver, code, action);
+    int ret = 1;
+    Z_applyZ_vjjj(receiver, code, action);
+//    int ret = micropython_apply(receiver, code, action);
 
     // u32 ptr = malloc_0(1);
     // printf("++++++++++++micropython_contract_apply, current ptr is %u\n", ptr);

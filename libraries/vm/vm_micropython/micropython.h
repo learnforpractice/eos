@@ -64,6 +64,8 @@ extern u32 (*Z_eosio_injectionZ__eosio_f64_eqZ_idd)(f64, f64);
 extern f64 (*Z_eosio_injectionZ__eosio_f32_promoteZ_df)(f32);
 /* import: 'eosio_injection' '_eosio_f32_mul' */
 extern f32 (*Z_eosio_injectionZ__eosio_f32_mulZ_fff)(f32, f32);
+/* import: 'env' 'eosio_assert' */
+extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'memset' */
 extern u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 /* import: 'env' 'memcpy' */
@@ -78,10 +80,6 @@ extern u32 (*Z_envZ_in_apply_contextZ_iv)(void);
 extern u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'is_account' */
 extern u32 (*Z_envZ_is_accountZ_ij)(u64);
-/* import: 'env' 'vm_frozen_stat' */
-extern u32 (*Z_envZ_vm_frozen_statZ_ii)(u32);
-/* import: 'env' 'vm_load_frozen_module' */
-extern u32 (*Z_envZ_vm_load_frozen_moduleZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'prints_l' */
 extern void (*Z_envZ_prints_lZ_vii)(u32, u32);
 /* import: 'env' '__fixtfsi' */
@@ -314,8 +312,6 @@ extern u64 (*Z_envZ_set_proposed_producersZ_jii)(u32, u32);
 extern u32 (*Z_envZ_is_privilegedZ_ij)(u64);
 /* import: 'env' 'set_privileged' */
 extern void (*Z_envZ_set_privilegedZ_vji)(u64, u32);
-/* import: 'env' 'eosio_assert' */
-extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'eosio_assert_code' */
 extern void (*Z_envZ_eosio_assert_codeZ_vij)(u32, u64);
 /* import: 'env' 'current_time' */
@@ -358,8 +354,6 @@ extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
 /* import: 'env' 'prints' */
 extern void (*Z_envZ_printsZ_vi)(u32);
-/* import: 'env' 'printui' */
-extern void (*Z_envZ_printuiZ_vj)(u64);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);
