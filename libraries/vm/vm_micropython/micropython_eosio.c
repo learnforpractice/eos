@@ -13,12 +13,12 @@ void vm_print_stacktrace(void);
 
 static void *get_memory_ptr(uint32_t offset, uint32_t size) {
   int test = offset + size <= M0.size && offset + size >= offset;
-  // if (!test) {
-  //   vm_print_stacktrace();
-  //   printf("++++++++offset %u, size %u\n", offset, size);
-  // }
   if (!test) {
-    eosio_assert(0, "memory access out of bound!");
+    vm_print_stacktrace();
+    printf("++++++++offset %u, size %u, M0.size %d\n", offset, size, M0.size);
+  }
+  if (!test) {
+    eosio_assert(0, "micropython_eosio.c: memory access out of bound!");
   }
   return M0.data + offset;
 }
@@ -50,10 +50,20 @@ void micropython_eosio_init() {
 extern uint32_t wasm_rt_call_stack_depth;
 
 int micropython_eosio_apply(uint64_t receiver, uint64_t account, uint64_t action) {
-  return 0;
-  if (receiver != 7684013976526520320) {//hello
+  #if 0
+  if (receiver != 7684013976526520320) {// hello
       return 0;
   }
+  
+  if (receiver != 3773036822876127232) {// alice
+      return 0;
+  }
+  
+  if (receiver != 7684014468695212560) { // helloworld11
+    return 0;
+  }
+  #endif
+
   set_memory_converter(_offset_to_ptr, _offset_to_char_ptr);
   micropython_eosio_init();
   wasm_rt_call_stack_depth = 0;

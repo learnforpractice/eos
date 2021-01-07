@@ -64,6 +64,8 @@ extern u32 (*Z_eosio_injectionZ__eosio_f64_eqZ_idd)(f64, f64);
 extern f64 (*Z_eosio_injectionZ__eosio_f32_promoteZ_df)(f32);
 /* import: 'eosio_injection' '_eosio_f32_mul' */
 extern f32 (*Z_eosio_injectionZ__eosio_f32_mulZ_fff)(f32, f32);
+/* import: 'env' 'eosio_assert' */
+extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'memset' */
 extern u32 (*Z_envZ_memsetZ_iiii)(u32, u32, u32);
 /* import: 'env' 'memcpy' */
@@ -110,8 +112,6 @@ extern u64 (*Z_envZ_current_receiverZ_jv)(void);
 extern u32 (*Z_envZ_has_authZ_ij)(u64);
 /* import: 'env' 'read_action_data' */
 extern u32 (*Z_envZ_read_action_dataZ_iii)(u32, u32);
-/* import: 'env' 'eosio_assert' */
-extern void (*Z_envZ_eosio_assertZ_vii)(u32, u32);
 /* import: 'env' 'action_data_size' */
 extern u32 (*Z_envZ_action_data_sizeZ_iv)(void);
 /* import: 'env' 'require_recipient' */
@@ -308,8 +308,6 @@ extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
 /* import: 'env' 'prints' */
 extern void (*Z_envZ_printsZ_vi)(u32);
-/* import: 'env' 'printui' */
-extern void (*Z_envZ_printuiZ_vj)(u64);
 /* import: 'env' '__extendsftf2' */
 extern void (*Z_envZ___extendsftf2Z_vif)(u32, f32);
 /* import: 'env' '__floatunsitf' */
