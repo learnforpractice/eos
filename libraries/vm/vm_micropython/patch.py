@@ -145,14 +145,14 @@ with open('micropython.c.bin', 'r') as f:
     origin, patch = patch_init
     data = patch_micropython(data, origin, patch)
 
-    origin, patch = patch_set_jmp
-    data = patch_micropython(data, origin, patch)
+    # origin, patch = patch_set_jmp
+    # data = patch_micropython(data, origin, patch)
 
-    origin, patch = patch_setjmp2
-    data = patch_micropython(data, origin, patch)
+    # origin, patch = patch_setjmp2
+    # data = patch_micropython(data, origin, patch)
 
-    origin, patch = nlr_pop_patch
-    data = patch_micropython(data, origin, patch)
+    # origin, patch = nlr_pop_patch
+    # data = patch_micropython(data, origin, patch)
 
     # origin, patch = frozen_stat_patch
     # data = patch_micropython(data, origin, patch)
