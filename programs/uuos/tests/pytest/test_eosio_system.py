@@ -40,7 +40,7 @@ class Test(object):
             }
         }
 
-        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, actor='alice')
+        cls.chain.push_action(cls.chain.system_contract, 'updateauth', a, {'alice':'active'})
 
         cls.chain.buy_ram_bytes('alice', 'alice', 256*1024)
         cls.chain.buy_ram_bytes('alice', 'bob', 256*1024)
@@ -57,13 +57,14 @@ class Test(object):
         logger.warning('test start: %s', method.__name__)
 
     def teardown_method(self, method):
-        try:
-            self.chain.deploy_contract('alice', b'', b'', vm_type=3)
-        except Exception as e:
-            assert e.args[0]['except']['name'] == 'set_exact_code'
-            assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
-        self.chain.produce_block()
-        logger.warning('test end: %s', method.__name__)
+        pass
+        # try:
+        #     self.chain.deploy_contract('alice', b'', b'', vm_type=3)
+        # except Exception as e:
+        #     assert e.args[0]['except']['name'] == 'set_exact_code'
+        #     assert e.args[0]['except']['message'] == 'Contract is already running this version of code'
+        # self.chain.produce_block()
+        # logger.warning('test end: %s', method.__name__)
 
     def compile_cpp_file(self, name):
         code_file = os.path.join(test_dir, 'test_contracts', f'{name}.cpp')
@@ -114,44 +115,6 @@ class Test(object):
         frozen_code = header + region_sizes + name_region + code_size_region + code_region
         return frozen_code
 
-    def compile_all(self, code_info):
-#        code = eosapi.compile_py_src(code)
-        mpy_code = []
-        if not os.path.exists('tmp'):
-            os.mkdir('tmp')
-        for name, code in code_info:
-            py_file = f'tmp/{name}.py'
-            mpy_file = f'tmp/{name}.mpy'
-
-            with open(py_file, 'w') as f:
-                f.write(code)
-            subprocess.check_output(['mpy-cross', '-o', mpy_file, py_file])
-            with open(mpy_file, 'rb') as f:
-                code = f.read()
-            os.remove(py_file)
-            os.remove(mpy_file)
-
-            mpy_code.append((name, code, len(code)))
-        shutil.rmtree('tmp')
-
-        name_region = b''
-        code_region = b''
-        code_size_region = b''
-        for name, code, size in mpy_code:
-            code_region += code
-            code_size_region += int.to_bytes(size, 4, 'little')
-            name_region += b'%s.mpy\x00'%(name.encode(),)
-
-        region_sizes = b''
-        region_sizes += int.to_bytes(len(name_region), 4, 'little')
-        region_sizes += int.to_bytes(len(code_size_region), 4, 'little')
-        region_sizes += int.to_bytes(len(code_region), 4, 'little')
-
-        header = int.to_bytes(5, 4, 'little')
-        header += bytearray(60)
-        frozen_code = header + region_sizes + name_region + code_size_region + code_region
-        return frozen_code
-
     #test bill_to_first_authorizer
     def test_permissions(self):
         args = {
@@ -177,4 +140,3 @@ class Test(object):
 
         assert cpu_limit_alice == cpu_limit_alice2
         assert not cpu_limit_bob == cpu_limit_bob2
-
