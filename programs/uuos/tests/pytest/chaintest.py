@@ -253,6 +253,7 @@ class ChainTest(object):
                 'uuos.token',
                 'uuos.vpay',
                 'uuos.rex',
+                'uuos.mpy',
 
 #                'uuos',
                 'hello',
@@ -334,6 +335,10 @@ class ChainTest(object):
         if self.uuos_network:
             args = {'vmtype': 1, 'vmversion':0} #activate vm python
             self.push_action('uuos', 'activatevm', args, {'uuos':'active'})
+
+            args = {'vmtype': 0x11, 'vmversion':0} #activate vm python
+            self.push_action('uuos', 'activatevm', args, {'uuos':'active'})
+
             args = {'vmtype': 2, 'vmversion':0} #activate vm python
             self.push_action('uuos', 'activatevm', args, {'uuos':'active'})
 
@@ -1069,6 +1074,8 @@ def apply(receiver, code, action):
         #     optional<bool>  reverse;
         #     optional<bool>  show_payer; // show RAM pyer
         # };
-        err, ret = self.chain_api.get_table_rows(json.dumps(params))
+        success, ret = self.chain_api.get_table_rows(json.dumps(params))
+        if not success:
+            raise Exception(ret)
         ret = json.loads(ret)
-        return err, ret
+        return success, ret
