@@ -12,7 +12,7 @@ from chaintest import ChainTest
 import uuos
 from uuos import log
 from uuos import wasmcompiler
-from pyeoskit import eosapi
+from uuoskit import uuosapi
 
 test_dir = os.path.dirname(__file__)
 
@@ -151,6 +151,32 @@ class Test(object):
         header += bytearray(60)
         frozen_code = header + region_sizes + name_region + code_size_region + code_region
         return frozen_code
+
+    def test_hello(self):
+        args = {'account':'alice', 'vmtype':1, 'vmversion':0}
+        self.chain.push_action('uuos', 'setvm', args, {'alice':'active'})
+        self.chain.produce_block()
+
+        code = '''
+import chain
+def apply(a, b, c):
+    data = chain.read_action_data()
+    print(data)
+    for i in range(10):
+        pass
+#        print('hello,world', i)
+#    chain.uuos_assert(False, "oops!")
+'''
+        code = uuos.compile(code)
+        # self.chain.deploy_contract('alice', code, b'', vm_type=1)
+        # r = self.chain.push_action('alice', 'sayhello', b'hello,world')
+        args = uuosapi.s2b('alice') + code
+        self.chain.push_action('alice', 'setcode', args)
+
+        args = b'hello,world'
+        r = self.chain.push_action('alice', 'sayhello', args)
+
+        logger.info('%s %s', "++++done!", r['elapsed'])
 
     def test_loop(self):
         code = '''
