@@ -77,6 +77,17 @@ add_library( vm_eos SHARED
             ${HEADERS}
              )
 
+
+if (APPLE)
+   set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
+   set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
+else()
+   set(_version_script "${CMAKE_CURRENT_SOURCE_DIR}/version.script")
+   set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
+endif (APPLE)
+
+set_target_properties(vm_eos  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+
 # set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
 
 target_link_libraries( vm_eos fc chainbase Logging IR WAST WASM Runtime

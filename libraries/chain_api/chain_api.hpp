@@ -44,7 +44,8 @@ struct vm_callback {
 struct chain_api_cpp
 {
    void *chain_ptr;
-
+   void (*timer_set_expiration_callback)(void(*func)(void*), void* user);
+   bool (*timer_expired)();
    void (*register_vm_callback)(uint8_t vmtype, uint8_t vmversion, vm_callback *cb);
    vm_callback* (*get_vm_callback)(uint8_t vmtype, uint8_t vmversion);
 

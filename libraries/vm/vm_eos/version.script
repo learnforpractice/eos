@@ -1,0 +1,5 @@
+CODEABI_1.0 {
+    global: eos_vm_interface_init;eos_vm_interface_apply;
+    local: *;
+};
+

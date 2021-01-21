@@ -1,9 +1,12 @@
-#include <eosio/chain/webassembly/eos-vm.hpp>
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
 //eos-vm includes
 #include <eosio/vm/backend.hpp>
+#include <vm_api.h>
+#include <chain_api.hpp>
+
+#include "eos-vm.hpp"
 
 namespace eosio { namespace chain { namespace webassembly { namespace eos_vm_runtime {
 
@@ -14,31 +17,30 @@ namespace wasm_constraints = eosio::chain::wasm_constraints;
 namespace {
 
   struct checktime_watchdog {
-     checktime_watchdog(transaction_checktime_timer& timer) : _timer(timer) {}
+     checktime_watchdog() {}
      template<typename F>
      struct guard {
-        guard(transaction_checktime_timer& timer, F&& func)
-           : _timer(timer), _func(static_cast<F&&>(func)) {
-           _timer.set_expiration_callback(&callback, this);
-           if(_timer.expired) {
+        guard(F&& func) : _func(static_cast<F&&>(func)) {
+           get_chain_api()->timer_set_expiration_callback(&callback, this);
+           if(get_chain_api()->timer_expired()) {
               _func(); // it's harmless if _func is invoked twice
            }
         }
         ~guard() {
-           _timer.set_expiration_callback(nullptr, nullptr);
+           get_chain_api()->timer_set_expiration_callback(nullptr, nullptr);
         }
         static void callback(void* data) {
            guard* self = static_cast<guard*>(data);
            self->_func();
         }
-        transaction_checktime_timer& _timer;
+//        transaction_checktime_timer& _timer;
         F _func;
      };
      template<typename F>
      guard<F> scoped_run(F&& func) {
-        return guard{_timer, static_cast<F&&>(func)};
+        return guard{static_cast<F&&>(func)};
      }
-     transaction_checktime_timer& _timer;
+
   };
 
 }
@@ -53,7 +55,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          _instantiated_module(std::move(mod)) {}
 
       void apply(apply_context& context) override {
-         _instantiated_module->set_wasm_allocator(&context.control.get_wasm_allocator());
+         _instantiated_module->set_wasm_allocator(&wasm_alloc);
          _runtime->_bkend = _instantiated_module.get();
          auto fn = [&]() {
             _runtime->_bkend->initialize(&context);
@@ -63,10 +65,32 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
                 context.get_action().name.to_uint64_t());
          };
          try {
-            checktime_watchdog wd(context.trx_context.transaction_timer);
+            checktime_watchdog wd;
             _runtime->_bkend->timed_run(wd, fn);
          } catch(eosio::vm::timeout_exception&) {
-            context.trx_context.checktime();
+            get_vm_api()->checktime();
+         } catch(eosio::vm::wasm_memory_exception& e) {
+            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
+         } catch(eosio::vm::exception& e) {
+            // FIXME: Do better translation
+            FC_THROW_EXCEPTION(wasm_execution_error, "something went wrong...");
+         }
+         _runtime->_bkend = nullptr;
+      }
+
+      void apply(uint64_t receiver, uint64_t first_receiver, uint64_t action, apply_context& context) {
+         _instantiated_module->set_wasm_allocator(&wasm_alloc);
+         _runtime->_bkend = _instantiated_module.get();
+         auto fn = [&]() {
+            _runtime->_bkend->initialize(context);
+            const auto& res = _runtime->_bkend->call(
+                &context, "env", "apply", receiver, first_receiver, action);
+         };
+         try {
+            checktime_watchdog wd;
+            _runtime->_bkend->timed_run(wd, fn);
+         } catch(eosio::vm::timeout_exception&) {
+            get_vm_api()->checktime();
          } catch(eosio::vm::wasm_memory_exception& e) {
             FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
          } catch(eosio::vm::exception& e) {
@@ -79,6 +103,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
    private:
       eos_vm_runtime<Impl>*            _runtime;
       std::unique_ptr<backend_t> _instantiated_module;
+      vm::wasm_allocator                 wasm_alloc;
 };
 
 template<typename Impl>

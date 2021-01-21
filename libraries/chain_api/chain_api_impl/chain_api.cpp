@@ -444,6 +444,14 @@ void get_public_key_prefix_(string& prefix) {
    prefix = fc::crypto::config::public_key_legacy_prefix;
 }
 
+static void timer_set_expiration_callback(void(*func)(void*), void* user) {
+   ctx().trx_context.transaction_timer.set_expiration_callback(func, user);
+}
+
+static bool timer_expired() {
+   ctx().trx_context.transaction_timer.expired;
+}
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -453,7 +461,8 @@ extern "C" void chain_api_init() {
 
     s_api = chain_api_cpp {
       .chain_ptr = nullptr,
-
+      .timer_set_expiration_callback = timer_set_expiration_callback,
+      .timer_expired = timer_expired,
       .register_vm_callback = register_vm_callback_,
       .get_vm_callback = get_vm_callback_,
       .get_apply_args = get_apply_args_,
