@@ -1,3 +1,4 @@
+#include <eosio/chain/webassembly/eos-vm.hpp>
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
@@ -6,7 +7,6 @@
 #include <vm_api.h>
 #include <chain_api.hpp>
 
-#include "eos-vm.hpp"
 
 namespace eosio { namespace chain { namespace webassembly { namespace eos_vm_runtime {
 

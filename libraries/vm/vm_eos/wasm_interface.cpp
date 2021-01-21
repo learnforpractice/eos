@@ -694,24 +694,15 @@ class softfloat_api : public context_aware_api {
       static constexpr uint64_t inv_double_eps = 0x4330000000000000;
 };
 
-#if 0
 class producer_api : public context_aware_api {
    public:
       using context_aware_api::context_aware_api;
 
       int get_active_producers(array_ptr<chain::account_name> producers, uint32_t buffer_size) {
-         auto active_producers = context.get_active_producers();
-
-         size_t len = active_producers.size();
-         auto s = len * sizeof(chain::account_name);
-         if( buffer_size == 0 ) return s;
-
-         auto copy_size = std::min( static_cast<size_t>(buffer_size), s );
-         memcpy( producers, active_producers.data(), copy_size );
-
-         return copy_size;
+         return API()->get_active_producers((uint64_t*)producers.value, buffer_size);
       }
 };
+
 
 class crypto_api : public context_aware_api {
    public:
@@ -724,110 +715,45 @@ class crypto_api : public context_aware_api {
       void assert_recover_key( const fc::sha256& digest,
                         array_ptr<char> sig, uint32_t siglen,
                         array_ptr<char> pub, uint32_t publen ) {
-         fc::crypto::signature s;
-         fc::crypto::public_key p;
-         datastream<const char*> ds( sig, siglen );
-         datastream<const char*> pubds( pub, publen );
-
-         fc::raw::unpack(ds, s);
-         fc::raw::unpack(pubds, p);
-
-         EOS_ASSERT(s.which() < context.db.get<protocol_state_object>().num_supported_key_types, unactivated_signature_type,
-           "Unactivated signature type used during assert_recover_key");
-         EOS_ASSERT(p.which() < context.db.get<protocol_state_object>().num_supported_key_types, unactivated_key_type,
-           "Unactivated key type used when creating assert_recover_key");
-
-         if(context.control.is_producing_block())
-            EOS_ASSERT(s.variable_size() <= context.control.configured_subjective_signature_length_limit(),
-                       sig_variable_size_limit_exception, "signature variable length component size greater than subjective maximum");
-
-         auto check = fc::crypto::public_key( s, digest, false );
-         EOS_ASSERT( check == p, crypto_api_exception, "Error expected key different than recovered key" );
+         API()->assert_recover_key((checksum256*)&digest._hash, sig, siglen, pub, publen);
       }
 
       int recover_key( const fc::sha256& digest,
                         array_ptr<char> sig, uint32_t siglen,
                         array_ptr<char> pub, uint32_t publen ) {
-         fc::crypto::signature s;
-         datastream<const char*> ds( sig, siglen );
-         fc::raw::unpack(ds, s);
-
-         EOS_ASSERT(s.which() < context.db.get<protocol_state_object>().num_supported_key_types, unactivated_signature_type,
-                    "Unactivated signature type used during recover_key");
-
-         if(context.control.is_producing_block())
-            EOS_ASSERT(s.variable_size() <= context.control.configured_subjective_signature_length_limit(),
-                       sig_variable_size_limit_exception, "signature variable length component size greater than subjective maximum");
-
-
-         auto recovered = fc::crypto::public_key(s, digest, false);
-
-         // the key types newer than the first 2 may be varible in length
-         if (s.which() >= config::genesis_num_supported_key_types ) {
-            EOS_ASSERT(publen >= 33, wasm_execution_error,
-                       "destination buffer must at least be able to hold an ECC public key");
-            auto packed_pubkey = fc::raw::pack(recovered);
-            auto copy_size = std::min<size_t>(publen, packed_pubkey.size());
-            memcpy(pub, packed_pubkey.data(), copy_size);
-            return packed_pubkey.size();
-         } else {
-            // legacy behavior, key types 0 and 1 always pack to 33 bytes.
-            // this will do one less copy for those keys while maintaining the rules of
-            //    [0..33) dest sizes: assert (asserts in fc::raw::pack)
-            //    [33..inf) dest sizes: return packed size (always 33)
-            datastream<char*> out_ds( pub, publen );
-            fc::raw::pack(out_ds, recovered);
-            return out_ds.tellp();
-         }
-      }
-
-      template<class Encoder> auto encode(char* data, uint32_t datalen) {
-         Encoder e;
-         const size_t bs = eosio::chain::config::hashing_checktime_block_size;
-         while ( datalen > bs ) {
-            e.write( data, bs );
-            data += bs;
-            datalen -= bs;
-            get_vm_api()->checktime();
-         }
-         e.write( data, datalen );
-         return e.result();
+         return API()->recover_key((checksum256*)&digest._hash, sig, siglen, pub, publen);
       }
 
       void assert_sha256(array_ptr<char> data, uint32_t datalen, const fc::sha256& hash_val) {
-         auto result = encode<fc::sha256::encoder>( data, datalen );
-         EOS_ASSERT( result == hash_val, crypto_api_exception, "hash mismatch" );
+         API()->assert_sha256(data, datalen, (checksum256*)&hash_val._hash);
       }
 
       void assert_sha1(array_ptr<char> data, uint32_t datalen, const fc::sha1& hash_val) {
-         auto result = encode<fc::sha1::encoder>( data, datalen );
-         EOS_ASSERT( result == hash_val, crypto_api_exception, "hash mismatch" );
+         API()->assert_sha1(data, datalen, (checksum160*)&hash_val._hash);
       }
 
       void assert_sha512(array_ptr<char> data, uint32_t datalen, const fc::sha512& hash_val) {
-         auto result = encode<fc::sha512::encoder>( data, datalen );
-         EOS_ASSERT( result == hash_val, crypto_api_exception, "hash mismatch" );
+         API()->assert_sha512(data, datalen, (checksum512*)&hash_val._hash);
       }
 
       void assert_ripemd160(array_ptr<char> data, uint32_t datalen, const fc::ripemd160& hash_val) {
-         auto result = encode<fc::ripemd160::encoder>( data, datalen );
-         EOS_ASSERT( result == hash_val, crypto_api_exception, "hash mismatch" );
+         API()->assert_ripemd160(data, datalen, (checksum160*)&hash_val._hash);
       }
 
       void sha1(array_ptr<char> data, uint32_t datalen, fc::sha1& hash_val) {
-         hash_val = encode<fc::sha1::encoder>( data, datalen );
+         API()->sha1(data, datalen, (checksum160*)&hash_val._hash);
       }
 
       void sha256(array_ptr<char> data, uint32_t datalen, fc::sha256& hash_val) {
-         hash_val = encode<fc::sha256::encoder>( data, datalen );
+         API()->sha256(data, datalen, (checksum256*)&hash_val._hash);
       }
 
       void sha512(array_ptr<char> data, uint32_t datalen, fc::sha512& hash_val) {
-         hash_val = encode<fc::sha512::encoder>( data, datalen );
+         API()->sha512(data, datalen, (checksum512*)&hash_val._hash);
       }
 
       void ripemd160(array_ptr<char> data, uint32_t datalen, fc::ripemd160& hash_val) {
-         hash_val = encode<fc::ripemd160::encoder>( data, datalen );
+         API()->ripemd160(data, datalen, (checksum160*)&hash_val._hash);
       }
 };
 
@@ -912,23 +838,25 @@ class system_api : public context_aware_api {
       using context_aware_api::context_aware_api;
 
       uint64_t current_time() {
-         return static_cast<uint64_t>( context.control.pending_block_time().time_since_epoch().count() );
+         return API()->current_time();
       }
 
       uint64_t publication_time() {
-         return static_cast<uint64_t>( context.trx_context.published.time_since_epoch().count() );
+         return API()->publication_time();
       }
 
       /**
        * Returns true if the specified protocol feature is activated, false if not.
        */
       bool is_feature_activated( const digest_type& feature_digest ) {
-         return context.control.is_protocol_feature_activated( feature_digest );
+         return API()->is_feature_activated( feature_digest.data(), 32 );
       }
 
       name get_sender() {
-         return context.get_sender();
+         uint64_t sender = API()->get_sender();
+         return name(sender);
       }
+
 };
 
 constexpr size_t max_assert_message = 1024;
@@ -939,50 +867,24 @@ public:
    :context_aware_api(ctx,true){}
 
    void abort() {
-      EOS_ASSERT( false, abort_called, "abort() called");
+      API()->eosio_abort();
    }
 
    // Kept as intrinsic rather than implementing on WASM side (using eosio_assert_message and strlen) because strlen is faster on native side.
    void eosio_assert( bool condition, null_terminated_ptr msg ) {
-      if( BOOST_UNLIKELY( !condition ) ) {
-         const size_t sz = strnlen( msg, max_assert_message );
-         std::string message( msg, sz );
-         EOS_THROW( eosio_assert_message_exception, "assertion failure with message: ${s}", ("s",message) );
-      }
+      EOSIO_ASSERT( condition, msg );
    }
 
    void eosio_assert_message( bool condition, array_ptr<const char> msg, uint32_t msg_len ) {
-      if( BOOST_UNLIKELY( !condition ) ) {
-         const size_t sz = msg_len > max_assert_message ? max_assert_message : msg_len;
-         std::string message( msg, sz );
-         EOS_THROW( eosio_assert_message_exception, "assertion failure with message: ${s}", ("s",message) );
-      }
+      API()->eosio_assert_message(condition, msg, msg_len);
    }
 
    void eosio_assert_code( bool condition, uint64_t error_code ) {
-      if( BOOST_UNLIKELY( !condition ) ) {
-         if( error_code >= static_cast<uint64_t>(system_error_code::generic_system_error) ) {
-            restricted_error_code_exception e( FC_LOG_MESSAGE(
-                                                   error,
-                                                   "eosio_assert_code called with reserved error code: ${error_code}",
-                                                   ("error_code", error_code)
-            ) );
-            e.error_code = static_cast<uint64_t>(system_error_code::contract_restricted_error_code);
-            throw e;
-         } else {
-            eosio_assert_code_exception e( FC_LOG_MESSAGE(
-                                             error,
-                                             "assertion failure with error code: ${error_code}",
-                                             ("error_code", error_code)
-            ) );
-            e.error_code = error_code;
-            throw e;
-         }
-      }
+      API()->eosio_assert_code(condition, error_code);
    }
 
    void eosio_exit(int32_t code) {
-      context.control.get_wasm_interface().exit();
+      throw wasm_exit{code};
    }
 
 };
@@ -993,50 +895,19 @@ class action_api : public context_aware_api {
       :context_aware_api(ctx,true){}
 
       int read_action_data(array_ptr<char> memory, uint32_t buffer_size) {
-         auto s = context.get_action().data.size();
-         if( buffer_size == 0 ) return s;
-
-         auto copy_size = std::min( static_cast<size_t>(buffer_size), s );
-         memcpy( (char*)memory.value, context.get_action().data.data(), copy_size );
-
-         return copy_size;
+         return API()->read_action_data(memory.value, buffer_size);
       }
 
       int action_data_size() {
-         return context.get_action().data.size();
+         return API()->action_data_size();
       }
 
       name current_receiver() {
-         return context.get_receiver();
-      }
-
-      vector<vector<uint8_t>> unpack_arg(const uint8_t *packed_args, size_t packed_args_size) {
-         vector<vector<uint8_t>> args;
-      //    args.reserve(3);
-
-         const uint8_t *ptr = packed_args;
-         const uint8_t *end_ptr = packed_args+packed_args_size;
-         while (ptr < end_ptr) {
-            size_t arg_size = *((uint32_t *)ptr);
-            ptr += sizeof(uint32_t);
-            vector<uint8_t> arg;
-            arg.resize(arg_size);
-            memcpy(arg.data(), ptr, arg_size);
-            ptr += arg_size;
-            args.emplace_back(arg);
-         }
-         return args;
-      }
-
-      int call_native(int main_type, int sub_type, array_ptr<char> input, uint32_t input_size, array_ptr<char> output, uint32_t output_size) {
-         if (main_type == 0) {
-            EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::ethereum_vm), invalid_contract_vm_type, "ethereum_vm not activated!" );
-            return evm_call_native(sub_type, (uint8_t*)input.value, input_size, (uint8_t*)output.value, output_size);
-         }
-         EOS_THROW( eosio_assert_message_exception, "bad native call" );
+         uint64_t receiver = API()->current_receiver();
+         return name(receiver);
       }
 };
-#endif
+
 class console_api : public context_aware_api {
    public:
       console_api( apply_context& ctx )
@@ -1316,7 +1187,6 @@ class database_api : public context_aware_api {
       DB_API_METHOD_WRAPPERS_FLOAT_SECONDARY(idx_long_double, float128_t)
 };
 
-#if 0
 class memory_api : public context_aware_api {
    public:
       memory_api( apply_context& ctx )
@@ -1352,36 +1222,22 @@ class transaction_api : public context_aware_api {
 
       void send_inline( array_ptr<char> data, uint32_t data_len ) {
          //TODO: Why is this limit even needed? And why is it not consistently checked on actions in input or deferred transactions
-         EOS_ASSERT( data_len < context.control.get_global_properties().configuration.max_inline_action_size, inline_action_too_big,
-                    "inline action too big" );
-
-         action act;
-         fc::raw::unpack<action>(data, data_len, act);
-         context.execute_inline(std::move(act));
+         API()->send_inline( data, data_len );
       }
 
       void send_context_free_inline( array_ptr<char> data, uint32_t data_len ) {
          //TODO: Why is this limit even needed? And why is it not consistently checked on actions in input or deferred transactions
-         EOS_ASSERT( data_len < context.control.get_global_properties().configuration.max_inline_action_size, inline_action_too_big,
-                   "inline action too big" );
-
-         action act;
-         fc::raw::unpack<action>(data, data_len, act);
-         context.execute_context_free_inline(std::move(act));
+         API()->send_context_free_inline( data, data_len );
       }
 
       void send_deferred( const uint128_t& sender_id, account_name payer, array_ptr<char> data, uint32_t data_len, uint32_t replace_existing) {
-         transaction trx;
-         fc::raw::unpack<transaction>(data, data_len, trx);
-         context.schedule_deferred_transaction(sender_id, payer, std::move(trx), replace_existing);
+         API()->send_deferred( &sender_id, payer, data, data_len, replace_existing);
       }
 
       bool cancel_deferred( const unsigned __int128& val ) {
-         fc::uint128_t sender_id(val>>64, uint64_t(val) );
-         return context.cancel_deferred_transaction( (unsigned __int128)sender_id );
+         return API()->cancel_deferred( &val );
       }
 };
-
 
 class context_free_transaction_api : public context_aware_api {
    public:
@@ -1389,34 +1245,26 @@ class context_free_transaction_api : public context_aware_api {
       :context_aware_api(ctx,true){}
 
       int read_transaction( array_ptr<char> data, uint32_t buffer_size ) {
-         bytes trx = context.get_packed_transaction();
-
-         auto s = trx.size();
-         if( buffer_size == 0) return s;
-
-         auto copy_size = std::min( static_cast<size_t>(buffer_size), s );
-         memcpy( data, trx.data(), copy_size );
-
-         return copy_size;
+         return API()->read_transaction( data, buffer_size );
       }
 
       int transaction_size() {
-         return context.get_packed_transaction().size();
+         return API()->transaction_size();
       }
 
       int expiration() {
-        return context.trx_context.trx.expiration.sec_since_epoch();
+        return API()->expiration();
       }
 
       int tapos_block_num() {
-        return context.trx_context.trx.ref_block_num;
+        return API()->tapos_block_num();
       }
       int tapos_block_prefix() {
-        return context.trx_context.trx.ref_block_prefix;
+        return API()->tapos_block_prefix();
       }
 
       int get_action( uint32_t type, uint32_t index, array_ptr<char> buffer, uint32_t buffer_size )const {
-         return context.get_action( type, index, buffer, buffer_size );
+         return API()->get_action( type, index, buffer, buffer_size );
       }
 };
 
@@ -1802,7 +1650,6 @@ REGISTER_INTRINSICS(compiler_builtins,
    (__trunctfdf2,  double(int64_t, int64_t)                      )
    (__trunctfsf2,  float(int64_t, int64_t)                       )
 );
-#endif
 
 REGISTER_INTRINSICS(privileged_api,
    (is_feature_active,                int(int64_t)                          )
@@ -1818,15 +1665,22 @@ REGISTER_INTRINSICS(privileged_api,
    (preactivate_feature,              void(int)                             )
 );
 
-#if 0
-REGISTER_INJECTED_INTRINSICS(transaction_context,
+
+class transaction_context_ {
+public:
+   transaction_context_( apply_context& ctx ) {}
+   void checktime() {
+      API()->checktime();
+   }
+};
+
+REGISTER_INJECTED_INTRINSICS(transaction_context_,
    (checktime,      void() )
 );
 
 REGISTER_INTRINSICS(producer_api,
    (get_active_producers,      int(int, int) )
 );
-#endif
 
 #define DB_SECONDARY_INDEX_METHODS_SIMPLE(IDX) \
    (db_##IDX##_store,          int(int64_t,int64_t,int64_t,int64_t,int) )\
@@ -1882,7 +1736,7 @@ REGISTER_INTRINSICS( database_api,
    DB_SECONDARY_INDEX_METHODS_SIMPLE(idx_double)
    DB_SECONDARY_INDEX_METHODS_SIMPLE(idx_long_double)
 );
-#if 0
+
 REGISTER_INTRINSICS(crypto_api,
    (assert_recover_key,     void(int, int, int, int, int) )
    (recover_key,            int(int, int, int, int, int)  )
@@ -1896,14 +1750,12 @@ REGISTER_INTRINSICS(crypto_api,
    (ripemd160,              void(int, int, int)           )
 );
 
-
 REGISTER_INTRINSICS(permission_api,
    (check_transaction_authorization, int(int, int, int, int, int, int)                  )
    (check_permission_authorization,  int(int64_t, int64_t, int, int, int, int, int64_t) )
    (get_permission_last_used,        int64_t(int64_t, int64_t)                          )
    (get_account_creation_time,       int64_t(int64_t)                                   )
 );
-
 
 REGISTER_INTRINSICS(system_api,
    (current_time,          int64_t() )
@@ -1924,7 +1776,6 @@ REGISTER_INTRINSICS(action_api,
    (read_action_data,         int(int, int)  )
    (action_data_size,         int()          )
    (current_receiver,         int64_t()      )
-   (call_native,              int(int, int, int, int, int, int))
 );
 
 REGISTER_INTRINSICS(authorization_api,
@@ -1934,7 +1785,6 @@ REGISTER_INTRINSICS(authorization_api,
    (has_auth,          int(int64_t)           )
    (is_account,        int(int64_t)           )
 );
-#endif
 
 REGISTER_INTRINSICS(console_api,
    (prints,                void(int)      )
@@ -1950,7 +1800,6 @@ REGISTER_INTRINSICS(console_api,
    (printhex,              void(int, int) )
 );
 
-#if 0
 REGISTER_INTRINSICS(context_free_transaction_api,
    (read_transaction,       int(int, int)           )
    (transaction_size,       int()                   )
@@ -1966,8 +1815,6 @@ REGISTER_INTRINSICS(transaction_api,
    (send_deferred,             void(int, int64_t, int, int, int32_t) )
    (cancel_deferred,           int(int)                              )
 );
-
-
 
 REGISTER_INTRINSICS(memory_api,
    (memcpy,                 int(int, int, int)  )
@@ -2036,12 +1883,11 @@ REGISTER_INJECTED_INTRINSICS(softfloat_api,
       (_eosio_ui32_to_f64,    double(int32_t)       )
       (_eosio_ui64_to_f64,    double(int64_t)       )
 );
-#endif
-#if 1
+
 REGISTER_INTRINSICS(context_free_api,
    (get_context_free_data, int(int, int, int) )
 )
-#endif
+
 std::istream& operator>>(std::istream& in, wasm_interface::vm_type& runtime) {
    std::string s;
    in >> s;
