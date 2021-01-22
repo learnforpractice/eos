@@ -96,6 +96,10 @@ apply_context& ctx() {
 //      print_stacktrace();
       _vm_api.eosio_assert(0, "access apply context not allowed!");
    }
+   if (s_ctx == nullptr) {
+//      print_stacktrace();
+      eosio_assert(false, "not in apply context");
+   }
    return *s_ctx;
 }
 
