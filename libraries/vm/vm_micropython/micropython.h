@@ -74,10 +74,6 @@ extern u32 (*Z_envZ_memcpyZ_iiii)(u32, u32, u32);
 extern u32 (*Z_envZ_memmoveZ_iiii)(u32, u32, u32);
 /* import: 'env' '__extenddftf2' */
 extern void (*Z_envZ___extenddftf2Z_vid)(u32, f64);
-/* import: 'env' 'in_apply_context' */
-extern u32 (*Z_envZ_in_apply_contextZ_iv)(void);
-/* import: 'env' 's2n' */
-extern u64 (*Z_envZ_s2nZ_jii)(u32, u32);
 /* import: 'env' 'is_account' */
 extern u32 (*Z_envZ_is_accountZ_ij)(u64);
 /* import: 'env' 'prints_l' */
@@ -110,8 +106,6 @@ extern u32 (*Z_envZ___gttf2Z_ijjjj)(u64, u64, u64, u64);
 extern u32 (*Z_envZ___getf2Z_ijjjj)(u64, u64, u64, u64);
 /* import: 'env' '__letf2' */
 extern u32 (*Z_envZ___letf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' 'n2s' */
-extern u32 (*Z_envZ_n2sZ_ijii)(u64, u32, u32);
 /* import: 'env' 'action_data_size' */
 extern u32 (*Z_envZ_action_data_sizeZ_iv)(void);
 /* import: 'env' 'read_action_data' */

@@ -106,26 +106,26 @@ extern u32 (*Z_envZ___gttf2Z_ijjjj)(u64, u64, u64, u64);
 extern u32 (*Z_envZ___getf2Z_ijjjj)(u64, u64, u64, u64);
 /* import: 'env' '__letf2' */
 extern u32 (*Z_envZ___letf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' 'current_receiver' */
-extern u64 (*Z_envZ_current_receiverZ_jv)(void);
-/* import: 'env' 'has_auth' */
-extern u32 (*Z_envZ_has_authZ_ij)(u64);
-/* import: 'env' 'read_action_data' */
-extern u32 (*Z_envZ_read_action_dataZ_iii)(u32, u32);
 /* import: 'env' 'action_data_size' */
 extern u32 (*Z_envZ_action_data_sizeZ_iv)(void);
+/* import: 'env' 'read_action_data' */
+extern u32 (*Z_envZ_read_action_dataZ_iii)(u32, u32);
 /* import: 'env' 'require_recipient' */
 extern void (*Z_envZ_require_recipientZ_vj)(u64);
 /* import: 'env' 'require_auth' */
 extern void (*Z_envZ_require_authZ_vj)(u64);
 /* import: 'env' 'require_auth2' */
 extern void (*Z_envZ_require_auth2Z_vjj)(u64, u64);
+/* import: 'env' 'has_auth' */
+extern u32 (*Z_envZ_has_authZ_ij)(u64);
 /* import: 'env' 'send_inline' */
 extern void (*Z_envZ_send_inlineZ_vii)(u32, u32);
 /* import: 'env' 'send_context_free_inline' */
 extern void (*Z_envZ_send_context_free_inlineZ_vii)(u32, u32);
 /* import: 'env' 'publication_time' */
 extern u64 (*Z_envZ_publication_timeZ_jv)(void);
+/* import: 'env' 'current_receiver' */
+extern u64 (*Z_envZ_current_receiverZ_jv)(void);
 /* import: 'env' 'get_active_producers' */
 extern u32 (*Z_envZ_get_active_producersZ_iii)(u32, u32);
 /* import: 'env' 'assert_sha256' */
@@ -168,6 +168,34 @@ extern u32 (*Z_envZ_db_lowerbound_i64Z_ijjjj)(u64, u64, u64, u64);
 extern u32 (*Z_envZ_db_upperbound_i64Z_ijjjj)(u64, u64, u64, u64);
 /* import: 'env' 'db_end_i64' */
 extern u32 (*Z_envZ_db_end_i64Z_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_store_i256' */
+extern u32 (*Z_envZ_db_store_i256Z_ijjjiiii)(u64, u64, u64, u32, u32, u32, u32);
+/* import: 'env' 'db_update_i256' */
+extern void (*Z_envZ_db_update_i256Z_vijii)(u32, u64, u32, u32);
+/* import: 'env' 'db_remove_i256' */
+extern void (*Z_envZ_db_remove_i256Z_vi)(u32);
+/* import: 'env' 'db_get_i256' */
+extern u32 (*Z_envZ_db_get_i256Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_next_i256' */
+extern u32 (*Z_envZ_db_next_i256Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_previous_i256' */
+extern u32 (*Z_envZ_db_previous_i256Z_iiii)(u32, u32, u32);
+/* import: 'env' 'db_find_i256' */
+extern u32 (*Z_envZ_db_find_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_lowerbound_i256' */
+extern u32 (*Z_envZ_db_lowerbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_upperbound_i256' */
+extern u32 (*Z_envZ_db_upperbound_i256Z_ijjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'db_end_i256' */
+extern u32 (*Z_envZ_db_end_i256Z_ijjj)(u64, u64, u64);
+/* import: 'env' 'db_get_table_row_count' */
+extern u32 (*Z_envZ_db_get_table_row_countZ_ijjj)(u64, u64, u64);
+/* import: 'env' 'call_contract' */
+extern void (*Z_envZ_call_contractZ_vjii)(u64, u32, u32);
+/* import: 'env' 'call_contract_get_results' */
+extern u32 (*Z_envZ_call_contract_get_resultsZ_iii)(u32, u32);
+/* import: 'env' 'get_code_hash' */
+extern u32 (*Z_envZ_get_code_hashZ_ijii)(u64, u32, u32);
 /* import: 'env' 'db_idx64_store' */
 extern u32 (*Z_envZ_db_idx64_storeZ_ijjjji)(u64, u64, u64, u64, u32);
 /* import: 'env' 'db_idx_long_double_store' */
@@ -296,6 +324,18 @@ extern u32 (*Z_envZ_expirationZ_iv)(void);
 extern u32 (*Z_envZ_get_actionZ_iiiii)(u32, u32, u32, u32);
 /* import: 'env' 'get_context_free_data' */
 extern u32 (*Z_envZ_get_context_free_dataZ_iiii)(u32, u32, u32);
+/* import: 'env' 'token_create' */
+extern void (*Z_envZ_token_createZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_issue' */
+extern void (*Z_envZ_token_issueZ_vjjjii)(u64, u64, u64, u32, u32);
+/* import: 'env' 'token_transfer' */
+extern void (*Z_envZ_token_transferZ_vjjjjii)(u64, u64, u64, u64, u32, u32);
+/* import: 'env' 'token_open' */
+extern void (*Z_envZ_token_openZ_vjjj)(u64, u64, u64);
+/* import: 'env' 'token_retire' */
+extern void (*Z_envZ_token_retireZ_vjjii)(u64, u64, u32, u32);
+/* import: 'env' 'token_close' */
+extern void (*Z_envZ_token_closeZ_vjj)(u64, u64);
 /* import: 'env' 'abort' */
 extern void (*Z_envZ_abortZ_vv)(void);
 /* import: 'env' 'send_deferred' */
@@ -308,16 +348,6 @@ extern void (*Z_envZ_set_blockchain_parameters_packedZ_vii)(u32, u32);
 extern u32 (*Z_envZ_get_blockchain_parameters_packedZ_iii)(u32, u32);
 /* import: 'env' 'prints' */
 extern void (*Z_envZ_printsZ_vi)(u32);
-/* import: 'env' '__extendsftf2' */
-extern void (*Z_envZ___extendsftf2Z_vif)(u32, f32);
-/* import: 'env' '__floatunsitf' */
-extern void (*Z_envZ___floatunsitfZ_vii)(u32, u32);
-/* import: 'env' '__trunctfsf2' */
-extern f32 (*Z_envZ___trunctfsf2Z_fjj)(u64, u64);
-/* import: 'env' '__unordtf2' */
-extern u32 (*Z_envZ___unordtf2Z_ijjjj)(u64, u64, u64, u64);
-/* import: 'env' '__fixunstfsi' */
-extern u32 (*Z_envZ___fixunstfsiZ_ijj)(u64, u64);
 
 /* export: 'apply' */
 extern void (*WASM_RT_ADD_PREFIX(Z_applyZ_vjjj))(u64, u64, u64);

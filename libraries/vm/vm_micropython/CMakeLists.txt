@@ -64,7 +64,12 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin ${CMAKE_
     COMMAND mv micropython.c micropython.c.bin
     COMMAND mv micropython.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython.h
 
-    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython_eosio micropython_eosio_softfloat.wasm
+    # COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython_eosio micropython_eosio_softfloat.wasm
+    # COMMAND ${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c -o micropython_eosio.c micropython_eosio_softfloat.wasm
+    # COMMAND mv micropython_eosio.c micropython_eosio.c.bin
+    # COMMAND mv micropython_eosio.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.h
+
+    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython micropython_eosio_softfloat.wasm
     COMMAND ${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c -o micropython_eosio.c micropython_eosio_softfloat.wasm
     COMMAND mv micropython_eosio.c micropython_eosio.c.bin
     COMMAND mv micropython_eosio.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.h
