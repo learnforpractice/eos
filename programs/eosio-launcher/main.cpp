@@ -101,7 +101,7 @@ struct local_identity {
     }
     catch (...) {
       // not an ip address
-      for (const auto n : names) {
+      for (const auto& n : names) {
         if (n == name)
           return true;
       }
