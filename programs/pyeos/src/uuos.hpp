@@ -43,6 +43,7 @@ void uuos_init_chain_api();
 #define chain_push_scheduled_transaction_ uuos_get_chain_api()->chain_push_scheduled_transaction
 #define chain_commit_block_ uuos_get_chain_api()->chain_commit_block
 #define chain_finalize_block_ uuos_get_chain_api()->chain_finalize_block
+#define chain_get_producer_public_keys_ uuos_get_chain_api()->chain_get_producer_public_keys
 #define chain_pop_block_ uuos_get_chain_api()->chain_pop_block
 #define chain_get_account_ uuos_get_chain_api()->chain_get_account
 #define chain_get_global_properties_ uuos_get_chain_api()->chain_get_global_properties

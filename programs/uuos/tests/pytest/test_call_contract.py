@@ -20,17 +20,17 @@ class Test(object):
     @classmethod
     def setup_class(cls):
         cls.main_token = 'UUOS'
+        cls.chain = ChainTest(network_type=1, jit=True)
 
     @classmethod
     def teardown_class(cls):
-        pass
+        self.chain.free()
 
     def setup_method(self, method):
-        self.chain = ChainTest(network_type=1, jit=True)
+        pass
 
     def teardown_method(self, method):
         pass
-        self.chain.free()
 
     def test_call1(self):
         code = r'''

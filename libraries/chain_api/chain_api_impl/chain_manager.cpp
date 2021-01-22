@@ -619,6 +619,18 @@ void chain_finalize_block_(void *ptr, string& _priv_keys) {
     } );
 }
 
+void chain_get_producer_public_keys_(void *ptr, string& _pub_keys) {
+    auto& chain = chain_get_controller(ptr);
+    const auto& auth = chain.pending_block_signing_authority();
+    std::vector<public_key_type> pub_keys;
+
+    producer_authority::for_each_key(auth, [&](const public_key_type& key){
+        pub_keys.emplace_back(key);
+    });
+
+    _pub_keys = fc::json::to_string(pub_keys, fc::time_point::maximum());
+}
+
 //void sign_block( const std::function<signature_type( const digest_type& )>& signer_callback );
 
 void chain_pop_block_(void *ptr) {

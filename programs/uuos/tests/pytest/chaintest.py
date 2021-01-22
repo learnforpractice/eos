@@ -130,6 +130,23 @@ key_map = {
     'EOS5fVw435RSwW3YYWAX9qz548JFTWuFiBcHT3PGLryWaAMmxgjp1':'5K9AZWR2wEwtZii52vHigrxcSwCzLhhJbNpdXpVFKHP5fgFG5Tx'
 }
 
+producer_key_map = {
+    'UUOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV':'5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',
+    'UUOS61MgZLN7Frbc2J7giU7JdYjy2TqnfWFjZuLXvpHJoKzWAj7Nst':'5JEcwbckBCdmji5j8ZoMHLEUS8TqQiqBG1DRx1X9DN124GUok9s',
+    'UUOS5JuNfuZPATy8oPz9KMZV2asKf9m8fb2bSzftvhW55FKQFakzFL':'5JbDP55GXN7MLcNYKCnJtfKi9aD2HvHAdY7g8m67zFTAFkY1uBB',
+    'UUOS8Znrtgwt8TfpmbVpTKvA2oB8Nqey625CLN8bCN3TEbgx86Dsvr':'5K463ynhZoCDDa4RDcr63cUwWLTnKqmdcoTKTHBjqoKfv4u5V7p',
+    'UUOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV':'5KH8vwQkP4QoTwgBtCV5ZYhKmv8mx56WeNrw9AZuhNRXTrPzgYc',
+    'UUOS8Ep2idd8FkvapNfgUwFCjHBG4EVNAjfUsRRqeghvq9E91tkDaj':'5KT26sGXAywAeUSrQjaRiX9uk9uDGNqC1CSojKByLMp7KRp8Ncw',
+
+    'UUOS6AjF6hvF7GSuSd4sCgfPKq5uWaXvGM2aQtEUCwmEHygQaqxBSV':'5JRYimgLBrRLCBAcjHUWCYRv3asNedTYYzVgmiU4q2ZVxMBiJXL',
+    'UUOS7sPDxfw5yx5SZgQcVb57zS1XeSWLNpQKhaGjjy2qe61BrAQ49o':'5Jbb4wuwz8MAzTB9FJNmrVYGXo4ABb7wqPVoWGcZ6x8V2FwNeDo',
+    'UUOS89jesRgvvnFVuNtLg4rkFXcBg2Qq26wjzppssdHj2a8PSoWMhx':'5JHRxntHapUryUetZgWdd3cg6BrpZLMJdqhhXnMaZiiT4qdJPhv',
+    'UUOS73ECcVHVWvuxJVm5ATnqBTCFMtA6WUsdDovdWH5NFHaXNq1hw1':'5Jbh1Dn57DKPUHQ6F6eExX55S2nSFNxZhpZUxNYFjJ1arKGK9Q3',
+    'UUOS8h8TmXCU7Pzo5XQKqyWwXAqLpPj4DPZCv5Wx9Y4yjRrB6R64ok':'5JJYrXzjt47UjHyo3ud5rVnNEPTCqWvf73yWHtVHtB1gsxtComG',
+    'UUOS65jj8NPh2EzLwje3YRy4utVAATthteZyhQabpQubxHNJ44mem9':'5J9PozRVudGYf2D4b8JzvGxPBswYbtJioiuvYaiXWDYaihNFGKP',
+    'UUOS5fVw435RSwW3YYWAX9qz548JFTWuFiBcHT3PGLryWaAMmxgjp1':'5K9AZWR2wEwtZii52vHigrxcSwCzLhhJbNpdXpVFKHP5fgFG5Tx'
+}
+
 NETWORK_TYPE_UUOS = 1
 NETWORK_TYPE_EOS = 2
 NETWORK_TYPE_UUOS_TEST = 3
@@ -314,8 +331,9 @@ class ChainTest(object):
 
         args = {"to":"uuos","quantity":f"1000000000.0000 {self.main_token}", "memo":""}
         r = self.push_action('uuos.token','issue', args, {'uuos':'active'})
-        self.transfer('uuos', 'alice', 1000000.0)
 
+        self.transfer('uuos', 'alice', 5000000.0)
+        self.transfer('uuos', 'bob', 5000000.0)
 
         args = dict(version = 0,
                     core = '4,UUOS',
@@ -842,9 +860,15 @@ class ChainTest(object):
         trxs = self.chain.get_scheduled_transactions()
         deadline = datetime.utcnow() + timedelta(microseconds=10000000)
         deadline = deadline.isoformat(timespec='milliseconds')
+
+        priv_keys = []
+        for pub_key in self.chain.get_producer_public_keys():
+            if pub_key in producer_key_map:
+                priv_keys.append(producer_key_map[pub_key])
+
         for scheduled_tx_id in trxs:
             self.chain.push_scheduled_transaction(scheduled_tx_id, deadline, 100)
-        self.chain.finalize_block(['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'])
+        self.chain.finalize_block(priv_keys)
         self.chain.commit_block()
         self.start_block()
 

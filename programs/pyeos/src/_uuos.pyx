@@ -58,6 +58,7 @@ cdef extern from "uuos.hpp":
 
     void chain_commit_block_(void *ptr);
     void chain_finalize_block_(void *ptr, string& _priv_key);
+    void chain_get_producer_public_keys_(void *ptr, string& _pub_keys);
     void chain_pop_block_(void *ptr);
     void chain_get_account_(void *ptr, string& account, string& result);
     void chain_get_global_properties_(void *ptr, string& result);
@@ -677,6 +678,11 @@ def chain_get_scheduled_producer(uint64_t ptr, string& block_time):
 
 def chain_finalize_block(uint64_t ptr, string& _priv_key):
     chain_finalize_block_(<void *>ptr, _priv_key)
+
+def chain_get_producer_public_keys(uint64_t ptr):
+    cdef string pub_keys
+    chain_get_producer_public_keys_(<void *>ptr, pub_keys)
+    return pub_keys
 
 def chain_pack_action_args(uint64_t ptr, string& name, string& action, string& args):
     cdef vector[char] result

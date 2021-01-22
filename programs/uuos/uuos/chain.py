@@ -397,6 +397,10 @@ class Chain(object):
             priv_keys = json.dumps(priv_keys)
         _uuos.chain_finalize_block(self.ptr, priv_keys)
 
+    def get_producer_public_keys(self):
+        ret = _uuos.chain_get_producer_public_keys(self.ptr)
+        return json.loads(ret)
+
     def pack_action_args(self, name, action, args):
         if isinstance(args, dict):
             args = json.dumps(args)

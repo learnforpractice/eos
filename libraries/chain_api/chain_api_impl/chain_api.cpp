@@ -289,6 +289,7 @@ bool chain_push_transaction_(void *ptr, string& _packed_trx, string& deadline, u
 void chain_push_scheduled_transaction_(void *ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us, string& result);
 void chain_commit_block_(void *ptr);
 void chain_finalize_block_(void *ptr, string& _priv_key);
+void chain_get_producer_public_keys_(void *ptr, string& _pub_keys);
 void chain_pop_block_(void *ptr);
 void chain_get_account_(void *ptr, string& account, string& result);
 void chain_get_global_properties_(void *ptr, string& result);
@@ -512,6 +513,7 @@ extern "C" void chain_api_init() {
       .chain_push_scheduled_transaction = chain_push_scheduled_transaction_,
       .chain_commit_block = chain_commit_block_,
       .chain_finalize_block = chain_finalize_block_,
+      .chain_get_producer_public_keys = chain_get_producer_public_keys_,
       .chain_pop_block = chain_pop_block_,
       .chain_get_account = chain_get_account_,
       .chain_get_global_properties = chain_get_global_properties_,
