@@ -4,6 +4,7 @@
  */
 
 constexpr size_t max_assert_message = 1024;
+#include <stacktrace.h>
 
 void eosio_abort() {
    EOS_ASSERT( false, abort_called, "abort() called");
@@ -26,16 +27,31 @@ void eosio_assert_message( uint32_t condition, const char* msg, uint32_t msg_len
    }
 }
 
-void  eosio_assert_code( uint32_t test, uint64_t error_code ) {
-   if( BOOST_UNLIKELY( !test ) ) {
-      edump((error_code));
-      EOS_THROW( eosio_assert_code_exception,
-                 "assertion failure with error code: ${error_code}", ("error_code", error_code) );
+void  eosio_assert_code( uint32_t condition, uint64_t error_code ) {
+   if( BOOST_UNLIKELY( !condition ) ) {
+      if( error_code >= static_cast<uint64_t>(system_error_code::generic_system_error) ) {
+         restricted_error_code_exception e( FC_LOG_MESSAGE(
+                                                error,
+                                                "eosio_assert_code called with reserved error code: ${error_code}",
+                                                ("error_code", error_code)
+         ) );
+         e.error_code = static_cast<uint64_t>(system_error_code::contract_restricted_error_code);
+         throw e;
+      } else {
+         eosio_assert_code_exception e( FC_LOG_MESSAGE(
+                                          error,
+                                          "assertion failure with error code: ${error_code}",
+                                          ("error_code", error_code)
+         ) );
+         e.error_code = error_code;
+         throw e;
+      }
    }
 }
 
 void  eosio_exit( int32_t code ) {
-   throw wasm_exit();
+   ctx().control.get_wasm_interface().exit();
+//   throw wasm_exit();
 }
 
 uint64_t  current_time() {
