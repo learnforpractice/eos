@@ -239,7 +239,7 @@ def apply(receiver, code, action):
 def apply(receiver, code, action):
     for i in range(10):
         print('hello,world')
-    while True: pass
+#    while True: pass
 '''
         code = uuos.compile(code)
 #        print(code)
