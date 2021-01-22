@@ -148,12 +148,12 @@ void apply_eosio_setcode(apply_context& context) {
    auto  act = context.get_action().data_as<setcode>();
    context.require_authorization(act.account);
 
-   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1 || act.vmtype == 2, invalid_contract_vm_type, "invalid vm type" );
+   EOS_ASSERT( act.vmtype == 0 || act.vmtype == 1 || act.vmtype == 0x11 || act.vmtype == 2, invalid_contract_vm_type, "invalid vm type" );
    const auto& account = db.get<account_metadata_object,by_name>(act.account);
 
    if (act.vmtype == 0) {
       EOS_ASSERT( act.vmversion == 0, invalid_contract_vm_version, "version should be 0" );
-   } else if (act.vmtype == 1 || act.vmtype == 2){
+   } else if (act.vmtype == 1 || act.vmtype == 0x11 || act.vmtype == 0x12){
       //only allow privileged account use python smart contract when python vm is not activated
       if (!account.is_privileged()) {
          EOS_ASSERT( context.control.is_builtin_activated(builtin_protocol_feature_t::pythonvm), invalid_contract_vm_type, "pythonvm not activated!" );
@@ -172,8 +172,8 @@ void apply_eosio_setcode(apply_context& context) {
       code_hash = fc::sha256::hash( act.code.data(), (uint32_t)act.code.size() );
       if (act.vmtype == 0) {
          wasm_interface::validate(context.control, act.code);
-      } else if (act.vmtype == 1) {
-         micropython_validate_frozen_code(act.code.data(), act.code.size());
+      } else if (act.vmtype == 0x11) {
+         //micropython_validate_frozen_code(act.code.data(), act.code.size());
       }
    }
 
@@ -187,7 +187,9 @@ void apply_eosio_setcode(apply_context& context) {
       const code_object& old_code_entry = db.get<code_object, by_code_hash>(boost::make_tuple(account.code_hash, account.vm_type, account.vm_version));
       EOS_ASSERT( old_code_entry.code_hash != code_hash, set_exact_code,
                   "contract is already running this version of code" );
-      if (account.vm_type == 1 || account.vm_type == 2) {
+      if (account.vm_type == 1) {
+         old_size = (int64_t)old_code_entry.code.size();
+      } else if (account.vm_type == 0x11 || account.vm_type == 0x12) {
          old_size = (int64_t)old_code_entry.code.size() + context.control.get_vm_manager().get_snapshoot_size(old_code_entry.code_hash, account.vm_type, account.vm_version, context);
       } else {
          old_size  = (int64_t)old_code_entry.code.size() * config::setcode_ram_bytes_multiplier;
@@ -234,7 +236,9 @@ void apply_eosio_setcode(apply_context& context) {
    });
 
    int64_t new_size = 0;
-   if (act.vmtype == 1 || act.vmtype == 2) {
+   if (act.vmtype == 1) {
+      new_size = code_size;
+   } else if (act.vmtype == 0x11 || act.vmtype == 0x12) {
       if (code_size > 0) {
          new_size = code_size + context.control.get_vm_manager().get_snapshoot_size(code_hash, act.vmtype, act.vmversion, context);
       }
