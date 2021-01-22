@@ -872,7 +872,7 @@ public:
 
    // Kept as intrinsic rather than implementing on WASM side (using eosio_assert_message and strlen) because strlen is faster on native side.
    void eosio_assert( bool condition, null_terminated_ptr msg ) {
-      EOSIO_ASSERT( condition, msg );
+      API()->eosio_assert( condition, msg );
    }
 
    void eosio_assert_message( bool condition, array_ptr<const char> msg, uint32_t msg_len ) {
@@ -884,7 +884,7 @@ public:
    }
 
    void eosio_exit(int32_t code) {
-      throw wasm_exit{code};
+      API()->eosio_exit(code);
    }
 
 };
@@ -1565,8 +1565,7 @@ class vm_apis : public context_aware_api {
       }
 
       void call_contract(uint64_t contract, array_ptr<const char> extra_args, uint32_t size1) {
-         FC_THROW_EXCEPTION(wasm_execution_error, "call_contract not implemented yet");
-         //get_vm_api()->vm_call(contract, func_name, extra_args, size1);
+         get_vm_api()->call_contract(contract, extra_args, size1);
       }
 
       int call_contract_get_args(array_ptr<char> extra_args, uint32_t size1) {
@@ -1595,6 +1594,7 @@ REGISTER_INTRINSICS(vm_apis,
    (token_retire,    void(int64_t, int64_t, int, int ))
    (token_close,     void(int64_t, int64_t))
 
+   (call_contract,   void(int64_t, int, int))
    (call_contract_get_args,   int(int, int))
    (call_contract_set_results,      int(int, int))
    (call_contract_get_results,      int(int, int))
