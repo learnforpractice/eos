@@ -15,6 +15,8 @@
 
 #include <chain_api.hpp>
 
+extern "C" void eos_vm_interface_apply( const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, eosio::chain::apply_context& context );
+
 using boost::container::flat_set;
 
 namespace eosio { namespace chain {
@@ -1148,6 +1150,17 @@ action_name apply_context::get_sender() const {
 }
 
 void apply_context::call_contract(uint64_t contract, const char *args, size_t args_size) {
+   static int call_depth = 0;
+   if (call_depth >= 1) {
+      EOS_THROW( eosio_assert_message_exception, "wasm code call depth exceeded!" );
+      return;
+   }
+   auto cleanup = fc::make_scoped_exit([&](){
+      call_depth = 0;
+   });
+
+   call_depth += 1;
+
    auto& contract_account = control.db().get<account_metadata_object,by_name>( name(contract) );
    if (contract_account.vm_type == 0) {
    } else {
@@ -1158,7 +1171,8 @@ void apply_context::call_contract(uint64_t contract, const char *args, size_t ar
    memcpy(call_args.data(), args, args_size);
    call_returns.resize(0);
 
-   control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
+   eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
+//   control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 }
 
 int apply_context::call_contract_get_args(void* args, size_t size) {

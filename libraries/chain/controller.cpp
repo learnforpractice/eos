@@ -37,6 +37,8 @@
 #include <chain_api.hpp>
 #include "db_interface.hpp"
 
+extern "C" void eos_vm_interface_init();
+
 namespace eosio { namespace chain {
 
 void apply_eosio_addaccounts(apply_context&);
@@ -330,6 +332,7 @@ struct controller_impl {
     read_mode( cfg.read_mode ),
     thread_pool( "chain", cfg.thread_pool_size )
    {
+      eos_vm_interface_init();
       fork_db.open( [this]( block_timestamp_type timestamp,
                             const flat_set<digest_type>& cur_features,
                             const vector<digest_type>& new_features )

@@ -32,6 +32,7 @@ extern "C" {
     int vm_lua_contract_init(const char* script, size_t script_len);
     int vm_lua_contract_apply(uint64_t receiver, uint64_t code, uint64_t action);
 
+    int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint64_t action);
 }
 
 vm_instantiated_module::vm_instantiated_module()
@@ -53,10 +54,10 @@ void vm_instantiated_module::apply(apply_context& context, uint8_t vm_type, uint
     auto act = context.get_action().name.to_uint64_t();
 
     // long long start = get_time_us();
-    if (vm_type == 1) {
+    if (vm_type == 0x11) {
         int ret = micropython_contract_apply(receiver, account, act);
         EOS_ASSERT( ret, python_execution_error, "python vm execution error" );
-    } else if(vm_type == 2) {
+    } else if(vm_type == 0x12) {
         vm_lua_contract_apply(receiver, account, act);
     }
     // printf("+++++++++apply %lld\n", get_time_us() - start);
@@ -88,12 +89,12 @@ vm_manager::vm_manager(const chainbase::database& d): db(d) {
     micropython_init();    
     size_t size = micropython_get_memory_size();
     uint8_t *memory = (uint8_t *)micropython_get_memory();
-    initial_vm_memory[1] = std::make_shared<vector<uint8_t>>(memory, memory + size);
+    initial_vm_memory[0x11] = std::make_shared<vector<uint8_t>>(memory, memory + size);
 
     vm_lua_init();
     size = vm_lua_get_memory_size();
     memory = (uint8_t *)vm_lua_get_memory();
-    initial_vm_memory[2] = std::make_shared<vector<uint8_t>>(memory, memory + size);
+    initial_vm_memory[0x12] = std::make_shared<vector<uint8_t>>(memory, memory + size);
 }
 
 vm_manager::~vm_manager() {}
@@ -134,8 +135,22 @@ static uint64_t get_microseconds() {
 
 //Calls apply or error on a given code
 void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
-    uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
-    get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context, vm_type, vm_version);
+    if (vm_type == 1) {
+         auto& mpy_account = context.db.get<account_metadata_object,by_name>( N(uuos.mpy) );
+         context.control.get_wasm_interface().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
+         return;
+
+         uint64_t receiver = context.get_receiver().to_uint64_t();
+         uint64_t account = context.get_action().account.to_uint64_t();
+         uint64_t action = context.get_action().name.to_uint64_t();
+         int ret = micropython_eosio_apply(receiver, account, action);
+         if (ret) {
+            return;
+         }
+    } else {
+        uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
+        get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context, vm_type, vm_version);
+    }
 //    vmlua_run_script();
 }
 
@@ -155,12 +170,12 @@ void vm_manager::take_snapshoot(vm_instantiated_module& module, int vm_type) {
     int vm_memory_size = 0;
     char *vm_start_memory_address = nullptr;
 
-    EOS_ASSERT( vm_type == 1 || vm_type == 2, wasm_execution_error, "vm type error" );
+    EOS_ASSERT( vm_type == 0x11 || vm_type == 0x12, wasm_execution_error, "vm type error" );
 
-    if (vm_type == 1) {
+    if (vm_type == 0x11) {
         vm_memory_size = micropython_get_memory_size();
         vm_start_memory_address = (char *)micropython_get_memory();
-    } else if (vm_type == 2) {
+    } else if (vm_type == 0x12) {
         vm_memory_size = vm_lua_get_memory_size();
         vm_start_memory_address = (char *)vm_lua_get_memory();
     }
@@ -253,15 +268,13 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
             });
             get_vm_api()->allow_access_apply_context = false;
 
-            if (vm_type == 1) {
+            if (vm_type == 0x11) {
                 auto& memory = initial_vm_memory[1];
                 micropython_init_memory(memory->size()/PAGE_SIZE);
                 micropython_restore_memory(memory->data(), memory->size());
-                //TODO: handle exception in micropython vm            
-                size_t code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), NULL, 0);
-                EOS_ASSERT( code_size > 0, python_execution_error, "main module not found!" );
-                vector<char> content(code_size);
-                code_size = micropython_load_frozen_code("main.mpy", strlen("main.mpy"), content.data(), content.size());
+                //TODO: handle exception in micropython vm
+                auto& content = codeobject->code;
+                size_t code_size = codeobject->code.size();
                 EOS_ASSERT( code_size > 2 && content[0] == 'M', python_execution_error, "BAD mpy code" );
                 int mpy_version = content[1];
                 //TODO: Initialize contract code from vm with specified mpy version
@@ -269,7 +282,7 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
                 int ret = micropython_contract_init(0, content.data(), content.size());
                 EOS_ASSERT( ret, python_execution_error, "python contract init error" );
                 take_snapshoot(*c.module, vm_type);
-            } else if (vm_type == 2) {
+            } else if (vm_type == 0x12) {
                 auto& memory = initial_vm_memory[vm_type];
                 vm_lua_init_memory(memory->size()/PAGE_SIZE);
                 vm_lua_restore_memory(memory->data(), memory->size());
@@ -279,7 +292,7 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
             }
         });
     } else {
-        if (vm_type == 1) {
+        if (vm_type == 0x11) {
             micropython_init_memory(it->module->backup.initial_pages);
             char *vm_start_memory_address = (char *)micropython_get_memory();
             int pos = 0;
@@ -289,7 +302,7 @@ const std::unique_ptr<vm_instantiated_module>& vm_manager::get_instantiated_modu
                 pos = segment.offset + segment.data.size();
             }
             memset(vm_start_memory_address + pos, 0, micropython_get_memory_size() - pos);
-        } else if (vm_type == 2) {
+        } else if (vm_type == 0x12) {
             // vm_lua_init_memory(it->module->backup.initial_pages);
             // auto& memory = initial_vm_memory[vm_type];
             // vm_lua_restore_memory(memory->data(), memory->size());
