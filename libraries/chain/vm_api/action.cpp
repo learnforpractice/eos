@@ -39,6 +39,9 @@ bool has_auth( uint64_t account ) {
 }
 
 bool is_account( uint64_t account ) {
+   if (!is_in_apply_context()) {
+      return false;
+   }
    return ctx().is_account(name(account));
 }
 
