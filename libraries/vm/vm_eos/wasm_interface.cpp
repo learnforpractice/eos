@@ -1912,10 +1912,10 @@ using namespace eosio::chain::webassembly::common;
 static wasm_interface *interface = nullptr;
 
 extern "C" {
-    void eos_vm_interface_init() {
+    void eos_vm_interface_init(int vmtype) {
         if (interface == nullptr) {
             eosvmoc::config cfg;
-            interface = new wasm_interface(wasm_interface::vm_type::eos_vm_jit, false, boost::filesystem::path("dd"), cfg);
+            interface = new wasm_interface((wasm_interface::vm_type)vmtype, false, boost::filesystem::path("dd"), cfg);
         }
     }
 

@@ -26,8 +26,7 @@ class Test(object):
         pass
 
     def setup_method(self, method):
-        pass
-        self.chain = ChainTest(network_type=1)
+        self.chain = ChainTest(network_type=1, jit=True)
 
     def teardown_method(self, method):
         pass
@@ -219,15 +218,14 @@ def apply(receiver, code, action):
     ret = chain.call_contract('bob', args)
     print(ret)
     assert not ret
-    while True:
-        pass
 '''
         code = uuos.compile(code)
         self.chain.deploy_python_contract('alice', code, b'')
         try:
             self.chain.push_action('alice', 'sayhello', b'')
+            assert 0
         except Exception as e:
-#            logger.info(e.args[0])
+            # logger.info(e.args[0])
             assert e.args[0]['action_traces'][0]['console'] == "b'\\x00\\x00\\x08\\x19\\xab\\x1c\\xa3A\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\r\n+++++++++++call: args[1]:1\n"
             exception_name = e.args[0]['action_traces'][0]['except']['name']
             assert exception_name == 'tx_cpu_usage_exceeded'
@@ -239,12 +237,15 @@ def apply(receiver, code, action):
 
         code = '''
 def apply(receiver, code, action):
-    print('hello,world')
+    for i in range(10):
+        print('hello,world')
+    while True: pass
 '''
         code = uuos.compile(code)
 #        print(code)
         args = uuosapi.s2b(contract_name) + code
         print(args)
-        self.chain.push_action(contract_name, 'setcode', args, {contract_name:'active'})
-
+        r = self.chain.push_action(contract_name, 'setcode', args, {contract_name:'active'})
+        r = self.chain.push_action(contract_name, 'sayhello', b'')
+        logger.info(r['elapsed'])
         self.chain.produce_block()
