@@ -449,7 +449,7 @@ static void timer_set_expiration_callback(void(*func)(void*), void* user) {
 }
 
 static bool timer_expired() {
-   ctx().trx_context.transaction_timer.expired;
+   return ctx().trx_context.transaction_timer.expired;
 }
 
 extern "C" void chain_api_init() {
