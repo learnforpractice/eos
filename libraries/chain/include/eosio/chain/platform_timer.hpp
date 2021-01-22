@@ -28,10 +28,19 @@ struct platform_timer {
       auto reset_busy = fc::make_scoped_exit([this]() {
          _callback_variables_busy.store(false, std::memory_order_release);
       });
-      EOS_ASSERT(!(func && _expiration_callback), misc_exception, "Setting a platform_timer callback when one already exists");
+//      EOS_ASSERT(!(func && _expiration_callback), misc_exception, "Setting a platform_timer callback when one already exists");
+      // save old callback before setting new callback
+      // restore old callback if func is nullptr
+      if (!func) {
+         _expiration_callback = _old_expiration_callback;
+         _expiration_callback_data = _old_expiration_callback_data;
+      } else {
+         _old_expiration_callback = _expiration_callback;
+         _old_expiration_callback_data = _expiration_callback_data;
 
-      _expiration_callback = func;
-      _expiration_callback_data = user;
+         _expiration_callback = func;
+         _expiration_callback_data = user;
+      }
    }
 
    std::atomic_bool expired = true;
@@ -54,8 +63,13 @@ private:
    }
 
    std::atomic_bool _callback_variables_busy = false;
+
    void(*_expiration_callback)(void*) = nullptr;
-   void* _expiration_callback_data;
+   void* _expiration_callback_data = nullptr;
+
+   void(*_old_expiration_callback)(void*) = nullptr;
+   void* _old_expiration_callback_data = nullptr;
+
 };
 
 }}
