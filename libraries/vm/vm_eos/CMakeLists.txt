@@ -45,7 +45,7 @@ if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
 endif()
 
 if("eos-vm" IN_LIST EOSIO_WASM_RUNTIMES OR "eos-vm-jit" IN_LIST EOSIO_WASM_RUNTIMES)
-   set(CHAIN_EOSVM_SOURCES "webassembly/eos-vm.cpp")
+   set(CHAIN_EOSVM_SOURCES "${CHAIN_DIR}/webassembly/eos-vm.cpp")
    set(CHAIN_EOSVM_LIBRARIES eos-vm)
 endif()
 
@@ -61,7 +61,6 @@ add_library( vm_eos SHARED
 
             ${CHAIN_DIR}/wasm_eosio_validation.cpp
             ${CHAIN_DIR}/wasm_eosio_injection.cpp
-            ${CHAIN_DIR}/snapshot.cpp
 
             ${CHAIN_DIR}/webassembly/wabt.cpp
 
@@ -93,10 +92,6 @@ set_target_properties(vm_eos  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 target_link_libraries( vm_eos fc chainbase Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
                        vm_api chain_api
-                       wasm2c_contracts
-                       native_contracts
-                       ${LIBEVM4EOS}
-                       vm_manager
                        )
 
 target_include_directories( vm_eos
