@@ -25,6 +25,7 @@ from uuos.chainapi import ChainApi
 from uuos import nativeobject
 from uuos import application
 import uuos
+from uuoskit import uuosapi
 
 logger = application.get_logger(__name__)
 
@@ -525,7 +526,12 @@ class ChainTest(object):
         deadline = datetime.utcnow() + timedelta(microseconds=10000000)
         billed_cpu_time_us = 100
         ret, result = self.chain.push_transaction(raw_signed_trx, isoformat(deadline), billed_cpu_time_us)
-        result = json.loads(result)
+        try:
+            result = json.loads(result)
+        except:
+            logger.info('%s %s', ret, result)
+            raise Exception('')
+
         if not ret:
             # logger.info((ret, result))
             # logger.info(result['action_traces'][0]['console'])
@@ -649,6 +655,53 @@ class ChainTest(object):
         # logger.info(ret)
         return ret
 
+    def s2b(self, s):
+        n = uuosapi.s2n(s)
+        return int.to_bytes(n, 8, 'little')
+
+    def deploy_python_contract(self, account, code, abi):
+        actions = []
+        origin_abi = abi
+
+        setcode = {"account": account,
+                "vmtype": 1,
+                "vmversion": 0,
+                "code":b'aa'.hex()
+        }
+        setcode = self.chain.pack_action_args('uuos', 'setcode', setcode)
+        setcode = {
+            'account': 'uuos',
+            'name': 'setcode',
+            'data': setcode.hex(),
+            'authorization':[{'actor': account, 'permission':'active'}]
+        }
+        actions.append(setcode)
+
+        args = self.s2b(account) + code
+        setcode = {
+            'account': account,
+            'name': 'setcode',
+            'data': args.hex(),
+            'authorization':[{'actor': account, 'permission':'active'}]
+        }
+        actions.append(setcode)
+
+        abi = uuosapi.pack_abi(abi)
+        if abi:
+            setabi = self.s2b(account) + abi
+            setabi = {
+                'account': account,
+                'name': 'setabi',
+                'data': setabi.hex(),
+                'authorization':[{'actor': account, 'permission':'active'}]
+            }
+            actions.append(setabi)
+
+        ret = None
+        if actions:
+            ret = self.push_actions(actions)
+        return ret
+
     def update_auth(self, account, accounts, keys, perm='active', parent='owner'):
         a = {
             "account": account,
@@ -685,6 +738,19 @@ class ChainTest(object):
         with open(abi_path, 'rb') as f:
             abi = f.read()
         self.deploy_contract('uuos', code, abi)
+        self.produce_block()
+
+#        code_path = os.path.join(test_dir, '../../../../build/externals/micropython/ports/uuosio/micropython')
+#        code_path = os.path.join(test_dir, '../../../../build/externals/micropython/ports/uuosio/micropython_eosio.wasm')
+        code_path = os.path.join(test_dir, '../../../../build/externals/micropython/ports/uuosio/micropython_uuos.wasm')
+        abi_path = os.path.join(test_dir, '../../../../externals/micropython/ports/uuosio/micropython.abi')
+
+        with open(code_path, 'rb') as f:
+            code = f.read()
+        with open(abi_path, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('uuos.mpy', code, abi)
+        self.produce_block()
 
     def deploy_eosio_system_uuos_test(self):
         code_path = os.path.join(test_dir, '../../../../build/externals/eosio.contracts/contracts/eosio.system/eosio.system.test.wasm')
