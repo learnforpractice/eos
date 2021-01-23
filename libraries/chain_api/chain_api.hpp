@@ -108,6 +108,7 @@ struct chain_api_cpp
    void* (*chain_new)(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
    bool (*chain_startup)(void* ptr, bool initdb);
    void (*chain_free)(void *ptr);
+   void* (*chain_get_database)(void *ptr);
    void (*chain_id)(void *ptr, string& chain_id);
    void (*chain_start_block)(void *ptr, string& _time, uint16_t confirm_block_count, string& _new_features);
    int  (*chain_abort_block)(void *ptr);

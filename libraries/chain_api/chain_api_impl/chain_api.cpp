@@ -453,6 +453,10 @@ static bool timer_expired() {
    return ctx().trx_context.transaction_timer.expired;
 }
 
+static void* chain_get_database_(void *ptr) {
+   return (void *) &ctx().db;
+}
+
 extern "C" void chain_api_init() {
     static bool init = false;
     if (init) {
@@ -501,6 +505,7 @@ extern "C" void chain_api_init() {
       .chain_new = chain_new_,
       .chain_startup = chain_startup_,
       .chain_free = chain_free_,
+      .chain_get_database = chain_get_database_,
       .chain_id = chain_id_,
       .chain_start_block = chain_start_block_,
       .chain_abort_block = chain_abort_block_,
