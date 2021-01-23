@@ -18,6 +18,9 @@
 #include <sys/prctl.h>
 #include <sys/syscall.h>
 
+#include <chain_api.hpp>
+#include <vm_api.h>
+
 #if defined(__has_feature)
 #if __has_feature(shadow_call_stack)
 #error EOS VM OC is not compatible with Clang ShadowCallStack
@@ -180,17 +183,17 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
    cb->running_code_base = (uintptr_t)(code_mapping + code.code_begin);
    cb->is_running = true;
 
-   context.trx_context.transaction_timer.set_expiration_callback([](void* user) {
+   get_chain_api()->timer_set_expiration_callback([](void* user) {
       executor* self = (executor*)user;
       syscall(SYS_mprotect, self->code_mapping, self->code_mapping_size, PROT_NONE);
       self->mapping_is_executable = false;
    }, this);
-   context.trx_context.checktime(); //catch any expiration that might have occurred before setting up callback
+   get_vm_api()->checktime(); //catch any expiration that might have occurred before setting up callback
 
    auto cleanup = fc::make_scoped_exit([cb, &tt=context.trx_context.transaction_timer](){
       cb->is_running = false;
       cb->bounce_buffers->clear();
-      tt.set_expiration_callback(nullptr, nullptr);
+      get_chain_api()->timer_set_expiration_callback(nullptr, nullptr);
    });
 
    void(*apply_func)(uint64_t, uint64_t, uint64_t) = (void(*)(uint64_t, uint64_t, uint64_t))(cb->running_code_base + code.apply_offset);
@@ -212,7 +215,7 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
          break;
       //case 1: clean eosio_exit
       case EOSVMOC_EXIT_CHECKTIME_FAIL:
-         context.trx_context.checktime();
+         get_vm_api()->checktime();
          break;
       case EOSVMOC_EXIT_SEGV:
          EOS_ASSERT(false, wasm_execution_error, "access violation");
