@@ -453,7 +453,7 @@ static bool timer_expired() {
    return ctx().trx_context.transaction_timer.expired;
 }
 
-static void* chain_get_database_(void *ptr) {
+static void* chain_get_database_() {
    return (void *) &ctx().db;
 }
 
