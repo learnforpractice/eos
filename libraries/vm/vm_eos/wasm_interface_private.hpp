@@ -74,14 +74,14 @@ namespace eosio { namespace chain {
          if(vm == wasm_interface::vm_type::eos_vm_jit)
             runtime_interface = std::make_unique<webassembly::eos_vm_runtime::eos_vm_runtime<eosio::vm::jit>>();
 #endif
-#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+#if 0 //def EOSIO_EOS_VM_OC_RUNTIME_ENABLED
          if(vm == wasm_interface::vm_type::eos_vm_oc)
             runtime_interface = std::make_unique<webassembly::eosvmoc::eosvmoc_runtime>(data_dir, eosvmoc_config, d);
 #endif
          if(!runtime_interface)
             EOS_THROW(wasm_exception, "${r} wasm runtime not supported on this platform and/or configuration", ("r", vm));
 
-#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+#if 0 //def EOSIO_EOS_VM_OC_RUNTIME_ENABLED
          if(eosvmoc_tierup) {
             EOS_ASSERT(vm != wasm_interface::vm_type::eos_vm_oc, wasm_exception, "You can't use EOS VM OC as the base runtime when tier up is activated");
             eosvmoc.emplace(data_dir, eosvmoc_config, d);

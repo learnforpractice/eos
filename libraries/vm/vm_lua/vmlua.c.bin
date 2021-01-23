@@ -5,7 +5,6 @@
 #define NAN       (0.0f/0.0f)
 #define INFINITY  1e5000f
 #endif
-
 #include <string.h>
 void vm_checktime(void);
 
@@ -434,7 +433,7 @@ static void _scalbnl(u32, u64, u64, u32);
 static void __floatscan(u32, u32, u32, u32);
 static u64 scanexp(u32, u32);
 static f64 strtod_0(u32, u32);
-static u32 __stpcpy(u32, u32);
+static u32 ___stpcpy(u32, u32);
 static u32 strcpy_0(u32, u32);
 static u32 localeconv(void);
 static u32 _vsnprintf(u32, u32, u32, u32, u32);
@@ -44170,7 +44169,7 @@ static f64 strtod_0(u32 p0, u32 p1) {
   return d0;
 }
 
-static u32 __stpcpy(u32 p0, u32 p1) {
+static u32 ___stpcpy(u32 p0, u32 p1) {
   u32 l0 = 0;
   FUNC_PROLOGUE;
   u32 i0, i1, i2;
@@ -44284,7 +44283,7 @@ static u32 strcpy_0(u32 p0, u32 p1) {
   u32 i0, i1;
   i0 = p0;
   i1 = p1;
-  i0 = __stpcpy(i0, i1);
+  i0 = ___stpcpy(i0, i1);
   i0 = p0;
   FUNC_EPILOGUE;
   return i0;

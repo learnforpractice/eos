@@ -9,7 +9,7 @@ add_library( chain_api_impl
              native_object.cpp
 )
 
-target_link_libraries(chain_api_impl eosio_chain)
+target_link_libraries(chain_api_impl eosio_chain mpy-cross)
 
 target_include_directories(chain_api_impl
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include"

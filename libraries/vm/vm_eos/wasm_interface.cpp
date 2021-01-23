@@ -1585,7 +1585,6 @@ class vm_apis : public context_aware_api {
       }
 };
 
-
 REGISTER_INTRINSICS(vm_apis,
    (token_create,    void(int64_t, int64_t, int64_t)  )
    (token_issue,     void(int64_t, int64_t, int64_t, int, int)           )
@@ -1914,7 +1913,7 @@ static wasm_interface *interface = nullptr;
 extern "C" {
     void eos_vm_interface_init(int vmtype) {
         if (interface == nullptr) {
-            eosvmoc::config cfg;
+            eosio::chain::eosvmoc::config cfg;
             interface = new wasm_interface((wasm_interface::vm_type)vmtype, false, boost::filesystem::path("dd"), cfg);
         }
     }
@@ -1923,3 +1922,12 @@ extern "C" {
         interface->apply(code_hash, vm_type, vm_version, context);
     }
 }
+
+
+#include <boost/test/unit_test_suite.hpp>
+
+::boost::unit_test::test_suite*
+init_unit_test_suite( int, char* [] )   {
+	return 0;
+}
+
