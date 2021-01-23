@@ -8,7 +8,7 @@ file(GLOB HEADERS "${CHAIN_DIR}/include/eosio/chain/*.hpp"
 if(APPLE AND UNIX)
    set(PLATFORM_TIMER_IMPL ${CHAIN_DIR}/platform_timer_macos.cpp)
 else()
-   try_run(POSIX_TIMER_TEST_RUN_RESULT POSIX_TIMER_TEST_COMPILE_RESULT ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/platform_timer_posix_test.c)
+   try_run(POSIX_TIMER_TEST_RUN_RESULT POSIX_TIMER_TEST_COMPILE_RESULT ${CMAKE_CURRENT_BINARY_DIR} ${CHAIN_DIR}/platform_timer_posix_test.c)
    if(POSIX_TIMER_TEST_RUN_RESULT EQUAL 0)
       set(PLATFORM_TIMER_IMPL ${CHAIN_DIR}/platform_timer_posix.cpp)
       set(CHAIN_RT_LINKAGE rt)
