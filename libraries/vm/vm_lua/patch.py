@@ -1,4 +1,3 @@
-
 patch_init = ('''void WASM_RT_ADD_PREFIX(init)(void) {
   init_func_types();
   init_globals();
@@ -67,7 +66,13 @@ header_patch = (
 #include <string.h>
 ''',
 
-'''#include <math.h>
+'''#if 100*__GNUC__+__GNUC_MINOR__ >= 303
+#define NAN       __builtin_nanf("")
+#define INFINITY  __builtin_inff()
+#else
+#define NAN       (0.0f/0.0f)
+#define INFINITY  1e5000f
+#endif
 #include <string.h>
 void vm_checktime(void);
 '''
@@ -95,6 +100,7 @@ with open('vmlua.c.bin', 'r') as f:
     data = data.replace('frexpl', '_frexpl')
     data = data.replace('setjmp', 'setjmp_ex')
     data = data.replace('longjmp', 'longjmp_ex')
+    data = data.replace('__stpcpy', '___stpcpy')
 
     origin, patch = patch_set_jmp1
     data = patch_micropython(data, origin, patch)

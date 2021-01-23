@@ -1,5 +1,5 @@
 CODEABI_1.0 {
-    global: micropython_init;micropython_get_memory;micropython_get_memory_size;micropython_backup_memory;micropython_restore_memory;micropython_contract_init;micropython_contract_apply;micropython_init_memory;micropython_load_frozen_code;micropython_validate_frozen_code;micropython_compile_src;micropython_eosio_apply
+    global: micropython_init;micropython_get_memory;micropython_get_memory_size;micropython_backup_memory;micropython_restore_memory;micropython_contract_init;micropython_contract_apply;micropython_init_memory;micropython_load_frozen_code;micropython_validate_frozen_code;micropython_compile_src;micropython_eosio_apply;
     local: *;
 };
 
