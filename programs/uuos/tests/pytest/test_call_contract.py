@@ -24,7 +24,7 @@ class Test(object):
 
     @classmethod
     def teardown_class(cls):
-        self.chain.free()
+        cls.chain.free()
 
     def setup_method(self, method):
         pass

@@ -18,7 +18,7 @@ public:
 #endif
 
     virtual void* get_eos_vm_interface();
-    virtual void eos_vm_interface_apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, eosio::chain::apply_context& context);
+    virtual void eos_vm_interface_apply(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context);
 
 public:
     controller::config conf;

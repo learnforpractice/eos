@@ -3,6 +3,7 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
 #include <eosio/chain/wasm_interface.hpp>
+#include <eosio/chain/chain_api.hpp>
 
 //eos-vm includes
 #include <eosio/vm/backend.hpp>

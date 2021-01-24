@@ -2,7 +2,7 @@
 #include <eosio/chain/chain_api.hpp>
 
 extern "C" void* eos_vm_interface_init(int type, eosio::chain::chain_api& api);
-extern "C" void eos_vm_interface_apply(void* interface, const eosio::chain::digest_type code_hash, const uint8_t vm_type, const uint8_t& vm_version, eosio::chain::apply_context& context);
+extern "C" void eos_vm_interface_apply(void* interface, const eosio::chain::digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context);
 
 namespace eosio { namespace chain {
 
@@ -36,7 +36,7 @@ void* chain_api::get_eos_vm_interface() {
     return this->eos_vm_interface;
 }
 
-void chain_api::eos_vm_interface_apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, eosio::chain::apply_context& context) {
+void chain_api::eos_vm_interface_apply(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context) {
     ::eos_vm_interface_apply(this->eos_vm_interface, code_hash, vm_type, vm_version, context);
 }
 

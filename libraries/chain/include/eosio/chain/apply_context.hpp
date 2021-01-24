@@ -15,6 +15,7 @@ namespace eosio { namespace chain {
 
 class controller;
 class transaction_context;
+class chain_api;
 
 class apply_context {
    private:
