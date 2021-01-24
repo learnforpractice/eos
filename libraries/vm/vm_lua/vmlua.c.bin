@@ -779,8 +779,8 @@ static u32 g2;
 
 static void init_globals(void) {
   g0 = 5120u;
-  g1 = 18576u;
-  g2 = 18576u;
+  g1 = 18592u;
+  g2 = 18592u;
 }
 
 static wasm_rt_memory_t M0;
@@ -1177,7 +1177,7 @@ static void lua_rotate(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p0 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p0;
   i3 = l1;
   i2 = i2 < i3;
@@ -1208,7 +1208,7 @@ static void lua_rotate(u32 p0, u32 p1, u32 p2) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l3;
   i0 = i32_load((&M0), (u64)(i0));
@@ -1217,7 +1217,7 @@ static void lua_rotate(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l3;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -1453,7 +1453,7 @@ static void lua_copy(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -1494,7 +1494,7 @@ static void lua_copy(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B5;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -1503,7 +1503,7 @@ static void lua_copy(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l2;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -1538,7 +1538,7 @@ static void lua_copy(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -1584,7 +1584,7 @@ static void lua_copy(u32 p0, u32 p1, u32 p2) {
   i64_store((&M0), (u64)(i0), j1);
   goto Bfunc;
   B0:;
-  i0 = 13680u;
+  i0 = 14944u;
   p1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -1593,7 +1593,7 @@ static void lua_copy(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B9;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p1 = i1;
@@ -1681,7 +1681,7 @@ static void lua_pushvalue(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = l1;
   i2 = i2 < i3;
@@ -1712,7 +1712,7 @@ static void lua_pushvalue(u32 p0, u32 p1) {
   l2 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l2 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -1721,7 +1721,7 @@ static void lua_pushvalue(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l2 = i1;
@@ -1788,7 +1788,7 @@ static u32 lua_type(u32 p0, u32 p1) {
   i0 = i0 >= i1;
   if (i0) {goto B0;}
   i0 = p1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 == i1;
   if (i0) {goto B2;}
   goto B1;
@@ -1806,7 +1806,7 @@ static u32 lua_type(u32 p0, u32 p1) {
   i1 = 40u;
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   goto B2;
@@ -1818,7 +1818,7 @@ static u32 lua_type(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   goto B2;
@@ -1848,7 +1848,7 @@ static u32 lua_type(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   B2:;
@@ -1873,7 +1873,7 @@ static u32 lua_typename(u32 p0, u32 p1) {
   i0 = p1;
   i1 = 2u;
   i0 <<= (i1 & 31);
-  i1 = 14100u;
+  i1 = 10116u;
   i0 += i1;
   i0 = i32_load((&M0), (u64)(i0));
   FUNC_EPILOGUE;
@@ -1898,7 +1898,7 @@ static u32 lua_iscfunction(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -1931,7 +1931,7 @@ static u32 lua_iscfunction(u32 p0, u32 p1) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -1940,7 +1940,7 @@ static u32 lua_iscfunction(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -1989,7 +1989,7 @@ static u32 lua_isinteger(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2026,7 +2026,7 @@ static u32 lua_isinteger(u32 p0, u32 p1) {
   p0 = i0;
   goto B1;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2035,7 +2035,7 @@ static u32 lua_isinteger(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B1;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -2089,7 +2089,7 @@ static u32 lua_isnumber(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2130,7 +2130,7 @@ static u32 lua_isnumber(u32 p0, u32 p1) {
   p0 = i0;
   goto B3;
   B4:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2139,7 +2139,7 @@ static u32 lua_isnumber(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B3;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -2213,7 +2213,7 @@ static u32 lua_isstring(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2246,7 +2246,7 @@ static u32 lua_isstring(u32 p0, u32 p1) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2255,7 +2255,7 @@ static u32 lua_isstring(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -2303,7 +2303,7 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2344,7 +2344,7 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B5;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2353,7 +2353,7 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l2;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -2388,19 +2388,19 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
   i2 = i2 < i3;
   i0 = i2 ? i0 : i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   p0 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
   goto B1;
@@ -2418,12 +2418,12 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i1 = 40u;
   i0 += i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   p0 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   goto B0;
@@ -2435,12 +2435,12 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   p0 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   goto B0;
@@ -2454,7 +2454,7 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = p1;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -2471,12 +2471,12 @@ static u32 lua_rawequal(u32 p0, u32 p1, u32 p2) {
   i2 = (u32)((s32)i2 > (s32)i3);
   i0 = i2 ? i0 : i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   p0 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
   B1:;
@@ -2513,7 +2513,7 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2554,7 +2554,7 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   l1 = i0;
   goto B5;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2563,7 +2563,7 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l2;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -2598,19 +2598,19 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
   i2 = i2 < i3;
   i0 = i2 ? i0 : i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   l2 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
   goto B1;
@@ -2628,12 +2628,12 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 = 40u;
   i0 += i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   l2 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   goto B0;
@@ -2645,12 +2645,12 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   l2 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   goto B0;
@@ -2664,7 +2664,7 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = p1;
   i1 = i32_load((&M0), (u64)(i1));
   p1 = i1;
@@ -2681,12 +2681,12 @@ static u32 lua_compare(u32 p0, u32 p1, u32 p2, u32 p3) {
   i2 = (u32)((s32)i2 > (s32)i3);
   i0 = i2 ? i0 : i1;
   p1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   p2 = i0;
   i0 = 0u;
   l2 = i0;
   i0 = l1;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
   B1:;
@@ -2779,7 +2779,7 @@ static f64 lua_tonumberx(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2820,7 +2820,7 @@ static f64 lua_tonumberx(u32 p0, u32 p1, u32 p2) {
   p0 = i0;
   goto B5;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2829,7 +2829,7 @@ static f64 lua_tonumberx(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -2926,7 +2926,7 @@ static u64 lua_tointegerx(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -2967,7 +2967,7 @@ static u64 lua_tointegerx(u32 p0, u32 p1, u32 p2) {
   p0 = i0;
   goto B5;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -2976,7 +2976,7 @@ static u64 lua_tointegerx(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -3067,7 +3067,7 @@ static u32 lua_toboolean(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3106,7 +3106,7 @@ static u32 lua_toboolean(u32 p0, u32 p1) {
   l1 = i0;
   goto B3;
   B4:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3115,7 +3115,7 @@ static u32 lua_toboolean(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B3;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = p0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -3182,7 +3182,7 @@ static u32 lua_tolstring(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   l1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = l1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3215,7 +3215,7 @@ static u32 lua_tolstring(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3224,7 +3224,7 @@ static u32 lua_tolstring(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -3293,7 +3293,7 @@ static u32 lua_tolstring(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3334,7 +3334,7 @@ static u32 lua_tolstring(u32 p0, u32 p1, u32 p2) {
   if (i0) {goto B6;}
   goto B5;
   B11:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3343,7 +3343,7 @@ static u32 lua_tolstring(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B7;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = p0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -3415,7 +3415,7 @@ static u32 lua_rawlen(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3448,7 +3448,7 @@ static u32 lua_rawlen(u32 p0, u32 p1) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3457,7 +3457,7 @@ static u32 lua_rawlen(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -3553,7 +3553,7 @@ static u32 lua_touserdata(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3586,7 +3586,7 @@ static u32 lua_touserdata(u32 p0, u32 p1) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3595,7 +3595,7 @@ static u32 lua_touserdata(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -3661,7 +3661,7 @@ static u32 lua_tothread(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3694,7 +3694,7 @@ static u32 lua_tothread(u32 p0, u32 p1) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3703,7 +3703,7 @@ static u32 lua_tothread(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -3755,7 +3755,7 @@ static u32 lua_topointer(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -3788,7 +3788,7 @@ static u32 lua_topointer(u32 p0, u32 p1) {
   p0 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -3797,7 +3797,7 @@ static u32 lua_topointer(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -4395,7 +4395,7 @@ static u32 lua_gettable(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -4436,7 +4436,7 @@ static u32 lua_gettable(u32 p0, u32 p1) {
   l1 = i0;
   goto B5;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -4445,7 +4445,7 @@ static u32 lua_gettable(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B5;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -4557,7 +4557,7 @@ static u32 lua_getfield(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -4590,7 +4590,7 @@ static u32 lua_getfield(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -4599,7 +4599,7 @@ static u32 lua_getfield(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -4716,7 +4716,7 @@ static u32 lua_geti(u32 p0, u32 p1, u64 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -4749,7 +4749,7 @@ static u32 lua_geti(u32 p0, u32 p1, u64 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -4758,7 +4758,7 @@ static u32 lua_geti(u32 p0, u32 p1, u64 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -4868,7 +4868,7 @@ static u32 lua_rawget(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -4901,7 +4901,7 @@ static u32 lua_rawget(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -4910,7 +4910,7 @@ static u32 lua_rawget(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -4979,7 +4979,7 @@ static u32 lua_rawgeti(u32 p0, u32 p1, u64 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -5012,7 +5012,7 @@ static u32 lua_rawgeti(u32 p0, u32 p1, u64 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5021,7 +5021,7 @@ static u32 lua_rawgeti(u32 p0, u32 p1, u64 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -5096,7 +5096,7 @@ static u32 lua_rawgetp(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -5129,7 +5129,7 @@ static u32 lua_rawgetp(u32 p0, u32 p1, u32 p2) {
   l2 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l2 = i0;
   i0 = l1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5138,7 +5138,7 @@ static u32 lua_rawgetp(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   l2 = i1;
@@ -5267,7 +5267,7 @@ static u32 lua_getmetatable(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -5300,7 +5300,7 @@ static u32 lua_getmetatable(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5309,7 +5309,7 @@ static u32 lua_getmetatable(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -5415,7 +5415,7 @@ static u32 lua_getuservalue(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -5448,7 +5448,7 @@ static u32 lua_getuservalue(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5457,7 +5457,7 @@ static u32 lua_getuservalue(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -5662,7 +5662,7 @@ static void lua_setfield(u32 p0, u32 p1, u32 p2) {
   i2 <<= (i3 & 31);
   i1 += i2;
   p1 = i1;
-  i2 = 13680u;
+  i2 = 14944u;
   i3 = p1;
   i4 = p0;
   i4 = i32_load((&M0), (u64)(i4 + 12));
@@ -5700,7 +5700,7 @@ static void lua_setfield(u32 p0, u32 p1, u32 p2) {
   auxsetstr(i0, i1, i2);
   goto Bfunc;
   B1:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5709,7 +5709,7 @@ static void lua_setfield(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B3;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l0 = i1;
@@ -5754,7 +5754,7 @@ static void lua_seti(u32 p0, u32 p1, u64 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -5787,7 +5787,7 @@ static void lua_seti(u32 p0, u32 p1, u64 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5796,7 +5796,7 @@ static void lua_seti(u32 p0, u32 p1, u64 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -5947,7 +5947,7 @@ static void lua_rawset(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   l1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = l1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -5980,7 +5980,7 @@ static void lua_rawset(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -5989,7 +5989,7 @@ static void lua_rawset(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -6105,7 +6105,7 @@ static void lua_rawsetp(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -6138,7 +6138,7 @@ static void lua_rawsetp(u32 p0, u32 p1, u32 p2) {
   l2 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l2 = i0;
   i0 = l1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -6147,7 +6147,7 @@ static void lua_rawsetp(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   l2 = i1;
@@ -6260,7 +6260,7 @@ static u32 lua_setmetatable(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -6293,7 +6293,7 @@ static u32 lua_setmetatable(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -6302,7 +6302,7 @@ static u32 lua_setmetatable(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -6467,7 +6467,7 @@ static void lua_setuservalue(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -6500,7 +6500,7 @@ static void lua_setuservalue(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -6509,7 +6509,7 @@ static void lua_setuservalue(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -6686,7 +6686,7 @@ static u32 lua_pcallk(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4, u32 p5) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p3 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p3;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -6723,7 +6723,7 @@ static u32 lua_pcallk(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4, u32 p5) {
   l2 = i0;
   goto B1;
   B4:;
-  i0 = 13680u;
+  i0 = 14944u;
   l2 = i0;
   i0 = l1;
   i0 = i32_load((&M0), (u64)(i0));
@@ -6732,7 +6732,7 @@ static u32 lua_pcallk(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4, u32 p5) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B1;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   l2 = i1;
@@ -7216,7 +7216,7 @@ static u32 lua_next(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -7249,7 +7249,7 @@ static u32 lua_next(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -7258,7 +7258,7 @@ static u32 lua_next(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -7366,7 +7366,7 @@ static void lua_len(u32 p0, u32 p1) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -7399,7 +7399,7 @@ static void lua_len(u32 p0, u32 p1) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -7408,7 +7408,7 @@ static void lua_len(u32 p0, u32 p1) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -7520,7 +7520,7 @@ static u32 lua_getupvalue(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -7553,7 +7553,7 @@ static u32 lua_getupvalue(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -7562,7 +7562,7 @@ static u32 lua_getupvalue(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -7701,7 +7701,7 @@ static u32 lua_setupvalue(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -7734,7 +7734,7 @@ static u32 lua_setupvalue(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -7743,7 +7743,7 @@ static u32 lua_setupvalue(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -7941,7 +7941,7 @@ static u32 lua_upvalueid(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   l1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = l1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -7974,7 +7974,7 @@ static u32 lua_upvalueid(u32 p0, u32 p1, u32 p2) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -7983,7 +7983,7 @@ static u32 lua_upvalueid(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l2;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -8026,7 +8026,7 @@ static u32 lua_upvalueid(u32 p0, u32 p1, u32 p2) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -8070,7 +8070,7 @@ static u32 lua_upvalueid(u32 p0, u32 p1, u32 p2) {
   p0 = i0;
   goto B4;
   B8:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -8079,7 +8079,7 @@ static u32 lua_upvalueid(u32 p0, u32 p1, u32 p2) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B4;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l1;
   i1 = i32_load((&M0), (u64)(i1));
   p0 = i1;
@@ -8129,7 +8129,7 @@ static void lua_upvaluejoin(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p1 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p1;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -8162,7 +8162,7 @@ static void lua_upvaluejoin(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   l1 = i0;
   goto B0;
   B2:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -8171,7 +8171,7 @@ static void lua_upvaluejoin(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l2;
   i1 = i32_load((&M0), (u64)(i1));
   l1 = i1;
@@ -8209,7 +8209,7 @@ static void lua_upvaluejoin(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i1 <<= (i2 & 31);
   i0 += i1;
   p3 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i2 = p3;
   i3 = p0;
   i3 = i32_load((&M0), (u64)(i3 + 12));
@@ -8242,7 +8242,7 @@ static void lua_upvaluejoin(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   l1 = i0;
   goto B4;
   B6:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = l0;
   i0 = i32_load((&M0), (u64)(i0));
@@ -8251,7 +8251,7 @@ static void lua_upvaluejoin(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i1 = 22u;
   i0 = i0 == i1;
   if (i0) {goto B4;}
-  i0 = 13680u;
+  i0 = 14944u;
   i1 = l0;
   i1 = i32_load((&M0), (u64)(i1));
   l0 = i1;
@@ -8500,7 +8500,7 @@ static u32 luaK_code(u32 p0, u32 p1) {
     l6 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -9172,7 +9172,7 @@ static void luaK_patchlist(u32 p0, u32 p1, u32 p2) {
     l0 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -10268,7 +10268,7 @@ static void exp2reg(u32 p0, u32 p1, u32 p2) {
     l4 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -10336,7 +10336,7 @@ static void exp2reg(u32 p0, u32 p1, u32 p2) {
     l2 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -10612,7 +10612,7 @@ static void exp2reg(u32 p0, u32 p1, u32 p2) {
     l1 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -10731,7 +10731,7 @@ static void exp2reg(u32 p0, u32 p1, u32 p2) {
     l1 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -10867,7 +10867,7 @@ static void exp2reg(u32 p0, u32 p1, u32 p2) {
     l1 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -10986,7 +10986,7 @@ static void exp2reg(u32 p0, u32 p1, u32 p2) {
     l1 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -12131,7 +12131,7 @@ static void luaK_goiftrue(u32 p0, u32 p1) {
   l1 = i0;
   i1 = 63u;
   i0 &= i1;
-  i1 = 13952u;
+  i1 = 15216u;
   i0 += i1;
   i0 = i32_load8_s((&M0), (u64)(i0));
   i1 = 0u;
@@ -13388,7 +13388,7 @@ static void luaK_prefix(u32 p0, u32 p1, u32 p2, u32 p3) {
   p1 = i0;
   i1 = 63u;
   i0 &= i1;
-  i1 = 13952u;
+  i1 = 15216u;
   i0 += i1;
   i0 = i32_load8_s((&M0), (u64)(i0));
   i1 = 0u;
@@ -13534,7 +13534,7 @@ static void luaK_prefix(u32 p0, u32 p1, u32 p2, u32 p3) {
     l0 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -13622,7 +13622,7 @@ static void luaK_prefix(u32 p0, u32 p1, u32 p2, u32 p3) {
     l0 = i0;
     i1 = 63u;
     i0 &= i1;
-    i1 = 13952u;
+    i1 = 15216u;
     i0 += i1;
     i0 = i32_load8_s((&M0), (u64)(i0));
     i1 = 0u;
@@ -16977,7 +16977,7 @@ static u32 getobjname(u32 p0, u32 p1, u32 p2, u32 p3) {
       i0 = i0 != i1;
       if (i0) {goto B7;}
       i0 = l8;
-      i1 = 13952u;
+      i1 = 15216u;
       i0 += i1;
       i0 = i32_load8_u((&M0), (u64)(i0));
       i1 = 64u;
@@ -18991,7 +18991,7 @@ static u32 luaD_poscall(u32 p0, u32 p1, u32 p2, u32 p3) {
   B5:;
   i0 = l3;
   i1 = p2;
-  i2 = 13680u;
+  i2 = 14944u;
   i3 = p3;
   i1 = i3 ? i1 : i2;
   p2 = i1;
@@ -28542,7 +28542,7 @@ static void lexerror(u32 p0, u32 p1, u32 p2) {
   i0 = i0 < i1;
   if (i0) {goto B3;}
   i0 = p0;
-  i1 = 11135u;
+  i1 = 12387u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
@@ -28655,7 +28655,7 @@ static void lexerror(u32 p0, u32 p1, u32 p2) {
   i1 = p1;
   i32_store((&M0), (u64)(i0), i1);
   i0 = l1;
-  i1 = 11104u;
+  i1 = 12356u;
   i2 = l0;
   i0 = luaO_pushfstring(i0, i1, i2);
   B0:;
@@ -30045,7 +30045,7 @@ static u32 llex(u32 p0, u32 p1) {
     i0 = i0 == i1;
     if (i0) {goto B6;}
     i0 = p0;
-    i1 = 11231u;
+    i1 = 12483u;
     i2 = 293u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
@@ -30279,25 +30279,25 @@ static u32 llex(u32 p0, u32 p1) {
       goto B140;
       B145:;
       i0 = p0;
-      i1 = 11669u;
+      i1 = 12921u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B144:;
       i0 = p0;
-      i1 = 11669u;
+      i1 = 12921u;
       i2 = 289u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B143:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B142:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31586,19 +31586,19 @@ static u32 llex(u32 p0, u32 p1) {
         goto B88;
       B182:;
       i0 = p0;
-      i1 = 11312u;
+      i1 = 12564u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B118:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B117:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31625,7 +31625,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B197;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31707,7 +31707,7 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B195:;
       i0 = p0;
-      i1 = 11771u;
+      i1 = 13023u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31734,7 +31734,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B203;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31816,7 +31816,7 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B201:;
       i0 = p0;
-      i1 = 12179u;
+      i1 = 13431u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31843,7 +31843,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B209;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31925,7 +31925,7 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B207:;
       i0 = p0;
-      i1 = 12082u;
+      i1 = 13334u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -31952,7 +31952,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B215;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32034,13 +32034,13 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B213:;
       i0 = p0;
-      i1 = 11851u;
+      i1 = 13103u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B112:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32067,7 +32067,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B221;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32149,25 +32149,25 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B219:;
       i0 = p0;
-      i1 = 11943u;
+      i1 = 13195u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B110:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B109:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B108:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32196,7 +32196,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B227;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32278,7 +32278,7 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B225:;
       i0 = p0;
-      i1 = 12014u;
+      i1 = 13266u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32476,13 +32476,13 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B98;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
       B102:;
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32509,7 +32509,7 @@ static u32 llex(u32 p0, u32 p1) {
       i0 = i0 < i1;
       if (i0) {goto B95;}
       i0 = p0;
-      i1 = 11135u;
+      i1 = 12387u;
       i2 = 0u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32596,7 +32596,7 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B96:;
       i0 = p0;
-      i1 = 11851u;
+      i1 = 13103u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32673,7 +32673,7 @@ static u32 llex(u32 p0, u32 p1) {
       i32_store((&M0), (u64)(i0), i1);
       B93:;
       i0 = p0;
-      i1 = 11851u;
+      i1 = 13103u;
       i2 = 293u;
       lexerror(i0, i1, i2);
       UNREACHABLE;
@@ -32984,19 +32984,19 @@ static u32 llex(u32 p0, u32 p1) {
     goto Bfunc;
     B36:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B35:;
     i0 = p0;
-    i1 = 11312u;
+    i1 = 12564u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B34:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
@@ -33110,19 +33110,19 @@ static u32 llex(u32 p0, u32 p1) {
       goto L251;
     B28:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B27:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B26:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
@@ -33496,7 +33496,7 @@ static u32 llex(u32 p0, u32 p1) {
     i0 = i0 != i1;
     if (i0) {goto L0;}
   i0 = p0;
-  i1 = 11312u;
+  i1 = 12564u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
@@ -33744,13 +33744,13 @@ static u32 skip_sep(u32 p0) {
   goto Bfunc;
   B5:;
   i0 = p0;
-  i1 = 11135u;
+  i1 = 12387u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
   B0:;
   i0 = p0;
-  i1 = 11135u;
+  i1 = 12387u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
@@ -33877,7 +33877,7 @@ static void read_long_string(u32 p0, u32 p1, u32 p2) {
   goto B2;
   B4:;
   i0 = p0;
-  i1 = 11135u;
+  i1 = 12387u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
@@ -34472,14 +34472,14 @@ static void read_long_string(u32 p0, u32 p1, u32 p2) {
     i1 = l2;
     i32_store((&M0), (u64)(i0 + 4), i1);
     i0 = l0;
-    i1 = 11379u;
-    i2 = 11462u;
+    i1 = 12631u;
+    i2 = 12714u;
     i3 = p1;
     i1 = i3 ? i1 : i2;
     i32_store((&M0), (u64)(i0), i1);
     i0 = p0;
     i1 = l3;
-    i2 = 11542u;
+    i2 = 12794u;
     i3 = l0;
     i1 = luaO_pushfstring(i1, i2, i3);
     i2 = 289u;
@@ -34487,19 +34487,19 @@ static void read_long_string(u32 p0, u32 p1, u32 p2) {
     UNREACHABLE;
     B21:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B20:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B19:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
@@ -34577,13 +34577,13 @@ static void read_long_string(u32 p0, u32 p1, u32 p2) {
     goto L14;
     B44:;
   i0 = p0;
-  i1 = 11312u;
+  i1 = 12564u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
   B0:;
   i0 = p0;
-  i1 = 11312u;
+  i1 = 12564u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
@@ -34696,7 +34696,7 @@ static u32 read_numeral(u32 p0, u32 p1) {
   i0 = p0;
   i1 = l2;
   i32_store((&M0), (u64)(i0), i1);
-  i0 = 12245u;
+  i0 = 13497u;
   l6 = i0;
   i0 = l1;
   i1 = 48u;
@@ -34803,7 +34803,7 @@ static u32 read_numeral(u32 p0, u32 p1) {
   i0 = p0;
   i1 = l2;
   i32_store((&M0), (u64)(i0), i1);
-  i0 = 12283u;
+  i0 = 13535u;
   l6 = i0;
   B9:;
   i0 = p0;
@@ -34826,13 +34826,13 @@ static u32 read_numeral(u32 p0, u32 p1) {
   goto B1;
   B4:;
   i0 = p0;
-  i1 = 11135u;
+  i1 = 12387u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
   B3:;
   i0 = p0;
-  i1 = 11135u;
+  i1 = 12387u;
   i2 = 0u;
   lexerror(i0, i1, i2);
   UNREACHABLE;
@@ -35510,37 +35510,37 @@ static u32 read_numeral(u32 p0, u32 p1) {
     goto Bfunc;
     B55:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B54:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B53:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B52:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B51:;
     i0 = p0;
-    i1 = 12326u;
+    i1 = 13578u;
     i2 = 290u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
     B50:;
     i0 = p0;
-    i1 = 11135u;
+    i1 = 12387u;
     i2 = 0u;
     lexerror(i0, i1, i2);
     UNREACHABLE;
@@ -37654,7 +37654,7 @@ static f64 pow_0(f64 p0, f64 p1) {
   i1 = 3u;
   i0 <<= (i1 & 31);
   l4 = i0;
-  i1 = 12400u;
+  i1 = 13664u;
   i0 += i1;
   d0 = f64_load((&M0), (u64)(i0));
   l12 = d0;
@@ -37670,7 +37670,7 @@ static f64 pow_0(f64 p0, f64 p1) {
   d1 = f64_reinterpret_i64(j1);
   l13 = d1;
   i2 = l4;
-  i3 = 12368u;
+  i3 = 13632u;
   i2 += i3;
   d2 = f64_load((&M0), (u64)(i2));
   l14 = d2;
@@ -37792,7 +37792,7 @@ static f64 pow_0(f64 p0, f64 p1) {
   d1 = (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(d1, d2);
   l13 = d1;
   i2 = l4;
-  i3 = 12384u;
+  i3 = 13648u;
   i2 += i3;
   d2 = f64_load((&M0), (u64)(i2));
   d3 = l0;
@@ -38628,7 +38628,7 @@ static u32 __shgetc(u32 p0) {
 static u32 __errno_location(void) {
   FUNC_PROLOGUE;
   u32 i0;
-  i0 = 12416u;
+  i0 = 13680u;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -39312,12 +39312,12 @@ static void __floatscan(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 = 2u;
   i0 <<= (i1 & 31);
   l4 = i0;
-  i1 = 13532u;
+  i1 = 14796u;
   i0 += i1;
   i0 = i32_load((&M0), (u64)(i0));
   l5 = i0;
   i0 = l4;
-  i1 = 13520u;
+  i1 = 14784u;
   i0 += i1;
   i0 = i32_load((&M0), (u64)(i0));
   l6 = i0;
@@ -40586,7 +40586,7 @@ static void __floatscan(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 -= i2;
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 13488u;
+  i2 = 14752u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   (*Z_envZ___floatsitfZ_vii)(i0, i1);
@@ -40697,7 +40697,7 @@ static void __floatscan(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 -= i2;
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 13488u;
+  i2 = 14752u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   l13 = i1;
@@ -40996,7 +40996,7 @@ static void __floatscan(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 = l9;
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 13448u;
+  i2 = 14712u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   (*Z_envZ___floatsitfZ_vii)(i0, i1);
@@ -44292,7 +44292,7 @@ static u32 strcpy_0(u32 p0, u32 p1) {
 static u32 localeconv(void) {
   FUNC_PROLOGUE;
   u32 i0;
-  i0 = 13544u;
+  i0 = 14808u;
   FUNC_EPILOGUE;
   return i0;
 }
@@ -45713,7 +45713,7 @@ static u32 _vsnprintf(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = p0;
     i2 = 3u;
     i1 <<= (i2 & 31);
-    i2 = 13600u;
+    i2 = 14864u;
     i1 += i2;
     d1 = f64_load((&M0), (u64)(i1));
     l19 = d1;
@@ -47386,7 +47386,7 @@ static u32 luaO_ceillog2(u32 p0) {
   B0:;
   i0 = l0;
   i1 = l2;
-  i2 = 13696u;
+  i2 = 14960u;
   i1 += i2;
   i1 = i32_load8_u((&M0), (u64)(i1));
   i0 += i1;
@@ -51434,7 +51434,7 @@ static void statement(u32 p0) {
   i1 += i2;
   i32_store((&M0), (u64)(i0 + 80), i1);
   i0 = p0;
-  i1 = 10104u;
+  i1 = 11356u;
   i2 = l0;
   i3 = 80u;
   i2 += i3;
@@ -51716,7 +51716,7 @@ static void statement(u32 p0) {
   UNREACHABLE;
   B15:;
   i0 = p0;
-  i1 = 10246u;
+  i1 = 11498u;
   luaX_syntaxerror(i0, i1);
   UNREACHABLE;
   B14:;
@@ -53619,7 +53619,7 @@ static void assignment(u32 p0, u32 p1, u32 p2) {
   goto Bfunc;
   B2:;
   i0 = p0;
-  i1 = 10246u;
+  i1 = 11498u;
   luaX_syntaxerror(i0, i1);
   UNREACHABLE;
   B1:;
@@ -55483,7 +55483,7 @@ static u32 subexpr(u32 p0, u32 p1, u32 p2) {
     i1 = 1u;
     i0 <<= (i1 & 31);
     l3 = i0;
-    i1 = 14000u;
+    i1 = 15264u;
     i0 += i1;
     i0 = i32_load8_u((&M0), (u64)(i0));
     i1 = p2;
@@ -55504,7 +55504,7 @@ static u32 subexpr(u32 p0, u32 p1, u32 p2) {
     i2 = 8u;
     i1 += i2;
     i2 = l3;
-    i3 = 14001u;
+    i3 = 15265u;
     i2 += i3;
     i2 = i32_load8_u((&M0), (u64)(i2));
     i0 = subexpr(i0, i1, i2);
@@ -57760,7 +57760,7 @@ static u32 lua_newstate(u32 p0, u32 p1) {
   i2 = 4u;
   i0 = (*Z_envZ_memcpyZ_iiii)(i0, i1, i2);
   i0 = l0;
-  i1 = 13680u;
+  i1 = 14944u;
   i32_store((&M0), (u64)(i0 + 8), i1);
   i0 = l0;
   i1 = 16u;
@@ -59653,11 +59653,11 @@ static u32 luaS_newudata(u32 p0, u32 p1) {
   i32_store((&M0), (u64)(i0 + 8), i1);
   i0 = p0;
   i1 = 0u;
-  j1 = i64_load((&M0), (u64)(i1 + 13680));
+  j1 = i64_load((&M0), (u64)(i1 + 14944));
   i64_store((&M0), (u64)(i0 + 16), j1);
   i0 = p0;
   i1 = 0u;
-  i1 = i32_load((&M0), (u64)(i1 + 13688));
+  i1 = i32_load((&M0), (u64)(i1 + 14952));
   i32_store8((&M0), (u64)(i0 + 6), i1);
   i0 = p0;
   i1 = 12u;
@@ -60551,7 +60551,7 @@ static void luaH_resize(u32 p0, u32 p1, u32 p2, u32 p3) {
       goto B14;
     B15:;
     i0 = l6;
-    i1 = 13680u;
+    i1 = 14944u;
     i0 = i0 != i1;
     if (i0) {goto B13;}
     B14:;
@@ -60651,7 +60651,7 @@ static void luaH_resize(u32 p0, u32 p1, u32 p2, u32 p3) {
     p2 = i1;
     i0 = luaH_get(i0, i1);
     l7 = i0;
-    i1 = 13680u;
+    i1 = 14944u;
     i0 = i0 != i1;
     if (i0) {goto B20;}
     i0 = p0;
@@ -60792,7 +60792,7 @@ static void setnodevector(u32 p0, u32 p1, u32 p2) {
   i1 = 0u;
   i32_store8((&M0), (u64)(i0 + 7), i1);
   i0 = p1;
-  i1 = 14048u;
+  i1 = 15312u;
   i32_store((&M0), (u64)(i0 + 16), i1);
   i0 = p1;
   i1 = 0u;
@@ -61381,7 +61381,7 @@ static u32 luaH_newkey(u32 p0, u32 p1, u32 p2) {
   i1 = p2;
   i0 = luaH_get(i0, i1);
   l2 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B1;}
   i0 = p0;
@@ -61490,7 +61490,7 @@ static u32 luaH_get(u32 p0, u32 p1) {
   i0 -= i1;
   l0 = i0;
   g0 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   i0 = p1;
   i0 = i32_load((&M0), (u64)(i0 + 8));
@@ -61752,7 +61752,7 @@ static u32 luaH_get(u32 p0, u32 p1) {
     l1 = i0;
     i0 = p0;
     if (i0) {goto L15;}
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
   B1:;
   i0 = l0;
@@ -61845,7 +61845,7 @@ static void luaH_setint(u32 p0, u32 p1, u64 p2, u32 p3) {
     goto B1;
   B2:;
   i0 = l2;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B0;}
   B1:;
@@ -61888,7 +61888,7 @@ static u32 luaH_set(u32 p0, u32 p1, u32 p2) {
   i1 = p2;
   i0 = luaH_get(i0, i1);
   l0 = i0;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = l0;
@@ -61941,7 +61941,7 @@ static u32 luaH_new(u32 p0) {
   j1 = 0ull;
   i64_store((&M0), (u64)(i0 + 8), j1);
   i0 = p0;
-  i1 = 14048u;
+  i1 = 15312u;
   i32_store((&M0), (u64)(i0 + 16), i1);
   i0 = p0;
   i1 = 255u;
@@ -62054,7 +62054,7 @@ static u32 luaH_getint(u32 p0, u64 p1) {
     p0 = i0;
     i0 = l1;
     if (i0) {goto L2;}
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   B1:;
   i0 = p0;
@@ -62108,7 +62108,7 @@ static u32 luaH_getshortstr(u32 p0, u32 p1) {
     p0 = i0;
     i0 = l0;
     if (i0) {goto L1;}
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   B0:;
   i0 = p0;
@@ -62207,7 +62207,7 @@ static u32 luaH_getstr(u32 p0, u32 p1) {
     i0 = l1;
     if (i0) {goto L5;}
   B1:;
-  i0 = 13680u;
+  i0 = 14944u;
   p0 = i0;
   B0:;
   i0 = l0;
@@ -62328,7 +62328,7 @@ static u32 luaH_getn(u32 p0) {
       l2 = i0;
       i0 = l9;
       if (i0) {goto L10;}
-    i0 = 13680u;
+    i0 = 14944u;
     l2 = i0;
     B9:;
     i0 = l2;
@@ -62428,7 +62428,7 @@ static u32 luaH_getn(u32 p0) {
       l2 = i0;
       i0 = l9;
       if (i0) {goto L17;}
-    i0 = 13680u;
+    i0 = 14944u;
     l2 = i0;
     B16:;
     i0 = l1;
@@ -62570,7 +62570,7 @@ static u32 luaH_getn(u32 p0) {
       l2 = i0;
       i0 = l9;
       if (i0) {goto L23;}
-    i0 = 13680u;
+    i0 = 14944u;
     l2 = i0;
     B21:;
     i0 = l1;
@@ -62612,7 +62612,7 @@ static void luaT_init(u32 p0) {
   L0: vm_checktime();
     i0 = p0;
     i1 = l0;
-    i2 = 14008u;
+    i2 = 10024u;
     i1 += i2;
     i1 = i32_load((&M0), (u64)(i1));
     i0 = luaS_new(i0, i1);
@@ -62730,7 +62730,7 @@ static u32 luaT_gettmbyobj(u32 p0, u32 p1, u32 p2) {
   i0 = luaH_getshortstr(i0, i1);
   goto Bfunc;
   B0:;
-  i0 = 13680u;
+  i0 = 14944u;
   Bfunc:;
   FUNC_EPILOGUE;
   return i0;
@@ -62770,7 +62770,7 @@ static u32 luaT_objtypename(u32 p0, u32 p1) {
   B1:;
   i0 = l1;
   i1 = p0;
-  i2 = 10483u;
+  i2 = 11735u;
   i1 = luaS_new(i1, i2);
   i0 = luaH_getshortstr(i0, i1);
   l0 = i0;
@@ -62797,7 +62797,7 @@ static u32 luaT_objtypename(u32 p0, u32 p1) {
   i0 &= i1;
   i1 = 2u;
   i0 <<= (i1 & 31);
-  i1 = 14100u;
+  i1 = 10116u;
   i0 += i1;
   i0 = i32_load((&M0), (u64)(i0));
   Bfunc:;
@@ -63005,9 +63005,9 @@ static u32 luaT_callbinTM(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   if (i0) {goto B3;}
   goto B2;
   B4:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   i0 = i32_load((&M0), (u64)(i0 + 8));
   i0 = !(i0);
   if (i0) {goto B2;}
@@ -63080,9 +63080,9 @@ static u32 luaT_callbinTM(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   if (i0) {goto B0;}
   goto B1;
   B8:;
-  i0 = 13680u;
+  i0 = 14944u;
   l1 = i0;
-  i0 = 13680u;
+  i0 = 14944u;
   i0 = i32_load((&M0), (u64)(i0 + 8));
   if (i0) {goto B0;}
   B1:;
@@ -63239,7 +63239,7 @@ static void luaT_trybinTM(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = p0;
   i1 = p1;
   i2 = p2;
-  i3 = 10648u;
+  i3 = 11900u;
   luaG_opinterror(i0, i1, i2, i3);
   UNREACHABLE;
   B1:;
@@ -63288,7 +63288,7 @@ static void luaT_trybinTM(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = p0;
   i1 = p1;
   i2 = p2;
-  i3 = 10537u;
+  i3 = 11789u;
   luaG_opinterror(i0, i1, i2, i3);
   UNREACHABLE;
   B3:;
@@ -65311,7 +65311,7 @@ static void luaV_finishset(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   UNREACHABLE;
   B3:;
   i0 = p4;
-  i1 = 13680u;
+  i1 = 14944u;
   i0 = i0 != i1;
   if (i0) {goto B8;}
   i0 = p0;
@@ -74753,7 +74753,7 @@ static void luaL_traceback(u32 p0, u32 p1, u32 p2, u32 p3) {
     i1 = l3;
     i32_store((&M0), (u64)(i0 + 16), i1);
     i0 = p0;
-    i1 = 11115u;
+    i1 = 12367u;
     i2 = l0;
     i3 = 16u;
     i2 += i3;
@@ -74775,7 +74775,7 @@ static void luaL_traceback(u32 p0, u32 p1, u32 p2, u32 p3) {
     i0 = i0 != i1;
     if (i0) {goto B14;}
     i0 = p0;
-    i1 = 11160u;
+    i1 = 12412u;
     i0 = lua_pushstring(i0, i1);
     i0 = p2;
     i0 = i32_load8_u((&M0), (u64)(i0));
@@ -74798,7 +74798,7 @@ static void luaL_traceback(u32 p0, u32 p1, u32 p2, u32 p3) {
     i1 = i32_load((&M0), (u64)(i1));
     i32_store((&M0), (u64)(i0 + 4), i1);
     i0 = p0;
-    i1 = 11261u;
+    i1 = 12513u;
     i2 = l0;
     i0 = lua_pushfstring(i0, i1, i2);
     i0 = p2;
@@ -74813,7 +74813,7 @@ static void luaL_traceback(u32 p0, u32 p1, u32 p2, u32 p3) {
     i1 = lua_tolstring(i1, i2, i3);
     i32_store((&M0), (u64)(i0 + 32), i1);
     i0 = p0;
-    i1 = 11072u;
+    i1 = 12324u;
     i2 = l0;
     i3 = 32u;
     i2 += i3;
@@ -74955,12 +74955,12 @@ static u32 pushglobalfuncname(u32 p0, u32 p1) {
   i0 = lua_gettop(i0);
   l0 = i0;
   i0 = p0;
-  i1 = 11337u;
+  i1 = 12589u;
   i2 = p1;
   i0 = lua_getinfo(i0, i1, i2);
   i0 = p0;
   i1 = 4293966296u;
-  i2 = 10670u;
+  i2 = 11922u;
   i0 = lua_getfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -74976,7 +74976,7 @@ static u32 pushglobalfuncname(u32 p0, u32 p1) {
   i2 = 0u;
   i0 = lua_tolstring(i0, i1, i2);
   l0 = i0;
-  i1 = 11386u;
+  i1 = 12638u;
   i2 = 3u;
   i0 = strncmp_0(i0, i1, i2);
   if (i0) {goto B1;}
@@ -75251,7 +75251,7 @@ static u32 findfield(u32 p0, u32 p1, u32 p2) {
   i1 = 4294967294u;
   lua_settop(i0, i1);
   i0 = p0;
-  i1 = 11470u;
+  i1 = 12722u;
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
@@ -75409,7 +75409,7 @@ static void typeerror(u32 p0, u32 p1, u32 p2) {
   i1 = 4294967293u;
   lua_settop(i0, i1);
   B1:;
-  i0 = 11583u;
+  i0 = 12835u;
   l1 = i0;
   i0 = p0;
   i1 = p1;
@@ -75433,7 +75433,7 @@ static void typeerror(u32 p0, u32 p1, u32 p2) {
   i0 = p0;
   i1 = p1;
   i2 = p0;
-  i3 = 11687u;
+  i3 = 12939u;
   i4 = l0;
   i2 = lua_pushfstring(i2, i3, i4);
   i0 = luaL_argerror(i0, i1, i2);
@@ -75802,7 +75802,7 @@ static u64 luaL_checkinteger(u32 p0, u32 p1) {
   if (i0) {goto B1;}
   i0 = p0;
   i1 = p1;
-  i2 = 11795u;
+  i2 = 13047u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = l0;
   i1 = 16u;
@@ -75869,7 +75869,7 @@ static u64 luaL_optinteger(u32 p0, u32 p1, u64 p2) {
   if (i0) {goto B2;}
   i0 = p0;
   i1 = p1;
-  i2 = 11795u;
+  i2 = 13047u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = l0;
   i1 = 16u;
@@ -75967,7 +75967,7 @@ static u32 luaL_prepbuffsize(u32 p0, u32 p1) {
   j1 = 0ull;
   i64_store((&M0), (u64)(i0), j1);
   i0 = l2;
-  i1 = 11955u;
+  i1 = 13207u;
   i0 = luaL_newmetatable(i0, i1);
   i0 = !(i0);
   if (i0) {goto B5;}
@@ -75977,7 +75977,7 @@ static u32 luaL_prepbuffsize(u32 p0, u32 p1) {
   lua_pushcclosure(i0, i1, i2);
   i0 = l2;
   i1 = 4294967294u;
-  i2 = 12036u;
+  i2 = 13288u;
   lua_setfield(i0, i1, i2);
   B5:;
   i0 = l2;
@@ -76076,7 +76076,7 @@ static u32 resizebox(u32 p0, u32 p1, u32 p2) {
   i1 = l3;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
-  i1 = 11878u;
+  i1 = 13130u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   B0:;
@@ -76628,7 +76628,7 @@ static u32 luaL_tolstring(u32 p0, u32 p1, u32 p2) {
   i0 = lua_isstring(i0, i1);
   if (i0) {goto B0;}
   i0 = p0;
-  i1 = 10148u;
+  i1 = 11400u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   goto B0;
@@ -76651,13 +76651,13 @@ static u32 luaL_tolstring(u32 p0, u32 p1, u32 p2) {
   }
   B10:;
   i0 = p0;
-  i1 = 10453u;
+  i1 = 11705u;
   i0 = lua_pushstring(i0, i1);
   goto B0;
   B9:;
   i0 = p0;
-  i1 = 10365u;
-  i2 = 10417u;
+  i1 = 11617u;
+  i2 = 11669u;
   i3 = p0;
   i4 = p1;
   i3 = lua_toboolean(i3, i4);
@@ -76713,7 +76713,7 @@ static u32 luaL_tolstring(u32 p0, u32 p1, u32 p2) {
   j1 = lua_tointegerx(i1, i2, i3);
   i64_store((&M0), (u64)(i0 + 32), j1);
   i0 = p0;
-  i1 = 10266u;
+  i1 = 11518u;
   i2 = l0;
   i3 = 32u;
   i2 += i3;
@@ -76732,7 +76732,7 @@ static u32 luaL_tolstring(u32 p0, u32 p1, u32 p2) {
   d1 = lua_tonumberx(i1, i2, i3);
   f64_store((&M0), (u64)(i0 + 16), d1);
   i0 = p0;
-  i1 = 10322u;
+  i1 = 11574u;
   i2 = l0;
   i3 = 16u;
   i2 += i3;
@@ -76761,7 +76761,7 @@ static u32 luaL_tolstring(u32 p0, u32 p1, u32 p2) {
   i1 = l2;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
-  i1 = 10490u;
+  i1 = 11742u;
   i2 = l0;
   i0 = lua_pushfstring(i0, i1, i2);
   i0 = l1;
@@ -76809,7 +76809,7 @@ static void luaL_setfuncs(u32 p0, u32 p1, u32 p2) {
   goto B0;
   B2:;
   i0 = l0;
-  i1 = 10566u;
+  i1 = 11818u;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
   i1 = 9366u;
@@ -76906,7 +76906,7 @@ static void luaL_requiref(u32 p0, u32 p1, u32 p2, u32 p3) {
   u32 i0, i1, i2, i3, i4;
   i0 = p0;
   i1 = 4293966296u;
-  i2 = 10670u;
+  i2 = 11922u;
   i0 = lua_getfield(i0, i1, i2);
   i1 = 5u;
   i0 = i0 != i1;
@@ -76940,7 +76940,7 @@ static void luaL_requiref(u32 p0, u32 p1, u32 p2, u32 p3) {
   lua_pushvalue(i0, i1);
   i0 = p0;
   i1 = l0;
-  i2 = 10670u;
+  i2 = 11922u;
   lua_setfield(i0, i1, i2);
   i0 = 4294967295u;
   l0 = i0;
@@ -77049,7 +77049,7 @@ static u32 l_alloc(u32 p0, u32 p1, u32 p2, u32 p3) {
 static u32 panic(u32 p0) {
   FUNC_PROLOGUE;
   u32 i0, i1, i2, i3;
-  i0 = 12094u;
+  i0 = 13346u;
   i1 = p0;
   i2 = 4294967295u;
   i3 = 0u;
@@ -77079,7 +77079,7 @@ static void luaL_checkversion_(u32 p0, f64 p1, u32 p2) {
   i0 = i0 == i1;
   if (i0) {goto B0;}
   i0 = p0;
-  i1 = 10724u;
+  i1 = 11976u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   B0:;
@@ -77089,7 +77089,7 @@ static void luaL_checkversion_(u32 p0, f64 p1, u32 p2) {
   i0 = i0 == i1;
   if (i0) {goto B1;}
   i0 = p0;
-  i1 = 10864u;
+  i1 = 12116u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   i0 = l0;
@@ -77111,7 +77111,7 @@ static void luaL_checkversion_(u32 p0, f64 p1, u32 p2) {
   d1 = p1;
   f64_store((&M0), (u64)(i0), d1);
   i0 = p0;
-  i1 = 10955u;
+  i1 = 12207u;
   i2 = l0;
   i0 = luaL_error(i0, i1, i2);
   B2:;
@@ -77169,7 +77169,7 @@ static u32 luaopen_base(u32 p0) {
   j2 = 2ull;
   i0 = lua_rawgeti(i0, i1, j2);
   i0 = p0;
-  i1 = 14240u;
+  i1 = 10256u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = p0;
@@ -77280,11 +77280,11 @@ static u32 luaB_collectgarbage(u32 p0) {
   i1 = p0;
   i2 = 1u;
   i3 = 9884u;
-  i4 = 14432u;
+  i4 = 10448u;
   i1 = luaL_checkoption(i1, i2, i3, i4);
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 14480u;
+  i2 = 15360u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   l0 = i1;
@@ -77351,7 +77351,7 @@ static u32 luaB_getmetatable(u32 p0) {
   if (i0) {goto B0;}
   i0 = p0;
   i1 = 1u;
-  i2 = 10457u;
+  i2 = 11709u;
   i0 = luaL_getmetafield(i0, i1, i2);
   i0 = 1u;
   goto Bfunc;
@@ -77428,7 +77428,7 @@ static u32 luaB_load(u32 p0) {
   l1 = i0;
   i0 = p0;
   i1 = 3u;
-  i2 = 10497u;
+  i2 = 11749u;
   i3 = 0u;
   i0 = luaL_optlstring(i0, i1, i2, i3);
   l2 = i0;
@@ -77458,7 +77458,7 @@ static u32 luaB_load(u32 p0) {
   B3:;
   i0 = p0;
   i1 = 2u;
-  i2 = 10584u;
+  i2 = 11836u;
   i3 = 0u;
   i0 = luaL_optlstring(i0, i1, i2, i3);
   l1 = i0;
@@ -77537,7 +77537,7 @@ static u32 generic_reader(u32 p0, u32 p1, u32 p2) {
   u32 i0, i1, i2, i3, i4;
   i0 = p0;
   i1 = 2u;
-  i2 = 10678u;
+  i2 = 11930u;
   luaL_checkstack(i0, i1, i2);
   i0 = p0;
   i1 = 1u;
@@ -77558,7 +77558,7 @@ static u32 generic_reader(u32 p0, u32 p1, u32 p2) {
   i0 = lua_isstring(i0, i1);
   if (i0) {goto B1;}
   i0 = p0;
-  i1 = 10773u;
+  i1 = 12025u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   B1:;
@@ -77621,7 +77621,7 @@ static u32 luaB_pairs(u32 p0) {
   luaL_checkany(i0, i1);
   i0 = p0;
   i1 = 1u;
-  i2 = 10890u;
+  i2 = 12142u;
   i0 = luaL_getmetafield(i0, i1, i2);
   i0 = !(i0);
   if (i0) {goto B0;}
@@ -77769,7 +77769,7 @@ static u32 luaB_print(u32 p0) {
     i1 = 2u;
     i0 = i0 < i1;
     if (i0) {goto B3;}
-    i0 = 11086u;
+    i0 = 12338u;
     i1 = 1u;
     (*Z_envZ_prints_lZ_vii)(i0, i1);
     B3:;
@@ -77785,7 +77785,7 @@ static u32 luaB_print(u32 p0) {
     i0 = (u32)((s32)i0 < (s32)i1);
     if (i0) {goto L2;}
   B1:;
-  i0 = 11123u;
+  i0 = 12375u;
   i1 = 1u;
   (*Z_envZ_prints_lZ_vii)(i0, i1);
   i0 = l0;
@@ -77796,7 +77796,7 @@ static u32 luaB_print(u32 p0) {
   goto Bfunc;
   B0:;
   i0 = p0;
-  i1 = 11009u;
+  i1 = 12261u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   p0 = i0;
@@ -77844,7 +77844,7 @@ static u32 luaB_rawlen(u32 p0) {
   if (i0) {goto B0;}
   i0 = p0;
   i1 = 1u;
-  i2 = 11171u;
+  i2 = 12423u;
   i0 = luaL_argerror(i0, i1, i2);
   B0:;
   i0 = p0;
@@ -77965,7 +77965,7 @@ static u32 luaB_select(u32 p0) {
   B1:;
   i0 = p0;
   i1 = 1u;
-  i2 = 11278u;
+  i2 = 12530u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = l0;
   j1 = l1;
@@ -77997,17 +77997,17 @@ static u32 luaB_setmetatable(u32 p0) {
   if (i0) {goto B0;}
   i0 = p0;
   i1 = 2u;
-  i2 = 11339u;
+  i2 = 12591u;
   i0 = luaL_argerror(i0, i1, i2);
   B0:;
   i0 = p0;
   i1 = 1u;
-  i2 = 10457u;
+  i2 = 11709u;
   i0 = luaL_getmetafield(i0, i1, i2);
   i0 = !(i0);
   if (i0) {goto B1;}
   i0 = p0;
-  i1 = 11390u;
+  i1 = 12642u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   goto Bfunc;
@@ -78064,14 +78064,14 @@ static u32 luaB_tonumber(u32 p0) {
   if (i0) {goto B8;}
   i0 = p0;
   i1 = 2u;
-  i2 = 11472u;
+  i2 = 12724u;
   i0 = luaL_argerror(i0, i1, i2);
   B8:;
   i0 = 0u;
   l3 = i0;
   i0 = l2;
   i1 = l2;
-  i2 = 11598u;
+  i2 = 12850u;
   i1 = strspn_0(i1, i2);
   i0 += i1;
   l4 = i0;
@@ -78193,7 +78193,7 @@ static u32 luaB_tonumber(u32 p0) {
   l1 = j0;
   i0 = l9;
   i1 = l9;
-  i2 = 11598u;
+  i2 = 12850u;
   i1 = strspn_0(i1, i2);
   i0 += i1;
   i1 = l2;
@@ -78286,7 +78286,7 @@ static u32 luaB_type(u32 p0) {
   B0:;
   i0 = p0;
   i1 = 1u;
-  i2 = 11707u;
+  i2 = 12959u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = p0;
   i1 = p0;
@@ -78363,7 +78363,7 @@ static u32 luaopen_coroutine(u32 p0) {
   i2 = 7u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 14512u;
+  i1 = 10496u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = 1u;
@@ -78974,7 +78974,7 @@ static u32 luaopen_debug(u32 p0) {
   i2 = 16u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 14736u;
+  i1 = 10704u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = 1u;
@@ -78997,7 +78997,7 @@ static u32 db_debug(u32 p0) {
   i0 = l0;
   i1 = 250u;
   i2 = 0u;
-  i2 = i32_load((&M0), (u64)(i2 + 14720));
+  i2 = i32_load((&M0), (u64)(i2 + 15392));
   l1 = i2;
   i0 = fgets(i0, i1, i2);
   i0 = !(i0);
@@ -79136,7 +79136,7 @@ static u32 db_gethook(u32 p0) {
   B3:;
   i0 = p0;
   i1 = 4293966296u;
-  i2 = 14872u;
+  i2 = 15396u;
   i0 = lua_rawgetp(i0, i1, i2);
   i0 = l1;
   i1 = p0;
@@ -79147,7 +79147,7 @@ static u32 db_gethook(u32 p0) {
   i0 = lua_checkstack(i0, i1);
   if (i0) {goto B5;}
   i0 = p0;
-  i1 = 10188u;
+  i1 = 11440u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   B5:;
@@ -79253,7 +79253,7 @@ static void hookf(u32 p0, u32 p1) {
   u64 j1;
   i0 = p0;
   i1 = 4293966296u;
-  i2 = 14872u;
+  i2 = 15396u;
   i0 = lua_rawgetp(i0, i1, i2);
   i0 = p0;
   i0 = lua_pushthread(i0);
@@ -79268,7 +79268,7 @@ static void hookf(u32 p0, u32 p1) {
   i1 = i32_load((&M0), (u64)(i1));
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 14880u;
+  i2 = 10848u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   i0 = lua_pushstring(i0, i1);
@@ -79325,7 +79325,7 @@ static u32 db_getinfo(u32 p0) {
   l3 = i0;
   i0 = p0;
   i1 = 3u;
-  i2 = 10274u;
+  i2 = 11526u;
   i3 = 0u;
   i0 = luaL_optlstring(i0, i1, i2, i3);
   l4 = i0;
@@ -79356,7 +79356,7 @@ static u32 db_getinfo(u32 p0) {
   l3 = i0;
   i0 = p0;
   i1 = 2u;
-  i2 = 10274u;
+  i2 = 11526u;
   i3 = 0u;
   i0 = luaL_optlstring(i0, i1, i2, i3);
   l4 = i0;
@@ -79385,7 +79385,7 @@ static u32 db_getinfo(u32 p0) {
   i0 = 0u;
   l1 = i0;
   i0 = p0;
-  i1 = 10188u;
+  i1 = 11440u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   i0 = p0;
@@ -79429,7 +79429,7 @@ static u32 db_getinfo(u32 p0) {
   i1 = l4;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
-  i1 = 10334u;
+  i1 = 11586u;
   i2 = l0;
   i0 = lua_pushfstring(i0, i1, i2);
   l4 = i0;
@@ -79464,7 +79464,7 @@ static u32 db_getinfo(u32 p0) {
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10433u;
+  i2 = 11685u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79473,7 +79473,7 @@ static u32 db_getinfo(u32 p0) {
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10469u;
+  i2 = 11721u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79481,7 +79481,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushinteger(i0, j1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10500u;
+  i2 = 11752u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79489,7 +79489,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushinteger(i0, j1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10592u;
+  i2 = 11844u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79497,7 +79497,7 @@ static u32 db_getinfo(u32 p0) {
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10704u;
+  i2 = 11956u;
   lua_setfield(i0, i1, i2);
   B11:;
   i0 = l4;
@@ -79511,7 +79511,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushinteger(i0, j1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10810u;
+  i2 = 12062u;
   lua_setfield(i0, i1, i2);
   B12:;
   i0 = l4;
@@ -79525,7 +79525,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushinteger(i0, j1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 10898u;
+  i2 = 12150u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79533,7 +79533,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushinteger(i0, j1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11052u;
+  i2 = 12304u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79541,7 +79541,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushboolean(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11088u;
+  i2 = 12340u;
   lua_setfield(i0, i1, i2);
   B13:;
   i0 = l4;
@@ -79555,7 +79555,7 @@ static u32 db_getinfo(u32 p0) {
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11125u;
+  i2 = 12377u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = l0;
@@ -79563,7 +79563,7 @@ static u32 db_getinfo(u32 p0) {
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11196u;
+  i2 = 12448u;
   lua_setfield(i0, i1, i2);
   B14:;
   i0 = l4;
@@ -79577,7 +79577,7 @@ static u32 db_getinfo(u32 p0) {
   lua_pushboolean(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11297u;
+  i2 = 12549u;
   lua_setfield(i0, i1, i2);
   B15:;
   i0 = l4;
@@ -79596,7 +79596,7 @@ static u32 db_getinfo(u32 p0) {
   B3:;
   i0 = p0;
   i1 = l3;
-  i2 = 10381u;
+  i2 = 11633u;
   i0 = luaL_argerror(i0, i1, i2);
   p0 = i0;
   i0 = l0;
@@ -79613,7 +79613,7 @@ static u32 db_getinfo(u32 p0) {
   B1:;
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11361u;
+  i2 = 12613u;
   lua_setfield(i0, i1, i2);
   B0:;
   i0 = l4;
@@ -79637,7 +79637,7 @@ static u32 db_getinfo(u32 p0) {
   B17:;
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11426u;
+  i2 = 12678u;
   lua_setfield(i0, i1, i2);
   B16:;
   i0 = l0;
@@ -79738,7 +79738,7 @@ static u32 db_getlocal(u32 p0) {
   B6:;
   i0 = p0;
   i1 = l1;
-  i2 = 11490u;
+  i2 = 12742u;
   i0 = luaL_argerror(i0, i1, i2);
   p0 = i0;
   i0 = l0;
@@ -79749,7 +79749,7 @@ static u32 db_getlocal(u32 p0) {
   goto Bfunc;
   B5:;
   i0 = p0;
-  i1 = 10188u;
+  i1 = 11440u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   i0 = l2;
@@ -79887,7 +79887,7 @@ static u32 db_upvaluejoin(u32 p0) {
   if (i0) {goto B0;}
   i0 = p0;
   i1 = 2u;
-  i2 = 11722u;
+  i2 = 12974u;
   i0 = luaL_argerror(i0, i1, i2);
   B0:;
   i0 = p0;
@@ -79917,7 +79917,7 @@ static u32 db_upvaluejoin(u32 p0) {
   B3:;
   i0 = p0;
   i1 = 4u;
-  i2 = 11722u;
+  i2 = 12974u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = 1u;
   l3 = i0;
@@ -79929,7 +79929,7 @@ static u32 db_upvaluejoin(u32 p0) {
   B2:;
   i0 = p0;
   i1 = l3;
-  i2 = 11605u;
+  i2 = 12857u;
   i0 = luaL_argerror(i0, i1, i2);
   B1:;
   i0 = p0;
@@ -79939,7 +79939,7 @@ static u32 db_upvaluejoin(u32 p0) {
   if (i0) {goto B4;}
   i0 = p0;
   i1 = 3u;
-  i2 = 11605u;
+  i2 = 12857u;
   i0 = luaL_argerror(i0, i1, i2);
   B4:;
   i0 = p0;
@@ -79986,7 +79986,7 @@ static u32 db_upvalueid(u32 p0) {
   B0:;
   i0 = p0;
   i1 = 2u;
-  i2 = 11722u;
+  i2 = 12974u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = p0;
   i1 = p0;
@@ -80105,13 +80105,13 @@ static u32 db_sethook(u32 p0) {
   l3 = i0;
   i0 = 47u;
   l5 = i0;
-  i0 = 14872u;
+  i0 = 15396u;
   l6 = i0;
   i0 = 4293966296u;
   l7 = i0;
   i0 = p0;
   i1 = 4293966296u;
-  i2 = 14872u;
+  i2 = 15396u;
   i0 = lua_rawgetp(i0, i1, i2);
   if (i0) {goto B1;}
   goto B2;
@@ -80125,13 +80125,13 @@ static u32 db_sethook(u32 p0) {
   l0 = i0;
   i0 = 0u;
   l3 = i0;
-  i0 = 14872u;
+  i0 = 15396u;
   l6 = i0;
   i0 = 4293966296u;
   l7 = i0;
   i0 = p0;
   i1 = 4293966296u;
-  i2 = 14872u;
+  i2 = 15396u;
   i0 = lua_rawgetp(i0, i1, i2);
   if (i0) {goto B1;}
   B2:;
@@ -80147,11 +80147,11 @@ static u32 db_sethook(u32 p0) {
   i2 = l6;
   lua_rawsetp(i0, i1, i2);
   i0 = p0;
-  i1 = 11832u;
+  i1 = 13084u;
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 11918u;
+  i2 = 13170u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = 4294967295u;
@@ -80169,7 +80169,7 @@ static u32 db_sethook(u32 p0) {
   i0 = lua_checkstack(i0, i1);
   if (i0) {goto B4;}
   i0 = p0;
-  i1 = 10188u;
+  i1 = 11440u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   B4:;
@@ -80266,7 +80266,7 @@ static u32 db_setlocal(u32 p0) {
   i0 = lua_checkstack(i0, i1);
   if (i0) {goto B2;}
   i0 = p0;
-  i1 = 10188u;
+  i1 = 11440u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   B2:;
@@ -80298,7 +80298,7 @@ static u32 db_setlocal(u32 p0) {
   B1:;
   i0 = p0;
   i1 = l3;
-  i2 = 11490u;
+  i2 = 12742u;
   i0 = luaL_argerror(i0, i1, i2);
   p0 = i0;
   i0 = l0;
@@ -80337,7 +80337,7 @@ static u32 db_setmetatable(u32 p0) {
   B0:;
   i0 = p0;
   i1 = 2u;
-  i2 = 11962u;
+  i2 = 13214u;
   i0 = luaL_argerror(i0, i1, i2);
   i0 = p0;
   i1 = 2u;
@@ -81125,7 +81125,7 @@ static f64 atan_0(f64 p0) {
   i1 = 3u;
   i0 <<= (i1 & 31);
   l3 = i0;
-  i1 = 14912u;
+  i1 = 15408u;
   i0 += i1;
   d0 = f64_load((&M0), (u64)(i0));
   d1 = p0;
@@ -81134,7 +81134,7 @@ static f64 atan_0(f64 p0) {
   d2 = (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(d2, d3);
   d1 = (*Z_eosio_injectionZ__eosio_f64_mulZ_ddd)(d1, d2);
   i2 = l3;
-  i3 = 14944u;
+  i3 = 15440u;
   i2 += i3;
   d2 = f64_load((&M0), (u64)(i2));
   d1 = (*Z_eosio_injectionZ__eosio_f64_subZ_ddd)(d1, d2);
@@ -81258,7 +81258,7 @@ static f64 atan2_0(f64 p0, f64 p1) {
   i0 = l2;
   i1 = 3u;
   i0 <<= (i1 & 31);
-  i1 = 14976u;
+  i1 = 15472u;
   i0 += i1;
   d0 = f64_load((&M0), (u64)(i0));
   goto Bfunc;
@@ -81337,7 +81337,7 @@ static f64 atan2_0(f64 p0, f64 p1) {
   i0 = l2;
   i1 = 3u;
   i0 <<= (i1 & 31);
-  i1 = 15008u;
+  i1 = 15504u;
   i0 += i1;
   d0 = f64_load((&M0), (u64)(i0));
   goto Bfunc;
@@ -81547,7 +81547,7 @@ static u32 __rem_pio2_large(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = p4;
   i1 = 2u;
   i0 <<= (i1 & 31);
-  i1 = 15040u;
+  i1 = 15536u;
   i0 += i1;
   i0 = i32_load((&M0), (u64)(i0));
   l4 = i0;
@@ -81574,7 +81574,7 @@ static u32 __rem_pio2_large(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 -= i1;
   i1 = 2u;
   i0 <<= (i1 & 31);
-  i1 = 15056u;
+  i1 = 15552u;
   i0 += i1;
   l6 = i0;
   i0 = l0;
@@ -82258,7 +82258,7 @@ static u32 __rem_pio2_large(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
       i1 += i2;
       i2 = 2u;
       i1 <<= (i2 & 31);
-      i2 = 15056u;
+      i2 = 15552u;
       i1 += i2;
       i1 = i32_load((&M0), (u64)(i1));
       d1 = (f64)(s32)(i1);
@@ -82325,7 +82325,7 @@ static u32 __rem_pio2_large(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i0 += i1;
     i1 = 2u;
     i0 <<= (i1 & 31);
-    i1 = 15060u;
+    i1 = 15556u;
     i0 += i1;
     l1 = i0;
     i0 = l0;
@@ -82480,7 +82480,7 @@ static u32 __rem_pio2_large(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
       L52: vm_checktime();
         d0 = l7;
         i1 = p2;
-        i2 = 17824u;
+        i2 = 18320u;
         i1 += i2;
         d1 = f64_load((&M0), (u64)(i1));
         i2 = l9;
@@ -83715,7 +83715,7 @@ static f64 exp_0(f64 p0) {
   i1 = l2;
   i2 = 3u;
   i1 <<= (i2 & 31);
-  i2 = 17888u;
+  i2 = 18384u;
   i1 += i2;
   d1 = f64_load((&M0), (u64)(i1));
   d0 = (*Z_eosio_injectionZ__eosio_f64_addZ_ddd)(d0, d1);
@@ -84824,7 +84824,7 @@ static u32 luaopen_math(u32 p0) {
   i2 = 25u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 17904u;
+  i1 = 10880u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = p0;
@@ -85586,7 +85586,7 @@ static u32 math_type(u32 p0) {
   i0 = !(i0);
   if (i0) {goto B0;}
   i0 = p0;
-  i1 = 10203u;
+  i1 = 11455u;
   i0 = lua_pushstring(i0, i1);
   i0 = 1u;
   goto Bfunc;
@@ -85600,7 +85600,7 @@ static u32 math_type(u32 p0) {
   goto Bfunc;
   B0:;
   i0 = p0;
-  i1 = 10281u;
+  i1 = 11533u;
   i0 = lua_pushstring(i0, i1);
   i0 = 1u;
   Bfunc:;
@@ -85700,7 +85700,7 @@ static u32 luaopen_string(u32 p0) {
   i2 = 17u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 18112u;
+  i1 = 11088u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = p0;
@@ -85708,7 +85708,7 @@ static u32 luaopen_string(u32 p0) {
   i2 = 1u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 10479u;
+  i1 = 11731u;
   i0 = lua_pushstring(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
@@ -85724,7 +85724,7 @@ static u32 luaopen_string(u32 p0) {
   lua_pushvalue(i0, i1);
   i0 = p0;
   i1 = 4294967294u;
-  i2 = 18423u;
+  i2 = 18567u;
   lua_setfield(i0, i1, i2);
   i0 = p0;
   i1 = 4294967294u;
@@ -86618,7 +86618,7 @@ static u32 str_format(u32 p0) {
     if (i0) {goto B7;}
     i0 = p0;
     i1 = l7;
-    i2 = 10396u;
+    i2 = 11648u;
     i0 = luaL_argerror(i0, i1, i2);
     B7:;
     i0 = l9;
@@ -86631,7 +86631,7 @@ static u32 str_format(u32 p0) {
     i0 = l9;
     l3 = i0;
     L12: vm_checktime();
-      i0 = 10709u;
+      i0 = 11961u;
       i1 = l2;
       i2 = 24u;
       i1 <<= (i2 & 31);
@@ -86668,7 +86668,7 @@ static u32 str_format(u32 p0) {
     if (i0) {goto B8;}
     B9:;
     i0 = p0;
-    i1 = 10822u;
+    i1 = 12074u;
     i2 = 0u;
     i0 = luaL_error(i0, i1, i2);
     B8:;
@@ -86743,7 +86743,7 @@ static u32 str_format(u32 p0) {
     i0 = i0 > i1;
     if (i0) {goto B14;}
     i0 = p0;
-    i1 = 10903u;
+    i1 = 12155u;
     i2 = 0u;
     i0 = luaL_error(i0, i1, i2);
     B14:;
@@ -86843,7 +86843,7 @@ static u32 str_format(u32 p0) {
     i0 += i1;
     i0 = strlen_0(i0);
     l3 = i0;
-    i0 = 10440u;
+    i0 = 11692u;
     i0 = strlen_0(i0);
     l8 = i0;
     i0 = l3;
@@ -86857,7 +86857,7 @@ static u32 str_format(u32 p0) {
     i0 = i32_load8_u((&M0), (u64)(i0));
     l12 = i0;
     i0 = l9;
-    i1 = 10440u;
+    i1 = 11692u;
     i0 = strcpy_0(i0, i1);
     i0 = l0;
     i1 = 160u;
@@ -86898,7 +86898,7 @@ static u32 str_format(u32 p0) {
     i0 += i1;
     i0 = strlen_0(i0);
     l3 = i0;
-    i0 = 10479u;
+    i0 = 11731u;
     i0 = strlen_0(i0);
     l8 = i0;
     i0 = l3;
@@ -86912,7 +86912,7 @@ static u32 str_format(u32 p0) {
     i0 = i32_load8_u((&M0), (u64)(i0));
     l12 = i0;
     i0 = l9;
-    i1 = 10479u;
+    i1 = 11731u;
     i0 = strcpy_0(i0, i1);
     i0 = l0;
     i1 = 160u;
@@ -86949,7 +86949,7 @@ static u32 str_format(u32 p0) {
     i0 += i1;
     i0 = strlen_0(i0);
     l3 = i0;
-    i0 = 10479u;
+    i0 = 11731u;
     i0 = strlen_0(i0);
     l8 = i0;
     i0 = l3;
@@ -86963,7 +86963,7 @@ static u32 str_format(u32 p0) {
     i0 = i32_load8_u((&M0), (u64)(i0));
     l12 = i0;
     i0 = l9;
-    i1 = 10479u;
+    i1 = 11731u;
     i0 = strcpy_0(i0, i1);
     i0 = l0;
     i1 = 160u;
@@ -87177,7 +87177,7 @@ static u32 str_format(u32 p0) {
       i1 = 4324u;
       i0 += i1;
       i1 = 10u;
-      i2 = 11373u;
+      i2 = 12625u;
       i3 = l0;
       i4 = 80u;
       i3 += i4;
@@ -87229,7 +87229,7 @@ static u32 str_format(u32 p0) {
       i1 = 4324u;
       i0 += i1;
       i1 = 10u;
-      i2 = 11308u;
+      i2 = 12560u;
       i3 = l0;
       i4 = 96u;
       i3 += i4;
@@ -87297,7 +87297,7 @@ static u32 str_format(u32 p0) {
     if (i0) {goto B42;}
     i0 = p0;
     i1 = l7;
-    i2 = 10512u;
+    i2 = 11764u;
     i0 = luaL_argerror(i0, i1, i2);
     B42:;
     i0 = l0;
@@ -87373,8 +87373,8 @@ static u32 str_format(u32 p0) {
     i64_store((&M0), (u64)(i0 + 128), j1);
     i0 = l3;
     i1 = 428u;
-    i2 = 11097u;
-    i3 = 11130u;
+    i2 = 12349u;
+    i3 = 12382u;
     j4 = l11;
     j5 = 9223372036854775808ull;
     i4 = j4 == j5;
@@ -87388,7 +87388,7 @@ static u32 str_format(u32 p0) {
     B19:;
     i0 = p0;
     i1 = l7;
-    i2 = 11205u;
+    i2 = 12457u;
     i0 = luaL_argerror(i0, i1, i2);
     goto B16;
     B18:;
@@ -87402,7 +87402,7 @@ static u32 str_format(u32 p0) {
     i1 = 46u;
     i2 = l3;
     i3 = 428u;
-    i4 = 11060u;
+    i4 = 12312u;
     i5 = l0;
     i6 = 112u;
     i5 += i6;
@@ -87462,7 +87462,7 @@ static u32 str_format(u32 p0) {
   i1 = l8;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
-  i1 = 10608u;
+  i1 = 11860u;
   i2 = l0;
   i0 = luaL_error(i0, i1, i2);
   l2 = i0;
@@ -87720,7 +87720,7 @@ static u32 str_gsub(u32 p0) {
   if (i0) {goto B0;}
   i0 = p0;
   i1 = 3u;
-  i2 = 11431u;
+  i2 = 12683u;
   i0 = luaL_argerror(i0, i1, i2);
   B0:;
   i0 = p0;
@@ -88081,7 +88081,7 @@ static u32 str_gsub(u32 p0) {
       i1 = 37u;
       i32_store((&M0), (u64)(i0), i1);
       i0 = l16;
-      i1 = 11627u;
+      i1 = 12879u;
       i2 = l0;
       i0 = luaL_error(i0, i1, i2);
       B23:;
@@ -88182,7 +88182,7 @@ static u32 str_gsub(u32 p0) {
     goto B7;
     B9:;
     i0 = l16;
-    i1 = 10338u;
+    i1 = 11590u;
     i2 = 0u;
     i0 = luaL_error(i0, i1, i2);
     i0 = l11;
@@ -88235,7 +88235,7 @@ static u32 str_gsub(u32 p0) {
     i1 = lua_typename(i1, i2);
     i32_store((&M0), (u64)(i0 + 16), i1);
     i0 = l16;
-    i1 = 11509u;
+    i1 = 12761u;
     i2 = l0;
     i3 = 16u;
     i2 += i3;
@@ -88435,7 +88435,7 @@ static u32 match(u32 p0, u32 p1, u32 p2) {
         B20:;
         i0 = l3;
         i0 = i32_load((&M0), (u64)(i0));
-        i1 = 10211u;
+        i1 = 11463u;
         i2 = 0u;
         i0 = luaL_error(i0, i1, i2);
         i0 = l1;
@@ -88557,7 +88557,7 @@ static u32 match(u32 p0, u32 p1, u32 p2) {
       i32_store((&M0), (u64)(i0), i1);
       i0 = p0;
       i1 = l1;
-      i2 = 10287u;
+      i2 = 11539u;
       i3 = l0;
       i1 = luaL_error(i1, i2, i3);
       l8 = i1;
@@ -89080,7 +89080,7 @@ static u32 match(u32 p0, u32 p1, u32 p2) {
         B105:;
         i0 = l3;
         i0 = i32_load((&M0), (u64)(i0));
-        i1 = 10211u;
+        i1 = 11463u;
         i2 = 0u;
         i0 = luaL_error(i0, i1, i2);
         i0 = l7;
@@ -90192,7 +90192,7 @@ static void push_onecapture(u32 p0, u32 p1, u32 p2, u32 p3) {
   i1 += i2;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p0;
-  i1 = 10287u;
+  i1 = 11539u;
   i2 = l0;
   i0 = luaL_error(i0, i1, i2);
   i0 = l0;
@@ -90203,7 +90203,7 @@ static void push_onecapture(u32 p0, u32 p1, u32 p2, u32 p3) {
   B2:;
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0 + 12));
-  i1 = 10338u;
+  i1 = 11590u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   i0 = p2;
@@ -90370,7 +90370,7 @@ static u32 str_rep(u32 p0) {
   l2 = j0;
   i0 = p0;
   i1 = 3u;
-  i2 = 10479u;
+  i2 = 11731u;
   i3 = l0;
   i4 = 4120u;
   i3 += i4;
@@ -90400,7 +90400,7 @@ static u32 str_rep(u32 p0) {
   if (i0) {goto B0;}
   B2:;
   i0 = p0;
-  i1 = 11744u;
+  i1 = 12996u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   p0 = i0;
@@ -90412,7 +90412,7 @@ static u32 str_rep(u32 p0) {
   goto Bfunc;
   B1:;
   i0 = p0;
-  i1 = 10479u;
+  i1 = 11731u;
   i0 = lua_pushstring(i0, i1);
   i0 = l0;
   i1 = 4128u;
@@ -90679,7 +90679,7 @@ static u32 str_sub(u32 p0) {
   i0 = (u64)((s64)j0 >= (s64)j1);
   if (i0) {goto B5;}
   i0 = p0;
-  i1 = 10479u;
+  i1 = 11731u;
   i0 = lua_pushstring(i0, i1);
   goto B4;
   B5:;
@@ -90957,7 +90957,7 @@ static u32 str_pack(u32 p0) {
     B27:;
     i0 = p0;
     i1 = l3;
-    i2 = 11834u;
+    i2 = 13086u;
     i0 = luaL_argerror(i0, i1, i2);
     B26:;
     i0 = l0;
@@ -91029,7 +91029,7 @@ static u32 str_pack(u32 p0) {
     if (i0) {goto B29;}
     i0 = p0;
     i1 = l3;
-    i2 = 11925u;
+    i2 = 13177u;
     i0 = luaL_argerror(i0, i1, i2);
     B29:;
     i0 = l0;
@@ -91120,7 +91120,7 @@ static u32 str_pack(u32 p0) {
     if (i0) {goto B31;}
     i0 = p0;
     i1 = l3;
-    i2 = 11984u;
+    i2 = 13236u;
     i0 = luaL_argerror(i0, i1, i2);
     i0 = l0;
     i0 = i32_load((&M0), (u64)(i0 + 8));
@@ -91211,7 +91211,7 @@ static u32 str_pack(u32 p0) {
     if (i0) {goto B34;}
     i0 = p0;
     i1 = l3;
-    i2 = 12041u;
+    i2 = 13293u;
     i0 = luaL_argerror(i0, i1, i2);
     B34:;
     i0 = l0;
@@ -91283,7 +91283,7 @@ static u32 str_pack(u32 p0) {
     if (i0) {goto B36;}
     i0 = p0;
     i1 = l3;
-    i2 = 10512u;
+    i2 = 11764u;
     i0 = luaL_argerror(i0, i1, i2);
     i0 = l0;
     i0 = i32_load((&M0), (u64)(i0 + 8));
@@ -91671,7 +91671,7 @@ static u32 getdetails(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
   i1 = 1u;
-  i2 = 12144u;
+  i2 = 13396u;
   i0 = luaL_argerror(i0, i1, i2);
   B0:;
   i0 = 0u;
@@ -91707,7 +91707,7 @@ static u32 getdetails(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
   i1 = 1u;
-  i2 = 12204u;
+  i2 = 13456u;
   i0 = luaL_argerror(i0, i1, i2);
   B4:;
   i0 = p3;
@@ -91802,7 +91802,7 @@ static u32 str_packsize(u32 p0) {
     B6:;
     i0 = p0;
     i1 = 1u;
-    i2 = 18283u;
+    i2 = 18427u;
     i0 = luaL_argerror(i0, i1, i2);
     i0 = l3;
     i1 = 4294967294u;
@@ -91813,7 +91813,7 @@ static u32 str_packsize(u32 p0) {
     B5:;
     i0 = p0;
     i1 = 1u;
-    i2 = 12343u;
+    i2 = 13595u;
     i0 = luaL_argerror(i0, i1, i2);
     i0 = l2;
     i1 = l1;
@@ -91925,7 +91925,7 @@ static u32 str_unpack(u32 p0) {
   if (i0) {goto B2;}
   i0 = p0;
   i1 = 3u;
-  i2 = 18307u;
+  i2 = 18451u;
   i0 = luaL_argerror(i0, i1, i2);
   B2:;
   i0 = l0;
@@ -91982,12 +91982,12 @@ static u32 str_unpack(u32 p0) {
     B7:;
     i0 = p0;
     i1 = 2u;
-    i2 = 18338u;
+    i2 = 18482u;
     i0 = luaL_argerror(i0, i1, i2);
     B6:;
     i0 = p0;
     i1 = 2u;
-    i2 = 18360u;
+    i2 = 18504u;
     luaL_checkstack(i0, i1, i2);
     i0 = l7;
     i1 = 1u;
@@ -92102,7 +92102,7 @@ static u32 str_unpack(u32 p0) {
     if (i0) {goto B18;}
     i0 = p0;
     i1 = 2u;
-    i2 = 18338u;
+    i2 = 18482u;
     i0 = luaL_argerror(i0, i1, i2);
     B18:;
     i0 = p0;
@@ -92368,7 +92368,7 @@ static u64 unpackint(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = p3;
     i32_store((&M0), (u64)(i0 + 16), i1);
     i0 = p0;
-    i1 = 18377u;
+    i1 = 18521u;
     i2 = l0;
     i3 = 16u;
     i2 += i3;
@@ -92399,7 +92399,7 @@ static u64 unpackint(u32 p0, u32 p1, u32 p2, u32 p3, u32 p4) {
     i1 = p3;
     i32_store((&M0), (u64)(i0), i1);
     i0 = p0;
-    i1 = 18377u;
+    i1 = 18521u;
     i2 = l0;
     i0 = luaL_error(i0, i1, i2);
     B12:;
@@ -92752,7 +92752,7 @@ static u32 getoption(u32 p0, u32 p1, u32 p2) {
   i1 = p2;
   i32_store((&M0), (u64)(i0 + 64), i1);
   i0 = p1;
-  i1 = 12286u;
+  i1 = 13538u;
   i2 = l0;
   i3 = 64u;
   i2 += i3;
@@ -92930,7 +92930,7 @@ static u32 getoption(u32 p0, u32 p1, u32 p2) {
   i1 = l3;
   i32_store((&M0), (u64)(i0 + 16), i1);
   i0 = p1;
-  i1 = 12286u;
+  i1 = 13538u;
   i2 = l0;
   i3 = 16u;
   i2 += i3;
@@ -93029,7 +93029,7 @@ static u32 getoption(u32 p0, u32 p1, u32 p2) {
   i1 = l3;
   i32_store((&M0), (u64)(i0 + 48), i1);
   i0 = p1;
-  i1 = 12286u;
+  i1 = 13538u;
   i2 = l0;
   i3 = 48u;
   i2 += i3;
@@ -93062,7 +93062,7 @@ static u32 getoption(u32 p0, u32 p1, u32 p2) {
   i1 = l3;
   i32_store((&M0), (u64)(i0), i1);
   i0 = p1;
-  i1 = 18256u;
+  i1 = 18400u;
   i2 = l0;
   i0 = luaL_error(i0, i1, i2);
   B7:;
@@ -93133,7 +93133,7 @@ static u32 getoption(u32 p0, u32 p1, u32 p2) {
   i1 = l3;
   i32_store((&M0), (u64)(i0 + 32), i1);
   i0 = p1;
-  i1 = 12286u;
+  i1 = 13538u;
   i2 = l0;
   i3 = 32u;
   i2 += i3;
@@ -93229,7 +93229,7 @@ static u32 getoption(u32 p0, u32 p1, u32 p2) {
   B1:;
   i0 = p0;
   i0 = i32_load((&M0), (u64)(i0));
-  i1 = 12248u;
+  i1 = 13500u;
   i2 = 0u;
   i0 = luaL_error(i0, i1, i2);
   i0 = l0;
@@ -93262,7 +93262,7 @@ static u32 luaopen_table(u32 p0) {
   i2 = 7u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 18432u;
+  i1 = 11232u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = 1u;
@@ -94557,7 +94557,7 @@ static u32 luaopen_utf8(u32 p0) {
   i2 = 6u;
   lua_createtable(i0, i1, i2);
   i0 = p0;
-  i1 = 18496u;
+  i1 = 11296u;
   i2 = 0u;
   luaL_setfuncs(i0, i1, i2);
   i0 = p0;
@@ -95166,7 +95166,7 @@ static u32 codepoint(u32 p0) {
     i1 = l1;
     i2 = 2u;
     i1 <<= (i2 & 31);
-    i2 = 18560u;
+    i2 = 18576u;
     i1 += i2;
     i1 = i32_load((&M0), (u64)(i1));
     i0 = i0 <= i1;
@@ -95548,7 +95548,7 @@ static u32 utflen(u32 p0) {
     i1 = l4;
     i2 = 2u;
     i1 <<= (i2 & 31);
-    i2 = 18560u;
+    i2 = 18576u;
     i1 += i2;
     i1 = i32_load((&M0), (u64)(i1));
     i0 = i0 <= i1;
@@ -95801,7 +95801,7 @@ static u32 iter_aux(u32 p0) {
   i1 = l6;
   i2 = 2u;
   i1 <<= (i2 & 31);
-  i2 = 18560u;
+  i2 = 18576u;
   i1 += i2;
   i1 = i32_load((&M0), (u64)(i1));
   i0 = i0 <= i1;
@@ -95931,7 +95931,7 @@ static u32 realloc_0(u32 p0, u32 p1) {
   i0 = !(i0);
   if (i0) {goto B0;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13464));
+  i0 = i32_load((&M0), (u64)(i0 + 14728));
   l1 = i0;
   if (i0) {goto B1;}
   i0 = l0;
@@ -95946,10 +95946,10 @@ static u32 realloc_0(u32 p0, u32 p1) {
   i2 = 4294967288u;
   i1 &= i2;
   l1 = i1;
-  i32_store((&M0), (u64)(i0 + 13464), i1);
+  i32_store((&M0), (u64)(i0 + 14728), i1);
   B1:;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13468));
+  i0 = i32_load((&M0), (u64)(i0 + 14732));
   l2 = i0;
   i0 = M0.pages;
   l3 = i0;
@@ -95982,9 +95982,9 @@ static u32 realloc_0(u32 p0, u32 p1) {
   i1 = 5392u;
   (*Z_envZ_eosio_assertZ_vii)(i0, i1);
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13464));
+  i0 = i32_load((&M0), (u64)(i0 + 14728));
   i1 = 0u;
-  i1 = i32_load((&M0), (u64)(i1 + 13468));
+  i1 = i32_load((&M0), (u64)(i1 + 14732));
   l2 = i1;
   i0 += i1;
   l1 = i0;
@@ -95993,7 +95993,7 @@ static u32 realloc_0(u32 p0, u32 p1) {
   i1 = l2;
   i2 = l4;
   i1 += i2;
-  i32_store((&M0), (u64)(i0 + 13468), i1);
+  i32_store((&M0), (u64)(i0 + 14732), i1);
   i0 = l1;
   i0 = !(i0);
   if (i0) {goto B3;}
@@ -96046,7 +96046,7 @@ static u32 lua_init(void) {
   i0 = 0u;
   i1 = luaL_newstate();
   l0 = i1;
-  i32_store((&M0), (u64)(i0 + 13472), i1);
+  i32_store((&M0), (u64)(i0 + 14736), i1);
   i0 = l0;
   luaL_openlibs(i0);
   i0 = l0;
@@ -96058,12 +96058,12 @@ static u32 lua_init_contract(u32 p0, u32 p1) {
   FUNC_PROLOGUE;
   u32 i0, i1, i2, i3, i4, i5;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = p0;
   i0 = luaL_loadstring(i0, i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 0u;
   i2 = 4294967295u;
   i3 = 0u;
@@ -96072,13 +96072,13 @@ static u32 lua_init_contract(u32 p0, u32 p1) {
   i0 = lua_pcallk(i0, i1, i2, i3, i4, i5);
   B0:;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 5725u;
   i0 = lua_getglobal(i0, i1);
   i0 = 1u;
   p0 = i0;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 4294967295u;
   i0 = lua_type(i0, i1);
   i1 = 6u;
@@ -96102,24 +96102,24 @@ static u32 lua_apply(u64 p0, u64 p1, u64 p2) {
   u64 j1;
   f64 d1;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   j1 = p0;
   d1 = (f64)(j1);
   lua_pushnumber(i0, d1);
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   j1 = p1;
   d1 = (f64)(j1);
   lua_pushnumber(i0, d1);
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   j1 = p2;
   d1 = (f64)(j1);
   lua_pushnumber(i0, d1);
   i0 = 1u;
   l0 = i0;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 3u;
   i2 = 1u;
   i3 = 0u;
@@ -96130,7 +96130,7 @@ static u32 lua_apply(u64 p0, u64 p1, u64 p2) {
   if (i0) {goto B0;}
   i0 = 0u;
   i1 = 0u;
-  i1 = i32_load((&M0), (u64)(i1 + 13472));
+  i1 = i32_load((&M0), (u64)(i1 + 14736));
   i2 = 4294967295u;
   i3 = 0u;
   i1 = lua_tolstring(i1, i2, i3);
@@ -96150,12 +96150,12 @@ static void apply(u64 p0, u64 p1, u64 p2) {
   i0 = 6284u;
   i0 = strlen_0(i0);
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 6284u;
   i0 = luaL_loadstring(i0, i1);
   if (i0) {goto B0;}
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 0u;
   i2 = 4294967295u;
   i3 = 0u;
@@ -96164,11 +96164,11 @@ static void apply(u64 p0, u64 p1, u64 p2) {
   i0 = lua_pcallk(i0, i1, i2, i3, i4, i5);
   B0:;
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 5725u;
   i0 = lua_getglobal(i0, i1);
   i0 = 0u;
-  i0 = i32_load((&M0), (u64)(i0 + 13472));
+  i0 = i32_load((&M0), (u64)(i0 + 14736));
   i1 = 4294967295u;
   i0 = lua_type(i0, i1);
   i1 = 6u;
@@ -96180,13 +96180,13 @@ static void apply(u64 p0, u64 p1, u64 p2) {
   B1:;
   i0 = 0u;
   i1 = 124u;
-  i32_store((&M0), (u64)(i0 + 13480), i1);
+  i32_store((&M0), (u64)(i0 + 14744), i1);
   i0 = 0u;
   i1 = 125u;
-  i32_store((&M0), (u64)(i0 + 13476), i1);
+  i32_store((&M0), (u64)(i0 + 14740), i1);
   i0 = 0u;
   i1 = 126u;
-  i32_store((&M0), (u64)(i0 + 13484), i1);
+  i32_store((&M0), (u64)(i0 + 14748), i1);
   i0 = 0u;
   __cxa_finalize(i0);
   FUNC_EPILOGUE;
@@ -96739,11 +96739,115 @@ static const u8 data_segment_data_30[] = {
   0x20, 0x23, 0x00, 0x00, 0xa0, 0x23, 0x00, 0x00, 0x25, 0x24, 0x00, 0x00, 
   0x7e, 0x24, 0x00, 0x00, 0xdb, 0x24, 0x00, 0x00, 0x3e, 0x25, 0x00, 0x00, 
   0x9c, 0x25, 0x00, 0x00, 0xf8, 0x25, 0x00, 0x00, 0x7a, 0x26, 0x00, 0x00, 
-  0x74, 0x27, 0x00, 0x00, 0x03, 0x28, 0x00, 0x00, 0x4a, 0x28, 0x00, 0x00, 
-  0x75, 0x28, 0x00, 0x00, 0xa5, 0x28, 0x00, 0x00, 0xcb, 0x28, 0x00, 0x00, 
-  0xf0, 0x28, 0x00, 0x00, 0x26, 0x29, 0x00, 0x00, 0x92, 0x29, 0x00, 0x00, 
-  0xdb, 0x29, 0x00, 0x00, 0x66, 0x2a, 0x00, 0x00, 0xc4, 0x2a, 0x00, 0x00, 
-  0x37, 0x2b, 0x00, 0x00, 
+  0x58, 0x2c, 0x00, 0x00, 0xe7, 0x2c, 0x00, 0x00, 0x2e, 0x2d, 0x00, 0x00, 
+  0x59, 0x2d, 0x00, 0x00, 0x89, 0x2d, 0x00, 0x00, 0xaf, 0x2d, 0x00, 0x00, 
+  0xd4, 0x2d, 0x00, 0x00, 0x0a, 0x2e, 0x00, 0x00, 0x76, 0x2e, 0x00, 0x00, 
+  0xbf, 0x2e, 0x00, 0x00, 0x4a, 0x2f, 0x00, 0x00, 0xa8, 0x2f, 0x00, 0x00, 
+  0x1b, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xc7, 0x14, 0x00, 0x00, 0xcf, 0x15, 0x00, 0x00, 
+  0x08, 0x17, 0x00, 0x00, 0xf0, 0x3b, 0x00, 0x00, 0x2b, 0x18, 0x00, 0x00, 
+  0x40, 0x19, 0x00, 0x00, 0x06, 0x1b, 0x00, 0x00, 0x9c, 0x1b, 0x00, 0x00, 
+  0xf0, 0x3b, 0x00, 0x00, 0x5e, 0x1c, 0x00, 0x00, 0xf3, 0x1c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xca, 0x1d, 0x00, 0x00, 0x72, 0x1e, 0x00, 0x00, 
+  0x2b, 0x1f, 0x00, 0x00, 0xec, 0x1f, 0x00, 0x00, 0x5c, 0x20, 0x00, 0x00, 
+  0xf0, 0x20, 0x00, 0x00, 0x95, 0x21, 0x00, 0x00, 0x3a, 0x22, 0x00, 0x00, 
+  0xaf, 0x22, 0x00, 0x00, 0x48, 0x23, 0x00, 0x00, 0xb3, 0x23, 0x00, 0x00, 
+  0x41, 0x24, 0x00, 0x00, 0x8f, 0x24, 0x00, 0x00, 0xec, 0x24, 0x00, 0x00, 
+  0x4f, 0x25, 0x00, 0x00, 0xb2, 0x25, 0x00, 0x00, 0x07, 0x26, 0x00, 0x00, 
+  0x8b, 0x26, 0x00, 0x00, 0x82, 0x2c, 0x00, 0x00, 0xf7, 0x2c, 0x00, 0x00, 
+  0x31, 0x2d, 0x00, 0x00, 0x5c, 0x2d, 0x00, 0x00, 0x8c, 0x2d, 0x00, 0x00, 
+  0xb2, 0x2d, 0x00, 0x00, 0x4e, 0x18, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 
+  0x5b, 0x19, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00, 0x3e, 0x1b, 0x00, 0x00, 
+  0x13, 0x00, 0x00, 0x00, 0xd7, 0x1b, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 
+  0x9e, 0x1c, 0x00, 0x00, 0x15, 0x00, 0x00, 0x00, 0x35, 0x1d, 0x00, 0x00, 
+  0x16, 0x00, 0x00, 0x00, 0xfd, 0x1d, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 
+  0x8b, 0x1e, 0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 0x5a, 0x1f, 0x00, 0x00, 
+  0x18, 0x00, 0x00, 0x00, 0x01, 0x20, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00, 
+  0x8b, 0x20, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00, 0x0f, 0x21, 0x00, 0x00, 
+  0x1b, 0x00, 0x00, 0x00, 0xbc, 0x21, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 
+  0x4b, 0x22, 0x00, 0x00, 0x1d, 0x00, 0x00, 0x00, 0xce, 0x22, 0x00, 0x00, 
+  0x1e, 0x00, 0x00, 0x00, 0x62, 0x23, 0x00, 0x00, 0x1f, 0x00, 0x00, 0x00, 
+  0xc0, 0x23, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x5b, 0x24, 0x00, 0x00, 
+  0x21, 0x00, 0x00, 0x00, 0xaa, 0x24, 0x00, 0x00, 0x22, 0x00, 0x00, 0x00, 
+  0x02, 0x25, 0x00, 0x00, 0x23, 0x00, 0x00, 0x00, 0xdf, 0x14, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x47, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xca, 0x25, 0x00, 0x00, 0x2d, 0x26, 0x00, 0x00, 
+  0x9c, 0x26, 0x00, 0x00, 0xaa, 0x2c, 0x00, 0x00, 0x01, 0x2d, 0x00, 0x00, 
+  0x39, 0x2d, 0x00, 0x00, 0x66, 0x2d, 0x00, 0x00, 0x9b, 0x2d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xe2, 0x14, 0x00, 0x00, 0x25, 0x00, 0x00, 0x00, 
+  0x22, 0x16, 0x00, 0x00, 0x26, 0x00, 0x00, 0x00, 0x50, 0x17, 0x00, 0x00, 
+  0x27, 0x00, 0x00, 0x00, 0x55, 0x18, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 
+  0x6a, 0x19, 0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x44, 0x1b, 0x00, 0x00, 
+  0x2a, 0x00, 0x00, 0x00, 0xe4, 0x1b, 0x00, 0x00, 0x2b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x2e, 0x00, 0x00, 0x00, 0x88, 0x35, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe9, 0x14, 0x00, 0x00, 
+  0x30, 0x00, 0x00, 0x00, 0x29, 0x16, 0x00, 0x00, 0x31, 0x00, 0x00, 0x00, 
+  0x58, 0x17, 0x00, 0x00, 0x32, 0x00, 0x00, 0x00, 0x5c, 0x18, 0x00, 0x00, 
+  0x33, 0x00, 0x00, 0x00, 0x6f, 0x19, 0x00, 0x00, 0x34, 0x00, 0x00, 0x00, 
+  0x4a, 0x1b, 0x00, 0x00, 0x35, 0x00, 0x00, 0x00, 0xf0, 0x1b, 0x00, 0x00, 
+  0x36, 0x00, 0x00, 0x00, 0xb5, 0x1c, 0x00, 0x00, 0x37, 0x00, 0x00, 0x00, 
+  0x57, 0x1d, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x1f, 0x1e, 0x00, 0x00, 
+  0x39, 0x00, 0x00, 0x00, 0xac, 0x1e, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x00, 
+  0x6a, 0x1f, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 0x0e, 0x20, 0x00, 0x00, 
+  0x3c, 0x00, 0x00, 0x00, 0x99, 0x20, 0x00, 0x00, 0x3d, 0x00, 0x00, 0x00, 
+  0x16, 0x21, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 0xc3, 0x21, 0x00, 0x00, 
+  0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x25, 0x00, 0x00, 
+  0x76, 0x25, 0x00, 0x00, 0xcf, 0x25, 0x00, 0x00, 0x35, 0x26, 0x00, 0x00, 
+  0xa4, 0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x78, 0x19, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 
+  0x56, 0x1b, 0x00, 0x00, 0x41, 0x00, 0x00, 0x00, 0xfd, 0x1b, 0x00, 0x00, 
+  0x42, 0x00, 0x00, 0x00, 0xc0, 0x1c, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00, 
+  0x63, 0x1d, 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x29, 0x1e, 0x00, 0x00, 
+  0x45, 0x00, 0x00, 0x00, 0xb9, 0x1e, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00, 
+  0x72, 0x1f, 0x00, 0x00, 0x47, 0x00, 0x00, 0x00, 0x17, 0x20, 0x00, 0x00, 
+  0x48, 0x00, 0x00, 0x00, 0xa6, 0x20, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 
+  0x21, 0x21, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 0xcd, 0x21, 0x00, 0x00, 
+  0x4b, 0x00, 0x00, 0x00, 0x55, 0x22, 0x00, 0x00, 0x4c, 0x00, 0x00, 0x00, 
+  0xe1, 0x22, 0x00, 0x00, 0x4d, 0x00, 0x00, 0x00, 0x75, 0x23, 0x00, 0x00, 
+  0x4e, 0x00, 0x00, 0x00, 0xda, 0x23, 0x00, 0x00, 0x4f, 0x00, 0x00, 0x00, 
+  0x68, 0x24, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0xbd, 0x24, 0x00, 0x00, 
+  0x51, 0x00, 0x00, 0x00, 0x0e, 0x25, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00, 
+  0x7d, 0x25, 0x00, 0x00, 0x53, 0x00, 0x00, 0x00, 0xd4, 0x25, 0x00, 0x00, 
+  0x54, 0x00, 0x00, 0x00, 0xef, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x36, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60, 0x17, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x64, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf2, 0x14, 0x00, 0x00, 
+  0x57, 0x00, 0x00, 0x00, 0x3b, 0x16, 0x00, 0x00, 0x58, 0x00, 0x00, 0x00, 
+  0x6b, 0x17, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00, 0x6f, 0x18, 0x00, 0x00, 
+  0x5a, 0x00, 0x00, 0x00, 0x7c, 0x19, 0x00, 0x00, 0x5b, 0x00, 0x00, 0x00, 
+  0x5b, 0x1b, 0x00, 0x00, 0x5c, 0x00, 0x00, 0x00, 0x02, 0x1c, 0x00, 0x00, 
+  0x5d, 0x00, 0x00, 0x00, 0xc5, 0x1c, 0x00, 0x00, 0x5e, 0x00, 0x00, 0x00, 
+  0x68, 0x1d, 0x00, 0x00, 0x5f, 0x00, 0x00, 0x00, 0x2d, 0x1e, 0x00, 0x00, 
+  0x60, 0x00, 0x00, 0x00, 0xbd, 0x1e, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 
+  0x76, 0x1f, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00, 0x21, 0x20, 0x00, 0x00, 
+  0x63, 0x00, 0x00, 0x00, 0xac, 0x20, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 
+  0x26, 0x21, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 0xd1, 0x21, 0x00, 0x00, 
+  0x66, 0x00, 0x00, 0x00, 0x59, 0x22, 0x00, 0x00, 0x67, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf7, 0x14, 0x00, 0x00, 
+  0x68, 0x00, 0x00, 0x00, 0x40, 0x16, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 
+  0x70, 0x17, 0x00, 0x00, 0x6a, 0x00, 0x00, 0x00, 0x74, 0x18, 0x00, 0x00, 
+  0x6b, 0x00, 0x00, 0x00, 0x83, 0x19, 0x00, 0x00, 0x6c, 0x00, 0x00, 0x00, 
+  0x62, 0x1b, 0x00, 0x00, 0x6d, 0x00, 0x00, 0x00, 0x07, 0x1c, 0x00, 0x00, 
+  0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x75, 0x17, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x7b, 0x18, 0x00, 0x00, 
+  0x71, 0x00, 0x00, 0x00, 0x8a, 0x19, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 
+  0x67, 0x1b, 0x00, 0x00, 0x73, 0x00, 0x00, 0x00, 0x0c, 0x1c, 0x00, 0x00, 
+  0x74, 0x00, 0x00, 0x00, 0x47, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 };
 
 static const u8 data_segment_data_31[] = {
@@ -97237,139 +97341,49 @@ static const u8 data_segment_data_75[] = {
 };
 
 static const u8 data_segment_data_76[] = {
-  0xc7, 0x14, 0x00, 0x00, 0xcf, 0x15, 0x00, 0x00, 0x08, 0x17, 0x00, 0x00, 
-  0x00, 0x37, 0x00, 0x00, 0x2b, 0x18, 0x00, 0x00, 0x40, 0x19, 0x00, 0x00, 
-  0x06, 0x1b, 0x00, 0x00, 0x9c, 0x1b, 0x00, 0x00, 0x00, 0x37, 0x00, 0x00, 
-  0x5e, 0x1c, 0x00, 0x00, 0xf3, 0x1c, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_77[] = {
-  0xca, 0x1d, 0x00, 0x00, 0x72, 0x1e, 0x00, 0x00, 0x2b, 0x1f, 0x00, 0x00, 
-  0xec, 0x1f, 0x00, 0x00, 0x5c, 0x20, 0x00, 0x00, 0xf0, 0x20, 0x00, 0x00, 
-  0x95, 0x21, 0x00, 0x00, 0x3a, 0x22, 0x00, 0x00, 0xaf, 0x22, 0x00, 0x00, 
-  0x48, 0x23, 0x00, 0x00, 0xb3, 0x23, 0x00, 0x00, 0x41, 0x24, 0x00, 0x00, 
-  0x8f, 0x24, 0x00, 0x00, 0xec, 0x24, 0x00, 0x00, 0x4f, 0x25, 0x00, 0x00, 
-  0xb2, 0x25, 0x00, 0x00, 0x07, 0x26, 0x00, 0x00, 0x8b, 0x26, 0x00, 0x00, 
-  0x9e, 0x27, 0x00, 0x00, 0x13, 0x28, 0x00, 0x00, 0x4d, 0x28, 0x00, 0x00, 
-  0x78, 0x28, 0x00, 0x00, 0xa8, 0x28, 0x00, 0x00, 0xce, 0x28, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_78[] = {
-  0x4e, 0x18, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0x5b, 0x19, 0x00, 0x00, 
-  0x12, 0x00, 0x00, 0x00, 0x3e, 0x1b, 0x00, 0x00, 0x13, 0x00, 0x00, 0x00, 
-  0xd7, 0x1b, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x9e, 0x1c, 0x00, 0x00, 
-  0x15, 0x00, 0x00, 0x00, 0x35, 0x1d, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00, 
-  0xfd, 0x1d, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x00, 0x8b, 0x1e, 0x00, 0x00, 
-  0x17, 0x00, 0x00, 0x00, 0x5a, 0x1f, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 
-  0x01, 0x20, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00, 0x8b, 0x20, 0x00, 0x00, 
-  0x1a, 0x00, 0x00, 0x00, 0x0f, 0x21, 0x00, 0x00, 0x1b, 0x00, 0x00, 0x00, 
-  0xbc, 0x21, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x4b, 0x22, 0x00, 0x00, 
-  0x1d, 0x00, 0x00, 0x00, 0xce, 0x22, 0x00, 0x00, 0x1e, 0x00, 0x00, 0x00, 
-  0x62, 0x23, 0x00, 0x00, 0x1f, 0x00, 0x00, 0x00, 0xc0, 0x23, 0x00, 0x00, 
-  0x20, 0x00, 0x00, 0x00, 0x5b, 0x24, 0x00, 0x00, 0x21, 0x00, 0x00, 0x00, 
-  0xaa, 0x24, 0x00, 0x00, 0x22, 0x00, 0x00, 0x00, 0x02, 0x25, 0x00, 0x00, 
-  0x23, 0x00, 0x00, 0x00, 0xdf, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x47, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_79[] = {
-  0xca, 0x25, 0x00, 0x00, 0x2d, 0x26, 0x00, 0x00, 0x9c, 0x26, 0x00, 0x00, 
-  0xc6, 0x27, 0x00, 0x00, 0x1d, 0x28, 0x00, 0x00, 0x55, 0x28, 0x00, 0x00, 
-  0x82, 0x28, 0x00, 0x00, 0xb7, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_80[] = {
   0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 
   0x03, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 
   0x07, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_81[] = {
-  0xe2, 0x14, 0x00, 0x00, 0x25, 0x00, 0x00, 0x00, 0x22, 0x16, 0x00, 0x00, 
-  0x26, 0x00, 0x00, 0x00, 0x50, 0x17, 0x00, 0x00, 0x27, 0x00, 0x00, 0x00, 
-  0x55, 0x18, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x6a, 0x19, 0x00, 0x00, 
-  0x29, 0x00, 0x00, 0x00, 0x44, 0x1b, 0x00, 0x00, 0x2a, 0x00, 0x00, 0x00, 
-  0xe4, 0x1b, 0x00, 0x00, 0x2b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+static const u8 data_segment_data_77[] = {
+  0x40, 0x29, 0x00, 0x00, 
+};
+
+static const u8 data_segment_data_78[] = {
   0x00, 0x00, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_82[] = {
-  0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x2e, 0x00, 0x00, 0x00, 0x98, 0x30, 0x00, 0x00, 
-  0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_83[] = {
-  0xf0, 0x38, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_84[] = {
-  0xe9, 0x14, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x29, 0x16, 0x00, 0x00, 
-  0x31, 0x00, 0x00, 0x00, 0x58, 0x17, 0x00, 0x00, 0x32, 0x00, 0x00, 0x00, 
-  0x5c, 0x18, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x6f, 0x19, 0x00, 0x00, 
-  0x34, 0x00, 0x00, 0x00, 0x4a, 0x1b, 0x00, 0x00, 0x35, 0x00, 0x00, 0x00, 
-  0xf0, 0x1b, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0xb5, 0x1c, 0x00, 0x00, 
-  0x37, 0x00, 0x00, 0x00, 0x57, 0x1d, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 
-  0x1f, 0x1e, 0x00, 0x00, 0x39, 0x00, 0x00, 0x00, 0xac, 0x1e, 0x00, 0x00, 
-  0x3a, 0x00, 0x00, 0x00, 0x6a, 0x1f, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 
-  0x0e, 0x20, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x99, 0x20, 0x00, 0x00, 
-  0x3d, 0x00, 0x00, 0x00, 0x16, 0x21, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 
-  0xc3, 0x21, 0x00, 0x00, 0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_85[] = {
-  0x00, 0x00, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_86[] = {
-  0x09, 0x25, 0x00, 0x00, 0x76, 0x25, 0x00, 0x00, 0xcf, 0x25, 0x00, 0x00, 
-  0x35, 0x26, 0x00, 0x00, 0xa4, 0x26, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_87[] = {
+static const u8 data_segment_data_79[] = {
   0x4f, 0xbb, 0x61, 0x05, 0x67, 0xac, 0xdd, 0x3f, 0x18, 0x2d, 0x44, 0x54, 
   0xfb, 0x21, 0xe9, 0x3f, 0x9b, 0xf6, 0x81, 0xd2, 0x0b, 0x73, 0xef, 0x3f, 
   0x18, 0x2d, 0x44, 0x54, 0xfb, 0x21, 0xf9, 0x3f, 
 };
 
-static const u8 data_segment_data_88[] = {
+static const u8 data_segment_data_80[] = {
   0xe2, 0x65, 0x2f, 0x22, 0x7f, 0x2b, 0x7a, 0x3c, 0x07, 0x5c, 0x14, 0x33, 
   0x26, 0xa6, 0x81, 0x3c, 0xbd, 0xcb, 0xf0, 0x7a, 0x88, 0x07, 0x70, 0x3c, 
   0x07, 0x5c, 0x14, 0x33, 0x26, 0xa6, 0x91, 0x3c, 
 };
 
-static const u8 data_segment_data_89[] = {
+static const u8 data_segment_data_81[] = {
   0xd2, 0x21, 0x33, 0x7f, 0x7c, 0xd9, 0x02, 0x40, 0xd2, 0x21, 0x33, 0x7f, 
   0x7c, 0xd9, 0x02, 0xc0, 0x18, 0x2d, 0x44, 0x54, 0xfb, 0x21, 0xe9, 0x3f, 
   0x18, 0x2d, 0x44, 0x54, 0xfb, 0x21, 0xe9, 0xbf, 
 };
 
-static const u8 data_segment_data_90[] = {
+static const u8 data_segment_data_82[] = {
   0x18, 0x2d, 0x44, 0x54, 0xfb, 0x21, 0x09, 0x40, 0x18, 0x2d, 0x44, 0x54, 
   0xfb, 0x21, 0x09, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 
 };
 
-static const u8 data_segment_data_91[] = {
+static const u8 data_segment_data_83[] = {
   0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
   0x06, 0x00, 0x00, 0x00, 
 };
 
-static const u8 data_segment_data_92[] = {
+static const u8 data_segment_data_84[] = {
   0x83, 0xf9, 0xa2, 0x00, 0x44, 0x4e, 0x6e, 0x00, 0xfc, 0x29, 0x15, 0x00, 
   0xd1, 0x57, 0x27, 0x00, 0xdd, 0x34, 0xf5, 0x00, 0x62, 0xdb, 0xc0, 0x00, 
   0x3c, 0x99, 0x95, 0x00, 0x41, 0x90, 0x43, 0x00, 0x63, 0x51, 0xfe, 0x00, 
@@ -97603,7 +97617,7 @@ static const u8 data_segment_data_92[] = {
   
 };
 
-static const u8 data_segment_data_93[] = {
+static const u8 data_segment_data_85[] = {
   0x00, 0x00, 0x00, 0x40, 0xfb, 0x21, 0xf9, 0x3f, 0x00, 0x00, 0x00, 0x00, 
   0x2d, 0x44, 0x74, 0x3e, 0x00, 0x00, 0x00, 0x80, 0x98, 0x46, 0xf8, 0x3c, 
   0x00, 0x00, 0x00, 0x60, 0x51, 0xcc, 0x78, 0x3b, 0x00, 0x00, 0x00, 0x80, 
@@ -97612,105 +97626,51 @@ static const u8 data_segment_data_93[] = {
   0x1d, 0xf3, 0x69, 0x35, 
 };
 
-static const u8 data_segment_data_94[] = {
+static const u8 data_segment_data_86[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x3f, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0xe0, 0xbf, 
 };
 
-static const u8 data_segment_data_95[] = {
-  0x78, 0x19, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x56, 0x1b, 0x00, 0x00, 
-  0x41, 0x00, 0x00, 0x00, 0xfd, 0x1b, 0x00, 0x00, 0x42, 0x00, 0x00, 0x00, 
-  0xc0, 0x1c, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00, 0x63, 0x1d, 0x00, 0x00, 
-  0x44, 0x00, 0x00, 0x00, 0x29, 0x1e, 0x00, 0x00, 0x45, 0x00, 0x00, 0x00, 
-  0xb9, 0x1e, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00, 0x72, 0x1f, 0x00, 0x00, 
-  0x47, 0x00, 0x00, 0x00, 0x17, 0x20, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 
-  0xa6, 0x20, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x21, 0x21, 0x00, 0x00, 
-  0x4a, 0x00, 0x00, 0x00, 0xcd, 0x21, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x00, 
-  0x55, 0x22, 0x00, 0x00, 0x4c, 0x00, 0x00, 0x00, 0xe1, 0x22, 0x00, 0x00, 
-  0x4d, 0x00, 0x00, 0x00, 0x75, 0x23, 0x00, 0x00, 0x4e, 0x00, 0x00, 0x00, 
-  0xda, 0x23, 0x00, 0x00, 0x4f, 0x00, 0x00, 0x00, 0x68, 0x24, 0x00, 0x00, 
-  0x50, 0x00, 0x00, 0x00, 0xbd, 0x24, 0x00, 0x00, 0x51, 0x00, 0x00, 0x00, 
-  0x0e, 0x25, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00, 0x7d, 0x25, 0x00, 0x00, 
-  0x53, 0x00, 0x00, 0x00, 0xd4, 0x25, 0x00, 0x00, 0x54, 0x00, 0x00, 0x00, 
-  0xef, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x16, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x60, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x64, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_96[] = {
-  0xf2, 0x14, 0x00, 0x00, 0x57, 0x00, 0x00, 0x00, 0x3b, 0x16, 0x00, 0x00, 
-  0x58, 0x00, 0x00, 0x00, 0x6b, 0x17, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00, 
-  0x6f, 0x18, 0x00, 0x00, 0x5a, 0x00, 0x00, 0x00, 0x7c, 0x19, 0x00, 0x00, 
-  0x5b, 0x00, 0x00, 0x00, 0x5b, 0x1b, 0x00, 0x00, 0x5c, 0x00, 0x00, 0x00, 
-  0x02, 0x1c, 0x00, 0x00, 0x5d, 0x00, 0x00, 0x00, 0xc5, 0x1c, 0x00, 0x00, 
-  0x5e, 0x00, 0x00, 0x00, 0x68, 0x1d, 0x00, 0x00, 0x5f, 0x00, 0x00, 0x00, 
-  0x2d, 0x1e, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0xbd, 0x1e, 0x00, 0x00, 
-  0x61, 0x00, 0x00, 0x00, 0x76, 0x1f, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00, 
-  0x21, 0x20, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 0xac, 0x20, 0x00, 0x00, 
-  0x64, 0x00, 0x00, 0x00, 0x26, 0x21, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 
-  0xd1, 0x21, 0x00, 0x00, 0x66, 0x00, 0x00, 0x00, 0x59, 0x22, 0x00, 0x00, 
-  0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  
-};
-
-static const u8 data_segment_data_97[] = {
+static const u8 data_segment_data_87[] = {
   0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x20, 0x66, 0x6f, 0x72, 0x6d, 
   0x61, 0x74, 0x20, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x27, 0x25, 
   0x63, 0x27, 0x00, 
 };
 
-static const u8 data_segment_data_98[] = {
+static const u8 data_segment_data_88[] = {
   0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x20, 0x72, 0x65, 0x73, 0x75, 0x6c, 
   0x74, 0x20, 0x74, 0x6f, 0x6f, 0x20, 0x6c, 0x61, 0x72, 0x67, 0x65, 0x00, 
   
 };
 
-static const u8 data_segment_data_99[] = {
+static const u8 data_segment_data_89[] = {
   0x69, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x20, 0x70, 0x6f, 0x73, 0x69, 
   0x74, 0x69, 0x6f, 0x6e, 0x20, 0x6f, 0x75, 0x74, 0x20, 0x6f, 0x66, 0x20, 
   0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 
 };
 
-static const u8 data_segment_data_100[] = {
+static const u8 data_segment_data_90[] = {
   0x64, 0x61, 0x74, 0x61, 0x20, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x20, 
   0x74, 0x6f, 0x6f, 0x20, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x00, 
 };
 
-static const u8 data_segment_data_101[] = {
+static const u8 data_segment_data_91[] = {
   0x74, 0x6f, 0x6f, 0x20, 0x6d, 0x61, 0x6e, 0x79, 0x20, 0x72, 0x65, 0x73, 
   0x75, 0x6c, 0x74, 0x73, 0x00, 
 };
 
-static const u8 data_segment_data_102[] = {
+static const u8 data_segment_data_92[] = {
   0x25, 0x64, 0x2d, 0x62, 0x79, 0x74, 0x65, 0x20, 0x69, 0x6e, 0x74, 0x65, 
   0x67, 0x65, 0x72, 0x20, 0x64, 0x6f, 0x65, 0x73, 0x20, 0x6e, 0x6f, 0x74, 
   0x20, 0x66, 0x69, 0x74, 0x20, 0x69, 0x6e, 0x74, 0x6f, 0x20, 0x4c, 0x75, 
   0x61, 0x20, 0x49, 0x6e, 0x74, 0x65, 0x67, 0x65, 0x72, 0x00, 
 };
 
-static const u8 data_segment_data_103[] = {
+static const u8 data_segment_data_93[] = {
   0x5f, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x00, 
 };
 
-static const u8 data_segment_data_104[] = {
-  0xf7, 0x14, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x40, 0x16, 0x00, 0x00, 
-  0x69, 0x00, 0x00, 0x00, 0x70, 0x17, 0x00, 0x00, 0x6a, 0x00, 0x00, 0x00, 
-  0x74, 0x18, 0x00, 0x00, 0x6b, 0x00, 0x00, 0x00, 0x83, 0x19, 0x00, 0x00, 
-  0x6c, 0x00, 0x00, 0x00, 0x62, 0x1b, 0x00, 0x00, 0x6d, 0x00, 0x00, 0x00, 
-  0x07, 0x1c, 0x00, 0x00, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_105[] = {
-  0x75, 0x17, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x7b, 0x18, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x8a, 0x19, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 
-  0x67, 0x1b, 0x00, 0x00, 0x73, 0x00, 0x00, 0x00, 0x0c, 0x1c, 0x00, 0x00, 
-  0x74, 0x00, 0x00, 0x00, 0x47, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-};
-
-static const u8 data_segment_data_106[] = {
+static const u8 data_segment_data_94[] = {
   0xff, 0x00, 0x00, 0x00, 0x7f, 0x00, 0x00, 0x00, 0xff, 0x07, 0x00, 0x00, 
   0xff, 0xff, 0x00, 0x00, 
 };
@@ -97747,83 +97707,71 @@ static void init_memory(void) {
   memcpy(&(M0.data[9619u]), data_segment_data_27, 94);
   memcpy(&(M0.data[9713u]), data_segment_data_28, 126);
   memcpy(&(M0.data[9839u]), data_segment_data_29, 113);
-  memcpy(&(M0.data[9952u]), data_segment_data_30, 148);
-  memcpy(&(M0.data[10100u]), data_segment_data_31, 143);
-  memcpy(&(M0.data[10243u]), data_segment_data_32, 71);
-  memcpy(&(M0.data[10314u]), data_segment_data_33, 43);
-  memcpy(&(M0.data[10357u]), data_segment_data_34, 48);
-  memcpy(&(M0.data[10405u]), data_segment_data_35, 38);
-  memcpy(&(M0.data[10443u]), data_segment_data_36, 37);
-  memcpy(&(M0.data[10480u]), data_segment_data_37, 54);
-  memcpy(&(M0.data[10534u]), data_segment_data_38, 108);
-  memcpy(&(M0.data[10642u]), data_segment_data_39, 73);
-  memcpy(&(M0.data[10715u]), data_segment_data_40, 139);
-  memcpy(&(M0.data[10854u]), data_segment_data_41, 94);
-  memcpy(&(M0.data[10948u]), data_segment_data_42, 115);
-  memcpy(&(M0.data[11063u]), data_segment_data_43, 41);
-  memcpy(&(M0.data[11104u]), data_segment_data_44, 31);
-  memcpy(&(M0.data[11135u]), data_segment_data_45, 96);
-  memcpy(&(M0.data[11231u]), data_segment_data_46, 81);
-  memcpy(&(M0.data[11312u]), data_segment_data_47, 67);
-  memcpy(&(M0.data[11379u]), data_segment_data_48, 83);
-  memcpy(&(M0.data[11462u]), data_segment_data_49, 80);
-  memcpy(&(M0.data[11542u]), data_segment_data_50, 127);
-  memcpy(&(M0.data[11669u]), data_segment_data_51, 102);
-  memcpy(&(M0.data[11771u]), data_segment_data_52, 80);
-  memcpy(&(M0.data[11851u]), data_segment_data_53, 92);
-  memcpy(&(M0.data[11943u]), data_segment_data_54, 71);
-  memcpy(&(M0.data[12014u]), data_segment_data_55, 68);
-  memcpy(&(M0.data[12082u]), data_segment_data_56, 97);
-  memcpy(&(M0.data[12179u]), data_segment_data_57, 66);
-  memcpy(&(M0.data[12245u]), data_segment_data_58, 38);
-  memcpy(&(M0.data[12283u]), data_segment_data_59, 43);
-  memcpy(&(M0.data[12326u]), data_segment_data_60, 40);
-  memcpy(&(M0.data[12368u]), data_segment_data_61, 16);
-  memcpy(&(M0.data[12384u]), data_segment_data_62, 16);
-  memcpy(&(M0.data[12400u]), data_segment_data_63, 16);
-  memcpy(&(M0.data[12416u]), data_segment_data_64, 1072);
-  memcpy(&(M0.data[13488u]), data_segment_data_65, 32);
-  memcpy(&(M0.data[13520u]), data_segment_data_66, 12);
-  memcpy(&(M0.data[13532u]), data_segment_data_67, 12);
-  memcpy(&(M0.data[13544u]), data_segment_data_68, 56);
-  memcpy(&(M0.data[13600u]), data_segment_data_69, 80);
-  memcpy(&(M0.data[13680u]), data_segment_data_70, 16);
-  memcpy(&(M0.data[13696u]), data_segment_data_71, 256);
-  memcpy(&(M0.data[13952u]), data_segment_data_72, 47);
-  memcpy(&(M0.data[14000u]), data_segment_data_73, 42);
-  memcpy(&(M0.data[14048u]), data_segment_data_74, 32);
-  memcpy(&(M0.data[14080u]), data_segment_data_75, 9);
-  memcpy(&(M0.data[14096u]), data_segment_data_76, 44);
-  memcpy(&(M0.data[14144u]), data_segment_data_77, 96);
-  memcpy(&(M0.data[14240u]), data_segment_data_78, 184);
-  memcpy(&(M0.data[14432u]), data_segment_data_79, 36);
-  memcpy(&(M0.data[14480u]), data_segment_data_80, 32);
-  memcpy(&(M0.data[14512u]), data_segment_data_81, 64);
-  memcpy(&(M0.data[14576u]), data_segment_data_82, 144);
-  memcpy(&(M0.data[14720u]), data_segment_data_83, 4);
-  memcpy(&(M0.data[14736u]), data_segment_data_84, 136);
-  memcpy(&(M0.data[14872u]), data_segment_data_85, 4);
-  memcpy(&(M0.data[14880u]), data_segment_data_86, 20);
-  memcpy(&(M0.data[14912u]), data_segment_data_87, 32);
-  memcpy(&(M0.data[14944u]), data_segment_data_88, 32);
-  memcpy(&(M0.data[14976u]), data_segment_data_89, 32);
-  memcpy(&(M0.data[15008u]), data_segment_data_90, 32);
-  memcpy(&(M0.data[15040u]), data_segment_data_91, 16);
-  memcpy(&(M0.data[15056u]), data_segment_data_92, 2760);
-  memcpy(&(M0.data[17824u]), data_segment_data_93, 64);
-  memcpy(&(M0.data[17888u]), data_segment_data_94, 16);
-  memcpy(&(M0.data[17904u]), data_segment_data_95, 208);
-  memcpy(&(M0.data[18112u]), data_segment_data_96, 144);
-  memcpy(&(M0.data[18256u]), data_segment_data_97, 27);
-  memcpy(&(M0.data[18283u]), data_segment_data_98, 24);
-  memcpy(&(M0.data[18307u]), data_segment_data_99, 31);
-  memcpy(&(M0.data[18338u]), data_segment_data_100, 22);
-  memcpy(&(M0.data[18360u]), data_segment_data_101, 17);
-  memcpy(&(M0.data[18377u]), data_segment_data_102, 46);
-  memcpy(&(M0.data[18423u]), data_segment_data_103, 8);
-  memcpy(&(M0.data[18432u]), data_segment_data_104, 64);
-  memcpy(&(M0.data[18496u]), data_segment_data_105, 56);
-  memcpy(&(M0.data[18560u]), data_segment_data_106, 16);
+  memcpy(&(M0.data[9952u]), data_segment_data_30, 1400);
+  memcpy(&(M0.data[11352u]), data_segment_data_31, 143);
+  memcpy(&(M0.data[11495u]), data_segment_data_32, 71);
+  memcpy(&(M0.data[11566u]), data_segment_data_33, 43);
+  memcpy(&(M0.data[11609u]), data_segment_data_34, 48);
+  memcpy(&(M0.data[11657u]), data_segment_data_35, 38);
+  memcpy(&(M0.data[11695u]), data_segment_data_36, 37);
+  memcpy(&(M0.data[11732u]), data_segment_data_37, 54);
+  memcpy(&(M0.data[11786u]), data_segment_data_38, 108);
+  memcpy(&(M0.data[11894u]), data_segment_data_39, 73);
+  memcpy(&(M0.data[11967u]), data_segment_data_40, 139);
+  memcpy(&(M0.data[12106u]), data_segment_data_41, 94);
+  memcpy(&(M0.data[12200u]), data_segment_data_42, 115);
+  memcpy(&(M0.data[12315u]), data_segment_data_43, 41);
+  memcpy(&(M0.data[12356u]), data_segment_data_44, 31);
+  memcpy(&(M0.data[12387u]), data_segment_data_45, 96);
+  memcpy(&(M0.data[12483u]), data_segment_data_46, 81);
+  memcpy(&(M0.data[12564u]), data_segment_data_47, 67);
+  memcpy(&(M0.data[12631u]), data_segment_data_48, 83);
+  memcpy(&(M0.data[12714u]), data_segment_data_49, 80);
+  memcpy(&(M0.data[12794u]), data_segment_data_50, 127);
+  memcpy(&(M0.data[12921u]), data_segment_data_51, 102);
+  memcpy(&(M0.data[13023u]), data_segment_data_52, 80);
+  memcpy(&(M0.data[13103u]), data_segment_data_53, 92);
+  memcpy(&(M0.data[13195u]), data_segment_data_54, 71);
+  memcpy(&(M0.data[13266u]), data_segment_data_55, 68);
+  memcpy(&(M0.data[13334u]), data_segment_data_56, 97);
+  memcpy(&(M0.data[13431u]), data_segment_data_57, 66);
+  memcpy(&(M0.data[13497u]), data_segment_data_58, 38);
+  memcpy(&(M0.data[13535u]), data_segment_data_59, 43);
+  memcpy(&(M0.data[13578u]), data_segment_data_60, 40);
+  memcpy(&(M0.data[13632u]), data_segment_data_61, 16);
+  memcpy(&(M0.data[13648u]), data_segment_data_62, 16);
+  memcpy(&(M0.data[13664u]), data_segment_data_63, 16);
+  memcpy(&(M0.data[13680u]), data_segment_data_64, 1072);
+  memcpy(&(M0.data[14752u]), data_segment_data_65, 32);
+  memcpy(&(M0.data[14784u]), data_segment_data_66, 12);
+  memcpy(&(M0.data[14796u]), data_segment_data_67, 12);
+  memcpy(&(M0.data[14808u]), data_segment_data_68, 56);
+  memcpy(&(M0.data[14864u]), data_segment_data_69, 80);
+  memcpy(&(M0.data[14944u]), data_segment_data_70, 16);
+  memcpy(&(M0.data[14960u]), data_segment_data_71, 256);
+  memcpy(&(M0.data[15216u]), data_segment_data_72, 47);
+  memcpy(&(M0.data[15264u]), data_segment_data_73, 42);
+  memcpy(&(M0.data[15312u]), data_segment_data_74, 32);
+  memcpy(&(M0.data[15344u]), data_segment_data_75, 9);
+  memcpy(&(M0.data[15360u]), data_segment_data_76, 32);
+  memcpy(&(M0.data[15392u]), data_segment_data_77, 4);
+  memcpy(&(M0.data[15396u]), data_segment_data_78, 4);
+  memcpy(&(M0.data[15408u]), data_segment_data_79, 32);
+  memcpy(&(M0.data[15440u]), data_segment_data_80, 32);
+  memcpy(&(M0.data[15472u]), data_segment_data_81, 32);
+  memcpy(&(M0.data[15504u]), data_segment_data_82, 32);
+  memcpy(&(M0.data[15536u]), data_segment_data_83, 16);
+  memcpy(&(M0.data[15552u]), data_segment_data_84, 2760);
+  memcpy(&(M0.data[18320u]), data_segment_data_85, 64);
+  memcpy(&(M0.data[18384u]), data_segment_data_86, 16);
+  memcpy(&(M0.data[18400u]), data_segment_data_87, 27);
+  memcpy(&(M0.data[18427u]), data_segment_data_88, 24);
+  memcpy(&(M0.data[18451u]), data_segment_data_89, 31);
+  memcpy(&(M0.data[18482u]), data_segment_data_90, 22);
+  memcpy(&(M0.data[18504u]), data_segment_data_91, 17);
+  memcpy(&(M0.data[18521u]), data_segment_data_92, 46);
+  memcpy(&(M0.data[18567u]), data_segment_data_93, 8);
+  memcpy(&(M0.data[18576u]), data_segment_data_94, 16);
 }
 
 static void init_table(void) {

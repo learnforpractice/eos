@@ -176,6 +176,9 @@ with open('micropython.c.bin', 'w') as f:
 
 with open('micropython_eosio.c.bin', 'r') as f:
     data = f.read()
+    origin, patch = header_patch
+    data = patch_micropython(data, origin, patch)
+
     data = data.replace('void WASM_RT_ADD_PREFIX(init)(void)', 'void WASM_RT_ADD_PREFIX(init_eosio)(void)')
     data = data.replace('posix_memalign', '_posix_memalign')
     data = data.replace('__fpclassifyl', '____fpclassifyl')
