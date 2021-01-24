@@ -38,8 +38,8 @@ extern "C" int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint6
 namespace eosio { namespace chain {
    using namespace webassembly::common;
 
-   wasm_interface::wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config)
-     : my( new wasm_interface_impl(vm, eosvmoc_tierup, d, data_dir, eosvmoc_config) ) {}
+   wasm_interface::wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_api& api)
+     : my( new wasm_interface_impl(vm, eosvmoc_tierup, d, data_dir, eosvmoc_config, api) ) {}
 
    wasm_interface::~wasm_interface() {}
 

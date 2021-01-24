@@ -60,6 +60,7 @@ add_library( eosio_chain
              block_state.cpp
              fork_database.cpp
              controller.cpp
+             chain_api.cpp
              authorization_manager.cpp
              resource_limits.cpp
              block_log.cpp

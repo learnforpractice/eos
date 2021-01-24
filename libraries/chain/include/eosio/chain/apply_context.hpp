@@ -2,6 +2,8 @@
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/transaction.hpp>
 #include <eosio/chain/contract_table_objects.hpp>
+#include <eosio/chain/chain_api.hpp>
+
 #include <fc/utility.hpp>
 #include <sstream>
 #include <algorithm>
@@ -582,7 +584,7 @@ class apply_context {
       controller&                   control;
       chainbase::database&          db;  ///< database where state is stored
       transaction_context&          trx_context; ///< transaction context in which the action is running
-
+      eosio::chain::chain_api&      api;
    private:
       const action*                 act = nullptr; ///< action being applied
       // act pointer may be invalidated on call to trx_context.schedule_action

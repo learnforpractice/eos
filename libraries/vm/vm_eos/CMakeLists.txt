@@ -89,7 +89,7 @@ set_target_properties(vm_eos  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 # set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
 
-target_link_libraries( vm_eos fc chainbase Logging IR WAST WASM Runtime
+target_link_libraries( vm_eos fc Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
                        vm_api chain_api
                        )

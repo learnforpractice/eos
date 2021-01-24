@@ -19,7 +19,7 @@ namespace eosio { namespace chain {
          /* Sets a callback for when timer expires. Be aware this could might fire from a signal handling context and/or
             on any particular thread. Only a single callback can be registered at once; trying to register more will
             result in an exception. Use nullptr to disable a previously set callback. */
-         void set_expiration_callback(void(*func)(void*), void* user);
+         virtual void set_expiration_callback(void(*func)(void*), void* user);
 
          std::atomic_bool& expired;
       private:
@@ -58,10 +58,10 @@ namespace eosio { namespace chain {
 
          void check_net_usage()const;
 
-         void checktime()const;
+         virtual void checktime()const;
 
-         void pause_billing_timer();
-         void resume_billing_timer();
+         virtual void pause_billing_timer();
+         virtual void resume_billing_timer();
 
          uint32_t update_billed_cpu_time( fc::time_point now );
 

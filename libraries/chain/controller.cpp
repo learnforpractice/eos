@@ -26,6 +26,7 @@
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/vm_manager.hpp>
 #include <eosio/chain/platform_timer.hpp>
+#include <eosio/chain/chain_api.hpp>
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -37,12 +38,7 @@
 #include <chain_api.hpp>
 #include "db_interface.hpp"
 
-extern "C" void eos_vm_interface_init(int type);
-
 namespace eosio { namespace chain {
-
-void apply_eosio_addaccounts(apply_context&);
-
 
 using resource_limits::resource_limits_manager;
 
@@ -233,6 +229,7 @@ struct controller_impl {
 
    reset_new_handler              rnh; // placed here to allow for this to be set before constructing the other fields
    controller&                    self;
+   eosio::chain::chain_api        api;
    chainbase::database            db;
    chainbase::database            ro_db;
    chainbase::database            reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
@@ -310,6 +307,7 @@ struct controller_impl {
    controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
    :rnh(),
     self(s),
+    api(cfg, s),
     db( cfg.state_dir,
         cfg.read_only ? database::read_only : database::read_write,
         cfg.state_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
@@ -321,7 +319,7 @@ struct controller_impl {
         cfg.reversible_cache_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
-    wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+    wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config, api ),
     vmif( db ),
     dbif( db ), 
     resource_limits( db ),
@@ -332,7 +330,6 @@ struct controller_impl {
     read_mode( cfg.read_mode ),
     thread_pool( "chain", cfg.thread_pool_size )
    {
-      eos_vm_interface_init((int)cfg.wasm_runtime);
       fork_db.open( [this]( block_timestamp_type timestamp,
                             const flat_set<digest_type>& cur_features,
                             const vector<digest_type>& new_features )
@@ -2524,6 +2521,10 @@ chainbase::database& controller::get_db(bool read_only)const {
 }
 
 const fork_database& controller::fork_db()const { return my->fork_db; }
+
+eosio::chain::chain_api& controller::api() {
+   return my->api;
+}
 
 void controller::preactivate_feature( const digest_type& feature_digest ) {
    const auto& pfs = my->protocol_features.get_protocol_feature_set();

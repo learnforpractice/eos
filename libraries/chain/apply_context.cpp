@@ -41,6 +41,7 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 :control(con)
 ,db(con.mutable_db())
 ,trx_context(trx_ctx)
+,api(con.api())
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)

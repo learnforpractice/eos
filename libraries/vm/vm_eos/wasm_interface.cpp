@@ -1,11 +1,13 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/controller.hpp>
+#include <eosio/chain/chain_api.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/producer_schedule.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <boost/core/ignore_unused.hpp>
 #include <eosio/chain/authorization_manager.hpp>
 #include <eosio/chain/resource_limits.hpp>
+#include <eosio/chain/wasm_interface_private.hpp>
 #include <eosio/chain/wasm_eosio_validation.hpp>
 #include <eosio/chain/wasm_eosio_injection.hpp>
 #include <eosio/chain/global_property_object.hpp>
@@ -15,6 +17,7 @@
 #include <fc/crypto/sha256.hpp>
 #include <fc/crypto/sha1.hpp>
 #include <fc/io/raw.hpp>
+
 
 #include <softfloat.hpp>
 #include <compiler_builtins.hpp>
@@ -31,8 +34,6 @@
 
 #include <eosio/chain/evm.hpp>
 
-#include "wasm_interface_private.hpp"
-
 extern "C" int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint64_t action);
 
 #define API() get_vm_api()
@@ -40,8 +41,8 @@ extern "C" int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint6
 namespace eosio { namespace chain {
    using namespace webassembly::common;
 
-   wasm_interface::wasm_interface(vm_type vm, bool eosvmoc_tierup, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config)
-     : my( new wasm_interface_impl(vm, eosvmoc_tierup, data_dir, eosvmoc_config) ) {}
+   wasm_interface::wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_api& api)
+     : my( new wasm_interface_impl(vm, eosvmoc_tierup, d, data_dir, eosvmoc_config, api) ) {}
 
    wasm_interface::~wasm_interface() {}
 
@@ -1911,10 +1912,9 @@ using namespace eosio::chain::webassembly::common;
 static wasm_interface *interface = nullptr;
 
 extern "C" {
-    void eos_vm_interface_init(int vmtype) {
+    void eos_vm_interface_init(int vmtype, eosio::chain::chain_api& api) {
         if (interface == nullptr) {
-            eosio::chain::eosvmoc::config cfg;
-            interface = new wasm_interface((wasm_interface::vm_type)vmtype, false, boost::filesystem::path("dd"), cfg);
+            interface = new wasm_interface((wasm_interface::vm_type)vmtype, api.conf.eosvmoc_tierup, api.db(), api.state_dir(), api.conf.eosvmoc_config, api);
         }
     }
 

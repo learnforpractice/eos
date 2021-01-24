@@ -28,6 +28,9 @@
 #define _REGISTER_EOS_VM_INTRINSIC(CLS, MOD, METHOD, WASM_SIG, NAME, SIG)
 #endif
 
+#include <eosio/chain/chain_api.hpp>
+#include <chain_api.hpp>
+
 using namespace fc;
 using namespace eosio::chain::webassembly;
 using namespace IR;
@@ -61,7 +64,7 @@ namespace eosio { namespace chain {
       };
 #endif
 
-      wasm_interface_impl(wasm_interface::vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config) : db(d), wasm_runtime_time(vm) {
+      wasm_interface_impl(wasm_interface::vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_api& api) : db(d), wasm_runtime_time(vm), api(api) {
          if(vm == wasm_interface::vm_type::wabt)
             runtime_interface = std::make_unique<webassembly::wabt_runtime::wabt_runtime>();
 #ifdef EOSIO_EOS_VM_RUNTIME_ENABLED
@@ -137,13 +140,17 @@ namespace eosio { namespace chain {
       {
          wasm_cache_index::iterator it = wasm_instantiation_cache.find(
                                              boost::make_tuple(code_hash, vm_type, vm_version) );
-         const code_object* codeobject = nullptr;
-         if(it == wasm_instantiation_cache.end()) {
-            codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+//         const code_object* codeobject = nullptr;
+         const char *contract_code = nullptr;
+         size_t contract_size = 0;
+         uint32_t first_block_used = 0;
 
+         if(it == wasm_instantiation_cache.end()) {
+//            codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+            api.get_code_by_code_hash(code_hash, vm_type, vm_version, &contract_code, &contract_size, &first_block_used);
             it = wasm_instantiation_cache.emplace( wasm_interface_impl::wasm_cache_entry{
                                                       .code_hash = code_hash,
-                                                      .first_block_num_used = codeobject->first_block_used,
+                                                      .first_block_num_used = first_block_used,
                                                       .last_block_num_used = UINT32_MAX,
                                                       .module = nullptr,
                                                       .vm_type = vm_type,
@@ -152,8 +159,11 @@ namespace eosio { namespace chain {
          }
 
          if(!it->module) {
-            if(!codeobject)
-               codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+            // if(!codeobject)
+//               codeobject = &db.get<code_object,by_code_hash>(boost::make_tuple(code_hash, vm_type, vm_version));
+            if(!contract_code) {
+               api.get_code_by_code_hash(code_hash, vm_type, vm_version, &contract_code, &contract_size, &first_block_used);
+            }
 
             auto timer_pause = fc::make_scoped_exit([&](){
                trx_context.resume_billing_timer();
@@ -161,8 +171,8 @@ namespace eosio { namespace chain {
             trx_context.pause_billing_timer();
             IR::Module module;
             std::vector<U8> bytes = {
-                (const U8*)codeobject->code.data(),
-                (const U8*)codeobject->code.data() + codeobject->code.size()};
+                (const U8*)contract_code,
+                (const U8*)contract_code + contract_size};
             try {
                Serialization::MemoryInputStream stream((const U8*)bytes.data(),
                                                        bytes.size());
@@ -215,6 +225,7 @@ namespace eosio { namespace chain {
 
       const chainbase::database& db;
       const wasm_interface::vm_type wasm_runtime_time;
+      eosio::chain::chain_api& api;
 
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
       fc::optional<eosvmoc_tier> eosvmoc;
