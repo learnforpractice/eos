@@ -2,6 +2,8 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
+#include <eosio/chain/wasm_interface.hpp>
+
 //eos-vm includes
 #include <eosio/vm/backend.hpp>
 
@@ -53,7 +55,8 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          _instantiated_module(std::move(mod)) {}
 
       void apply(apply_context& context) override {
-         _instantiated_module->set_wasm_allocator(&context.api.get_wasm_allocator());
+         wasm_interface* interface = static_cast<eosio::chain::wasm_interface *>(context.api.get_eos_vm_interface());
+         _instantiated_module->set_wasm_allocator(&interface->get_wasm_allocator());
          _runtime->_bkend = _instantiated_module.get();
          auto fn = [&]() {
             _runtime->_bkend->initialize(&context);
@@ -79,6 +82,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
    private:
       eos_vm_runtime<Impl>*            _runtime;
       std::unique_ptr<backend_t> _instantiated_module;
+      eosio::vm::wasm_allocator alloc;
 };
 
 template<typename Impl>

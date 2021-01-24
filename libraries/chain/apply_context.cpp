@@ -15,8 +15,6 @@
 
 #include <chain_api.hpp>
 
-extern "C" void eos_vm_interface_apply( const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, eosio::chain::apply_context& context );
-
 using boost::container::flat_set;
 
 namespace eosio { namespace chain {
@@ -1172,7 +1170,7 @@ void apply_context::call_contract(uint64_t contract, const char *args, size_t ar
    memcpy(call_args.data(), args, args_size);
    call_returns.resize(0);
 
-   eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
+   this->api.eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 //   control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 }
 
