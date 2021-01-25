@@ -136,17 +136,21 @@ static uint64_t get_microseconds() {
 //Calls apply or error on a given code
 void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     if (vm_type == 1) {
-         auto& mpy_account = context.db.get<account_metadata_object,by_name>( N(uuos.mpy) );
-         context.control.get_wasm_interface().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
-         return;
+        auto& mpy_account = context.db.get<account_metadata_object,by_name>( N(uuos.mpy) );
+        #if 0
+        context.control.get_wasm_interface().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
+        #else
+        context.api.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
+        #endif
+        return;
 
-         uint64_t receiver = context.get_receiver().to_uint64_t();
-         uint64_t account = context.get_action().account.to_uint64_t();
-         uint64_t action = context.get_action().name.to_uint64_t();
-         int ret = micropython_eosio_apply(receiver, account, action);
-         if (ret) {
+        uint64_t receiver = context.get_receiver().to_uint64_t();
+        uint64_t account = context.get_action().account.to_uint64_t();
+        uint64_t action = context.get_action().name.to_uint64_t();
+        int ret = micropython_eosio_apply(receiver, account, action);
+        if (ret) {
             return;
-         }
+        }
     } else {
         uint16_t version = ((uint16_t)vm_type<<8) | (uint16_t)vm_version;
         get_instantiated_module(code_hash, vm_type, vm_version, context)->apply(context, vm_type, vm_version);

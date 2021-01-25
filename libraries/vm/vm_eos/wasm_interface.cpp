@@ -1913,16 +1913,17 @@ using namespace eosio::chain::webassembly::common;
 extern "C" void start_compile_monitor();
 
 extern "C" {
-   void* eos_vm_interface_init(int vmtype, eosio::chain::chain_api& api) {
+   void* eos_vm_interface_init(int vmtype, bool tierup, eosio::chain::chain_api& api) {
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
-      static bool init = false;
-      if (!init) {
-         init = true;
-         start_compile_monitor();
+      if (tierup) {
+         static bool init = false;
+         if (!init) {
+            init = true;
+            start_compile_monitor();
+         }
       }
 #endif
 //      bool tierup = api.conf.eosvmoc_tierup;
-      bool tierup = false;
       wasm_interface* interface = new wasm_interface((wasm_interface::vm_type)vmtype, tierup, api.db(), api.state_dir(), api.conf.eosvmoc_config, api);
       return (void *)interface;
    }
