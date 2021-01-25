@@ -1,19 +1,35 @@
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/chain_api.hpp>
 
+#include <dlfcn.h>
+
 extern "C" void* eos_vm_interface_init(int type, bool tierup, eosio::chain::chain_api& api);
 extern "C" void eos_vm_interface_apply(void* interface, const eosio::chain::digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context);
 
 namespace eosio { namespace chain {
 
-chain_api::chain_api(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
-    this->eos_vm_interface = ::eos_vm_interface_init((int)conf.wasm_runtime, false, *this);
+typedef wasm_interface* (*fn_eos_vm_interface_init)(int type, bool tierup, eosio::chain::chain_api& api);
 
-#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
-    this->eos_vm_micropython = ::eos_vm_interface_init((int)conf.wasm_runtime, conf.eosvmoc_tierup, *this);
-#else
-    this->eos_vm_micropython = ::eos_vm_interface_init((int)conf.wasm_runtime, false, *this);
-#endif
+
+chain_api::chain_api(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
+    const char *vm_eos_path = "/Users/newworld/dev/uuos3/build/lib/libvm_eos.dylib";
+
+    void *handle = dlopen(vm_eos_path, RTLD_LAZY | RTLD_LOCAL);
+    EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed!");
+    fn_eos_vm_interface_init init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init");
+    EOS_ASSERT(init, assert_exception, "load eos_vm_interface_init failed!");
+    this->eos_vm_interface = init((int)conf.wasm_runtime, false, *this);
+
+    handle = dlopen(vm_eos_path, RTLD_LAZY | RTLD_LOCAL);
+    EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed!");
+    init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init");
+    EOS_ASSERT(init, assert_exception, "load eos_vm_interface_init failed!");
+
+    #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+        this->eos_vm_micropython = init((int)conf.wasm_runtime, conf.eosvmoc_tierup, *this);
+    #else
+        this->eos_vm_micropython = init((int)conf.wasm_runtime, false, *this);
+    #endif
 }
 
 const chainbase::database& chain_api::db() {
@@ -32,16 +48,12 @@ bool chain_api::get_code_by_code_hash(const digest_type& code_hash, const uint8_
    return true;
 }
 
-void* chain_api::get_eos_vm_interface() {
-    return this->eos_vm_interface;
-}
-
 void chain_api::eos_vm_interface_apply(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context) {
-    ::eos_vm_interface_apply(this->eos_vm_interface, code_hash, vm_type, vm_version, context);
+    this->eos_vm_interface->apply(code_hash, vm_type, vm_version, context);
 }
 
 void chain_api::eos_vm_micropython_apply(const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context) {
-    ::eos_vm_interface_apply(this->eos_vm_micropython, code_hash, vm_type, vm_version, context);
+    this->eos_vm_micropython->apply(code_hash, vm_type, vm_version, context);
 }
 
 } } //eosio::chain

@@ -253,9 +253,6 @@ struct controller_impl {
    uint32_t                       snapshot_head_block = 0;
    named_thread_pool              thread_pool;
    platform_timer                 timer;
-#if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
-   vm::wasm_allocator                 wasm_alloc;
-#endif
 
    typedef pair<scope_name,action_name>                   handler_key;
    map< account_name, map<handler_key, apply_handler> >   apply_handlers;
