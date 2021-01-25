@@ -5,6 +5,7 @@ try:
 except:
     import ujson as json
 
+import time
 import shutil
 import tempfile
 import unittest
@@ -684,7 +685,7 @@ class ChainTest(object):
         setcode = {"account": account,
                 "vmtype": 1,
                 "vmversion": 0,
-                "code":b'aa'.hex()
+                "code": round(time.time()*1000).to_bytes(8, 'little').hex()
         }
         setcode = self.chain.pack_action_args('uuos', 'setcode', setcode)
         setcode = {
