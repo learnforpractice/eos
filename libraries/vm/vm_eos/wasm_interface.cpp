@@ -1909,16 +1909,28 @@ std::istream& operator>>(std::istream& in, wasm_interface::vm_type& runtime) {
 using namespace eosio::chain;
 using namespace eosio::chain::webassembly::common;
 
-extern "C" {
-    void* eos_vm_interface_init(int vmtype, eosio::chain::chain_api& api) {
-      wasm_interface* interface = new wasm_interface((wasm_interface::vm_type)vmtype, api.conf.eosvmoc_tierup, api.db(), api.state_dir(), api.conf.eosvmoc_config, api);
-      return (void *)interface;
-    }
+//libraries/chain/webassembly/eos-vm-oc/compile_monitor.cpp
+extern "C" void start_compile_monitor();
 
-    void eos_vm_interface_apply(void* _interface, const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, apply_context& context ) {
-        wasm_interface* interface = static_cast<wasm_interface *>(_interface);
-        interface->apply(code_hash, vm_type, vm_version, context);
-    }
+extern "C" {
+   void* eos_vm_interface_init(int vmtype, eosio::chain::chain_api& api) {
+#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+      static bool init = false;
+      if (!init) {
+         init = true;
+         start_compile_monitor();
+      }
+#endif
+//      bool tierup = api.conf.eosvmoc_tierup;
+      bool tierup = false;
+      wasm_interface* interface = new wasm_interface((wasm_interface::vm_type)vmtype, tierup, api.db(), api.state_dir(), api.conf.eosvmoc_config, api);
+      return (void *)interface;
+   }
+
+   void eos_vm_interface_apply(void* _interface, const digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, apply_context& context ) {
+      wasm_interface* interface = static_cast<wasm_interface *>(_interface);
+      interface->apply(code_hash, vm_type, vm_version, context);
+   }
 }
 
 #include <boost/test/unit_test_suite.hpp>

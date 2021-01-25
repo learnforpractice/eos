@@ -297,6 +297,10 @@ extern "C" int __wrap_main(int argc, char* argv[]) {
    return __real_main(argc, argv);
 }
 
+extern "C" void start_compile_monitor() {
+   the_compile_monitor_trampoline.start();
+}
+
 wrapped_fd get_connection_to_compile_monitor(int cache_fd) {
    FC_ASSERT(the_compile_monitor_trampoline.compile_manager_pid >= 0, "EOS VM oop connection doesn't look active");
 
