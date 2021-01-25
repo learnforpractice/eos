@@ -55,7 +55,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          _instantiated_module(std::move(mod)) {}
 
       void apply(apply_context& context) override {
-         _instantiated_module->set_wasm_allocator(&context.api.get_wasm_allocator());
+         _instantiated_module->set_wasm_allocator(&_runtime->alloc);
          _runtime->_bkend = _instantiated_module.get();
          auto fn = [&]() {
             _runtime->_bkend->initialize(&context);
@@ -84,7 +84,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
 };
 
 template<typename Impl>
-eos_vm_runtime<Impl>::eos_vm_runtime() {}
+eos_vm_runtime<Impl>::eos_vm_runtime(eosio::vm::wasm_allocator& alloc) : alloc(alloc) {}
 
 template<typename Impl>
 void eos_vm_runtime<Impl>::immediately_exit_currently_running_module() {

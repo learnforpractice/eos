@@ -119,17 +119,8 @@ namespace eosio { namespace chain {
          //Immediately exits currently running wasm. UB is called when no wasm running
          void exit();
 
-#if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
-         virtual vm::wasm_allocator&  get_wasm_allocator() {
-            return wasm_alloc;
-         }
-#endif
-
       private:
          unique_ptr<struct wasm_interface_impl> my;
-#if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
-         vm::wasm_allocator                 wasm_alloc;
-#endif
          friend class eosio::chain::webassembly::common::intrinsics_accessor;
    };
 

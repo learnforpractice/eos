@@ -56,8 +56,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          _instantiated_module(std::move(mod)) {}
 
       void apply(apply_context& context) override {
-         wasm_interface* interface = static_cast<eosio::chain::wasm_interface *>(context.api.get_eos_vm_interface());
-         _instantiated_module->set_wasm_allocator(&interface->get_wasm_allocator());
+         _instantiated_module->set_wasm_allocator(&_runtime->alloc);
          _runtime->_bkend = _instantiated_module.get();
          auto fn = [&]() {
             _runtime->_bkend->initialize(&context);
@@ -72,6 +71,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          } catch(eosio::vm::timeout_exception&) {
             context.trx_context.checktime();
          } catch(eosio::vm::wasm_memory_exception& e) {
+            printf("++++access violation\n");
             FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
          } catch(eosio::vm::exception& e) {
             // FIXME: Do better translation
@@ -87,7 +87,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
 };
 
 template<typename Impl>
-eos_vm_runtime<Impl>::eos_vm_runtime() {}
+eos_vm_runtime<Impl>::eos_vm_runtime(eosio::vm::wasm_allocator& alloc) : alloc(alloc) {}
 
 template<typename Impl>
 void eos_vm_runtime<Impl>::immediately_exit_currently_running_module() {

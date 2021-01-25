@@ -32,12 +32,6 @@ bool chain_api::get_code_by_code_hash(const digest_type& code_hash, const uint8_
    return true;
 }
 
-#if defined(EOSIO_EOS_VM_RUNTIME_ENABLED) || defined(EOSIO_EOS_VM_JIT_RUNTIME_ENABLED)
-vm::wasm_allocator& chain_api::get_wasm_allocator() {
-   return this->c.get_wasm_allocator();
-}
-#endif
-
 void* chain_api::get_eos_vm_interface() {
     return this->eos_vm_interface;
 }

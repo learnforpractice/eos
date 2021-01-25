@@ -69,11 +69,11 @@ namespace eosio { namespace chain {
             runtime_interface = std::make_unique<webassembly::wabt_runtime::wabt_runtime>();
 #ifdef EOSIO_EOS_VM_RUNTIME_ENABLED
          if(vm == wasm_interface::vm_type::eos_vm)
-            runtime_interface = std::make_unique<webassembly::eos_vm_runtime::eos_vm_runtime<eosio::vm::interpreter>>();
+            runtime_interface = std::make_unique<webassembly::eos_vm_runtime::eos_vm_runtime<eosio::vm::interpreter>>(alloc);
 #endif
 #ifdef EOSIO_EOS_VM_JIT_RUNTIME_ENABLED
          if(vm == wasm_interface::vm_type::eos_vm_jit)
-            runtime_interface = std::make_unique<webassembly::eos_vm_runtime::eos_vm_runtime<eosio::vm::jit>>();
+            runtime_interface = std::make_unique<webassembly::eos_vm_runtime::eos_vm_runtime<eosio::vm::jit>>(alloc);
 #endif
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
          if(vm == wasm_interface::vm_type::eos_vm_oc)
@@ -226,6 +226,7 @@ namespace eosio { namespace chain {
       const chainbase::database& db;
       const wasm_interface::vm_type wasm_runtime_time;
       eosio::chain::chain_api& api;
+      eosio::vm::wasm_allocator alloc;
 
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
       fc::optional<eosvmoc_tier> eosvmoc;
