@@ -1,6 +1,6 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/controller.hpp>
-#include <eosio/chain/chain_api.hpp>
+#include <eosio/chain/chain_proxy.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/producer_schedule.hpp>
 #include <eosio/chain/exceptions.hpp>
@@ -41,7 +41,7 @@ extern "C" int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint6
 namespace eosio { namespace chain {
    using namespace webassembly::common;
 
-   wasm_interface::wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_api& api)
+   wasm_interface::wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_proxy& api)
      : my( new wasm_interface_impl(vm, eosvmoc_tierup, d, data_dir, eosvmoc_config, api) ) {}
 
    wasm_interface::~wasm_interface() {}
@@ -913,7 +913,7 @@ class console_api : public context_aware_api {
    public:
       console_api( apply_context& ctx )
       : context_aware_api(ctx,true)
-      , ignore(!get_chain_api()->contracts_console()) {}
+      , ignore(!ctx.proxy.contracts_console()) {}
 
       // Kept as intrinsic rather than implementing on WASM side (using prints_l and strlen) because strlen is faster on native side.
       void prints(null_terminated_ptr str) {
@@ -1913,7 +1913,7 @@ using namespace eosio::chain::webassembly::common;
 extern "C" void start_compile_monitor();
 
 extern "C" {
-   eosio::chain::wasm_interface* eos_vm_interface_init(int vmtype, bool tierup, eosio::chain::chain_api& api) {
+   eosio::chain::wasm_interface* eos_vm_interface_init(int vmtype, bool tierup, eosio::chain::chain_proxy& api) {
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
       if (tierup) {
          static bool init = false;

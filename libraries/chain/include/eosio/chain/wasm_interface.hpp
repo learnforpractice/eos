@@ -14,7 +14,7 @@ namespace eosio { namespace chain {
    class apply_context;
    class wasm_runtime_interface;
    class controller;
-   class chain_api;
+   class chain_proxy;
    
    namespace eosvmoc { struct config; }
 
@@ -98,7 +98,7 @@ namespace eosio { namespace chain {
              }
          }
 
-         wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_api& api);
+         wasm_interface(vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_proxy& api);
          ~wasm_interface();
 
          //call before dtor to skip what can be minutes of dtor overhead with some runtimes; can cause leaks

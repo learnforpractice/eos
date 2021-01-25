@@ -377,7 +377,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, uint32_t, Inputs...>
       size_t length = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, length);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.proxy.contracts_console())
             wlog( "misaligned array of const values" );
          std::vector<std::remove_const_t<T> > copy(length > 0 ? length : 1);
          T* copy_ptr = &copy[0];
@@ -394,7 +394,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<array_ptr<T>, uint32_t, Inputs...>
       size_t length = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, length);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.proxy.contracts_console())
             wlog( "misaligned array of values" );
          std::vector<std::remove_const_t<T> > copy(length > 0 ? length : 1);
          T* copy_ptr = &copy[0];
@@ -508,7 +508,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T *, Inputs...>> {
       uint32_t ptr = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.proxy.contracts_console())
             wlog( "misaligned const pointer" );
          std::remove_const_t<T> copy;
          T* copy_ptr = &copy;
@@ -523,7 +523,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T *, Inputs...>> {
       uint32_t ptr = args.at((uint32_t)offset).get_i32();
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.proxy.contracts_console())
             wlog( "misaligned pointer" );
          T copy;
          memcpy( (void*)&copy, (void*)base, sizeof(T) );
@@ -613,7 +613,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T &, Inputs...>> {
       EOS_ASSERT(ptr != 0, binaryen_exception, "references cannot be created for null pointers");
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.proxy.contracts_console())
             wlog( "misaligned const reference" );
          std::remove_const_t<T> copy;
          T* copy_ptr = &copy;
@@ -630,7 +630,7 @@ struct intrinsic_invoker_impl<Ret, std::tuple<T &, Inputs...>> {
       EOS_ASSERT(ptr != 0, binaryen_exception, "references cannot be created for null pointers");
       T* base = array_ptr_impl<T>(vars, ptr, 1);
       if ( reinterpret_cast<uintptr_t>(base) % alignof(T) != 0 ) {
-         if(get_chain_api()->contracts_console())
+         if(vars.ctx.proxy.contracts_console())
             wlog( "misaligned reference" );
          T copy;
          memcpy( (void*)&copy, (void*)base, sizeof(T) );

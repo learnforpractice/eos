@@ -137,10 +137,10 @@ static uint64_t get_microseconds() {
 void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     if (vm_type == 1) {
         auto& mpy_account = context.db.get<account_metadata_object,by_name>( N(uuos.mpy) );
-        #if 0
+        #if 1
         context.control.get_wasm_interface().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
         #else
-        context.api.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
+        context.proxy.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
         #endif
         return;
 

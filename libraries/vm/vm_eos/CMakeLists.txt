@@ -45,7 +45,7 @@ if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
 endif()
 
 if("eos-vm" IN_LIST EOSIO_WASM_RUNTIMES OR "eos-vm-jit" IN_LIST EOSIO_WASM_RUNTIMES)
-   set(CHAIN_EOSVM_SOURCES "webassembly/eos-vm.cpp")
+   set(CHAIN_EOSVM_SOURCES "${CHAIN_DIR}/webassembly/eos-vm.cpp")
    set(CHAIN_EOSVM_LIBRARIES eos-vm)
 endif()
 
@@ -91,8 +91,8 @@ set_target_properties(vm_eos  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
 
 target_link_libraries( vm_eos fc Logging IR WAST WASM Runtime
                        softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
-                       vm_api chain_api
-                       )
+                       vm_api
+                     )
 
 target_include_directories( vm_eos
                             PUBLIC "${CHAIN_DIR}/include"
@@ -111,9 +111,9 @@ target_include_directories( vm_eos
                               PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
                               PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
                               PUBLIC "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager/include"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chainbase/include"
                         )
-add_dependencies(vm_eos contracts_project)
-add_dependencies(vm_eos evmone4eosio)
+
 
 # add_dependencies(vm_eos aleth)
 
@@ -139,6 +139,102 @@ install( TARGETS vm_eos
    LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
    ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
 )
+
+
+
+
+
+add_library( vm_eos2 SHARED
+            ${CHAIN_DIR}/chain_config.cpp
+            ${CHAIN_DIR}/chain_id_type.cpp
+            ${CHAIN_DIR}/genesis_state.cpp
+            ${CHAIN_BINARY_DIR}/genesis_state_root_key.cpp
+
+            ${CHAIN_DIR}/wast_to_wasm.cpp
+            wasm_interface.cpp
+
+            ${CHAIN_DIR}/wasm_eosio_validation.cpp
+            ${CHAIN_DIR}/wasm_eosio_injection.cpp
+
+            ${CHAIN_DIR}/webassembly/wabt.cpp
+
+             ${CHAIN_EOSVMOC_SOURCES}
+             ${CHAIN_EOSVM_SOURCES}
+
+            ${CHAIN_DIR}/genesis_intrinsics.cpp
+            ${CHAIN_DIR}/whitelisted_intrinsics.cpp
+            ${CHAIN_DIR}/thread_utils.cpp
+            ${CHAIN_DIR}/platform_timer_accuracy.cpp
+
+            ${PLATFORM_TIMER_IMPL}
+            ${HEADERS}
+             )
+
+
+if (APPLE)
+   set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
+   set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
+else()
+   set(_version_script "${CMAKE_CURRENT_SOURCE_DIR}/version.script")
+   set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
+endif (APPLE)
+
+set_target_properties(vm_eos2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+
+# set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
+
+target_link_libraries( vm_eos2 fc Logging IR WAST WASM Runtime
+                       softfloat builtins wabt ${CHAIN_EOSVM_LIBRARIES} ${LLVM_LIBS} ${CHAIN_RT_LINKAGE}
+                       vm_api
+                     )
+
+target_include_directories( vm_eos2
+                            PUBLIC "${CHAIN_DIR}/include"
+                                    "${CHAIN_BINARY_DIR}/include"
+                                    "${CHAIN_DIR}/../wasm-jit/Include"
+                                    "${CHAIN_DIR}/libraries/eos-vm/include"
+                                    "${CMAKE_SOURCE_DIR}/libraries/wabt"
+                                    "${CMAKE_BINARY_DIR}/libraries/wabt"
+                                    "${CMAKE_SOURCE_DIR}/contracts/vm_api/include"
+                                    "${CMAKE_SOURCE_DIR}/contracts/vm_api"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/contracts"
+                              PRIVATE "${CMAKE_BINARY_DIR}/contracts"
+                              PRIVATE ${CMAKE_SOURCE_DIR}/externals/magic_get/include
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain_api"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chain/db_api/include"
+                              PUBLIC "${CMAKE_SOURCE_DIR}/libraries/chain/db_api"
+                              PRIVATE  ${CMAKE_SOURCE_DIR}/plugins/net_plugin/include
+                              PUBLIC "${CMAKE_SOURCE_DIR}/libraries/vm/vm_manager/include"
+                              PRIVATE "${CMAKE_SOURCE_DIR}/libraries/chainbase/include"
+                        )
+
+
+# add_dependencies(vm_eos2 aleth)
+
+if("eos-vm-oc" IN_LIST EOSIO_WASM_RUNTIMES)
+   target_link_libraries(vm_eos2 "-Wl,-wrap=main")
+endif()
+
+foreach(RUNTIME ${EOSIO_WASM_RUNTIMES})
+   string(TOUPPER "${RUNTIME}" RUNTIMEUC)
+   string(REPLACE "-" "_" RUNTIMEUC ${RUNTIMEUC})
+   target_compile_definitions(vm_eos2 PUBLIC "EOSIO_${RUNTIMEUC}_RUNTIME_ENABLED")
+endforeach()
+
+if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
+   message(WARNING "EOS VM OC Developer Options are enabled; these are NOT supported")
+   target_compile_definitions(vm_eos2 PUBLIC EOSIO_EOS_VM_OC_DEVELOPER)
+endif()
+
+copy_lib(vm_eos2)
+
+install( TARGETS vm_eos2
+   RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+   LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+)
+
+
 install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/eosio/chain/
       DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/eosio/chain
       FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h" EXCLUDE

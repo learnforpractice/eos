@@ -20,6 +20,7 @@
 #include <chrono>
 
 namespace eosio { namespace chain {
+   static vector<std::pair<void(*)(void*), void*>> call_backs;
 
    transaction_checktime_timer::transaction_checktime_timer(platform_timer& timer)
          : expired(timer.expired), _timer(timer) {
@@ -27,6 +28,7 @@ namespace eosio { namespace chain {
    }
 
    void transaction_checktime_timer::start(fc::time_point tp) {
+      call_backs.resize(0);
       _timer.start(tp);
    }
 
@@ -35,7 +37,21 @@ namespace eosio { namespace chain {
    }
 
    void transaction_checktime_timer::set_expiration_callback(void(*func)(void*), void* user) {
-      _timer.set_expiration_callback(func, user);
+      if (func == nullptr) {
+         if (call_backs.size() > 0) {
+            call_backs.pop_back();
+         }
+         if (call_backs.size() > 0) {
+            auto& call_back = call_backs.back();
+            _timer.set_expiration_callback(call_back.first, call_back.second);
+         } else {
+            _timer.set_expiration_callback(nullptr, nullptr);
+         }
+      } else {
+         std::pair<void(*)(void*), void*> call_back = std::make_pair(func, user);
+         call_backs.emplace_back(call_back);
+         _timer.set_expiration_callback(func, user);
+      }
    }
 
    transaction_checktime_timer::~transaction_checktime_timer() {

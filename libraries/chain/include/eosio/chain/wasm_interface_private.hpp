@@ -28,7 +28,7 @@
 #define _REGISTER_EOS_VM_INTRINSIC(CLS, MOD, METHOD, WASM_SIG, NAME, SIG)
 #endif
 
-#include <eosio/chain/chain_api.hpp>
+#include <eosio/chain/chain_proxy.hpp>
 #include <chain_api.hpp>
 
 using namespace fc;
@@ -64,7 +64,7 @@ namespace eosio { namespace chain {
       };
 #endif
 
-      wasm_interface_impl(wasm_interface::vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_api& api) : db(d), wasm_runtime_time(vm), api(api) {
+      wasm_interface_impl(wasm_interface::vm_type vm, bool eosvmoc_tierup, const chainbase::database& d, const boost::filesystem::path data_dir, const eosvmoc::config& eosvmoc_config, eosio::chain::chain_proxy& api) : db(d), wasm_runtime_time(vm), api(api) {
          if(vm == wasm_interface::vm_type::wabt)
             runtime_interface = std::make_unique<webassembly::wabt_runtime::wabt_runtime>();
 #ifdef EOSIO_EOS_VM_RUNTIME_ENABLED
@@ -225,7 +225,7 @@ namespace eosio { namespace chain {
 
       const chainbase::database& db;
       const wasm_interface::vm_type wasm_runtime_time;
-      eosio::chain::chain_api& api;
+      eosio::chain::chain_proxy& api;
       eosio::vm::wasm_allocator alloc;
 
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED

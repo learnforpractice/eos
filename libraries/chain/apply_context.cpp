@@ -12,7 +12,7 @@
 #include <eosio/chain/code_object.hpp>
 #include <eosio/chain/global_property_object.hpp>
 #include <boost/container/flat_set.hpp>
-#include <eosio/chain/chain_api.hpp>
+#include <eosio/chain/chain_proxy.hpp>
 
 #include <chain_api.hpp>
 

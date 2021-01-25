@@ -26,7 +26,7 @@
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/vm_manager.hpp>
 #include <eosio/chain/platform_timer.hpp>
-#include <eosio/chain/chain_api.hpp>
+#include <eosio/chain/chain_proxy.hpp>
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -229,7 +229,7 @@ struct controller_impl {
 
    reset_new_handler              rnh; // placed here to allow for this to be set before constructing the other fields
    controller&                    self;
-   eosio::chain::chain_api        api;
+   eosio::chain::chain_proxy        api;
    chainbase::database            db;
    chainbase::database            ro_db;
    chainbase::database            reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
@@ -2519,7 +2519,7 @@ chainbase::database& controller::get_db(bool read_only)const {
 
 const fork_database& controller::fork_db()const { return my->fork_db; }
 
-eosio::chain::chain_api& controller::api() {
+eosio::chain::chain_proxy& controller::api() {
    return my->api;
 }
 

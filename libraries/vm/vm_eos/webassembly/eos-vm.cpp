@@ -3,7 +3,7 @@
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
 #include <eosio/chain/wasm_interface.hpp>
-#include <eosio/chain/chain_api.hpp>
+#include <vm_api.h>
 
 //eos-vm includes
 #include <eosio/vm/backend.hpp>
@@ -72,7 +72,8 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
             context.trx_context.checktime();
          } catch(eosio::vm::wasm_memory_exception& e) {
             printf("++++access violation\n");
-            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
+//            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
+            get_vm_api()->eosio_assert(false, "access violation");
          } catch(eosio::vm::exception& e) {
             // FIXME: Do better translation
             FC_THROW_EXCEPTION(wasm_execution_error, "something went wrong...");

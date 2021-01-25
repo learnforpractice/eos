@@ -177,7 +177,7 @@ namespace eosio { namespace chain {
          const chainbase::database& db()const;
 
          const fork_database& fork_db()const;
-         eosio::chain::chain_api& api();
+         eosio::chain::chain_proxy& api();
 
          const account_object&                 get_account( account_name n )const;
          const global_property_object&         get_global_properties()const;
@@ -356,7 +356,7 @@ namespace eosio { namespace chain {
       private:
          friend class apply_context;
          friend class transaction_context;
-         friend class chain_api;
+         friend class chain_proxy;
 
          chainbase::database& mutable_db()const;
          chainbase::database& get_db(bool read_only)const;

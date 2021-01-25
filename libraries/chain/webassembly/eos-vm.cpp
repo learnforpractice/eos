@@ -2,7 +2,7 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
-#include <eosio/chain/chain_api.hpp>
+#include <vm_api.h>
 
 //eos-vm includes
 #include <eosio/vm/backend.hpp>
@@ -70,10 +70,12 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
          } catch(eosio::vm::timeout_exception&) {
             context.trx_context.checktime();
          } catch(eosio::vm::wasm_memory_exception& e) {
-            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
+//            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
+            get_vm_api()->eosio_assert(false, "access violation");
          } catch(eosio::vm::exception& e) {
             // FIXME: Do better translation
-            FC_THROW_EXCEPTION(wasm_execution_error, "something went wrong...");
+//            FC_THROW_EXCEPTION(wasm_execution_error, "something went wrong...");
+            get_vm_api()->eosio_assert(false, "something went wrong...");
          }
          _runtime->_bkend = nullptr;
       }
@@ -81,6 +83,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
    private:
       eos_vm_runtime<Impl>*            _runtime;
       std::unique_ptr<backend_t> _instantiated_module;
+      eosio::vm::wasm_allocator alloc;
 };
 
 template<typename Impl>
