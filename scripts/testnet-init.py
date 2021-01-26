@@ -59,6 +59,7 @@ def deploy_contract(account_name, contract_name, contracts_path=None):
     if not contracts_path:
         contracts_path = os.path.dirname(__file__)
         contracts_path = '../../../build/externals/eosio.contracts'
+        contracts_path = '.'
         contracts_path = os.path.join(contracts_path, f'contracts/{contract_name}')
 
     code_path = os.path.join(contracts_path, f'{contract_name}.wasm')
@@ -86,8 +87,9 @@ def deploy_contract(account_name, contract_name, contracts_path=None):
 
 def deploy_micropython_contract():
     logger.info("++++++++deploy_micropython_contract")
-    code_path = '../../../build/externals/micropython/ports/uuosio/micropython_uuos.wasm'
-    abi_path = '../../../externals/micropython/ports/uuosio/micropython.abi'
+    code_path = './contracts/micropython/micropython_uuos.wasm'
+    code_path = './contracts/micropython/micropython_eosio.wasm'
+    abi_path = './contracts/micropython/micropython.abi'
 
     code = open(code_path, 'rb').read()
     abi = open(abi_path, 'rb').read()
@@ -197,8 +199,6 @@ contracts_path = os.path.join(contracts_path, 'contracts')
 if not uuosapi.get_raw_code_and_abi('eosio')['wasm']:
     deploy_contract('eosio', 'eosio.bios')
 
-#deploy_micropython_contract()
-
 feature_digests = [
     '1a99a59d87e06e09ec5b028a9cbb7749b4a5ad8819004365d02dc4379a8b7241', #'ONLY_LINK_TO_EXISTING_PERMISSION' 
     '2652f5f96006294109b3dd0bbde63693f55324af452b799ee137a81a905eed25', #'FORWARD_SETCODE' 
@@ -225,6 +225,8 @@ for digest in feature_digests:
         uuosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
     except Exception as e:
         logger.error(e)
+
+deploy_micropython_contract()
 
 deploy_contract('eosio.token', 'eosio.token')
 
