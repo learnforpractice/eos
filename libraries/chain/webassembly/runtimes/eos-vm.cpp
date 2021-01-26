@@ -550,6 +550,11 @@ REGISTER_CF_HOST_FUNCTION(__letf2);
 REGISTER_CF_HOST_FUNCTION(__lttf2);
 REGISTER_CF_HOST_FUNCTION(__unordtf2);
 
+REGISTER_LEGACY_HOST_FUNCTION(call_contract);
+REGISTER_LEGACY_HOST_FUNCTION(call_contract_get_args);
+REGISTER_LEGACY_HOST_FUNCTION(call_contract_set_results);
+REGISTER_LEGACY_HOST_FUNCTION(call_contract_get_results);
+
 } // namespace webassembly
 } // namespace chain
 } // namespace eosio

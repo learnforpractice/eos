@@ -1953,6 +1953,11 @@ namespace webassembly {
          int32_t __lttf2(uint64_t, uint64_t, uint64_t, uint64_t) const;
          int32_t __unordtf2(uint64_t, uint64_t, uint64_t, uint64_t) const;
 
+         void call_contract(uint64_t contract, legacy_span<const char> buffer);
+         int call_contract_get_args(legacy_span<char> buffer);
+         int call_contract_set_results(legacy_span<const char> buffer);
+         int call_contract_get_results(legacy_span<char> buffer);
+   
       private:
          apply_context& context;
    };

@@ -170,7 +170,12 @@ const std::vector<const char*> genesis_intrinsics = {
    "memcpy",
    "memmove",
    "memcmp",
-   "memset"
+   "memset",
+
+   "call_contract",
+   "call_contract_get_args",
+   "call_contract_set_results",
+   "call_contract_get_results"
 };
 
 } } // namespace eosio::chain
