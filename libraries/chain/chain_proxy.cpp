@@ -16,20 +16,27 @@ chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : con
 //"/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared.dylib";
     const char *vm_eos_path = getenv("CHAIN_LIB");
     const char *vm_eos_path2 = getenv("CHAIN_LIB2");;
+     printf("%s\n", vm_eos_path);
+     printf("%s\n", vm_eos_path2);
 
     void *handle = dlopen(vm_eos_path, RTLD_LAZY | RTLD_LOCAL);
-    vmilog("+++++++handle %p\n", handle);
+    if (!handle) {
+        printf("+++error:%s\n", dlerror());
+    }
 
     EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed!");
     fn_eos_vm_interface_init init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init3");
     EOS_ASSERT(init, assert_exception, "load eos_vm_interface_init failed!");
     this->eos_vm_interface = init((int)conf.wasm_runtime, false, *this);
-    vmilog("++++++++=init %p\n", init);
+    printf("++++++++=init %p\n", init);
 
     handle = dlopen(vm_eos_path2, RTLD_LAZY | RTLD_LOCAL);
+    if (!handle) {
+        printf("+++error:%s\n", dlerror());
+    }
     vmilog("+++++++handle %p\n", handle);
 
-    EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed!");
+    EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed2!");
     init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init3");
     vmilog("++++++++=init %p\n", init);
     EOS_ASSERT(init, assert_exception, "load eos_vm_interface_init failed!");
