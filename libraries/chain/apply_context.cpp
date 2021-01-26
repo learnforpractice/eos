@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/controller.hpp>
+#include <eosio/chain/chain_proxy.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/wasm_interface.hpp>
@@ -130,7 +131,12 @@ void apply_context::exec_one()
                   control.check_action_list( act->account, act->name );
                }
                try {
-                  control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this );
+                  if (receiver_account->vm_type == 0) {
+                     control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this );
+                  } else if (receiver_account->vm_type == 1) {
+                     auto& mpy_account = this->db.get<account_metadata_object,by_name>( "eosio.mpy"_n );
+                     this->control.proxy().eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, *this);
+                  }
                } catch( const wasm_exit& ) {}
             }
 
