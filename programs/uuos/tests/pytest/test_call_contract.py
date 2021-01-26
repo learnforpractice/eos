@@ -242,6 +242,84 @@ def apply(receiver, code, action):
 #            assert exception_name == 'tx_cpu_usage_exceeded'
         self.chain.produce_block()
 
+#wasm contract call wasm contract
+    def test_call5(self):
+        code = r'''
+#include <eosio/eosio.hpp>
+#include <eosio/action.hpp>
+#include <eosio/print.hpp>
+
+extern "C" {
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_args(void* args, size_t size1);
+
+    __attribute__((eosio_wasm_import))
+    int call_contract_set_results(void* result, size_t size1);
+
+    void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
+         uint64_t args[2];
+         int args_size = ::call_contract_get_args(&args, sizeof(args));
+         eosio::check(args_size == 16, "bad args size");
+         if (args[0] == eosio::name("calltest1").value) {
+            eosio::print("+++++++++++call: args[1]:", args[1], "\n");
+            args[1] += 1;
+            ::call_contract_set_results(&args[1], sizeof(uint64_t));
+         }
+    }
+}
+        '''
+
+        contract_name = 'bob'
+        code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
+        try:
+            self.chain.deploy_contract(contract_name, code, b'')
+        except Exception as e:
+            logger.info(e)
+        self.chain.produce_block()
+
+
+        code = r'''
+#include <eosio/eosio.hpp>
+#include <eosio/action.hpp>
+#include <eosio/print.hpp>
+
+using namespace eosio;
+
+extern "C" {
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_args(void* args, size_t size1);
+
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_results(char* results, uint32_t size1);
+
+    __attribute__((eosio_wasm_import))
+    void call_contract(uint64_t contract, const char* args, uint32_t size);
+
+    void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
+        uint64_t args[2];
+        args[0] = name("calltest1").value;
+        args[1] = 1;
+        call_contract(name("bob").value, (char *)args, sizeof(args));
+        uint64_t ret;
+        call_contract_get_results((char *)&ret, sizeof(ret));
+        eosio::print("++++ret:", ret);
+        eosio::check(ret == 2, "bad return value!");
+    }
+}
+        '''
+
+        contract_name = 'alice'
+        code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
+        try:
+            self.chain.deploy_contract(contract_name, code, b'')
+        except Exception as e:
+            logger.info(e)
+        self.chain.produce_block()
+
+        self.chain.push_action('alice', 'sayhello', b'')
+        self.chain.produce_block()
+
+
     def test_hello(self):
         contract_name = 'uuos.mpy'
         self.chain.push_action(contract_name, 'hellompy', b'')
@@ -261,3 +339,4 @@ def apply(receiver, code, action):
         logger.info(r['action_traces'][0]['console'])
         logger.info(r['elapsed'])
         self.chain.produce_block()
+    
