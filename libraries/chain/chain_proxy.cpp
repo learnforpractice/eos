@@ -45,8 +45,8 @@ chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : con
     #endif
 #else
     bool tierup = false;
-    this->eos_vm_interface = new wasm_interface(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
-    this->eos_vm_micropython = new wasm_interface(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
+    this->eos_vm_interface = std::make_unique<wasm_interface>(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
+    this->eos_vm_micropython = std::make_unique<wasm_interface>(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
 #endif
 }
 

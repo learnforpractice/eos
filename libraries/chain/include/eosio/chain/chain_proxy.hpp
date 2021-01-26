@@ -26,8 +26,8 @@ public:
 private:
     controller &c;
     apply_context* ctx = nullptr;
-    wasm_interface *eos_vm_interface;
-    wasm_interface *eos_vm_micropython;
+    std::unique_ptr<wasm_interface> eos_vm_interface;
+    std::unique_ptr<wasm_interface> eos_vm_micropython;
 };
 
 } } //eosio::chain
