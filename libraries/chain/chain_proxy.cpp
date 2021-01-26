@@ -11,7 +11,7 @@ namespace eosio { namespace chain {
 typedef wasm_interface* (*fn_eos_vm_interface_init)(int type, bool tierup, eosio::chain::chain_proxy& api);
 
 
-chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
+chain_proxy::chain_proxy(const controller::config& conf, chainbase::database& db, controller& ctrl) : conf(conf), _db(db), c(ctrl) {
 #if 0
     const char *vm_eos_path = getenv("CHAIN_LIB");
     const char *vm_eos_path2 = getenv("CHAIN_LIB2");;
@@ -45,8 +45,12 @@ chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : con
     #endif
 #else
     bool tierup = false;
-    this->eos_vm_interface = std::make_unique<wasm_interface>(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
-    this->eos_vm_micropython = std::make_unique<wasm_interface>(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
+    this->eos_vm_interface = std::make_unique<wasm_interface>(conf.wasm_runtime, false, _db, state_dir(), conf.eosvmoc_config);
+#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+    this->eos_vm_micropython = std::make_unique<wasm_interface>(conf.wasm_runtime, true, _db, state_dir(), conf.eosvmoc_config);
+#else
+    this->eos_vm_micropython = std::make_unique<wasm_interface>(conf.wasm_runtime, false, _db, state_dir(), conf.eosvmoc_config);
+#endif
 #endif
 }
 
