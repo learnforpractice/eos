@@ -80,7 +80,7 @@ std::unique_ptr<vm_instantiated_module> vm_runtime::instantiate_module(const cha
 }
 
 void vm_runtime::immediately_exit_currently_running_module() {
-   throw wasm_exit();
+   get_vm_api()->eosio_exit(0);
 }
 
 vm_manager::vm_manager(const chainbase::database& d): db(d) {
@@ -137,7 +137,7 @@ static uint64_t get_microseconds() {
 void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version, apply_context& context) {
     if (vm_type == 1) {
         auto& mpy_account = context.db.get<account_metadata_object,by_name>( N(uuos.mpy) );
-        #if 1
+        #if 0
         context.control.get_wasm_interface().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
         #else
         context.proxy.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);

@@ -68,14 +68,16 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
             checktime_watchdog wd(context.trx_context.transaction_timer);
             _runtime->_bkend->timed_run(wd, fn);
          } catch(eosio::vm::timeout_exception&) {
-            context.trx_context.checktime();
+            get_vm_api()->checktime();
+//            context.trx_context.checktime();
          } catch(eosio::vm::wasm_memory_exception& e) {
 //            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");
-            get_vm_api()->eosio_assert(false, "access violation");
+//            get_vm_api()->eosio_assert(false, "eos_vm_instantiated_module:access violation");
+            get_vm_api()->eosio_assert(false, e.detail());
          } catch(eosio::vm::exception& e) {
             // FIXME: Do better translation
 //            FC_THROW_EXCEPTION(wasm_execution_error, "something went wrong...");
-            get_vm_api()->eosio_assert(false, "something went wrong...");
+            get_vm_api()->eosio_assert(false, e.detail());
          }
          _runtime->_bkend = nullptr;
       }
@@ -91,6 +93,7 @@ eos_vm_runtime<Impl>::eos_vm_runtime(eosio::vm::wasm_allocator& alloc) : alloc(a
 
 template<typename Impl>
 void eos_vm_runtime<Impl>::immediately_exit_currently_running_module() {
+   get_vm_api()->eosio_exit(0);   
    throw wasm_exit{};
 }
 

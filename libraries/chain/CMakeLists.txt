@@ -112,6 +112,7 @@ add_library( eosio_chain
              db_api/db_api.cpp
              db_api/db_interface.cpp
              evm.cpp
+             eosio_chain.cpp
              )
 
 # set(LIBEVM4EOS ${CMAKE_BINARY_DIR}/externals/evmone4eosio/lib/libevmone.dylib)
@@ -163,6 +164,34 @@ if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
    message(WARNING "EOS VM OC Developer Options are enabled; these are NOT supported")
    target_compile_definitions(eosio_chain PUBLIC EOSIO_EOS_VM_OC_DEVELOPER)
 endif()
+
+
+add_library( eosio_chain_shared SHARED
+         main.cpp
+)
+
+if (APPLE)
+   set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
+   set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
+else()
+   set(_version_script "${CMAKE_CURRENT_SOURCE_DIR}/version.script")
+   set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
+endif (APPLE)
+
+set_target_properties(eosio_chain_shared  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+
+target_link_libraries( eosio_chain_shared eosio_chain )
+
+
+add_library( eosio_chain_shared2 SHARED
+         main.cpp
+)
+
+set_target_properties(eosio_chain_shared2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+target_link_libraries( eosio_chain_shared2 eosio_chain )
+
+copy_lib(eosio_chain_shared)
+copy_lib(eosio_chain_shared2)
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}

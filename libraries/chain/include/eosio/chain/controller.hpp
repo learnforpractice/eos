@@ -177,7 +177,7 @@ namespace eosio { namespace chain {
          const chainbase::database& db()const;
 
          const fork_database& fork_db()const;
-         eosio::chain::chain_proxy& api();
+         eosio::chain::chain_proxy& proxy();
 
          const account_object&                 get_account( account_name n )const;
          const global_property_object&         get_global_properties()const;

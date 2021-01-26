@@ -361,7 +361,11 @@ class Chain(object):
         return _uuos.chain_get_unapplied_transactions(self.ptr)
  
     def push_transaction(self, packed_trx, deadline, billed_cpu_time_us):
-        return _uuos.chain_push_transaction(self.ptr, packed_trx, deadline, billed_cpu_time_us)
+        ret, result = _uuos.chain_push_transaction(self.ptr, packed_trx, deadline, billed_cpu_time_us)
+        if not ret:
+            if not result:
+                result = _uuos.get_last_error()
+        return ret, result
 
     def get_scheduled_transaction(self, sender_id, sender):
         ret = _uuos.chain_get_scheduled_transaction(self.ptr, sender_id, sender)

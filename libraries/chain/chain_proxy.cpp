@@ -2,6 +2,7 @@
 #include <eosio/chain/chain_proxy.hpp>
 
 #include <dlfcn.h>
+#include <vm_api.h>
 
 extern "C" void* eos_vm_interface_init(int type, bool tierup, eosio::chain::chain_proxy& api);
 extern "C" void eos_vm_interface_apply(void* interface, const eosio::chain::digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context);
@@ -11,23 +12,25 @@ namespace eosio { namespace chain {
 typedef wasm_interface* (*fn_eos_vm_interface_init)(int type, bool tierup, eosio::chain::chain_proxy& api);
 
 
-chain_proxy::chain_api(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
-    const char *vm_eos_path = "/Users/newworld/dev/uuos3/build/lib/libvm_eos.dylib";
-    const char *vm_eos_path2 = "/Users/newworld/dev/uuos3/build/lib/libvm_eos2.dylib";
+chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
+    const char *vm_eos_path = "/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared.dylib";
+    const char *vm_eos_path2 = "/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared2.dylib";
 
     void *handle = dlopen(vm_eos_path, RTLD_LAZY | RTLD_LOCAL);
-    printf("+++++++handle %p\n", handle);
+    vmilog("+++++++handle %p\n", handle);
 
     EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed!");
-    fn_eos_vm_interface_init init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init");
+    fn_eos_vm_interface_init init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init3");
     EOS_ASSERT(init, assert_exception, "load eos_vm_interface_init failed!");
     this->eos_vm_interface = init((int)conf.wasm_runtime, false, *this);
+    vmilog("++++++++=init %p\n", init);
 
     handle = dlopen(vm_eos_path2, RTLD_LAZY | RTLD_LOCAL);
-    printf("+++++++handle %p\n", handle);
+    vmilog("+++++++handle %p\n", handle);
 
     EOS_ASSERT(handle, assert_exception, "load vm_eos lib failed!");
-    init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init");
+    init = (fn_eos_vm_interface_init)dlsym(handle, "eos_vm_interface_init3");
+    vmilog("++++++++=init %p\n", init);
     EOS_ASSERT(init, assert_exception, "load eos_vm_interface_init failed!");
 
     #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
@@ -62,7 +65,7 @@ void chain_proxy::eos_vm_micropython_apply(const digest_type& code_hash, const u
 }
 
 bool chain_proxy::contracts_console() {
-    this->c.contracts_console();
+    return this->c.contracts_console();
 }
 
 } } //eosio::chain

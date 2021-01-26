@@ -40,7 +40,7 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 :control(con)
 ,db(con.mutable_db())
 ,trx_context(trx_ctx)
-,api(con.api())
+,proxy(con.proxy())
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
@@ -106,6 +106,7 @@ void apply_context::exec_one()
             try {
                if (receiver_account->vm_type == 0) {
                   if (!get_chain_api()->is_debug_enabled()) {
+//                     this->proxy.eos_vm_micropython_apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                      control.get_wasm_interface().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                   } else {
                      string contract_name = account_name(receiver).to_string();
@@ -1171,7 +1172,7 @@ void apply_context::call_contract(uint64_t contract, const char *args, size_t ar
    memcpy(call_args.data(), args, args_size);
    call_returns.resize(0);
 
-   this->api.eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
+   this->proxy.eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 //   control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 }
 

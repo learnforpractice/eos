@@ -7,6 +7,7 @@
 #include <src/interp.h>
 #include <src/binary-reader-interp.h>
 #include <src/error-formatter.h>
+#include <vm_api.h>
 
 namespace eosio { namespace chain { namespace webassembly { namespace wabt_runtime {
 
@@ -124,7 +125,8 @@ std::unique_ptr<wasm_instantiated_module_interface> wabt_runtime::instantiate_mo
 }
 
 void wabt_runtime::immediately_exit_currently_running_module() {
-   throw wasm_exit();
+   get_vm_api()->eosio_exit(0);
+//   throw wasm_exit();
 }
 
 }}}}

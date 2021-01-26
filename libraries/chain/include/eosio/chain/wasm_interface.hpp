@@ -119,7 +119,7 @@ namespace eosio { namespace chain {
          //Immediately exits currently running wasm. UB is called when no wasm running
          void exit();
 
-      private:
+      protected:
          unique_ptr<struct wasm_interface_impl> my;
          friend class eosio::chain::webassembly::common::intrinsics_accessor;
    };

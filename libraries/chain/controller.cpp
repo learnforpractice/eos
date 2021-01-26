@@ -229,7 +229,7 @@ struct controller_impl {
 
    reset_new_handler              rnh; // placed here to allow for this to be set before constructing the other fields
    controller&                    self;
-   eosio::chain::chain_proxy        api;
+   eosio::chain::chain_proxy      proxy;
    chainbase::database            db;
    chainbase::database            ro_db;
    chainbase::database            reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
@@ -304,7 +304,7 @@ struct controller_impl {
    controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
    :rnh(),
     self(s),
-    api(cfg, s),
+    proxy(cfg, s),
     db( cfg.state_dir,
         cfg.read_only ? database::read_only : database::read_write,
         cfg.state_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
@@ -316,7 +316,7 @@ struct controller_impl {
         cfg.reversible_cache_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
     blog( cfg.blocks_dir ),
     fork_db( cfg.state_dir ),
-    wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config, api ),
+    wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config, proxy ),
     vmif( db ),
     dbif( db ), 
     resource_limits( db ),
@@ -2519,8 +2519,8 @@ chainbase::database& controller::get_db(bool read_only)const {
 
 const fork_database& controller::fork_db()const { return my->fork_db; }
 
-eosio::chain::chain_proxy& controller::api() {
-   return my->api;
+eosio::chain::chain_proxy& controller::proxy() {
+   return my->proxy;
 }
 
 void controller::preactivate_feature( const digest_type& feature_digest ) {
