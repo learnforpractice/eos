@@ -21,7 +21,7 @@ logger=logging.getLogger(__name__)
 # handler.setFormatter(formatter)
 
 
-config.setup_uuos_network()
+config.setup_eos_network()
 
 if len(sys.argv) == 2:
     print(sys.argv)
@@ -94,7 +94,7 @@ def deploy_micropython_contract():
 
     try:
         r = uuosapi.deploy_contract('hello', code, abi, vm_type=0)
-        r = uuosapi.deploy_contract('uuos.mpy', code, abi, vm_type=0)
+        r = uuosapi.deploy_contract('eosio.mpy', code, abi, vm_type=0)
     except Exception as e:
         logger.exception(e)
 
@@ -110,12 +110,12 @@ def apply(a, b, c):
     args = uuosapi.s2b(account) + code
     uuosapi.push_action(account, 'setcode', args, {account:'active'})
 
-    account = 'uuos.mpy'
+    account = 'eosio.mpy'
     args = uuosapi.s2b(account) + code
     uuosapi.push_action(account, 'setcode', args, {account:'active'})
 
 def create_account(account, key1, key2):
-    newaccount = {'creator': 'uuos',
+    newaccount = {'creator': 'eosio',
      'name': '',
      'owner': {'threshold': 1,
                'keys': [{'key': key1,
@@ -131,23 +131,23 @@ def create_account(account, key1, key2):
         actions = []
         logger.info(('+++++++++create account', account))
         newaccount['name'] = account
-        _newaccount = uuosapi.pack_args('uuos', 'newaccount', newaccount)
-        act = ['uuos', 'newaccount', _newaccount, {'uuos':'active'}]
+        _newaccount = uuosapi.pack_args('eosio', 'newaccount', newaccount)
+        act = ['eosio', 'newaccount', _newaccount, {'eosio':'active'}]
         actions.append(act)
         r = uuosapi.push_actions(actions)
 
 systemAccounts = [
-    'uuos.mpy',
-    'uuos.bpay',
-    'uuos.msig',
-    'uuos.names',
-    'uuos.ram',
-    'uuos.ramfee',
-    'uuos.saving',
-    'uuos.stake',
-    'uuos.token',
-    'uuos.vpay',
-    'uuos.rex',
+    'eosio.mpy',
+    'eosio.bpay',
+    'eosio.msig',
+    'eosio.names',
+    'eosio.ram',
+    'eosio.ramfee',
+    'eosio.saving',
+    'eosio.stake',
+    'eosio.token',
+    'eosio.vpay',
+    'eosio.rex',
 ]
 for a in systemAccounts:
     create_account(a, key1, key2)
@@ -194,42 +194,51 @@ except Exception as e:
 contracts_path = os.path.dirname(__file__)
 contracts_path = os.path.join(contracts_path, 'contracts')
 
-if not uuosapi.get_raw_code_and_abi('uuos')['wasm']:
-    deploy_contract('uuos', 'eosio.bios')
+if not uuosapi.get_raw_code_and_abi('eosio')['wasm']:
+    deploy_contract('eosio', 'eosio.bios')
 
-deploy_micropython_contract()
+#deploy_micropython_contract()
 
 feature_digests = [
-    'ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43',#RESTRICT_ACTION_TO_SELF
-    'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99', #REPLACE_DEFERRED
-    '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f', #NO_DUPLICATE_DEFERRED_ID
-    '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #ONLY_BILL_FIRST_AUTHORIZER
-    '299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707', #WTMSIG_BLOCK_SIGNATURES
-    'f1aab764127d9319143327124d14bf1bbfbe001ead8d2f7c329cad891c8d951b', #PYTHON_VM
-    '3dabae1906d16d6c1e72d6ce87574c2291ce5d5e4830d3b46589cbe96ce7af9c', #ETHEREUM_VM
+    '1a99a59d87e06e09ec5b028a9cbb7749b4a5ad8819004365d02dc4379a8b7241', #'ONLY_LINK_TO_EXISTING_PERMISSION' 
+    '2652f5f96006294109b3dd0bbde63693f55324af452b799ee137a81a905eed25', #'FORWARD_SETCODE' 
+    '299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707', #'WTMSIG_BLOCK_SIGNATURES' 
+    'ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99', #'REPLACE_DEFERRED' 
+    '4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f', #'NO_DUPLICATE_DEFERRED_ID' 
+    '4e7bf348da00a945489b2a681749eb56f5de00b900014e137ddae39f48f69d67', #'RAM_RESTRICTIONS' 
+    '4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2', #'WEBAUTHN_KEY'
+    '5443fcf88330c586bc0e5f3dee10e7f63c76c00249c87fe4fbf7f38c082006b4', #'BLOCKCHAIN_PARAMETERS'
+    '68dcaa34c0517d19666e6b33add67351d8c5f69e999ca1e37931bc410a297428', #'DISALLOW_EMPTY_PRODUCER_SCHEDULE'
+    '825ee6288fb1373eab1b5187ec2f04f6eacb39cb3a97f356a07c91622dd61d16', #'KV_DATABASE'
+    '8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405', #'ONLY_BILL_FIRST_AUTHORIZER'
+    'ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43', #'RESTRICT_ACTION_TO_SELF'
+    'bf61537fd21c61a60e542a5d66c3f6a78da0589336868307f94a82bccea84e88', #'CONFIGURABLE_WASM_LIMITS'
+    'c3a6138c5061cf291310887c0b5c71fcaffeab90d5deb50d3b9e687cead45071', #'ACTION_RETURN_VALUE'
+    'e0fb64b1085cc5538970158d05a009c24e276fb94e1a0bf6a528b48fbc4ff526', #'FIX_LINKAUTH_RESTRICTION'
+    'f0af56d2c5a48d60a4a5b5c903edfb7db3a736a94ed589d0b797df33ff9d3e1d', #'GET_SENDER'
 ]
 
 for digest in feature_digests: 
     try:
         args = {'feature_digest': digest}
         logger.info(f'activate {digest}')
-        uuosapi.push_action('uuos', 'activate', args, {'uuos':'active'})
+        uuosapi.push_action('eosio', 'activate', args, {'eosio':'active'})
     except Exception as e:
         logger.error(e)
 
-deploy_contract('uuos.token', 'eosio.token')
+deploy_contract('eosio.token', 'eosio.token')
 
-if not uuosapi.get_balance('uuos'):
+if not uuosapi.get_balance('eosio'):
     logger.info('issue system token...')
-    msg = {"issuer":"uuos","maximum_supply":f"11000000000.0000 {config.main_token}"}
-    r = uuosapi.push_action('uuos.token', 'create', msg, {'uuos.token':'active'})
+    msg = {"issuer":"eosio","maximum_supply":f"11000000000.0000 {config.main_token}"}
+    r = uuosapi.push_action('eosio.token', 'create', msg, {'eosio.token':'active'})
     assert r
-    r = uuosapi.push_action('uuos.token','issue',{"to":"uuos","quantity":f"1000000000.0000 {config.main_token}","memo":""},{'uuos':'active'})
+    r = uuosapi.push_action('eosio.token','issue',{"to":"eosio","quantity":f"1000000000.0000 {config.main_token}","memo":""},{'eosio':'active'})
     assert r
 
 try:
-    deploy_contract('uuos.msig', 'eosio.msig')
-    deploy_contract('uuos', 'eosio.system')
+    deploy_contract('eosio.msig', 'eosio.msig')
+    deploy_contract('eosio', 'eosio.system')
 except Exception as e:
     logger.exception(e)
 
@@ -243,51 +252,40 @@ if True:
 
     args['min_bp_staking_amount'] = 10000000000
     try:
-        uuosapi.push_action('uuos', 'init', args, {'uuos':'active'})
+        uuosapi.push_action('eosio', 'init', args, {'eosio':'active'})
     except Exception as e:
         logger.exception(e)
 
 if uuosapi.get_balance('helloworld11') <=0:
-    r = uuosapi.push_action('uuos.token', 'transfer', {"from":"uuos", "to":"helloworld11","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'uuos':'active'})
+    r = uuosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"helloworld11","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
 if uuosapi.get_balance('helloworld12') <=0:
-    r = uuosapi.push_action('uuos.token', 'transfer', {"from":"uuos", "to":"helloworld12","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'uuos':'active'})
+    r = uuosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"helloworld12","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
 if uuosapi.get_balance('helloworld13') <=0:
-    r = uuosapi.push_action('uuos.token', 'transfer', {"from":"uuos", "to":"helloworld13","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'uuos':'active'})
+    r = uuosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"helloworld13","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
 if uuosapi.get_balance('helloworld14') <=0:
-    r = uuosapi.push_action('uuos.token', 'transfer', {"from":"uuos", "to":"helloworld14","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'uuos':'active'})
+    r = uuosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"helloworld14","quantity":f"100000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
 
 if uuosapi.get_balance('hello') <=0:
-    r = uuosapi.push_action('uuos.token', 'transfer', {"from":"uuos", "to":"hello","quantity":f"10000000.0000 {config.main_token}","memo":""}, {'uuos':'active'})
+    r = uuosapi.push_action('eosio.token', 'transfer', {"from":"eosio", "to":"hello","quantity":f"10000000.0000 {config.main_token}","memo":""}, {'eosio':'active'})
 
 for account in  ('helloworld11', 'helloworld12', 'helloworld13', 'helloworld14', 'helloworld15', 'learnfortest'):
-    uuosapi.transfer('uuos', account, 1000.0)
-    util.buyrambytes('uuos', account, 5*1024*1024)
-    util.dbw('uuos', account, 1.0, 1000)
+    uuosapi.transfer('eosio', account, 1000.0)
+    util.buyrambytes('eosio', account, 5*1024*1024)
+    util.dbw('eosio', account, 1.0, 1000)
 
 try:
     args = {'vmtype': 1, 'vmversion':0} #activate vm python
-    uuosapi.push_action('uuos', 'activatevm', args, {'uuos':'active'})
+    uuosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
 except Exception as e:
     logger.info(e)
 
 try:
     args = {'vmtype': 2, 'vmversion':0} #activate vm python
-    uuosapi.push_action('uuos', 'activatevm', args, {'uuos':'active'})
-except Exception as e:
-    logger.info(e)
-
-try:
-    if deploy_contract('helloworld11', 'ethereum_vm', '../build/lib/evmone/contracts'):
-        args = {'chainid': 1}
-        try:
-            r = uuosapi.push_action('helloworld11', 'setchainid', args, {'helloworld11':'active'})
-            logger.info(r['processed']['elapsed'])
-        except Exception as e:
-            logger.info(e)
+    uuosapi.push_action('eosio', 'activatevm', args, {'eosio':'active'})
 except Exception as e:
     logger.info(e)
 
@@ -298,7 +296,7 @@ while False:
     elapsed = 0
     for i in range(n, n+10):
         try:
-            r = uuosapi.transfer('hello', 'uuos', 0.0001, str(i))
+            r = uuosapi.transfer('hello', 'eosio', 0.0001, str(i))
             logger.info(r['processed']['elapsed'])
             elapsed += int(r['processed']['elapsed'])
         except Exception as e:
