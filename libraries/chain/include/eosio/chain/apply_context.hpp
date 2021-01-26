@@ -1,5 +1,6 @@
 #pragma once
-#include <eosio/chain/controller.hpp>
+#include <eosio/chain/transaction_context.hpp>
+#include <eosio/chain/account_object.hpp>
 #include <eosio/chain/transaction.hpp>
 #include <eosio/chain/contract_table_objects.hpp>
 
@@ -570,6 +571,7 @@ class apply_context {
       const action& get_action()const { return *act; }
 
       action_name get_sender() const;
+      bool contracts_console();
 
       uint32_t db_get_table_row_count(uint64_t code, uint64_t scope, uint64_t table);
 

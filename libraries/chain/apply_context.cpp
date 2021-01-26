@@ -1210,5 +1210,8 @@ int apply_context::call_contract_get_results(void* result, size_t size) {
     return copy_size;
 }
 
+bool apply_context::contracts_console() {
+   return control.contracts_console();
+}
 
 } } /// eosio::chain
