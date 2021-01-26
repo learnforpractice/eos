@@ -319,6 +319,85 @@ extern "C" {
         self.chain.push_action('alice', 'sayhello', b'')
         self.chain.produce_block()
 
+    def test_call6(self):
+        code = r'''
+#include <eosio/eosio.hpp>
+#include <eosio/action.hpp>
+#include <eosio/print.hpp>
+
+using namespace eosio;
+
+extern "C" {
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_args(void* args, size_t size1);
+
+    __attribute__((eosio_wasm_import))
+    void call_contract(uint64_t contract, const char* args, uint32_t size);
+
+    void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
+        eosio::print("++++++++bob apply");
+        uint64_t args[2];
+        args[0] = name("calltest1").value;
+        args[1] = 1;
+        call_contract(name("bob").value, (char *)args, sizeof(args));
+    }
+}
+        '''
+
+        contract_name = 'bob'
+        code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
+        try:
+            self.chain.deploy_contract(contract_name, code, b'')
+        except Exception as e:
+            logger.info(e)
+        self.chain.produce_block()
+
+
+        code = r'''
+#include <eosio/eosio.hpp>
+#include <eosio/action.hpp>
+#include <eosio/print.hpp>
+
+using namespace eosio;
+
+extern "C" {
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_args(void* args, size_t size1);
+
+    __attribute__((eosio_wasm_import))
+    int call_contract_get_results(char* results, uint32_t size1);
+
+    __attribute__((eosio_wasm_import))
+    void call_contract(uint64_t contract, const char* args, uint32_t size);
+
+    void apply( uint64_t receiver, uint64_t code, uint64_t action ) {
+        uint64_t args[2];
+        args[0] = name("calltest1").value;
+        args[1] = 1;
+        call_contract(name("bob").value, (char *)args, sizeof(args));
+        uint64_t ret;
+        call_contract_get_results((char *)&ret, sizeof(ret));
+        eosio::print("++++ret:", ret);
+        eosio::check(ret == 2, "bad return value!");
+    }
+}
+        '''
+
+        contract_name = 'alice'
+        code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
+        try:
+            self.chain.deploy_contract(contract_name, code, b'')
+        except Exception as e:
+            logger.info(e)
+        self.chain.produce_block()
+
+        try:
+            self.chain.push_action('alice', 'sayhello', b'')
+            assert 0
+        except Exception as e:
+            assert e.args[0]['action_traces'][0]['except']['stack'][0]['format'] == 'wasm code call depth exceeded!'
+            exception_name = e.args[0]['action_traces'][0]['except']['name']
+            logger.info(exception_name)
 
     def test_hello(self):
         contract_name = 'uuos.mpy'
