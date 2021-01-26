@@ -2,7 +2,6 @@
 #include <eosio/chain/controller.hpp>
 #include <eosio/chain/transaction.hpp>
 #include <eosio/chain/contract_table_objects.hpp>
-#include <eosio/chain/chain_proxy.hpp>
 
 #include <fc/utility.hpp>
 #include <sstream>
@@ -15,7 +14,7 @@ namespace eosio { namespace chain {
 
 class controller;
 class transaction_context;
-class chain_proxy;
+class apply_context_proxy;
 
 class apply_context {
    private:
@@ -585,7 +584,10 @@ class apply_context {
       controller&                   control;
       chainbase::database&          db;  ///< database where state is stored
       transaction_context&          trx_context; ///< transaction context in which the action is running
-      eosio::chain::chain_proxy&    proxy;
+
+      std::unique_ptr<apply_context_proxy> _proxy;
+      eosio::chain::apply_context_proxy&    proxy;
+
    private:
       const action*                 act = nullptr; ///< action being applied
       // act pointer may be invalidated on call to trx_context.schedule_action

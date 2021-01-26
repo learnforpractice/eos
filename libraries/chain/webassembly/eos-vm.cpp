@@ -2,6 +2,8 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
+#include <eosio/chain/apply_context_proxy.hpp>
+
 #include <vm_api.h>
 
 //eos-vm includes
@@ -68,7 +70,7 @@ class eos_vm_instantiated_module : public wasm_instantiated_module_interface {
             checktime_watchdog wd(context.trx_context.transaction_timer);
             _runtime->_bkend->timed_run(wd, fn);
          } catch(eosio::vm::timeout_exception&) {
-            get_vm_api()->checktime();
+            context.proxy.checktime();
 //            context.trx_context.checktime();
          } catch(eosio::vm::wasm_memory_exception& e) {
 //            FC_THROW_EXCEPTION(wasm_execution_error, "access violation");

@@ -32,6 +32,8 @@
 #include <vm_api/vm_api.h>
 
 #include <eosio/chain/evm.hpp>
+#include <eosio/chain/chain_proxy.hpp>
+#include <eosio/chain/apply_context_proxy.hpp>
 
 extern "C" int micropython_eosio_apply(uint64_t receiver,uint64_t account, uint64_t action);
 
@@ -134,7 +136,7 @@ class context_aware_api {
 
       void checktime() {
 //         context.trx_context.checktime();
-         get_vm_api()->checktime();
+         context.proxy.checktime();
       }
 
    protected:

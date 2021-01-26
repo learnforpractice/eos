@@ -1,4 +1,6 @@
 #include <eosio/chain/controller.hpp>
+#include <eosio/chain/apply_context.hpp>
+#include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/chain_proxy.hpp>
 
 #include <dlfcn.h>
@@ -46,6 +48,15 @@ chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : con
     #else
         this->eos_vm_micropython = init((int)conf.wasm_runtime, false, *this);
     #endif
+}
+
+void chain_proxy::set_context(apply_context* ctx) {
+    this->ctx = ctx;
+}
+
+apply_context& chain_proxy::get_context() {
+    get_vm_api()->eosio_assert(this->ctx != nullptr, "apply_context can not be null");
+    return *this->ctx;
 }
 
 const chainbase::database& chain_proxy::db() {

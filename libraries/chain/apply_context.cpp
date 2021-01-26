@@ -13,6 +13,7 @@
 #include <eosio/chain/global_property_object.hpp>
 #include <boost/container/flat_set.hpp>
 #include <eosio/chain/chain_proxy.hpp>
+#include <eosio/chain/apply_context_proxy.hpp>
 
 #include <chain_api.hpp>
 
@@ -40,7 +41,8 @@ apply_context::apply_context(controller& con, transaction_context& trx_ctx, uint
 :control(con)
 ,db(con.mutable_db())
 ,trx_context(trx_ctx)
-,proxy(con.proxy())
+,_proxy(new apply_context_proxy())
+,proxy(*_proxy)
 ,recurse_depth(depth)
 ,first_receiver_action_ordinal(action_ordinal)
 ,action_ordinal(action_ordinal)
@@ -69,7 +71,9 @@ void apply_context::exec_one()
 {
    auto cleanup = fc::make_scoped_exit([&](){
       set_apply_context(nullptr);
+      this->proxy.set_context(nullptr);
    });
+   this->proxy.set_context(this);
    set_apply_context(this);
    auto start = fc::time_point::now();
 
@@ -125,7 +129,7 @@ void apply_context::exec_one()
                } else if (receiver_account->vm_type == 1 || receiver_account->vm_type == 2) {
 //                  control.get_vm_manager().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
                   auto& mpy_account = this->db.get<account_metadata_object,by_name>( N(uuos.mpy) );
-                  this->proxy.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, *this);
+                  this->control.proxy().eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, *this);
                }
             } catch( const wasm_exit& ) {}
          }
@@ -1174,7 +1178,7 @@ void apply_context::call_contract(uint64_t contract, const char *args, size_t ar
    memcpy(call_args.data(), args, args_size);
    call_returns.resize(0);
 
-   this->proxy.eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
+   this->control.proxy().eos_vm_interface_apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 //   control.get_wasm_interface().apply(contract_account.code_hash, contract_account.vm_type, contract_account.vm_version, *this);
 }
 

@@ -61,6 +61,7 @@ add_library( eosio_chain
              fork_database.cpp
              controller.cpp
              chain_proxy.cpp
+             apply_context_proxy.cpp
              authorization_manager.cpp
              resource_limits.cpp
              block_log.cpp

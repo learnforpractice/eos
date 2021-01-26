@@ -7,7 +7,6 @@ using namespace eosio::chain::webassembly::common;
 //libraries/chain/webassembly/eos-vm-oc/compile_monitor.cpp
 extern "C" void start_compile_monitor();
 
-#if 1
 extern "C" {
    eosio::chain::wasm_interface* eos_vm_interface_init2(int vmtype, bool tierup, eosio::chain::chain_proxy& api) {
 #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
@@ -25,5 +24,3 @@ extern "C" {
       return interface;
    }
 }
-#endif
-

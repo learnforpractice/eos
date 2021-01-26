@@ -4,6 +4,8 @@
 #include <eosio/chain/webassembly/runtime_interface.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/apply_context.hpp>
+#include <eosio/chain/apply_context_proxy.hpp>
+
 #include <softfloat_types.h>
 
 //wabt includes

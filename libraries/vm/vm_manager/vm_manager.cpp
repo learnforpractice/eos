@@ -1,5 +1,7 @@
 #include <eosio/chain/vm_manager.hpp>
 #include <eosio/chain/apply_context.hpp>
+#include <eosio/chain/chain_proxy.hpp>
+
 #include <vm_api/vm_api.h>
 
 #include "../vm_micropython/micropython_vm_config.h"
@@ -140,7 +142,7 @@ void vm_manager::apply(const digest_type& code_hash, const uint8_t& vm_type, con
         #if 0
         context.control.get_wasm_interface().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
         #else
-        context.proxy.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
+        context.control.proxy().eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, context);
         #endif
         return;
 

@@ -188,7 +188,7 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
       syscall(SYS_mprotect, self->code_mapping, self->code_mapping_size, PROT_NONE);
       self->mapping_is_executable = false;
    }, this);
-   get_vm_api()->checktime(); //catch any expiration that might have occurred before setting up callback
+   context.proxy.checktime(); //catch any expiration that might have occurred before setting up callback
 
    auto cleanup = fc::make_scoped_exit([cb, &tt=context.trx_context.transaction_timer](){
       cb->is_running = false;
@@ -215,7 +215,7 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
          break;
       //case 1: clean eosio_exit
       case EOSVMOC_EXIT_CHECKTIME_FAIL:
-         get_vm_api()->checktime();
+         context.proxy.checktime();
          break;
       case EOSVMOC_EXIT_SEGV:
          EOS_ASSERT(false, wasm_execution_error, "access violation");
