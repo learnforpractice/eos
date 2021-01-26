@@ -6,15 +6,13 @@
 #include <dlfcn.h>
 // #include <vm_api.h>
 
-extern "C" void* eos_vm_interface_init(int type, bool tierup, eosio::chain::chain_proxy& api);
-extern "C" void eos_vm_interface_apply(void* interface, const eosio::chain::digest_type& code_hash, const uint8_t vm_type, const uint8_t vm_version, eosio::chain::apply_context& context);
-
 namespace eosio { namespace chain {
 
 typedef wasm_interface* (*fn_eos_vm_interface_init)(int type, bool tierup, eosio::chain::chain_proxy& api);
 
 
 chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
+#if 0
     const char *vm_eos_path = getenv("CHAIN_LIB");
     const char *vm_eos_path2 = getenv("CHAIN_LIB2");;
      printf("%s\n", vm_eos_path);
@@ -45,6 +43,11 @@ chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : con
     #else
         this->eos_vm_micropython = init((int)conf.wasm_runtime, false, *this);
     #endif
+#else
+    bool tierup = false;
+    this->eos_vm_interface = new wasm_interface(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
+    this->eos_vm_micropython = new wasm_interface(conf.wasm_runtime, tierup, db(), state_dir(), conf.eosvmoc_config);
+#endif
 }
 
 void chain_proxy::set_context(apply_context* ctx) {
