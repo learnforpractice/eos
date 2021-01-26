@@ -14,6 +14,10 @@ apply_context_proxy::apply_context_proxy() {
 
 }
 
+apply_context_proxy::~apply_context_proxy() {
+    
+}
+
 void apply_context_proxy::set_context(apply_context* ctx) {
     this->ctx = ctx;
 }

@@ -10,6 +10,7 @@ class apply_context_proxy {
 
 public:
     apply_context_proxy();
+    virtual ~apply_context_proxy();
     virtual void set_context(apply_context* ctx);
     virtual apply_context& get_context();
     virtual void checktime();
