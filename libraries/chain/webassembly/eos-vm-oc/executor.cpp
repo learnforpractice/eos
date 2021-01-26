@@ -6,6 +6,7 @@
 #include <eosio/chain/webassembly/eos-vm-oc/eos-vm-oc.h>
 #include <eosio/chain/wasm_eosio_constraints.hpp>
 #include <eosio/chain/apply_context.hpp>
+#include <eosio/chain/apply_context_proxy.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/exceptions.hpp>
 #include <eosio/chain/types.hpp>
@@ -188,7 +189,7 @@ void executor::execute(const code_descriptor& code, const memory& mem, apply_con
       syscall(SYS_mprotect, self->code_mapping, self->code_mapping_size, PROT_NONE);
       self->mapping_is_executable = false;
    }, this);
-   context.proxy.checktime(); //catch any expiration that might have occurred before setting up callback
+   context.proxy().checktime(); //catch any expiration that might have occurred before setting up callback
 
    auto cleanup = fc::make_scoped_exit([cb, &tt=context.trx_context.transaction_timer](){
       cb->is_running = false;
