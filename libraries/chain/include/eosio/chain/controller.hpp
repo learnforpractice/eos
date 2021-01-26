@@ -26,7 +26,7 @@ namespace boost { namespace asio {
 namespace eosio { namespace vm { class wasm_allocator; }}
 
 namespace eosio { namespace chain {
-
+   class chain_proxy;
    class authorization_manager;
 
    namespace resource_limits {
@@ -384,14 +384,16 @@ namespace eosio { namespace chain {
             return fc::variant(obj);
          }
 
-      static chain_id_type extract_chain_id(snapshot_reader& snapshot);
+         static chain_id_type extract_chain_id(snapshot_reader& snapshot);
 
-      static std::optional<chain_id_type> extract_chain_id_from_db( const path& state_dir );
+         static std::optional<chain_id_type> extract_chain_id_from_db( const path& state_dir );
 
          void replace_producer_keys( const public_key_type& key );
          void replace_account_keys( name account, name permission, const public_key_type& key );
 
          eosio::chain::combined_database& kv_db()const;
+         eosio::chain::chain_proxy& proxy()const;
+
 
       private:
          friend class apply_context;

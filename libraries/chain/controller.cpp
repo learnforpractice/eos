@@ -12,6 +12,7 @@
 #include <eosio/chain/resource_limits.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/platform_timer.hpp>
+#include <eosio/chain/chain_proxy.hpp>
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -153,6 +154,7 @@ struct controller_impl {
    chainbase::database                 db;
    chainbase::database                 reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
    combined_database                   kv_db;
+   chain_proxy                         proxy;
    block_log                           blog;
    std::optional<pending_state>        pending;
    block_state_ptr                     head;
@@ -235,6 +237,7 @@ struct controller_impl {
     kv_db(cfg.backing_store == backing_store_type::CHAINBASE
           ? combined_database(db, cfg.persistent_storage_mbytes_batch)
           : combined_database(db, cfg)), 
+    proxy(cfg, s),
     blog( cfg.blog ),
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
@@ -2383,6 +2386,10 @@ chainbase::database& controller::mutable_db()const { return my->db; }
 
 const fork_database& controller::fork_db()const { return my->fork_db; }
 eosio::chain::combined_database& controller::kv_db() const { return my->kv_db; }
+
+eosio::chain::chain_proxy& controller::proxy() const {
+   return my->proxy;
+}
 
 const chainbase::database& controller::reversible_db()const { return my->reversible_blocks; }
 
