@@ -13,8 +13,9 @@ typedef wasm_interface* (*fn_eos_vm_interface_init)(int type, bool tierup, eosio
 
 
 chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
-    const char *vm_eos_path = "/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared.dylib";
-    const char *vm_eos_path2 = "/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared2.dylib";
+//"/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared.dylib";
+    const char *vm_eos_path = getenv("CHAIN_LIB");
+    const char *vm_eos_path2 = getenv("CHAIN_LIB2");;
 
     void *handle = dlopen(vm_eos_path, RTLD_LAZY | RTLD_LOCAL);
     vmilog("+++++++handle %p\n", handle);

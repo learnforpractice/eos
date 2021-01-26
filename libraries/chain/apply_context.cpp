@@ -123,7 +123,9 @@ void apply_context::exec_one()
                      }
                   }
                } else if (receiver_account->vm_type == 1 || receiver_account->vm_type == 2) {
-                  control.get_vm_manager().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
+//                  control.get_vm_manager().apply(receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this);
+                  auto& mpy_account = this->db.get<account_metadata_object,by_name>( N(uuos.mpy) );
+                  this->proxy.eos_vm_micropython_apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, *this);
                }
             } catch( const wasm_exit& ) {}
          }
