@@ -37,7 +37,7 @@ struct apply_options;
 template<typename Backend>
 class eos_vm_runtime : public eosio::chain::wasm_runtime_interface {
    public:
-      eos_vm_runtime();
+      eos_vm_runtime(eosio::vm::wasm_allocator& alloc);
       bool inject_module(IR::Module&) override;
       std::unique_ptr<wasm_instantiated_module_interface> instantiate_module(const char* code_bytes, size_t code_size, std::vector<uint8_t>,
                                                                              const digest_type& code_hash, const uint8_t& vm_type, const uint8_t& vm_version) override;
@@ -49,7 +49,7 @@ class eos_vm_runtime : public eosio::chain::wasm_runtime_interface {
       //       immediately_exit_currently_running_module() should probably
       //       move from wasm_runtime_interface to wasm_instantiated_module_interface.
       eos_vm_backend_t<Backend>* _bkend = nullptr;  // non owning pointer to allow for immediate exit
-
+      eosio::vm::wasm_allocator& alloc;
    template<typename Impl>
    friend class eos_vm_instantiated_module;
 };
