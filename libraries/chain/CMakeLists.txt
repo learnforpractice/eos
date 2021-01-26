@@ -107,6 +107,11 @@ add_library( eosio_chain
               asset.cpp
               snapshot.cpp
 
+              eosio_chain.cpp
+              main.cpp
+              chain_proxy.cpp
+              apply_context_proxy.cpp
+
              ${CHAIN_EOSVMOC_SOURCES}
              ${CHAIN_EOSVM_SOURCES}
              ${CHAIN_WEBASSEMBLY_SOURCES}
@@ -162,6 +167,18 @@ if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
 endif()
 
 add_subdirectory ( backing_store/tests )
+
+add_library( eosio_chain_shared SHARED
+         main.cpp
+)
+
+target_link_libraries( eosio_chain_shared eosio_chain )
+
+add_library( eosio_chain_shared2 SHARED
+         main.cpp
+)
+
+target_link_libraries( eosio_chain_shared2 eosio_chain )
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
