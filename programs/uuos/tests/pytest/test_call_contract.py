@@ -64,7 +64,10 @@ extern "C" {
 
         contract_name = 'bob'
         code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
-        self.chain.deploy_contract(contract_name, code, b'')
+        try:
+            self.chain.deploy_contract(contract_name, code, b'')
+        except Exception as e:
+            logger.info(e)
         self.chain.produce_block()
 
         code = '''
@@ -216,7 +219,10 @@ extern "C" {
 
         contract_name = 'bob'
         code = wasmcompiler.compile_cpp_src(contract_name, code, entry='apply', force=True)
-        self.chain.deploy_contract(contract_name, code, b'')
+        try:
+            self.chain.deploy_contract(contract_name, code, b'')
+        except Exception as e:
+            logger.info(e)
         self.chain.produce_block()
 
         code = '''

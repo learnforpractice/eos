@@ -124,7 +124,11 @@ def compile_cpp_file(src_path, includes=[], entry='apply', opt='O3'):
     compiler = cpp_compiler(src_path, includes, entry)
     return compiler.compile_cpp_file(opt)
 
+code_cache = {}
 def compile_cpp_src(account_name, code, includes = [], entry='apply', opt='O3', force=False):
+    global code_cache
+    if code in code_cache:
+        return code_cache[code]
     temp_dir = tempfile.mktemp()
     src_file = temp_dir + '.cpp'
 
@@ -136,5 +140,5 @@ def compile_cpp_src(account_name, code, includes = [], entry='apply', opt='O3', 
         file_name = temp_dir + ext
         if os.path.exists(file_name):
             os.remove(file_name)
-
+    code_cache[code] = wasm_code
     return wasm_code
