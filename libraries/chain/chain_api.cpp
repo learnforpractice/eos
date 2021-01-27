@@ -22,8 +22,6 @@ extern "C" void chain_free(chain_api *c) {
    }
 }
 
-typedef void (*fn_init_chain_api)(fn_chain_new _init, fn_chain_free _free);
-
 void uuos_init_chain_api(fn_chain_new _init, fn_chain_free _free) {
     const char *chain_api_lib = getenv("CHAIN_API_LIB");
     void *handle = dlopen(chain_api_lib, RTLD_LAZY | RTLD_GLOBAL);
