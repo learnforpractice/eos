@@ -1,6 +1,10 @@
 import os
+import sys
 import time
 from uuoskit import uuosapi, wallet, config
+
+if len(sys.argv) >= 2:
+    uuosapi.set_node(sys.argv[1])
 
 config.main_token = 'UUOS'
 config.main_token_contract = 'eosio.token'
@@ -71,6 +75,7 @@ class MyDataI64(object):
 
 def apply(a, b, c):
 #    while True: pass
+    print('hello,world')
     for i in range(100):
         d = MyDataI64(1, 2, 3, 5.0)
         d.pack()

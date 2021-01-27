@@ -1,7 +1,11 @@
 # pack performance tests between python and C++
 import os
+import sys
 import time
 from uuoskit import uuosapi, wallet, config
+
+if len(sys.argv) >= 2:
+    uuosapi.set_node(sys.argv[1])
 
 print('pack performance tests between python and C++')
 

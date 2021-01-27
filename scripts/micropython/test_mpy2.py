@@ -1,9 +1,13 @@
 # find string performance tests between python and C++
 import os
+import sys
 import time
 from uuoskit import uuosapi, wallet, config
 
 print('find string performance tests between python and C++')
+
+if len(sys.argv) >= 2:
+    uuosapi.set_node(sys.argv[1])
 
 config.main_token = 'UUOS'
 config.main_token_contract = 'eosio.token'
