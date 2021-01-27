@@ -1,5 +1,3 @@
-import os
-from uuoskit import uuosapi, wallet, config
 config.main_token = 'UUOS'
 config.main_token_contract = 'eosio.token'
 config.system_contract = 'eosio'
@@ -17,7 +15,32 @@ except:
     pass
 
 code = '''
+import json
 import struct
+
+class MyDataI64(object):
+    def __init__(self, a: int, b: int, c: int, d: float):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.payer = 0
+
+    def pack(self):
+        data = (self.a, self.b, self.c, self.d)
+        return json.dumps(data)
+
+    @classmethod
+    def unpack(cls, data):
+        data = json.loads(data)
+        return cls(data[0], data[1], data[2], data[3])
+
+    def get_primary_key(self):
+        return self.a
+
+    def __str__(self):
+        data = (self.a, self.b, self.c, self.d)
+        return json.dumps(data)
 
 class MyDataI64(object):
     def __init__(self, a: int, b: int, c: int, d: float):
@@ -44,7 +67,7 @@ class MyDataI64(object):
 
 def apply(a, b, c):
 #    while True: pass
-    for i in range(10):
+    for i in range(100):
         d = MyDataI64(1, 2, 3, 5.0)
         d.pack()
 #        print(d.pack())
@@ -56,3 +79,4 @@ uuosapi.push_action('hello', 'setcode', args, {'hello':'active'})
 
 r = uuosapi.push_action('hello', 'sayhello', b'', {'hello':'active'})
 print(r['processed']['action_traces'][0]['console'], r['processed']['elapsed'])
+
