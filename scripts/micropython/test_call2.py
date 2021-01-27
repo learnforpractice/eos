@@ -74,8 +74,12 @@ def apply(receiver, code, action):
 code = uuosapi.mp_compile('hello', code)
 args = uuosapi.s2b('hello') + code
 r = uuosapi.push_action('hello', 'setcode', args, {'hello':'active'})
-r = uuosapi.push_action('hello', 'sayhello', b'aa', {'hello':'active'})
-r = uuosapi.push_action('hello', 'sayhello', b'bb', {'hello':'active'})
-print(r['processed']['action_traces'][0]['console'])
-print(r['processed']['elapsed'])
+
+def run():
+    args = int.to_bytes(int(time.time()*1000), 8, 'little')
+    r = uuosapi.push_action('hello', 'sayhello', args, {'hello':'active'})
+    print(r['processed']['action_traces'][0]['console'])
+    print(r['processed']['elapsed'])
+
+run()
 

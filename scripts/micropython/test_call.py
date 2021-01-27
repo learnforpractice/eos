@@ -87,6 +87,10 @@ try:
     uuosapi.deploy_contract('helloworld11', code, b'')
 except:
     pass
-r = uuosapi.push_action('helloworld11', 'sayhello', b'', {'helloworld11':'active'})
-print(r['processed']['action_traces'][0]['console'])
-print(r['processed']['elapsed'])
+
+def run():
+    args = int.to_bytes(int(time.time()*1000), 8, 'little')
+    r = uuosapi.push_action('helloworld11', 'sayhello', args, {'helloworld11':'active'})
+    print(r['processed']['action_traces'][0]['console'])
+    print(r['processed']['elapsed'])
+run()
