@@ -1,3 +1,7 @@
+import os
+import time
+from uuoskit import uuosapi, wallet, config
+
 config.main_token = 'UUOS'
 config.main_token_contract = 'eosio.token'
 config.system_contract = 'eosio'
