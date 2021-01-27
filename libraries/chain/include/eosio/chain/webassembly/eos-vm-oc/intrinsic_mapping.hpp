@@ -279,10 +279,10 @@ inline constexpr auto get_intrinsic_table() {
       "env.get_parameters_packed",
       "env.set_parameters_packed",
 
-      "env.call_contract"_s,
-      "env.call_contract_get_args"_s,
-      "env.call_contract_set_results"_s,
-      "env.call_contract_get_results"_s
+      "env.call_contract",
+      "env.call_contract_get_args",
+      "env.call_contract_set_results",
+      "env.call_contract_get_results"
    );
 }
 inline constexpr std::size_t find_intrinsic_index(std::string_view hf) {
