@@ -12,7 +12,6 @@
 #include <eosio/chain/resource_limits.hpp>
 #include <eosio/chain/thread_utils.hpp>
 #include <eosio/chain/platform_timer.hpp>
-#include <eosio/chain/chain_proxy.hpp>
 
 #include <chainbase/chainbase.hpp>
 #include <fc/io/json.hpp>
@@ -154,12 +153,14 @@ struct controller_impl {
    chainbase::database                 db;
    chainbase::database                 reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
    combined_database                   kv_db;
-   chain_proxy                         proxy;
    block_log                           blog;
    std::optional<pending_state>        pending;
    block_state_ptr                     head;
    fork_database                       fork_db;
    wasm_interface                      wasmif;
+   wasm_interface                      wasmif_call;
+   wasm_interface                      wasmif_mpy;
+
    resource_limits_manager             resource_limits;
    authorization_manager               authorization;
    protocol_feature_manager            protocol_features;
@@ -237,10 +238,15 @@ struct controller_impl {
     kv_db(cfg.backing_store == backing_store_type::CHAINBASE
           ? combined_database(db, cfg.persistent_storage_mbytes_batch)
           : combined_database(db, cfg)), 
-    proxy(cfg, db, s),
     blog( cfg.blog ),
     fork_db( cfg.state_dir ),
     wasmif( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+    wasmif_call( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config ),
+#ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+    wasmif_mpy( cfg.wasm_runtime, true, db, cfg.state_dir, cfg.eosvmoc_config ),
+#else
+    wasmif_mpy( cfg.wasm_runtime, false, db, cfg.state_dir, cfg.eosvmoc_config ),
+#endif
     resource_limits( db, [&s]() { return s.get_deep_mind_logger(); }),
     authorization( s, db ),
     protocol_features( std::move(pfs), [&s]() { return s.get_deep_mind_logger(); } ),
@@ -2387,10 +2393,6 @@ chainbase::database& controller::mutable_db()const { return my->db; }
 const fork_database& controller::fork_db()const { return my->fork_db; }
 eosio::chain::combined_database& controller::kv_db() const { return my->kv_db; }
 
-eosio::chain::chain_proxy& controller::proxy() const {
-   return my->proxy;
-}
-
 const chainbase::database& controller::reversible_db()const { return my->reversible_blocks; }
 
 void controller::preactivate_feature( uint32_t action_id, const digest_type& feature_digest ) {
@@ -3032,8 +3034,17 @@ const apply_handler* controller::find_apply_handler( account_name receiver, acco
    }
    return nullptr;
 }
+
 wasm_interface& controller::get_wasm_interface() {
    return my->wasmif;
+}
+
+wasm_interface& controller::get_wasm_interface_call() {
+   return my->wasmif_call;
+}
+
+wasm_interface& controller::get_wasm_interface_mpy() {
+   return my->wasmif_mpy;
 }
 
 const account_object& controller::get_account( account_name name )const

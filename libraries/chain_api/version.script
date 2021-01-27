@@ -1,0 +1,4 @@
+CODEABI_1.0 {
+    global: chain_new;chain_free;init_chain_api;
+    local: *;
+};

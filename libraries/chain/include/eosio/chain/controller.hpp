@@ -26,7 +26,6 @@ namespace boost { namespace asio {
 namespace eosio { namespace vm { class wasm_allocator; }}
 
 namespace eosio { namespace chain {
-   class chain_proxy;
    class authorization_manager;
 
    namespace resource_limits {
@@ -351,7 +350,10 @@ namespace eosio { namespace chain {
          */
 
          const apply_handler* find_apply_handler( account_name contract, scope_name scope, action_name act )const;
+
          wasm_interface& get_wasm_interface();
+         wasm_interface& get_wasm_interface_call();
+         wasm_interface& get_wasm_interface_mpy();
 
 
          std::optional<abi_serializer> get_abi_serializer( account_name n, const abi_serializer::yield_function_t& yield )const {
@@ -392,7 +394,6 @@ namespace eosio { namespace chain {
          void replace_account_keys( name account, name permission, const public_key_type& key );
 
          eosio::chain::combined_database& kv_db()const;
-         eosio::chain::chain_proxy& proxy()const;
 
 
       private:

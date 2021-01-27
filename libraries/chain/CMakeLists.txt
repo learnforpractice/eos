@@ -108,9 +108,8 @@ add_library( eosio_chain
               asset.cpp
               snapshot.cpp
 
-              eosio_chain.cpp
-              main.cpp
-              chain_proxy.cpp
+              chain_manager.cpp
+              chain_api.cpp
               apply_context_proxy.cpp
 
              ${CHAIN_EOSVMOC_SOURCES}
@@ -147,7 +146,8 @@ target_include_directories( eosio_chain
                                    "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../rocksdb/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../chain_kv/include"
-                            )
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/../chain_api"
+                           )
 
 add_library(eosio_chain_wrap INTERFACE )
 target_link_libraries(eosio_chain_wrap INTERFACE eosio_chain)
@@ -168,34 +168,6 @@ if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
 endif()
 
 add_subdirectory ( backing_store/tests )
-
-
-
-# add_library( eosio_chain_shared SHARED
-#          main.cpp
-# )
-
-# if (APPLE)
-#    set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
-#    set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
-# else()
-#    set(_version_script "${CMAKE_CURRENT_SOURCE_DIR}/version.script")
-#    set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
-# endif (APPLE)
-
-# set_target_properties(eosio_chain_shared  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
-
-# target_link_libraries( eosio_chain_shared eosio_chain )
-
-# add_library( eosio_chain_shared2 SHARED
-#          main.cpp
-# )
-
-# set_target_properties(eosio_chain_shared2  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
-
-# target_link_libraries( eosio_chain_shared2 eosio_chain )
-
-
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
