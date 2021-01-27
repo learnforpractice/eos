@@ -157,6 +157,7 @@ struct controller_impl {
    std::optional<pending_state>        pending;
    block_state_ptr                     head;
    fork_database                       fork_db;
+
    wasm_interface                      wasmif;
    wasm_interface                      wasmif_call;
    wasm_interface                      wasmif_mpy;
@@ -273,6 +274,8 @@ struct controller_impl {
 
       self.irreversible_block.connect([this](const block_state_ptr& bsp) {
          wasmif.current_lib(bsp->block_num);
+         wasmif_call.current_lib(bsp->block_num);
+         wasmif_mpy.current_lib(bsp->block_num);
       });
 
 #define SET_APP_HANDLER( receiver, contract, action) \
