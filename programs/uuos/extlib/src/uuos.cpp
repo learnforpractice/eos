@@ -32,10 +32,10 @@ void uuosext_init_chain_api() {
     }
 }
 
-chain_api* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
+chain_proxy* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
     return s_chain_new(config, _genesis, protocol_features_dir, snapshot_dir);
 }
 
-void chain_free_(chain_api* api) {
+void chain_free_(chain_proxy* api) {
     s_chain_free(api);
 }

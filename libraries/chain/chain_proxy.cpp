@@ -3,7 +3,7 @@
 
 #include <fc/io/json.hpp>
 
-#include <chain_api.hpp>
+#include <chain_proxy.hpp>
 
 #include <dlfcn.h>
 using namespace eosio::chain;
@@ -51,35 +51,43 @@ using namespace eosio::chain;
         return false; \
    }
 
-string& chain_api::get_last_error() {
+string& chain_proxy::get_last_error() {
     return last_error;
 }
 
-void chain_api::set_last_error(string& error) {
+void chain_proxy::set_last_error(string& error) {
     last_error = error;
 }
 
-chain_api::chain_api(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) :
+chain_proxy::chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) :
     cm(new chain_manager(config, _genesis, protocol_features_dir, snapshot_dir)),
     c(*cm->c)
 {
 }
 
-chain_api::~chain_api() {
+chain_proxy::~chain_proxy() {
 
 }
 
-void chain_api::say_hello() {
-    printf("hello,world from chain_api\n");
+void chain_proxy::say_hello() {
+    printf("hello,world from chain_proxy\n");
 }
 
-void chain_api::id(string& chain_id) {
+void chain_proxy::id(string& chain_id) {
     try {
         chain_id = c.get_chain_id().str();
     } CATCH_AND_LOG_EXCEPTION();
 }
 
-void chain_api::start_block(string& _time, uint16_t confirm_block_count, string& _new_features) {
+bool chain_proxy::startup(bool initdb) {
+    try {
+        cm->startup(initdb);
+        return true;
+    } CATCH_AND_LOG_EXCEPTION();
+    cm.reset();
+}
+
+void chain_proxy::start_block(string& _time, uint16_t confirm_block_count, string& _new_features) {
     auto time = fc::time_point::from_iso_string(_time);
     try {
         if (_new_features.size()) {
@@ -91,7 +99,7 @@ void chain_api::start_block(string& _time, uint16_t confirm_block_count, string&
     } CATCH_AND_LOG_EXCEPTION();
 }
 
-int chain_api::abort_block() {
+int chain_proxy::abort_block() {
    try {
         c.abort_block();
         return 1;
@@ -99,19 +107,21 @@ int chain_api::abort_block() {
    return 0;
 }
 
-bool chain_api::startup(bool initdb) {
-    try {
-        return cm->startup(initdb);
-    } CATCH_AND_LOG_EXCEPTION();
-    cm.reset();
-    return false;
+void chain_proxy::commit_block() {
+    c.commit_block();
 }
 
-static chain_api *_chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
-   return new chain_api(config, _genesis, protocol_features_dir, snapshot_dir);
+
+
+
+
+
+
+static chain_proxy *_chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
+   return new chain_proxy(config, _genesis, protocol_features_dir, snapshot_dir);
 }
 
-static void _chain_free(chain_api *c) {
+static void _chain_free(chain_proxy *c) {
    if (c) {
       delete c;
    }

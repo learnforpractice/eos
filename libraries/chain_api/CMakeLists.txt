@@ -1,5 +1,5 @@
 add_library( chain_api SHARED
-    chain_api.cpp
+    chain_proxy.cpp
 )
 
 if (APPLE)

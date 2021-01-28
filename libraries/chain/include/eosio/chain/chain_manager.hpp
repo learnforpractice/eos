@@ -1,5 +1,5 @@
 #pragma once
-#include <chain_api.hpp>
+#include <chain_proxy.hpp>
 #include <eosio/chain/controller.hpp>
 
 #include <memory>

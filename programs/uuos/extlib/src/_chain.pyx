@@ -23,13 +23,13 @@ cdef extern from "Python.h":
     int _PyLong_AsByteArray(PyLongObject* v, unsigned char* bytes, size_t n, int little_endian, int is_signed)
 
 cdef extern from "uuos.hpp":
-    chain_api *chain(uint64_t ptr)
+    chain_proxy *chain(uint64_t ptr)
     void uuosext_init_chain_api()
 
-    chain_api* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
-    void chain_free_(chain_api* api);
+    chain_proxy* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+    void chain_free_(chain_proxy* api);
 
-    ctypedef struct chain_api:
+    ctypedef struct chain_proxy:
         int a
         void say_hello()
 
@@ -37,6 +37,7 @@ cdef extern from "uuos.hpp":
         void start_block(string& _time, uint16_t confirm_block_count, string& _new_features);
         int abort_block();
         bool startup(bool initdb);
+        void commit_block();
 
         string& get_last_error();
         void set_last_error(string& error);
@@ -45,7 +46,7 @@ def chain_new(string& config, string& _genesis, string& protocol_features_dir, s
     return <uint64_t>chain_new_(config, _genesis, protocol_features_dir, snapshot_dir)
 
 def chain_free(uint64_t ptr):
-    chain_free_(<chain_api*>ptr)
+    chain_free_(<chain_proxy*>ptr)
 
 def chain_say_hello(uint64_t ptr):
     chain(ptr).say_hello()
@@ -63,6 +64,9 @@ def abort_block(ptr):
 
 def startup(ptr, initdb):
     return chain(ptr).startup(initdb)
+
+def commit_block(ptr):
+    return chain(ptr).commit_block()
 
 def get_last_error(ptr):
     cdef string error

@@ -1,10 +1,10 @@
-#include <chain_api.hpp>
+#include <chain_proxy.hpp>
 
-typedef chain_api* (*fn_chain_new)(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
-typedef void (*fn_chain_free)(chain_api* api);
+typedef chain_proxy* (*fn_chain_new)(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+typedef void (*fn_chain_free)(chain_proxy* api);
 
-chain_api* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
-void chain_free_(chain_api* api);
+chain_proxy* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+void chain_free_(chain_proxy* api);
 
 void uuosext_init_chain_api();
-#define chain(ptr) ((chain_api*)ptr)
+#define chain(ptr) ((chain_proxy*)ptr)
