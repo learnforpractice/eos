@@ -1,8 +1,12 @@
 
 add_cython_target(_uuos CXX)
+add_cython_target(_chain CXX)
+add_cython_target(_chainapi CXX)
 
 add_library(_uuos MODULE
     ${_uuos}
+    ${_chain}
+    ${_chainapi}
     main.cpp
     uuos.cpp
 )
@@ -23,4 +27,4 @@ target_include_directories(_uuos PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 
 set_property(TARGET _uuos PROPERTY CXX_STANDARD 17)
 
-install(TARGETS _uuos LIBRARY DESTINATION uuos)
+install(TARGETS _uuos LIBRARY DESTINATION uuosio)

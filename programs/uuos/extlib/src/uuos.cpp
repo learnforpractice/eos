@@ -8,6 +8,7 @@ static fn_chain_free s_chain_free = nullptr;
 
 void uuosext_init_chain_api() {
     const char * chain_api_lib = getenv("CHAIN_API_LIB");
+    printf("++++chain_api_lib %s\n", chain_api_lib);
 
     void *handle = dlopen(chain_api_lib, RTLD_LAZY | RTLD_GLOBAL);
     if (handle == 0) {

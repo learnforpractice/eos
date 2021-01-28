@@ -11,13 +11,17 @@ setup_requires = pytest_runner
 
 setup(
     name="uuosio",
-    version="1.2.4",
-    description="uuosio project",
-    author='The scikit-build team',
+    version="0.1.0",
+    description="UUOSIO project",
+    author='The UUOSIO Team',
     license="MIT",
-    packages=['src'],
-    package_dir={'uuosio': 'src/'},
+    packages=['uuosio'],
+    package_dir={'uuosio': 'uuosio/'},
+#    package_data={'uuosio': ['data/hello.txt', 'data/hello2.txt']},
+    data_files = [('lib', ['lib/lib.txt'])],
+    scripts=['bin/uuos'],
     install_requires=['cython'],
     tests_require=['pytest'],
-    setup_requires=setup_requires
+    setup_requires=setup_requires,
+#    include_package_data=True
 )

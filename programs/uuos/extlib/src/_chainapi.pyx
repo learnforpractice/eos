@@ -24,5 +24,3 @@ cdef extern from "Python.h":
 
 cdef extern from "uuos.hpp":
     void uuosext_init_chain_api()
-
-uuosext_init_chain_api()
