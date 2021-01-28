@@ -15,6 +15,7 @@ class chain_api {
     public:
         chain_api(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         virtual ~chain_api();
+        virtual void say_hello();
     private:
         std::unique_ptr<eosio::chain::chain_manager> c;
 };

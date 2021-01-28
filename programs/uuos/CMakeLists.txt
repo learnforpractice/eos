@@ -1,5 +1,5 @@
 set(NODE_EXECUTABLE_NAME uuos)
-add_executable( ${NODE_EXECUTABLE_NAME} main.cpp )
+add_executable( ${NODE_EXECUTABLE_NAME} main.cpp python.cpp)
 
 if( UNIX AND NOT APPLE )
   set(rt_library rt )
