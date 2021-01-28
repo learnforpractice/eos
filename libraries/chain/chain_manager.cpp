@@ -290,14 +290,40 @@ protocol_feature_set initialize_protocol_features( const fc::path& p, bool popul
 }
 
 chain_manager::chain_manager(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
-    auto cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
-    auto genesis = fc::json::from_string(_genesis).as<genesis_state>();
+
+   this->cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
+   this->genesis = fc::json::from_string(_genesis).as<genesis_state>();
+   this->snapshot_dir = snapshot_dir;
 
     auto pfs = initialize_protocol_features( boost::filesystem::path(protocol_features_dir) );
-    auto chain_id = genesis.compute_chain_id();
+    auto chain_id = this->genesis.compute_chain_id();
 
-    this->c = std::make_unique<controller>(cfg, std::move(pfs), chain_id);
+    this->c = std::make_unique<controller>(this->cfg, std::move(pfs), chain_id);
     this->c->add_indices();
+}
+
+chain_manager::~chain_manager() {
+}
+
+void chain_manager::shutdown() {
+   _shutdown = true;
+}
+
+bool chain_manager::startup(bool init_db) {
+   auto _shutdown = [](){ return true; };
+   auto _check_shutdown = [&](){ return _shutdown; };
+
+   if (snapshot_dir.size()) {
+      auto infile = std::ifstream(snapshot_dir, (std::ios::in | std::ios::binary));
+      auto reader = std::make_shared<istream_snapshot_reader>(infile);
+      c->startup(_shutdown, _check_shutdown, reader);
+      infile.close();
+   } else if (init_db) {
+      c->startup(_shutdown, _check_shutdown, genesis);
+   } else {
+      c->startup(_shutdown, _check_shutdown);
+   }
+   return true;
 }
 
 }}

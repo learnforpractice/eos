@@ -21,6 +21,7 @@ class chain_api {
         virtual void id(string& chain_id);
         virtual void start_block(string& _time, uint16_t confirm_block_count, string& _new_features);
         virtual int abort_block();
+        virtual bool startup(bool initdb);
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);

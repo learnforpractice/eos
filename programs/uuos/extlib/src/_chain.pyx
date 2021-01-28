@@ -36,6 +36,7 @@ cdef extern from "uuos.hpp":
         void id(string& chain_id);
         void start_block(string& _time, uint16_t confirm_block_count, string& _new_features);
         int abort_block();
+        bool startup(bool initdb);
 
         string& get_last_error();
         void set_last_error(string& error);
@@ -49,7 +50,6 @@ def chain_free(uint64_t ptr):
 def chain_say_hello(uint64_t ptr):
     chain(ptr).say_hello()
 
-
 def id(ptr):
     cdef string chain_id
     chain(ptr).id(chain_id)
@@ -60,6 +60,9 @@ def start_block(uint64_t ptr, string& _time, uint16_t confirm_block_count, strin
 
 def abort_block(ptr):
     return chain(ptr).abort_block()
+
+def startup(ptr, initdb):
+    return chain(ptr).startup(initdb)
 
 def get_last_error(ptr):
     cdef string error

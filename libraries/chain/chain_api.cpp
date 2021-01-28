@@ -99,6 +99,13 @@ int chain_api::abort_block() {
    return 0;
 }
 
+bool chain_api::startup(bool initdb) {
+    try {
+        return cm->startup(initdb);
+    } CATCH_AND_LOG_EXCEPTION();
+    cm.reset();
+    return false;
+}
 
 static chain_api *_chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
    return new chain_api(config, _genesis, protocol_features_dir, snapshot_dir);

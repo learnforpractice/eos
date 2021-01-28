@@ -1,5 +1,5 @@
 import json
-import _uuos
+from uuosio import _chain
 
 chain_config = {
     'sender_bypass_whiteblacklist': [],
@@ -80,8 +80,8 @@ genesis_test = {
 chain_config = json.dumps(chain_config)
 genesis_test = json.dumps(genesis_test)
 
-ptr = _uuos.chain_new(chain_config, genesis_test, "/Users/newworld/dev/eos/build/programs/cd-test/protocol_features", "/Users/newworld/dev/eos/build/programs/dd-test/snapshots")
-
-_uuos.chain_say_hello(ptr)
-_uuos.chain_free(ptr)
+ptr = _chain.chain_new(chain_config, genesis_test, "/Users/newworld/dev/eos/build/programs/cd-test/protocol_features", "")
+_chain.chain_say_hello(ptr)
+_chain.startup(ptr, True)
+_chain.chain_free(ptr)
 
