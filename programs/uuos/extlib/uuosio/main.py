@@ -2,7 +2,10 @@ import os
 import json
 import tempfile
 from uuosio import _chain
+from uuosio import uuos
 from datetime import datetime, timedelta
+
+uuos.set_log_level('default', 0)
 
 import logging
 

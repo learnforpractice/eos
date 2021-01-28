@@ -26,8 +26,11 @@ cdef extern from "<uuos.hpp>":
     void uuosext_init()
 
     ctypedef struct uuos_proxy:
-        pass
+        void set_log_level(string& logger_name, int level)
 
     uuos_proxy *get_uuos_proxy()
 
 uuosext_init()
+
+def set_log_level(string& logger_name, int level):
+    get_uuos_proxy().set_log_level(logger_name, level)
