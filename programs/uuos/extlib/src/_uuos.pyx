@@ -16,13 +16,18 @@ cdef extern from * :
     ctypedef unsigned char uint8_t
     ctypedef int __uint128_t
 
-cdef extern from "Python.h":
+cdef extern from "<Python.h>":
     ctypedef long long PyLongObject
 
     object PyBytes_FromStringAndSize(const char* str, int size)
     int _PyLong_AsByteArray(PyLongObject* v, unsigned char* bytes, size_t n, int little_endian, int is_signed)
 
-cdef extern from "uuos.hpp":
-    void uuosext_init_chain_api()
+cdef extern from "<uuos.hpp>":
+    void uuosext_init()
 
-uuosext_init_chain_api()
+    ctypedef struct uuos_proxy:
+        pass
+
+    uuos_proxy *get_uuos_proxy()
+
+uuosext_init()

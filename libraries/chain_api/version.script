@@ -1,4 +1,4 @@
 CODEABI_1.0 {
-    global: chain_new;chain_free;init_chain_api;
+    global: init_uuos_proxy;get_uuos_proxy
     local: *;
 };

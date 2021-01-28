@@ -1,12 +1,12 @@
-#include <string>
+#pragma once
 
-using namespace std;
+#include "chain_proxy.hpp"
+#include "uuos_proxy.hpp"
 
-class UUOS {
-    public:
-        UUOS();
-        virtual ~UUOS();
-        virtual void set_log_level(string& logger_name, int level);
-    private:
+typedef void (*fn_init_uuos)(uuos_proxy *proxy);
+typedef uuos_proxy* (*fn_get_uuos_proxy)();
 
-};
+extern "C" uuos_proxy * get_uuos_proxy();
+
+void uuosext_init();
+#define chain(ptr) ((chain_proxy*)ptr)

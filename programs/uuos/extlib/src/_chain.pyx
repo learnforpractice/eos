@@ -16,21 +16,17 @@ cdef extern from * :
     ctypedef unsigned char uint8_t
     ctypedef int __uint128_t
 
-cdef extern from "Python.h":
+cdef extern from "<Python.h>":
     ctypedef long long PyLongObject
 
     object PyBytes_FromStringAndSize(const char* str, int size)
     int _PyLong_AsByteArray(PyLongObject* v, unsigned char* bytes, size_t n, int little_endian, int is_signed)
 
-cdef extern from "uuos.hpp":
+cdef extern from "<uuos.hpp>":
     chain_proxy *chain(uint64_t ptr)
-    void uuosext_init_chain_api()
-
-    chain_proxy* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
-    void chain_free_(chain_proxy* api);
+    void uuosext_init()
 
     ctypedef struct chain_proxy:
-        int a
         void say_hello()
 
         void id(string& chain_id);
@@ -43,11 +39,18 @@ cdef extern from "uuos.hpp":
         string& get_last_error();
         void set_last_error(string& error);
 
+    ctypedef struct uuos_proxy:
+        chain_proxy* chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+        void chain_free(chain_proxy* api);
+
+    uuos_proxy *get_uuos_proxy()
+
+
 def chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir):
-    return <uint64_t>chain_new_(config, _genesis, protocol_features_dir, snapshot_dir)
+    return <uint64_t>get_uuos_proxy().chain_new(config, _genesis, protocol_features_dir, snapshot_dir)
 
 def chain_free(uint64_t ptr):
-    chain_free_(<chain_proxy*>ptr)
+    get_uuos_proxy().chain_free(<chain_proxy*>ptr)
 
 def chain_say_hello(uint64_t ptr):
     chain(ptr).say_hello()
