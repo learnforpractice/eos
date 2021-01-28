@@ -27,7 +27,7 @@ function build_uuos() {
 	rsync -av programs/uuos/extlib build/programs/uuos
 	cp build/libraries/chain_api/libchain_api.dylib build/programs/uuos/extlib/lib
 	cp build/programs/uuos/uuos build/programs/uuos/extlib/bin
-	strip build/programs/uuos/extlib/bin/uuos
+#	strip build/programs/uuos/extlib/bin/uuos
     pushd build/programs/uuos/extlib
 
 	if [[ $ARCH == "Linux" ]]; then
