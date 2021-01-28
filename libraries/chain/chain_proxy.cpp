@@ -1,4 +1,5 @@
 #include <eosio/chain/controller.hpp>
+#include <eosio/chain/wasm_interface.hpp>
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 #include <eosio/chain/chain_proxy.hpp>
@@ -14,8 +15,9 @@ namespace eosio { namespace chain {
 typedef wasm_interface* (*fn_eos_vm_interface_init)(int type, bool tierup, eosio::chain::chain_proxy& api);
 
 
-chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : conf(conf), c(ctrl) {
+chain_proxy::chain_proxy(const controller::config& cfg, chainbase::database& db, controller& ctrl) : conf(cfg), _db(db), c(ctrl) {
 //"/Users/newworld/dev/uuos3/build/libraries/chain/libeosio_chain_shared.dylib";
+#if 0
     const char *vm_eos_path = getenv("CHAIN_LIB");
     const char *vm_eos_path2 = getenv("CHAIN_LIB2");;
      printf("%s\n", vm_eos_path);
@@ -48,6 +50,14 @@ chain_proxy::chain_proxy(const controller::config& conf, controller& ctrl) : con
     #else
         this->eos_vm_micropython = init((int)conf.wasm_runtime, false, *this);
     #endif
+#else
+    this->eos_vm_interface = new wasm_interface( cfg.wasm_runtime, false, db, cfg.state_dir, cfg.eosvmoc_config, *this );
+    #ifdef EOSIO_EOS_VM_OC_RUNTIME_ENABLED
+        this->eos_vm_micropython = new wasm_interface( cfg.wasm_runtime, cfg.eosvmoc_tierup, db, cfg.state_dir, cfg.eosvmoc_config, *this );
+    #else
+        this->eos_vm_micropython = new wasm_interface( cfg.wasm_runtime, false, db, cfg.state_dir, cfg.eosvmoc_config, *this );
+    #endif
+#endif
 }
 
 void chain_proxy::set_context(apply_context* ctx) {
@@ -60,6 +70,7 @@ apply_context& chain_proxy::get_context() {
 }
 
 const chainbase::database& chain_proxy::db() {
+    return _db;
     return this->c.db();
 }
 

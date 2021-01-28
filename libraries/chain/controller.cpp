@@ -229,8 +229,8 @@ struct controller_impl {
 
    reset_new_handler              rnh; // placed here to allow for this to be set before constructing the other fields
    controller&                    self;
-   eosio::chain::chain_proxy      proxy;
    chainbase::database            db;
+   eosio::chain::chain_proxy      proxy;
    chainbase::database            ro_db;
    chainbase::database            reversible_blocks; ///< a special database to persist blocks that have successfully been applied but are still reversible
    block_log                      blog;
@@ -304,10 +304,10 @@ struct controller_impl {
    controller_impl( const controller::config& cfg, controller& s, protocol_feature_set&& pfs, const chain_id_type& chain_id )
    :rnh(),
     self(s),
-    proxy(cfg, s),
     db( cfg.state_dir,
         cfg.read_only ? database::read_only : database::read_write,
         cfg.state_size, false, cfg.db_map_mode, cfg.db_hugepage_paths ),
+    proxy(cfg, db, s),
     ro_db( cfg.state_dir,
         database::read_only,
         cfg.state_size, true, cfg.db_map_mode, cfg.db_hugepage_paths ),

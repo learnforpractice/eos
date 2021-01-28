@@ -9,7 +9,7 @@ class wasm_interface;
 class chain_proxy {
 
 public:
-    chain_proxy(const controller::config& conf, controller& ctrl);
+    chain_proxy(const controller::config& conf, chainbase::database& db, controller& ctrl);
     virtual void set_context(apply_context* ctx);
     virtual apply_context& get_context();
 
@@ -25,6 +25,7 @@ public:
 
 private:
     controller &c;
+    chainbase::database& _db;
     apply_context* ctx = nullptr;
     wasm_interface *eos_vm_interface;
     wasm_interface *eos_vm_micropython;
