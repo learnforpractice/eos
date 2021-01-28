@@ -3,11 +3,13 @@ from . import _uuos
 
 class CustomImporter(object):
     def find_module(self, fullname, mpath=None):
+#        print('+++find_module', fullname)
         if fullname in ['_chain', '_chainapi']:
             return self
         return
 
     def load_module(self, module_name):
+#        print('+++load_module', module_name)
         mod = sys.modules.get(module_name)
         if mod is None:
             uuos_module = sys.modules.get('uuosio._uuos')
@@ -22,3 +24,6 @@ class CustomImporter(object):
         return mod
 
 sys.meta_path.append(CustomImporter())
+
+import _chain
+import _chainapi
