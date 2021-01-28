@@ -1,5 +1,14 @@
+import os
 import json
 from uuosio import _chain
+from datetime import datetime, timedelta
+
+import logging
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
+
+logger=logging.getLogger(__name__)
 
 chain_config = {
     'sender_bypass_whiteblacklist': [],
@@ -83,5 +92,23 @@ genesis_test = json.dumps(genesis_test)
 ptr = _chain.chain_new(chain_config, genesis_test, "/Users/newworld/dev/eos/build/programs/cd-test/protocol_features", "")
 _chain.chain_say_hello(ptr)
 _chain.startup(ptr, True)
+
+def isoformat(dt):
+    return dt.isoformat(timespec='milliseconds')
+
+print(os.getpid())
+
+dt = datetime.now()
+
+for i in range(10):
+  _chain.abort_block(ptr)
+  dt += timedelta(seconds=1)
+  _chain.start_block(ptr, isoformat(dt), 0, '')
+
+  priv_keys = ['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3']
+  priv_keys = json.dumps(priv_keys)
+  _chain.finalize_block(ptr, priv_keys)
+  _chain.commit_block(ptr)
+
 _chain.chain_free(ptr)
 

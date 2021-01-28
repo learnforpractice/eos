@@ -37,6 +37,7 @@ cdef extern from "uuos.hpp":
         void start_block(string& _time, uint16_t confirm_block_count, string& _new_features);
         int abort_block();
         bool startup(bool initdb);
+        void finalize_block(string& _priv_keys);
         void commit_block();
 
         string& get_last_error();
@@ -51,7 +52,7 @@ def chain_free(uint64_t ptr):
 def chain_say_hello(uint64_t ptr):
     chain(ptr).say_hello()
 
-def id(ptr):
+def id(uint64_t ptr):
     cdef string chain_id
     chain(ptr).id(chain_id)
     return chain_id
@@ -59,18 +60,21 @@ def id(ptr):
 def start_block(uint64_t ptr, string& _time, uint16_t confirm_block_count, string& _new_features):
     return chain(ptr).start_block(_time, confirm_block_count, _new_features)
 
-def abort_block(ptr):
-    return chain(ptr).abort_block()
-
-def startup(ptr, initdb):
+def startup(uint64_t ptr, initdb):
     return chain(ptr).startup(initdb)
 
-def commit_block(ptr):
-    return chain(ptr).commit_block()
+def abort_block(uint64_t ptr):
+    return chain(ptr).abort_block()
 
-def get_last_error(ptr):
+def finalize_block(uint64_t ptr, string& _priv_keys):
+    chain(ptr).finalize_block(_priv_keys)
+
+def commit_block(uint64_t ptr):
+    chain(ptr).commit_block()
+
+def get_last_error(uint64_t ptr):
     cdef string error
     error = chain(ptr).get_last_error()
 
-def set_last_error(ptr, string& error):
+def set_last_error(uint64_t ptr, string& error):
     chain(ptr).set_last_error(error)
