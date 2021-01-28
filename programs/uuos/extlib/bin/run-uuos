@@ -1,0 +1,9 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+if [[ $( uname ) == 'Darwin' ]]; then
+    export CHAIN_API_LIB=$DIR/../lib/libchain_api.dylib
+else
+    export CHAIN_API_LIB=$DIR/../lib/libchain_api.so
+fi
+
+$DIR/uuos $@
