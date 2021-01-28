@@ -10,13 +10,13 @@ pytest_runner = (['pytest-runner>=2.0,<3dev']
 setup_requires = pytest_runner
 
 setup(
-    name="hello",
+    name="uuosio",
     version="1.2.4",
-    description="a minimal example package (cython version)",
+    description="uuosio project",
     author='The scikit-build team',
     license="MIT",
     packages=['src'],
-    package_dir={'hello': 'src/'},
+    package_dir={'uuosio': 'src/'},
     install_requires=['cython'],
     tests_require=['pytest'],
     setup_requires=setup_requires

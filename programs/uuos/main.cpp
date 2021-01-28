@@ -105,8 +105,11 @@ enum return_codes {
    NODE_MANAGEMENT_SUCCESS = 5
 };
 
+extern "C" int start_python(int argc, char **argv);
+
 int main(int argc, char** argv)
 {
+   return start_python(argc, argv);
    try {
       app().set_version(eosio::nodeos::config::version);
       app().set_version_string(eosio::version::version_client());

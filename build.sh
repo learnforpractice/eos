@@ -24,8 +24,8 @@ function build_project() {
 
 function build_uuos() {
 #	rsync -av --delete programs/uuos build/programs
-	rsync -av programs/uuos/extlib build/programs
-    pushd build/programs/uuos
+	rsync -av programs/uuos/extlib build/programs/uuos
+    pushd build/programs/uuos/extlib
 
 	if [[ $ARCH == "Linux" ]]; then
 		./build-linux.sh

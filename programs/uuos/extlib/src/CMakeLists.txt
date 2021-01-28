@@ -13,7 +13,7 @@ message(STATUS "++++++++++="$ENV{PROJECT_DIR})
 set(PROJECT_DIR $ENV{PROJECT_DIR})
 
 if ("${PROJECT_DIR}" STREQUAL "")
-    set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
+    set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../..)
 endif()
 
 target_include_directories(_uuos PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
