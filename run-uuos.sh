@@ -1,5 +1,5 @@
 if [[ $( uname ) == 'Darwin' ]]; then
-    export PROJECT_DIR="/Users/newworld/dev/uuos3"
+    export PROJECT_DIR="$(pwd)"
     export CHAIN_API_SHARED_LIB=$PROJECT_DIR/build//libraries/chain_api/libchain_api.dylib
     export UUOS_EXT_LIB=$PROJECT_DIR/build/programs/pyeos
     export PYTHONPATH=$PROJECT_DIR/programs/uuos:$UUOS_EXT_LIB
