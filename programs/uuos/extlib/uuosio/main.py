@@ -1,5 +1,6 @@
 import os
 import json
+import tempfile
 from uuosio import _chain
 from datetime import datetime, timedelta
 
@@ -10,6 +11,9 @@ logging.basicConfig(level=logging.INFO,
 
 logger=logging.getLogger(__name__)
 
+data_dir = tempfile.mkdtemp()
+config_dir = tempfile.mkdtemp()
+
 chain_config = {
     'sender_bypass_whiteblacklist': [],
     'actor_whitelist': [],
@@ -19,14 +23,14 @@ chain_config = {
     'action_blacklist': [],
     'key_blacklist': [],
     'blog': {
-      'log_dir': '/Users/newworld/dev/eos/build/programs/dd-test/blocks',
+      'log_dir': os.path.join(data_dir, 'blocks'),
       'retained_dir': '',
       'archive_dir': 'archive',
       'stride': 4294967295,
       'max_retained_files': 10,
       'fix_irreversible_blocks': True
     },
-    'state_dir': '/Users/newworld/dev/eos/build/programs/dd-test/state',
+    'state_dir': os.path.join(data_dir, 'state'),
     'state_size': 2147483648,
     'state_guard_size': 134217728,
     'reversible_cache_size': 356515840,
@@ -89,7 +93,7 @@ genesis_test = {
 chain_config = json.dumps(chain_config)
 genesis_test = json.dumps(genesis_test)
 
-ptr = _chain.chain_new(chain_config, genesis_test, "/Users/newworld/dev/eos/build/programs/cd-test/protocol_features", "")
+ptr = _chain.chain_new(chain_config, genesis_test, os.path.join(config_dir, "protocol_features"), "")
 _chain.chain_say_hello(ptr)
 _chain.startup(ptr, True)
 

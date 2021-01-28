@@ -16,6 +16,8 @@ class chain_proxy {
     public:
         chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         virtual ~chain_proxy();
+        void init();
+
         virtual void say_hello();
 
         virtual void id(string& chain_id);
@@ -30,7 +32,7 @@ class chain_proxy {
 
     private:
         std::unique_ptr<eosio::chain::chain_manager> cm;
-        eosio::chain::controller& c;
+        std::shared_ptr<eosio::chain::controller> c;
         string last_error;
 };
 

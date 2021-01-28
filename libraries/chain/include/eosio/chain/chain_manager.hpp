@@ -12,13 +12,15 @@ class chain_manager {
     public:
         chain_manager(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         ~chain_manager();
+        void init();
         bool startup(bool init_db);
         void shutdown();
     public:
-        std::unique_ptr<controller> c;
+        std::shared_ptr<controller> c;
         controller::config cfg;
-        string snapshot_dir;
         genesis_state genesis;
+        string snapshot_dir;
+        string protocol_features_dir;
         bool _shutdown = false;
 };
 

@@ -294,11 +294,14 @@ chain_manager::chain_manager(string& config, string& _genesis, string& protocol_
    this->cfg = fc::json::from_string(config).as<eosio::chain::controller::config>();
    this->genesis = fc::json::from_string(_genesis).as<genesis_state>();
    this->snapshot_dir = snapshot_dir;
+   this->protocol_features_dir = protocol_features_dir;
+}
 
+void chain_manager::init() {
     auto pfs = initialize_protocol_features( boost::filesystem::path(protocol_features_dir) );
     auto chain_id = this->genesis.compute_chain_id();
 
-    this->c = std::make_unique<controller>(this->cfg, std::move(pfs), chain_id);
+    this->c = std::make_shared<controller>(this->cfg, std::move(pfs), chain_id);
     this->c->add_indices();
 }
 
