@@ -7,4 +7,4 @@ chain_api* chain_new_(string& config, string& _genesis, string& protocol_feature
 void chain_free_(chain_api* api);
 
 void uuosext_init_chain_api();
-#define get_chain_api(ptr) ((chain_api*)ptr)
+#define chain(ptr) ((chain_api*)ptr)

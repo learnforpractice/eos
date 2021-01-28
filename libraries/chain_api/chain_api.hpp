@@ -8,6 +8,7 @@ using namespace std;
 namespace eosio {
     namespace chain {
         class chain_manager;
+        class controller;
     }
 }
 
@@ -16,8 +17,18 @@ class chain_api {
         chain_api(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         virtual ~chain_api();
         virtual void say_hello();
+
+        virtual void id(string& chain_id);
+        virtual void start_block(string& _time, uint16_t confirm_block_count, string& _new_features);
+        virtual int abort_block();
+
+        virtual string& get_last_error();
+        virtual void set_last_error(string& error);
+
     private:
-        std::unique_ptr<eosio::chain::chain_manager> c;
+        std::unique_ptr<eosio::chain::chain_manager> cm;
+        eosio::chain::controller& c;
+        string last_error;
 };
 
 extern "C" {
