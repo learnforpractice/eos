@@ -1,60 +1,40 @@
 #include "uuos.hpp"
+#include <dlfcn.h>
 
 using namespace std;
 
-typedef void (*fn_say_hello)();
+static fn_chain_new s_chain_new = nullptr;
+static fn_chain_free s_chain_free = nullptr;
 
-typedef struct chain_api_cpp* (*fn_get_chain_api)();
-typedef struct vm_api* (*fn_get_vm_api)();
-vm_api* uuos_get_vm_api();
+void uuosext_init_chain_api() {
+    const char * chain_api_lib = getenv("CHAIN_API_LIB");
 
-extern "C" void say_hello_() {
-    const char * python_shared_lib_path = "/Users/newworld/dev/uuos2/programs/pyeos/_skbuild/macosx-10.9-x86_64-3.7/cmake-build/hello/libhello.dylib";
-    void *handle = dlopen(python_shared_lib_path, RTLD_LAZY | RTLD_GLOBAL);
+    void *handle = dlopen(chain_api_lib, RTLD_LAZY | RTLD_GLOBAL);
     if (handle == 0) {
-        printf("loading %s failed!\n", python_shared_lib_path);
+        printf("loading %s failed! error: %s\n", chain_api_lib, dlerror());
+        exit(-1);
         return;
     }
 
-    fn_say_hello say_hello = (fn_say_hello)dlsym(handle, "say_hello");
-    say_hello();
-}
-
-chain_api_cpp* uuos_get_chain_api() {
-    static struct chain_api_cpp* chain_api=nullptr;
-    if (!chain_api) {
-        const char * chain_api_lib = getenv("CHAIN_API_SHARED_LIB");
-        void *handle = dlopen(chain_api_lib, RTLD_LAZY | RTLD_LOCAL);
-        if (handle == 0) {
-            printf("loading %s failed!\n", chain_api_lib);
-            return nullptr;
-        }
-        fn_get_chain_api api = (fn_get_chain_api)dlsym(handle, "get_chain_api");
-        chain_api = api();
-
-        vm_callback cb;
-        cb.setcode = cpython_setcode;
-        cb.apply = cpython_apply;
-        chain_api->register_vm_callback(2, 0, &cb);
+    s_chain_new = (fn_chain_new)dlsym(handle, "chain_new");
+    if (s_chain_new == nullptr) {
+        printf("++++load chain_new failed! error: %s\n", dlerror());
+        exit(-1);
+        return;
     }
-    return chain_api;
-}
 
-void uuos_init_chain_api() {
-    uuos_get_chain_api();
-}
-
-vm_api* uuos_get_vm_api() {
-    static struct vm_api* s_api;
-    if (!s_api) {
-        const char * vm_api_lib = getenv("VM_API_SHARED_LIB");
-        void *handle = dlopen(vm_api_lib, RTLD_LAZY | RTLD_LOCAL);
-        if (handle == 0) {
-            printf("loading %s failed!\n", vm_api_lib);
-            return nullptr;
-        }
-        fn_get_vm_api _get_vm_api = (fn_get_vm_api)dlsym(handle, "get_vm_api");
-        s_api = _get_vm_api();
+    s_chain_free = (fn_chain_free)dlsym(handle, "chain_free");
+    if (s_chain_free == nullptr) {
+        printf("++++load chain_free failed! error: %s\n", dlerror());
+        exit(-1);
+        return;
     }
-    return s_api;
+}
+
+chain_api* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
+    return s_chain_new(config, _genesis, protocol_features_dir, snapshot_dir);
+}
+
+void chain_free_(chain_api* api) {
+    s_chain_free(api);
 }

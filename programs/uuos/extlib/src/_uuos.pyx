@@ -26,7 +26,20 @@ cdef extern from "uuos.hpp":
     ctypedef struct chain_api:
         int a
         void say_hello()
-    chain_api* get_chain_api(uint64_t ptr)
+    
+    chain_api *get_chain_api(uint64_t ptr)
+    void uuosext_init_chain_api()
+
+    chain_api* chain_new_(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+    void chain_free_(chain_api* api);
+
+def chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir):
+    return <uint64_t>chain_new_(config, _genesis, protocol_features_dir, snapshot_dir)
+
+def chain_free(uint64_t ptr):
+    chain_free_(<chain_api*>ptr)
 
 def chain_say_hello(uint64_t ptr):
-    get_chain_api(ptr)[0].say_hello()
+    get_chain_api(ptr).say_hello()
+
+uuosext_init_chain_api()

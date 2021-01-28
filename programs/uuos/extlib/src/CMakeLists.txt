@@ -4,6 +4,7 @@ add_cython_target(_uuos CXX)
 add_library(_uuos MODULE
     ${_uuos}
     main.cpp
+    uuos.cpp
 )
 
 python_extension_module(_uuos)
