@@ -108,8 +108,8 @@ add_library( eosio_chain
               asset.cpp
               snapshot.cpp
 
-              chain_manager.cpp
-              chain_proxy.cpp
+              chain_api/chain_manager.cpp
+              chain_api/chain_proxy.cpp
               apply_context_proxy.cpp
 
              ${CHAIN_EOSVMOC_SOURCES}
