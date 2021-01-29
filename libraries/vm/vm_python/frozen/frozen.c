@@ -1,3 +1,4 @@
+#include <string.h>
 #include "./M/M___future__.c"
 #include "./M/M___main__.c"
 #include "./M/M__bootlocale.c"

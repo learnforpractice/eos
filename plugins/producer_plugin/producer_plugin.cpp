@@ -643,7 +643,7 @@ void new_chain_banner(const eosio::chain::controller& db)
       "*******************************\n"
       "\n";
 
-   if( db.head_block_state()->header.timestamp.to_time_point() < (fc::time_point::now() - fc::milliseconds(200 * config::block_interval_ms)))
+   if( db.head_block_state()->header.timestamp.to_time_point() < (fc::time_point::now() - fc::milliseconds(200 * config::get_block_interval_ms())))
    {
       std::cerr << "Your genesis seems to have an old timestamp\n"
          "Please consider using the --genesis-timestamp option to give your genesis a recent timestamp\n"
@@ -954,33 +954,33 @@ void producer_plugin::plugin_initialize(const boost::program_options::variables_
    my->_keosd_provider_timeout_us = fc::milliseconds(options.at("keosd-provider-timeout").as<int32_t>());
 
    my->_produce_time_offset_us = options.at("produce-time-offset-us").as<int32_t>();
-   EOS_ASSERT( my->_produce_time_offset_us <= 0 && my->_produce_time_offset_us >= -config::block_interval_us, plugin_config_exception,
-               "produce-time-offset-us ${o} must be 0 .. -${bi}", ("bi", config::block_interval_us)("o", my->_produce_time_offset_us) );
+   EOS_ASSERT( my->_produce_time_offset_us <= 0 && my->_produce_time_offset_us >= -config::get_block_interval_us(), plugin_config_exception,
+               "produce-time-offset-us ${o} must be 0 .. -${bi}", ("bi", config::get_block_interval_us())("o", my->_produce_time_offset_us) );
 
    my->_last_block_time_offset_us = options.at("last-block-time-offset-us").as<int32_t>();
-   EOS_ASSERT( my->_last_block_time_offset_us <= 0 && my->_last_block_time_offset_us >= -config::block_interval_us, plugin_config_exception,
-               "last-block-time-offset-us ${o} must be 0 .. -${bi}", ("bi", config::block_interval_us)("o", my->_last_block_time_offset_us) );
+   EOS_ASSERT( my->_last_block_time_offset_us <= 0 && my->_last_block_time_offset_us >= -config::get_block_interval_us(), plugin_config_exception,
+               "last-block-time-offset-us ${o} must be 0 .. -${bi}", ("bi", config::get_block_interval_us())("o", my->_last_block_time_offset_us) );
 
    uint32_t cpu_effort_pct = options.at("cpu-effort-percent").as<uint32_t>();
    EOS_ASSERT( cpu_effort_pct >= 0 && cpu_effort_pct <= 100, plugin_config_exception,
                "cpu-effort-percent ${pct} must be 0 - 100", ("pct", cpu_effort_pct) );
       cpu_effort_pct *= config::percent_1;
    int32_t cpu_effort_offset_us =
-         -EOS_PERCENT( config::block_interval_us, chain::config::percent_100 - cpu_effort_pct );
+         -EOS_PERCENT( config::get_block_interval_us(), chain::config::percent_100 - cpu_effort_pct );
 
    uint32_t last_block_cpu_effort_pct = options.at("last-block-cpu-effort-percent").as<uint32_t>();
    EOS_ASSERT( last_block_cpu_effort_pct >= 0 && last_block_cpu_effort_pct <= 100, plugin_config_exception,
                "last-block-cpu-effort-percent ${pct} must be 0 - 100", ("pct", last_block_cpu_effort_pct) );
       last_block_cpu_effort_pct *= config::percent_1;
    int32_t last_block_cpu_effort_offset_us =
-         -EOS_PERCENT( config::block_interval_us, chain::config::percent_100 - last_block_cpu_effort_pct );
+         -EOS_PERCENT( config::get_block_interval_us(), chain::config::percent_100 - last_block_cpu_effort_pct );
 
    my->_produce_time_offset_us = std::min( my->_produce_time_offset_us, cpu_effort_offset_us );
    my->_last_block_time_offset_us = std::min( my->_last_block_time_offset_us, last_block_cpu_effort_offset_us );
 
    my->_max_block_cpu_usage_threshold_us = options.at( "max-block-cpu-usage-threshold-us" ).as<uint32_t>();
-   EOS_ASSERT( my->_max_block_cpu_usage_threshold_us < config::block_interval_us, plugin_config_exception,
-               "max-block-cpu-usage-threshold-us ${t} must be 0 .. ${bi}", ("bi", config::block_interval_us)("t", my->_max_block_cpu_usage_threshold_us) );
+   EOS_ASSERT( my->_max_block_cpu_usage_threshold_us < config::get_block_interval_us(), plugin_config_exception,
+               "max-block-cpu-usage-threshold-us ${t} must be 0 .. ${bi}", ("bi", config::get_block_interval_us())("t", my->_max_block_cpu_usage_threshold_us) );
 
    my->_max_block_net_usage_threshold_bytes = options.at( "max-block-net-usage-threshold-bytes" ).as<uint32_t>();
 
@@ -1391,7 +1391,7 @@ fc::variants producer_plugin::get_supported_protocol_features( const get_support
    fc::variants results;
    const chain::controller& chain = my->chain_plug->chain();
    const auto& pfs = chain.get_protocol_feature_manager().get_protocol_feature_set();
-   const auto next_block_time = chain.head_block_time() + fc::milliseconds(config::block_interval_ms);
+   const auto next_block_time = chain.head_block_time() + fc::milliseconds(config::get_block_interval_ms());
 
    flat_map<digest_type, bool>  visited_protocol_features;
    visited_protocol_features.reserve( pfs.size() );
@@ -1533,7 +1533,7 @@ fc::time_point producer_plugin_impl::calculate_pending_block_time() const {
    const chain::controller& chain = chain_plug->chain();
    const fc::time_point now = fc::time_point::now();
    const fc::time_point base = std::max<fc::time_point>(now, chain.head_block_time());
-   const int64_t min_time_to_next_block = (config::block_interval_us) - (base.time_since_epoch().count() % (config::block_interval_us) );
+   const int64_t min_time_to_next_block = (config::get_block_interval_us()) - (base.time_since_epoch().count() % (config::get_block_interval_us()) );
    fc::time_point block_time = base + fc::microseconds(min_time_to_next_block);
    return block_time;
 }
@@ -1616,7 +1616,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
    }
 
    if (_pending_block_mode == pending_block_mode::producing) {
-      const auto start_block_time = block_time - fc::microseconds( config::block_interval_us );
+      const auto start_block_time = block_time - fc::microseconds( config::get_block_interval_us() );
       if( now < start_block_time ) {
          fc_dlog(_log, "Not producing block waiting for production window ${n} ${bt}", ("n", hbs->block_num + 1)("bt", block_time) );
          // start_block_time instead of block_time because schedule_delayed_production_loop calculates next block time from given time
@@ -1625,7 +1625,7 @@ producer_plugin_impl::start_block_result producer_plugin_impl::start_block() {
       }
    } else if (previous_pending_mode == pending_block_mode::producing) {
       // just produced our last block of our round
-      const auto start_block_time = block_time - fc::microseconds( config::block_interval_us );
+      const auto start_block_time = block_time - fc::microseconds( config::get_block_interval_us() );
       fc_dlog(_log, "Not starting speculative block until ${bt}", ("bt", start_block_time) );
       schedule_delayed_production_loop( weak_from_this(), start_block_time);
       return start_block_result::waiting_for_production;
@@ -2028,7 +2028,7 @@ void producer_plugin_impl::schedule_production_loop() {
 //   elog("++++++start_block: ${r} ${mode}", ("r", (int)result)("mode", (int)_pending_block_mode));
    if (result == start_block_result::failed) {
       elog("Failed to start a pending block, will try again later");
-      _timer.expires_from_now( boost::posix_time::microseconds( config::block_interval_us  / 10 ));
+      _timer.expires_from_now( boost::posix_time::microseconds( config::get_block_interval_us()  / 10 ));
 
       // we failed to start a block, so try again later?
       _timer.async_wait( app().get_priority_queue().wrap( priority::high,
@@ -2103,7 +2103,7 @@ optional<fc::time_point> producer_plugin_impl::calculate_producer_wake_up_time( 
    for (const auto& p : _producers) {
       auto next_producer_block_time = calculate_next_block_time(p, ref_block_time);
       if (next_producer_block_time) {
-         auto producer_wake_up_time = *next_producer_block_time - fc::microseconds(config::block_interval_us);
+         auto producer_wake_up_time = *next_producer_block_time - fc::microseconds(config::get_block_interval_us());
          if (wake_up_time) {
             // wake up with a full block interval to the deadline
             if( producer_wake_up_time < *wake_up_time ) {

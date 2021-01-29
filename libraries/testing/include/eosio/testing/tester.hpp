@@ -172,8 +172,8 @@ namespace eosio { namespace testing {
          void              open( fc::optional<chain_id_type> expected_chain_id = {} );
          bool              is_same_chain( base_tester& other );
 
-         virtual signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) ) = 0;
-         virtual signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) ) = 0;
+         virtual signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(-1) ) = 0;
+         virtual signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(-1) ) = 0;
          virtual signed_block_ptr finish_block() = 0;
          // produce one block and return traces for all applied transactions, both failed and executed
          signed_block_ptr     produce_block( std::vector<transaction_trace_ptr>& traces );
@@ -486,11 +486,17 @@ namespace eosio { namespace testing {
 
       using base_tester::produce_block;
 
-      signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) )override {
+      signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(-1) )override {
+         if (skip_time == fc::microseconds(-1)) {
+            skip_time = fc::microseconds(config::get_block_interval_ms());
+         }
          return _produce_block(skip_time, false);
       }
 
-      signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) )override {
+      signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(-1) )override {
+         if (skip_time == fc::microseconds(-1)) {
+            skip_time = fc::microseconds(config::get_block_interval_ms());
+         }
          unapplied_transactions.add_aborted( control->abort_block() );
          return _produce_block(skip_time, true);
       }
@@ -600,7 +606,10 @@ namespace eosio { namespace testing {
          }
       }
 
-      signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) )override {
+      signed_block_ptr produce_block( fc::microseconds skip_time = fc::microseconds(-1))override {
+         if (skip_time == fc::microseconds(-1)) {
+            skip_time = fc::microseconds(config::get_block_interval_ms());
+         }
          auto sb = _produce_block(skip_time, false);
          auto bsf = validating_node->create_block_state_future( sb );
          validating_node->push_block( bsf, forked_branch_callback{}, trx_meta_cache_lookup{} );
@@ -608,7 +617,10 @@ namespace eosio { namespace testing {
          return sb;
       }
 
-      signed_block_ptr produce_block_no_validation( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) ) {
+      signed_block_ptr produce_block_no_validation( fc::microseconds skip_time = fc::microseconds(-1) ) {
+         if (skip_time == fc::microseconds(-1)) {
+            skip_time = fc::microseconds(config::get_block_interval_ms());
+         }
          return _produce_block(skip_time, false);
       }
 
@@ -617,7 +629,10 @@ namespace eosio { namespace testing {
          validating_node->push_block( bs, forked_branch_callback{}, trx_meta_cache_lookup{} );
       }
 
-      signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) )override {
+      signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::microseconds(-1) ) override {
+         if (skip_time == fc::microseconds(-1)) {
+            skip_time = fc::microseconds(config::get_block_interval_ms());
+         }
          unapplied_transactions.add_aborted( control->abort_block() );
          auto sb = _produce_block(skip_time, true);
          auto bsf = validating_node->create_block_state_future( sb );

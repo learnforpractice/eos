@@ -217,6 +217,8 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
             }
 #endif
          }), "Override default WASM runtime")
+         ("block-interval-ms", bpo::value<uint32_t>()->default_value(500),
+          "Block interval in milliseconds")
          ("abi-serializer-max-time-ms", bpo::value<uint32_t>()->default_value(config::default_abi_serializer_max_time_us / 1000),
           "Override default maximum ABI serialization time allowed in ms")
          ("chain-state-db-size-mb", bpo::value<uint64_t>()->default_value(config::default_state_size / (1024  * 1024)), "Maximum size (in MiB) of the chain state database")
@@ -355,9 +357,9 @@ fc::time_point calculate_genesis_timestamp( string tstr ) {
    }
 
    auto epoch_us = genesis_timestamp.time_since_epoch().count();
-   auto diff_us = epoch_us % config::block_interval_us;
+   auto diff_us = epoch_us % config::get_block_interval_us();
    if (diff_us > 0) {
-      auto delay_us = (config::block_interval_us - diff_us);
+      auto delay_us = (config::get_block_interval_us() - diff_us);
       genesis_timestamp += fc::microseconds(delay_us);
       dlog("pausing ${us} microseconds to the next interval",("us",delay_us));
    }
@@ -721,6 +723,8 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
 
       if(options.count("abi-serializer-max-time-ms"))
          my->abi_serializer_max_time_us = fc::microseconds(options.at("abi-serializer-max-time-ms").as<uint32_t>() * 1000);
+
+      eosio::chain::config::set_block_interval_ms(options.at("block-interval-ms").as<uint32_t>());
 
       my->chain_config->blocks_dir = my->blocks_dir;
       my->chain_config->state_dir = app().data_dir() / config::default_state_dir_name;

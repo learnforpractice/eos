@@ -61,11 +61,11 @@ public:
       init(copied_config, snapshot);
    }
 
-   signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) )override {
+   signed_block_ptr produce_block( fc::microseconds skip_time = fc::milliseconds(config::get_block_interval_ms()) )override {
       return _produce_block(skip_time, false);
    }
 
-   signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms) )override {
+   signed_block_ptr produce_empty_block( fc::microseconds skip_time = fc::milliseconds(config::get_block_interval_ms()) )override {
       control->abort_block();
       return _produce_block(skip_time, true);
    }

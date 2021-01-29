@@ -530,7 +530,7 @@ BOOST_FIXTURE_TEST_CASE(action_tests, TESTER) { try {
    }
 
    uint64_t now = static_cast<uint64_t>( control->head_block_time().time_since_epoch().count() );
-   now += config::block_interval_us;
+   now += config::get_block_interval_us();
    CALL_TEST_FUNCTION( *this, "test_action", "test_current_time", fc::raw::pack(now));
 
    // test current_time
@@ -548,7 +548,7 @@ BOOST_FIXTURE_TEST_CASE(action_tests, TESTER) { try {
 
    // test_publication_time
    uint64_t pub_time = static_cast<uint64_t>( control->head_block_time().time_since_epoch().count() );
-   pub_time += config::block_interval_us;
+   pub_time += config::get_block_interval_us();
    CALL_TEST_FUNCTION( *this, "test_action", "test_publication_time", fc::raw::pack(pub_time) );
 
    // test test_abort
@@ -2178,7 +2178,7 @@ BOOST_FIXTURE_TEST_CASE(permission_usage_tests, TESTER) { try {
    BOOST_CHECK_THROW( CALL_TEST_FUNCTION( *this, "test_permission", "test_permission_last_used",
                        fc::raw::pack(test_permission_last_used_action{
                                        N(testapi), config::active_name,
-                                       control->head_block_time() + fc::milliseconds(config::block_interval_ms)
+                                       control->head_block_time() + fc::milliseconds(config::get_block_interval_ms())
                                      })
    ), eosio_assert_message_exception );
 

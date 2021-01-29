@@ -113,6 +113,7 @@ add_library( eosio_chain
              db_api/db_api.cpp
              db_api/db_interface.cpp
              platform_timer_accuracy.cpp
+             config.cpp
              ${PLATFORM_TIMER_IMPL}
              ${HEADERS}
              )

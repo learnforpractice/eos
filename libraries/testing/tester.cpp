@@ -356,7 +356,7 @@ namespace eosio { namespace testing {
 
       auto head_block = _finish_block();
 
-      _start_block( next_time + fc::microseconds(config::block_interval_us));
+      _start_block( next_time + fc::microseconds(config::get_block_interval_us()));
       return head_block;
    }
 
@@ -425,7 +425,7 @@ namespace eosio { namespace testing {
    }
 
    signed_block_ptr base_tester::produce_block( std::vector<transaction_trace_ptr>& traces ) {
-      return _produce_block( fc::milliseconds(config::block_interval_ms), false, true, traces );
+      return _produce_block( fc::milliseconds(config::get_block_interval_ms()), false, true, traces );
    }
 
    void base_tester::produce_blocks( uint32_t n, bool empty ) {
@@ -470,7 +470,7 @@ namespace eosio { namespace testing {
       fc::microseconds elapsed_time;
       while (elapsed_time < target_elapsed_time) {
          for(uint32_t i = 0; i < control->head_block_state()->active_schedule.producers.size(); i++) {
-            const auto time_to_skip = fc::milliseconds(config::producer_repetitions * config::block_interval_ms);
+            const auto time_to_skip = fc::milliseconds(config::producer_repetitions * config::get_block_interval_ms());
             produce_block(time_to_skip);
             elapsed_time += time_to_skip;
          }
@@ -545,7 +545,7 @@ namespace eosio { namespace testing {
                                                       )
    { try {
       if( !control->is_building_block() )
-         _start_block(control->head_block_time() + fc::microseconds(config::block_interval_us));
+         _start_block(control->head_block_time() + fc::microseconds(config::get_block_interval_us()));
 
       auto ptrx = std::make_shared<packed_transaction>(trx);
       auto time_limit = deadline == fc::time_point::maximum() ?
@@ -565,7 +565,7 @@ namespace eosio { namespace testing {
                                                       )
    { try {
       if( !control->is_building_block() )
-         _start_block(control->head_block_time() + fc::microseconds(config::block_interval_us));
+         _start_block(control->head_block_time() + fc::microseconds(config::get_block_interval_us()));
       auto c = packed_transaction::compression_type::none;
 
       if( fc::raw::pack_size(trx) > 1000 ) {
@@ -1166,7 +1166,7 @@ namespace eosio { namespace testing {
       const auto& pfs = pfm.get_protocol_feature_set();
       const auto current_block_num  =  control->head_block_num() + (control->is_building_block() ? 1 : 0);
       const auto current_block_time = ( control->is_building_block() ? control->pending_block_time()
-                                        : control->head_block_time() + fc::milliseconds(config::block_interval_ms) );
+                                        : control->head_block_time() + fc::milliseconds(config::get_block_interval_ms()) );
 
       set<digest_type>    preactivation_set;
       vector<digest_type> preactivations;
