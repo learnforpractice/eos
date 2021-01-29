@@ -92,6 +92,9 @@ def call_contract_off_chain(params):
 def run_py_func_safe(func, args):
     return _uuos.run_py_func_safe(func, args)
 
+def set_block_interval_ms(ms):
+    _uuos.uuos_set_block_interval_ms(ms)
+
 api = None
 def init():
     global api

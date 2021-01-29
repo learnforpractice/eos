@@ -35,6 +35,17 @@ sync_req_span = 100
 max_package_size = 5*1024*1024
 max_time_interval = 30
 
+net_messages = ("HANDSHAKE_MESSAGE",
+    "CHAIN_SIZE_MESSAGE",
+    "GO_AWAY_MESSAGE",
+    "TIME_MESSAGE",
+    "NOTICE_MESSAGE",
+    "REQUEST_MESSAGE",
+    "SYNC_REQUEST_MESSAGE",
+    "SIGNED_BLOCK",         # which = 7
+    "PACKED_TRANSACTION"  # which = 8
+)
+
 #    void connection::send_time(const time_message& msg) {
 #       time_message xpkt;
 #       xpkt.org = msg.xmt;
@@ -122,10 +133,13 @@ class Connection(object):
     async def start(self):
         logger.info('++++++++++connection start')
         self.send_handshake()
-        msg_type, raw_msg = await self.read_message()
-        if msg_type != 0:
-            self.close()
-            return False
+        msg_type = None
+        raw_msg = None
+        while True:
+            msg_type, raw_msg = await self.read_message()
+            # logger.info("%s %s", msg_type, raw_msg)
+            if msg_type == 0:
+                break
         handshake_message = HandshakeMessage.unpack(raw_msg)
         if not self.verify_handshake_message(handshake_message):
             self.close()
@@ -171,6 +185,7 @@ class Connection(object):
         if not msg:
             logger.error('fail to read msg')
             return (None, None)
+        logger.info('++++receive message: %s', net_messages[msg_type])
         return msg_type, msg
 
     def write(self, data):
@@ -306,6 +321,7 @@ class Connection(object):
         num = self.chain.last_irreversible_block_num()
         msg.last_irreversible_block_num = num
         msg.last_irreversible_block_id = self.chain.get_block_id_for_num(num)
+        logger.info("+++send_handshake %s %s", num, msg.last_irreversible_block_id)
         if not msg.last_irreversible_block_id:
             msg.last_irreversible_block_id = (b'\x00'*32).hex()
             msg.last_irreversible_block_num = 0
@@ -422,7 +438,7 @@ class Connection(object):
         try:
             while True:
                 msg_type, msg = await self.read_message()
-                # logger.info(f'+++++read message {msg_type} {len(msg)}')
+                logger.info(f'+++++read message {msg_type} {len(msg)}')
                 if not await self.handle_message(msg_type, msg):
                     break
         except Exception as e:

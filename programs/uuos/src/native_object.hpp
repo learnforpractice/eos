@@ -210,6 +210,7 @@ void        uuos_set_default_config_dir_(string& dir);
 void        uuos_shutdown_();
 void        uuos_initialize_logging_(string& _config_path);
 void        uuos_call_contract_off_chain_(string& _params, string& result);
+void        uuos_set_block_interval_ms_(int ms);
 
 void        db_size_api_get_(void *ptr, string& result);
 

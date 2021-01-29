@@ -38,6 +38,7 @@ cdef extern from "native_object.hpp":
 
     string& uuos_get_last_error_();
     void uuos_set_last_error_(string& error);
+    void uuos_set_block_interval_ms_(int ms);
 
     void pack_native_object_(int _type, string& msg, string& packed_message)
     void unpack_native_object_(int _type, string& packed_message, string& msg)
@@ -1049,6 +1050,9 @@ def uuos_shutdown2():
 
 def uuos_get_chain_ptr():
     return <uint64_t>app_get_chain_ptr()
+
+def uuos_set_block_interval_ms(ms):
+    return uuos_set_block_interval_ms_(ms)
 
 register_on_accepted_block(on_accepted_block)
 

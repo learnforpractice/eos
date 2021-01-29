@@ -931,6 +931,11 @@ void uuos_set_log_level_(string& logger_name, int level) {
     fc::logger::get(logger_name).set_log_level(fc::log_level(level));
 }
 
+void uuos_set_block_interval_ms_(int ms) {
+    eosio::chain::config::set_block_interval_ms(ms);
+}
+
+
 void uuos_shutdown_() {
     s_shutdown = true;
 }
