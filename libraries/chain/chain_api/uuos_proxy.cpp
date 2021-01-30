@@ -1,5 +1,6 @@
 #include <fc/log/logger.hpp>
-#include <uuos_proxy.hpp>
+#include <eosio/chain/config.hpp>
+#include "uuos_proxy.hpp"
 
 uuos_proxy::uuos_proxy() {
 }
@@ -21,4 +22,8 @@ void uuos_proxy::chain_free(chain_proxy* c) {
 
 void uuos_proxy::set_log_level(string& logger_name, int level) {
     fc::logger::get(logger_name).set_log_level(fc::log_level(level));
+}
+
+void uuos_proxy::set_block_interval_ms(int ms) {
+    eosio::chain::config::set_block_interval_ms(ms);
 }

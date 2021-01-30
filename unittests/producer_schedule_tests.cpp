@@ -506,7 +506,7 @@ BOOST_AUTO_TEST_CASE( producer_watermark_test ) try {
    c.finish_block();
 
    auto carol_block_num = c.control->head_block_num() + 1;
-   auto carol_block_time = c.control->head_block_time() + fc::milliseconds(config::block_interval_ms);
+   auto carol_block_time = c.control->head_block_time() + fc::milliseconds(config::get_block_interval_ms());
    auto confirmed = carol_block_num - carol_last_produced_block_num - 1;
 
    c.control->start_block( carol_block_time, confirmed );

@@ -308,7 +308,7 @@ BOOST_FIXTURE_TEST_CASE( abort_block_transactions_tester, validating_tester) { t
 
       control->get_account( a ); // throws if it does not exist
 
-      produce_block( fc::milliseconds(config::block_interval_ms*2) ); // aborts block, tester should reapply trx
+      produce_block( fc::milliseconds(config::get_block_interval_ms()*2) ); // aborts block, tester should reapply trx
 
       control->get_account( a ); // throws if it does not exist
 

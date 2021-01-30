@@ -1,5 +1,4 @@
 add_library( chain_api SHARED
-    chain_proxy.cpp
     uuos.cpp
 )
 
@@ -17,3 +16,8 @@ else()
 endif (APPLE)
 
 set_target_properties(chain_api  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+
+target_include_directories(chain_api PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/libraries/chain/chain_api
+)

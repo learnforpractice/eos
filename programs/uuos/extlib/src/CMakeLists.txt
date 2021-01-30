@@ -22,6 +22,7 @@ if ("${PROJECT_DIR}" STREQUAL "")
 endif()
 
 target_include_directories(_uuos PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROJECT_DIR}/libraries/chain/chain_api
     ${PROJECT_DIR}/libraries/chain_api
 )
 

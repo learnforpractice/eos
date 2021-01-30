@@ -58,7 +58,7 @@ void test_control_plugin_impl::accepted_block(const chain::block_state_ptr& bsp)
 }
 
 void test_control_plugin_impl::process_next_block_state(const chain::block_state_ptr& bsp) {
-   const auto block_time = _chain.head_block_time() + fc::microseconds(chain::config::block_interval_us);
+   const auto block_time = _chain.head_block_time() + fc::microseconds(chain::config::get_block_interval_us());
    const auto& producer_authority = bsp->get_scheduled_producer(block_time);
    const auto producer_name = producer_authority.producer_name;
    if (_producer != account_name())

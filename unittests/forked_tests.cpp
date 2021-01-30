@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE( fork_with_bad_block ) try {
 
    vector<fork_tracker> forks(7);
    // enough to skip A's blocks
-   auto offset = fc::milliseconds(config::block_interval_ms * 13);
+   auto offset = fc::milliseconds(config::get_block_interval_ms() * 13);
 
    // skip a's blocks on remote
    // create 7 forks of 7 blocks so this fork is longer where the ith block is corrupted
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE( fork_with_bad_block ) try {
          }
       }
 
-      offset = fc::milliseconds(config::block_interval_ms);
+      offset = fc::milliseconds(config::get_block_interval_ms());
    }
 
    // go from most corrupted fork to least
@@ -200,14 +200,14 @@ BOOST_AUTO_TEST_CASE( forking ) try {
 
    wlog( "c2 blocks:" );
    c2.produce_blocks(12); // pam produces 12 blocks
-   b = c2.produce_block( fc::milliseconds(config::block_interval_ms * 13) ); // sam skips over dan's blocks
+   b = c2.produce_block( fc::milliseconds(config::get_block_interval_ms() * 13) ); // sam skips over dan's blocks
    expected_producer = "sam"_n;
    BOOST_REQUIRE_EQUAL( b->producer.to_string(), expected_producer.to_string() );
    c2.produce_blocks(11 + 12);
 
 
    wlog( "c1 blocks:" );
-   b = c.produce_block( fc::milliseconds(config::block_interval_ms * 13) ); // dan skips over pam's blocks
+   b = c.produce_block( fc::milliseconds(config::get_block_interval_ms() * 13) ); // dan skips over pam's blocks
    expected_producer = "dan"_n;
    BOOST_REQUIRE_EQUAL( b->producer.to_string(), expected_producer.to_string() );
    c.produce_blocks(11);
@@ -243,16 +243,16 @@ BOOST_AUTO_TEST_CASE( forking ) try {
    wlog( "cam and dan go off on their own fork on c1 while sam and pam go off on their own fork on c2" );
    wlog( "c1 blocks:" );
    c.produce_blocks(12); // dan produces 12 blocks
-   c.produce_block( fc::milliseconds(config::block_interval_ms * 25) ); // cam skips over sam and pam's blocks
+   c.produce_block( fc::milliseconds(config::get_block_interval_ms() * 25) ); // cam skips over sam and pam's blocks
    c.produce_blocks(23); // cam finishes the remaining 11 blocks then dan produces his 12 blocks
    wlog( "c2 blocks:" );
-   c2.produce_block( fc::milliseconds(config::block_interval_ms * 25) ); // pam skips over dan and sam's blocks
+   c2.produce_block( fc::milliseconds(config::get_block_interval_ms() * 25) ); // pam skips over dan and sam's blocks
    c2.produce_blocks(11); // pam finishes the remaining 11 blocks
-   c2.produce_block( fc::milliseconds(config::block_interval_ms * 25) ); // sam skips over cam and dan's blocks
+   c2.produce_block( fc::milliseconds(config::get_block_interval_ms() * 25) ); // sam skips over cam and dan's blocks
    c2.produce_blocks(11); // sam finishes the remaining 11 blocks
 
    wlog( "now cam and dan rejoin sam and pam on c2" );
-   c2.produce_block( fc::milliseconds(config::block_interval_ms * 13) ); // cam skips over pam's blocks (this block triggers a block on this branch to become irreversible)
+   c2.produce_block( fc::milliseconds(config::get_block_interval_ms() * 13) ); // cam skips over pam's blocks (this block triggers a block on this branch to become irreversible)
    c2.produce_blocks(11); // cam produces the remaining 11 blocks
    b = c2.produce_block(); // dan produces a block
 
@@ -302,7 +302,7 @@ BOOST_AUTO_TEST_CASE( prune_remove_branch ) try {
 
    auto nextproducer = [](tester &c, int skip_interval) ->account_name {
       auto head_time = c.control->head_block_time();
-      auto next_time = head_time + fc::milliseconds(config::block_interval_ms * skip_interval);
+      auto next_time = head_time + fc::milliseconds(config::get_block_interval_ms() * skip_interval);
       return c.control->head_block_state()->get_scheduled_producer(next_time).producer_name;
    };
 
@@ -312,12 +312,12 @@ BOOST_AUTO_TEST_CASE( prune_remove_branch ) try {
    for (int i = 0; i < 50; ++i) {
       account_name next1 = nextproducer(c, skip1);
       if (next1 == "dan"_n || next1 == "sam"_n) {
-         c.produce_block(fc::milliseconds(config::block_interval_ms * skip1)); skip1 = 1;
+         c.produce_block(fc::milliseconds(config::get_block_interval_ms() * skip1)); skip1 = 1;
       }
       else ++skip1;
       account_name next2 = nextproducer(c2, skip2);
       if (next2 == "scott"_n) {
-         c2.produce_block(fc::milliseconds(config::block_interval_ms * skip2)); skip2 = 1;
+         c2.produce_block(fc::milliseconds(config::get_block_interval_ms() * skip2)); skip2 = 1;
       }
       else ++skip2;
    }
@@ -449,7 +449,7 @@ BOOST_AUTO_TEST_CASE( irreversible_mode ) try {
    // other forks away from main after hbn2
    BOOST_REQUIRE_EQUAL( other.control->head_block_producer().to_string(), "producer2" );
 
-   other.produce_block( fc::milliseconds( 13 * config::block_interval_ms ) ); // skip over producer1's round
+   other.produce_block( fc::milliseconds( 13 * config::get_block_interval_ms() ) ); // skip over producer1's round
    BOOST_REQUIRE_EQUAL( other.control->head_block_producer().to_string(), "producer2" );
    auto fork_first_block_id = other.control->head_block_id();
    wlog( "{w}", ("w", fork_first_block_id));
@@ -458,10 +458,10 @@ BOOST_AUTO_TEST_CASE( irreversible_mode ) try {
    BOOST_REQUIRE_EQUAL( other.control->pending_block_producer().to_string(), "producer1" );
 
    // Repeat two more times to ensure other has a longer chain than main
-   other.produce_block( fc::milliseconds( 13 * config::block_interval_ms ) ); // skip over producer1's round
+   other.produce_block( fc::milliseconds( 13 * config::get_block_interval_ms() ) ); // skip over producer1's round
    BOOST_REQUIRE( produce_until_transition( other, "producer2"_n, "producer1"_n, 11) ); // finish producer2's round
 
-   other.produce_block( fc::milliseconds( 13 * config::block_interval_ms ) ); // skip over producer1's round
+   other.produce_block( fc::milliseconds( 13 * config::get_block_interval_ms() ) ); // skip over producer1's round
    BOOST_REQUIRE( produce_until_transition( other, "producer2"_n, "producer1"_n, 11) ); // finish producer2's round
 
    auto hbn4 = other.control->head_block_num();
@@ -548,7 +548,7 @@ BOOST_AUTO_TEST_CASE( reopen_forkdb ) try {
    BOOST_REQUIRE_EQUAL( fork1_lib_before, fork2_lib_before );
 
    // carol produces a block on fork 2 skipping over the slots of alice and bob
-   c2.produce_block( fc::milliseconds(config::block_interval_ms * 25) );
+   c2.produce_block( fc::milliseconds(config::get_block_interval_ms() * 25) );
    auto fork2_start_block = c2.control->head_block_num();
    c2.produce_block();
 
@@ -614,7 +614,7 @@ BOOST_AUTO_TEST_CASE( push_block_returns_forked_transactions ) try {
    signed_block_ptr c2b;
    wlog( "c2 blocks:" );
    c2.produce_blocks(12); // pam produces 12 blocks
-   b = c2b = c2.produce_block( fc::milliseconds(config::block_interval_ms * 13) ); // sam skips over dan's blocks
+   b = c2b = c2.produce_block( fc::milliseconds(config::get_block_interval_ms() * 13) ); // sam skips over dan's blocks
    expected_producer = "sam"_n;
    BOOST_REQUIRE_EQUAL( b->producer.to_string(), expected_producer.to_string() );
    // save blocks for verification of forking later
@@ -625,7 +625,7 @@ BOOST_AUTO_TEST_CASE( push_block_returns_forked_transactions ) try {
 
 
    wlog( "c1 blocks:" );
-   b = c.produce_block( fc::milliseconds(config::block_interval_ms * 13) ); // dan skips over pam's blocks
+   b = c.produce_block( fc::milliseconds(config::get_block_interval_ms() * 13) ); // dan skips over pam's blocks
    expected_producer = "dan"_n;
    BOOST_REQUIRE_EQUAL( b->producer.to_string(), expected_producer.to_string() );
    // create accounts on c1 which will be forked out

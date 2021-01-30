@@ -3,7 +3,7 @@
 
 #include <fc/io/json.hpp>
 
-#include <chain_proxy.hpp>
+#include "chain_proxy.hpp"
 
 #include <dlfcn.h>
 using namespace eosio::chain;
@@ -134,3 +134,9 @@ void chain_proxy::commit_block() {
     c->commit_block();
 }
 
+void chain_proxy::get_block_id_for_num(uint32_t block_num, string& result ) {
+    try {
+        auto id = c->get_block_id_for_num(block_num);
+        result = id.str();
+    } CATCH_AND_LOG_EXCEPTION(this)
+}

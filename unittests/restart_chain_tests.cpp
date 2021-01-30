@@ -43,12 +43,12 @@ class replay_tester : public base_tester {
    }
    using base_tester::produce_block;
 
-   signed_block_ptr produce_block(fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms)) override {
+   signed_block_ptr produce_block(fc::microseconds skip_time = fc::milliseconds(config::get_block_interval_ms())) override {
       return _produce_block(skip_time, false);
    }
 
    signed_block_ptr
-   produce_empty_block(fc::microseconds skip_time = fc::milliseconds(config::block_interval_ms)) override {
+   produce_empty_block(fc::microseconds skip_time = fc::milliseconds(config::get_block_interval_ms())) override {
       unapplied_transactions.add_aborted(control->abort_block());
       return _produce_block(skip_time, true);
    }

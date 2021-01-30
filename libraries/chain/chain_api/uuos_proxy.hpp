@@ -14,6 +14,7 @@ class uuos_proxy {
         virtual chain_proxy* chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         virtual void chain_free(chain_proxy* api);
 
+        virtual void set_block_interval_ms(int ms);
     private:
 
 };

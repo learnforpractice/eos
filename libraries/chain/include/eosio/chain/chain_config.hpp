@@ -144,10 +144,11 @@ struct chain_config_v1 : chain_config_v0 {
    using Base = chain_config_v0;
 
    uint32_t   max_action_return_value_size = config::default_max_action_return_value_size;               ///< size limit for action return value
-   
+   uint32_t   block_interval_ms = config::default_block_interval_ms;
    //order must match parameters as ids are used in serialization
    enum {
      max_action_return_value_size_id = Base::PARAMS_COUNT,
+     block_interval_ms_id,
      PARAMS_COUNT
    };
 
@@ -165,6 +166,7 @@ struct chain_config_v1 : chain_config_v0 {
    friend inline bool operator == ( const chain_config_v1& lhs, const chain_config_v1& rhs ) {
       //add v1 parameters comarison here
       return std::tie(lhs.max_action_return_value_size) == std::tie(rhs.max_action_return_value_size) 
+          && std::tie(lhs.block_interval_ms) == std::tie(rhs.block_interval_ms)
           && lhs.base() == rhs.base();
    }
 
@@ -212,7 +214,7 @@ FC_REFLECT(eosio::chain::chain_config_v0,
 )
 
 FC_REFLECT_DERIVED(eosio::chain::chain_config_v1, (eosio::chain::chain_config_v0), 
-           (max_action_return_value_size)
+           (max_action_return_value_size)(block_interval_ms)
 )
 
 namespace fc {
@@ -314,6 +316,9 @@ inline DataStream &operator<<(DataStream &s, const eosio::chain::data_entry<eosi
       case chain_config_v1::max_action_return_value_size_id:
       fc::raw::pack(s, entry.config.max_action_return_value_size);
       break;
+      case chain_config_v1::block_interval_ms_id:
+      fc::raw::pack(s, entry.config.block_interval_ms);
+      break;
       default:
       data_entry<chain_config_v0, config_entry_validator> base_entry(entry);
       fc::raw::pack(s, base_entry);
@@ -410,6 +415,9 @@ inline DataStream &operator>>(DataStream &s, eosio::chain::data_entry<eosio::cha
    switch (entry.id){
       case chain_config_v1::max_action_return_value_size_id:
       fc::raw::unpack(s, entry.config.max_action_return_value_size);
+      break;
+      case chain_config_v1::block_interval_ms_id:
+      fc::raw::unpack(s, entry.config.block_interval_ms);
       break;
       default:
       eosio::chain::data_entry<chain_config_v0, config_entry_validator> base_entry(entry);

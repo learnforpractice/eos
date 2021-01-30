@@ -1,4 +1,4 @@
-#include "uuos.hpp"
+#include <uuos_proxy.hpp>
 
 static uuos_proxy *s_proxy;
 

@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE( require_preactivation_test ) try {
    BOOST_CHECK( !c.control->is_builtin_activated( builtin_protocol_feature_t::only_link_to_existing_permission ) );
 
    BOOST_CHECK_EXCEPTION( c.control->start_block(
-                              c.control->head_block_time() + fc::milliseconds(config::block_interval_ms),
+                              c.control->head_block_time() + fc::milliseconds(config::get_block_interval_ms()),
                               0,
                               {}
                           ),
@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_CASE( subjective_restrictions_test ) try {
    BOOST_CHECK_EXCEPTION(  c.preactivate_protocol_features({only_link_to_existing_permission_digest}),
                            subjective_block_production_exception,
                            fc_exception_message_starts_with(
-                              std::string(c.control->head_block_time() + fc::milliseconds(config::block_interval_ms)) +
+                              std::string(c.control->head_block_time() + fc::milliseconds(config::get_block_interval_ms())) +
                               " is too early for the earliest allowed activation time of the protocol feature"
                            )
    );

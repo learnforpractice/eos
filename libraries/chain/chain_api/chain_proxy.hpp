@@ -26,6 +26,7 @@ class chain_proxy {
         virtual bool startup(bool initdb);
         virtual void finalize_block(string& _priv_keys);
         virtual void commit_block();
+        virtual void get_block_id_for_num(uint32_t block_num, string& result);
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "chain_proxy.hpp"
-#include "uuos_proxy.hpp"
+#include <chain_proxy.hpp>
+#include <uuos_proxy.hpp>
 
 typedef void (*fn_init_uuos)(uuos_proxy *proxy);
 typedef uuos_proxy* (*fn_get_uuos_proxy)();

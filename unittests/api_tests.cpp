@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(action_tests, TESTER_T, backing_store_ts) { try {
    }
 
    uint64_t now = static_cast<uint64_t>( t.control->head_block_time().time_since_epoch().count() );
-   now += config::block_interval_us;
+   now += config::get_block_interval_us();
    CALL_TEST_FUNCTION( t, "test_action", "test_current_time", fc::raw::pack(now));
 
    // test current_time
@@ -535,7 +535,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(action_tests, TESTER_T, backing_store_ts) { try {
 
    // test_publication_time
    uint64_t pub_time = static_cast<uint64_t>( t.control->head_block_time().time_since_epoch().count() );
-   pub_time += config::block_interval_us;
+   pub_time += config::get_block_interval_us();
    CALL_TEST_FUNCTION( t, "test_action", "test_publication_time", fc::raw::pack(pub_time) );
 
    // test test_abort
@@ -3001,7 +3001,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(permission_usage_tests, TESTER_T, backing_store_ts
    BOOST_CHECK_THROW( CALL_TEST_FUNCTION( t, "test_permission", "test_permission_last_used",
                        fc::raw::pack(test_permission_last_used_action{
                                        "testapi"_n, config::active_name,
-                                       t.control->head_block_time() + fc::milliseconds(config::block_interval_ms)
+                                       t.control->head_block_time() + fc::milliseconds(config::get_block_interval_ms())
                                      })
    ), eosio_assert_message_exception );
 

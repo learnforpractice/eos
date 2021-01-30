@@ -12,9 +12,10 @@ cdef extern from * :
     ctypedef long long int64_t
     ctypedef unsigned long long uint64_t
     ctypedef unsigned int uint32_t
+    ctypedef int          int32_t
     ctypedef unsigned short uint16_t
     ctypedef unsigned char uint8_t
-    ctypedef int __uint128_t
+    ctypedef int __uint128_t #hacking
 
 cdef extern from "<Python.h>":
     ctypedef long long PyLongObject
@@ -35,6 +36,7 @@ cdef extern from "<uuos.hpp>":
         bool startup(bool initdb);
         void finalize_block(string& _priv_keys);
         void commit_block();
+        void get_block_id_for_num(uint32_t block_num, string& result);
 
         string& get_last_error();
         void set_last_error(string& error);
@@ -81,3 +83,8 @@ def get_last_error(uint64_t ptr):
 
 def set_last_error(uint64_t ptr, string& error):
     chain(ptr).set_last_error(error)
+
+def get_block_id_for_num(uint64_t ptr, uint32_t block_num):
+    cdef string result
+    chain(ptr).get_block_id_for_num(block_num, result)
+    return result

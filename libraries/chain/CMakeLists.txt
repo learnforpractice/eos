@@ -136,6 +136,7 @@ add_library( eosio_chain
              backing_store/db_context_rocksdb.cpp
              backing_store/db_key_value_format.cpp
              backing_store/db_key_value_any_lookup.cpp
+             config.cpp
              ${PLATFORM_TIMER_IMPL}
              ${HEADERS}
              )
@@ -149,7 +150,7 @@ target_include_directories( eosio_chain
                                    "${CMAKE_CURRENT_SOURCE_DIR}/libraries/eos-vm/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../rocksdb/include"
                                    "${CMAKE_CURRENT_SOURCE_DIR}/../chain_kv/include"
-                                   "${CMAKE_CURRENT_SOURCE_DIR}/../chain_api"
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/chain_api"
                            )
 
 add_library(eosio_chain_wrap INTERFACE )

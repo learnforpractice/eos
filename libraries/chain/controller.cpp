@@ -617,6 +617,8 @@ struct controller_impl {
 
       auto header_itr = validate_db_version( db );
 
+      uint32_t block_interval = db.get<global_property_object>().configuration.block_interval_ms;
+      eosio::chain::config::set_block_interval_ms(block_interval);
       {
          const auto& state_chain_id = db.get<global_property_object>().chain_id;
          EOS_ASSERT( state_chain_id == chain_id, chain_id_type_exception,
@@ -836,6 +838,7 @@ struct controller_impl {
       genesis.initial_configuration.validate();
       db.create<global_property_object>([&genesis,&chain_id=this->chain_id](auto& gpo ){
          gpo.configuration = genesis.initial_configuration;
+         gpo.configuration.block_interval_ms = eosio::chain::config::get_block_interval_ms();
          gpo.kv_configuration = kv_database_config{};
          // TODO: Update this when genesis protocol features are enabled.
          gpo.wasm_configuration = genesis_state::default_initial_wasm_configuration;
@@ -1570,8 +1573,8 @@ struct controller_impl {
       const auto& chain_config = self.get_global_properties().configuration;
       uint64_t CPU_TARGET = EOS_PERCENT(chain_config.max_block_cpu_usage, chain_config.target_block_cpu_usage_pct);
       resource_limits.set_block_parameters(
-         { CPU_TARGET, chain_config.max_block_cpu_usage, config::block_cpu_usage_average_window_ms / config::block_interval_ms, config::maximum_elastic_resource_multiplier, {99, 100}, {1000, 999}},
-         {EOS_PERCENT(chain_config.max_block_net_usage, chain_config.target_block_net_usage_pct), chain_config.max_block_net_usage, config::block_size_average_window_ms / config::block_interval_ms, config::maximum_elastic_resource_multiplier, {99, 100}, {1000, 999}}
+         { CPU_TARGET, chain_config.max_block_cpu_usage, config::block_cpu_usage_average_window_ms / config::get_block_interval_ms(), config::maximum_elastic_resource_multiplier, {99, 100}, {1000, 999}},
+         {EOS_PERCENT(chain_config.max_block_net_usage, chain_config.target_block_net_usage_pct), chain_config.max_block_net_usage, config::block_size_average_window_ms / config::get_block_interval_ms(), config::maximum_elastic_resource_multiplier, {99, 100}, {1000, 999}}
       );
       resource_limits.process_block_usage(pbhs.block_num);
 

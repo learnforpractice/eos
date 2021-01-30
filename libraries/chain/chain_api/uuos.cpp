@@ -1,4 +1,4 @@
-#include <uuos_proxy.hpp>
+#include "uuos_proxy.hpp"
 #include <dlfcn.h>
 
 extern "C" void uuos_init_chain() {

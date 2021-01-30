@@ -27,6 +27,7 @@ cdef extern from "<uuos.hpp>":
 
     ctypedef struct uuos_proxy:
         void set_log_level(string& logger_name, int level)
+        void set_block_interval_ms(int ms)
 
     uuos_proxy *get_uuos_proxy()
 
@@ -34,3 +35,6 @@ uuosext_init()
 
 def set_log_level(string& logger_name, int level):
     get_uuos_proxy().set_log_level(logger_name, level)
+
+def set_block_interval_ms(int ms):
+    get_uuos_proxy().set_block_interval_ms(ms)
