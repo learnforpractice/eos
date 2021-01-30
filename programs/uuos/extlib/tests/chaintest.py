@@ -1,13 +1,10 @@
 import os
 import json
-import tempfile
-from uuosio import _chain, _uuos
-from uuosio import uuos
-from datetime import datetime, timedelta
-
-uuos.set_log_level('default', 0)
-
+import pytest
 import logging
+import tempfile
+from uuosio import chain, uuos
+from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s')
@@ -118,44 +115,34 @@ genesis_test = {
   }
 }
 
-_uuos.set_block_interval_ms(1000)
+class Test(object):
 
-chain_config = json.dumps(chain_config)
-genesis_test = json.dumps(genesis_test)
+    @classmethod
+    def setup_class(cls):
+        uuos.set_log_level('default', 0)
+        uuos.set_block_interval_ms(1000)
 
-ptr = _chain.chain_new(chain_config, genesis_test, os.path.join(config_dir, "protocol_features"), "")
-_chain.chain_say_hello(ptr)
-_chain.startup(ptr, True)
+        cls.chain_config = json.dumps(chain_config)
+        cls.genesis_test = json.dumps(genesis_test)
+        uuos.set_log_level('default', 10)
+        cls.c = chain.Chain(cls.chain_config, cls.genesis_test, os.path.join(config_dir, "protocol_features"), "")
+        cls.c.startup(True)
+        uuos.set_log_level('default', 0)
 
-def isoformat(dt):
-    return dt.isoformat(timespec='milliseconds')
+    @classmethod
+    def teardown_class(cls):
+        cls.c.free()
 
-print(os.getpid())
+    def setup_method(self, method):
+        logger.warning('test start: %s', method.__name__)
 
-dt = datetime.now()
+    def teardown_method(self, method):
+        pass
+    
+    def test_1(self):
+        _id = self.c.get_block_id_for_num(1)
+        logger.info(_id)
 
-print(_chain.get_block_id_for_num(ptr, 1))
-print(_chain.get_global_properties(ptr))
-print(_chain.get_dynamic_global_properties(ptr))
-print(_chain.fetch_block_by_number(ptr, 1))
-print(_chain.active_producers(ptr))
-print(_chain.fetch_block_state_by_number(ptr, 1))
-print(_chain.get_last_error(ptr))
-print(_chain.is_ram_billing_in_notify_allowed(ptr))
-
-for i in range(1):
-  _chain.abort_block(ptr)
-  dt += timedelta(seconds=1)
-  _chain.start_block(ptr, isoformat(dt), 0, '')
-
-  print('++++is building block:', _chain.is_building_block(ptr))
-
-  priv_keys = ['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3']
-  priv_keys = json.dumps(priv_keys)
-  _chain.finalize_block(ptr, priv_keys)
-  print('++++is building block:', _chain.is_building_block(ptr))
-  _chain.commit_block(ptr)
-  print('++++is building block:', _chain.is_building_block(ptr))
-
-_chain.chain_free(ptr)
+        _id = self.c.id()
+        logger.info(_id)
 

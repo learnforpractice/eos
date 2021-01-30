@@ -20,7 +20,7 @@ setup(
 #    package_data={'uuosio': ['data/hello.txt', 'data/hello2.txt']},
     data_files = [('lib', ['lib/libchain_api.dylib']), ('bin', ['bin/uuos'])],
     scripts=['bin/run-uuos'],
-    install_requires=['cython'],
+    install_requires=[''],
     tests_require=['pytest'],
     setup_requires=setup_requires,
 #    include_package_data=True

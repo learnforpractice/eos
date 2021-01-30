@@ -27,14 +27,13 @@ class Chain(object):
             config = json.dumps(config)
         if isinstance(genesis, dict):
             config = json.dumps(config)
-        assert isinstance(config, str):
-        assert isinstance(genesis, str):
+        assert isinstance(config, str)
+        assert isinstance(genesis, str)
 
         self.ptr = _chain.chain_new(config, genesis, protocol_features_dir, snapshot_dir)
         if not self.ptr:
             error = _chain.get_last_error()
             raise Exception(error)
-        _chain.chain_set_current_ptr(self.ptr)
 
     def startup(self, initdb):
         """
@@ -54,7 +53,6 @@ class Chain(object):
             return
         _chain.chain_free(self.ptr)
         self.ptr = 0
-        _chain.chain_set_current_ptr(0)
 
     def id(self):
         """
