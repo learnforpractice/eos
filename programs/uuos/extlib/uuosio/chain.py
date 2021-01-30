@@ -85,6 +85,10 @@ class Chain(object):
         return _chain.abort_block(self.ptr)
 
     def get_global_properties(self, json=True):
+        '''
+        Get global properties
+        :returns str
+        '''
         ret = _chain.get_global_properties(self.ptr)
         if json:
             return json.loads(ret)

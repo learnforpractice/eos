@@ -25,3 +25,8 @@ class chain_manager {
 };
 
 }}
+
+namespace fc {
+   void to_variant(const boost::filesystem::path& p, fc::variant& v);
+   void from_variant(const fc::variant& v, boost::filesystem::path& p);
+} // fc

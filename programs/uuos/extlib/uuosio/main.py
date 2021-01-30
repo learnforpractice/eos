@@ -135,6 +135,8 @@ print(os.getpid())
 dt = datetime.now()
 
 print(_chain.get_block_id_for_num(ptr, 1))
+print(_chain.get_global_properties(ptr))
+print(_chain.get_dynamic_global_properties(ptr))
 
 for i in range(1):
   _chain.abort_block(ptr)
