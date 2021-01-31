@@ -1,6 +1,7 @@
 import os
 import json
 import pytest
+import atexit
 import logging
 import tempfile
 from uuosio import chain, chainapi, uuos, config
@@ -153,6 +154,8 @@ producer_key_map = {
 class ChainTest(object):
 
     def __init__(self):
+        atexit.register(self.free)
+
         uuos.set_log_level('default', 0)
         uuos.set_block_interval_ms(1000)
 
@@ -243,6 +246,8 @@ class ChainTest(object):
         )
 
         self.push_action('eosio', 'init', args, {'eosio':'active'})
+
+        raise Exception('oops!')
 
         # self.buy_ram_bytes('eosio', 'eosio', 10*1024*1024)
         # self.delegatebw('eosio', 'eosio', 1.0, 1.0, transfer=0)
