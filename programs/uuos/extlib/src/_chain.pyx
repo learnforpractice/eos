@@ -119,6 +119,8 @@ cdef extern from "<uuos.hpp>":
         bool pack_action_args(string& name, string& action, string& _args, vector[char]& result)
         string unpack_action_args(string& name, string& action, string& _binargs)
 
+        void clear_abi_cache(string& account)
+
         string& get_last_error()
         void set_last_error(string& error)
 
@@ -575,3 +577,6 @@ def pack_action_args(uint64_t ptr, string& name, string& action, string& _args):
 
 def unpack_action_args(uint64_t ptr, name, action, _binargs):
     return chain(ptr).unpack_action_args(name, action, _binargs)
+
+def clear_abi_cache(uint64_t ptr, string& account):
+    return chain(ptr).clear_abi_cache(account)
