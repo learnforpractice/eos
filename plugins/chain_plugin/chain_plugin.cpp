@@ -34,6 +34,9 @@
 #include <signal.h>
 #include <cstdlib>
 
+#include <chain_proxy.hpp>
+
+
 // reflect chainbase::environment for --print-build-info option
 FC_REFLECT_ENUM( chainbase::environment::os_t,
                  (OS_LINUX)(OS_MACOS)(OS_WINDOWS)(OS_OTHER) )
@@ -3427,3 +3430,64 @@ eosio::chain::backing_store_type read_only::get_backing_store() const {
 } // namespace eosio
 
 FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ignore2)(ignore3)(core_symbol)(ignore4) )
+
+#include <chain_api_proxy.hpp>
+
+#define max_abi_time (10000)
+using namespace eosio::chain_apis;
+using namespace eosio;
+
+int chain_api_proxy::get_info(string& result) {
+   auto next = [&result](const fc::exception_ptr& ex) {
+      result = ex->to_detail_string();
+   };
+   try {
+      read_only::get_info_params params;
+      read_only::get_info_results results;
+      auto& cc = *this->chain();
+      std::optional<account_query_db> aqdb;
+      results = read_only(cc, aqdb, fc::microseconds(max_abi_time)).get_info(params);
+      result = fc::json::to_string(fc::variant(results), fc::time_point::maximum());
+      return 1;
+    } CATCH_AND_CALL(next);
+    return 0;
+}
+
+#define CHAIN_API_RO(api_name) \
+int chain_api_proxy::api_name(string& params, string& result) { \
+   auto next = [&result](const fc::exception_ptr& ex) { \
+      result = ex->to_detail_string(); \
+   }; \
+   try { \
+      auto& cc = *this->chain(); \
+      std::optional<account_query_db> aqdb; \
+      auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
+      auto _result = read_only(cc, aqdb, fc::microseconds(max_abi_time)).api_name(_params); \
+      result = fc::json::to_string(fc::variant(_result), fc::time_point::maximum()); \
+      return 1;\
+   } CATCH_AND_CALL(next); \
+   return 0; \
+}
+
+CHAIN_API_RO(get_activated_protocol_features)
+CHAIN_API_RO(get_block)
+CHAIN_API_RO(get_block_header_state)
+CHAIN_API_RO(get_account)
+CHAIN_API_RO(get_code)
+CHAIN_API_RO(get_code_hash)
+CHAIN_API_RO(get_abi)
+CHAIN_API_RO(get_raw_code_and_abi)
+CHAIN_API_RO(get_raw_abi)
+CHAIN_API_RO(get_table_rows)
+CHAIN_API_RO(get_table_by_scope)
+CHAIN_API_RO(get_currency_balance)
+CHAIN_API_RO(get_currency_stats)
+CHAIN_API_RO(get_producers)
+CHAIN_API_RO(get_producer_schedule)
+
+CHAIN_API_RO(get_scheduled_transactions)
+CHAIN_API_RO(abi_json_to_bin)
+CHAIN_API_RO(abi_bin_to_json)
+CHAIN_API_RO(get_required_keys)
+CHAIN_API_RO(get_transaction_id)
+

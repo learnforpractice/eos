@@ -80,6 +80,15 @@ chain_proxy::~chain_proxy() {
 void chain_proxy::init() {
     this->cm->init();
     this->c = this->cm->c;
+    this->_api_proxy = std::make_shared<chain_api_proxy>(this->c.get());
+}
+
+controller* chain_proxy::chain() {
+    return this->c.get();
+}
+
+chain_api_proxy* chain_proxy::api_proxy() {
+    return this->_api_proxy.get();
 }
 
 void chain_proxy::say_hello() {

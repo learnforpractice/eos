@@ -110,6 +110,7 @@ add_library( eosio_chain
 
               chain_api/chain_manager.cpp
               chain_api/chain_proxy.cpp
+              chain_api/chain_api_proxy.cpp
               chain_api/uuos_proxy.cpp
               chain_api/uuos.cpp
 

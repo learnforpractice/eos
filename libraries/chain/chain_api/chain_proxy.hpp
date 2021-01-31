@@ -4,6 +4,8 @@
 #include <memory>
 #include <map>
 
+#include "chain_api_proxy.hpp"
+
 using namespace std;
 
 namespace eosio {
@@ -19,6 +21,9 @@ class chain_proxy {
         chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         virtual ~chain_proxy();
         void init();
+
+        virtual eosio::chain::controller* chain();
+        virtual chain_api_proxy* api_proxy();
 
         virtual void say_hello();
 
@@ -124,6 +129,7 @@ class chain_proxy {
     private:
         std::unique_ptr<eosio::chain::chain_manager> cm;
         std::shared_ptr<eosio::chain::controller> c;
+        std::shared_ptr<chain_api_proxy> _api_proxy;
         std::map<std::string, std::shared_ptr<eosio::chain::abi_serializer>> abi_cache;
         string last_error;
 };

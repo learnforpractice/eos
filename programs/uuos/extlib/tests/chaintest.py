@@ -3,7 +3,7 @@ import json
 import pytest
 import logging
 import tempfile
-from uuosio import chain, uuos
+from uuosio import chain, chainapi, uuos
 from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO,
@@ -127,6 +127,11 @@ class Test(object):
         uuos.set_log_level('default', 10)
         cls.c = chain.Chain(cls.chain_config, cls.genesis_test, os.path.join(config_dir, "protocol_features"), "")
         cls.c.startup(True)
+        cls.api = chainapi.ChainApi(cls.c.ptr)
+
+        logger.info(cls.api.get_info())
+        logger.info(cls.api.get_account('eosio'))
+
         uuos.set_log_level('default', 0)
 
     @classmethod
