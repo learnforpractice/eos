@@ -81,6 +81,8 @@ class transaction_metadata {
                           const chain_id_type& chain_id, fc::microseconds time_limit,
                           uint32_t max_variable_sig_size = UINT32_MAX );
 
+      static transaction_metadata_ptr recover_keys( packed_transaction_ptr trx, const chain_id_type& chain_id);
+
       /// @returns constructed transaction_metadata with no key recovery (sig_cpu_usage=0, recovered_pub_keys=empty)
       static transaction_metadata_ptr
       create_no_recover_keys( packed_transaction_ptr trx, trx_type t ) {

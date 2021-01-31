@@ -1,6 +1,8 @@
 #include <eosio/chain/controller.hpp>
+#include <eosio/chain/abi_serializer.hpp>
 #include <eosio/chain/chain_manager.hpp>
 #include <eosio/chain/global_property_object.hpp>
+#include <eosio/chain/generated_transaction_object.hpp>
 
 #include <fc/io/json.hpp>
 
@@ -539,4 +541,129 @@ string chain_proxy::get_scheduled_producer(string& _block_time) {
     auto block_time = fc::time_point::from_iso_string(_block_time);
     auto producer = c->head_block_state()->get_scheduled_producer(block_time);
     return fc::json::to_string(producer, fc::time_point::maximum());
+}
+
+void chain_proxy::gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_keys, vector<char>& result) {
+    try {
+        signed_transaction trx;
+        auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
+        trx.actions = std::move(actions);
+        trx.expiration = fc::time_point::from_iso_string(expiration);
+        eosio::chain::block_id_type id(reference_block_id);
+        trx.set_reference_block(id);
+        trx.max_net_usage_words = 0;
+
+        eosio::chain::chain_id_type chain_id(_chain_id);
+
+        auto priv_keys = fc::json::from_string(_private_keys).as<vector<private_key_type>>();
+        for (auto& key: priv_keys) {
+            trx.sign(key, chain_id);
+        }
+        packed_transaction::compression_type type;
+        if (compress) {
+            type = packed_transaction::compression_type::zlib;
+        } else {
+            type = packed_transaction::compression_type::none;
+        }
+
+        auto packed_trx = packed_transaction(std::move(trx), true, type);
+        auto v = fc::raw::pack(packed_trx);
+        result = std::move(v);
+    } CATCH_AND_LOG_EXCEPTION(this);
+}
+
+string chain_proxy::push_transaction(string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us) {
+    try {
+        vector<char> packed_trx(_packed_trx.c_str(), _packed_trx.c_str()+_packed_trx.size());
+        auto ptrx = std::make_shared<packed_transaction>();
+        fc::datastream<const char*> ds( _packed_trx.c_str(), _packed_trx.size() );
+        fc::raw::unpack(ds, *ptrx);
+        auto ptrx_meta = transaction_metadata::recover_keys(ptrx, c->get_chain_id());
+    //    auto ptrx_meta = transaction_metadata::create_no_recover_keys( trx, transaction_metadata::trx_type::input );
+        auto _deadline = fc::time_point::from_iso_string(deadline);
+        auto ret = c->push_transaction(ptrx_meta, _deadline, billed_cpu_time_us, false);
+        return fc::json::to_string(ret, fc::time_point::maximum());
+        // if (ret->except) {
+        //     return false;
+        // }
+    } CATCH_AND_LOG_EXCEPTION(this);
+    return "";
+}
+
+string chain_proxy::get_scheduled_transactions() {
+    vector<transaction_id_type> result;
+    const auto& idx = c->db().get_index<generated_transaction_multi_index,by_delay>();
+    auto itr = idx.begin();
+    while( itr != idx.end() && itr->delay_until <= c->pending_block_time() ) {
+        result.emplace_back(itr->trx_id);
+        ++itr;
+    }
+    return fc::json::to_string(result, fc::time_point::maximum());
+}
+
+string chain_proxy::get_scheduled_transaction(const unsigned __int128 sender_id, string& sender) {
+    auto& generated_transaction_idx = c->db().get_index<generated_transaction_multi_index>();
+    const auto* gto = c->db().find<generated_transaction_object,by_sender_id>(boost::make_tuple(account_name(sender), sender_id));
+    if ( gto ) {
+        return fc::json::to_string(*gto, fc::time_point::maximum());
+    }
+    return "";
+}
+
+string chain_proxy::push_scheduled_transaction(string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us) {
+    auto id = transaction_id_type(scheduled_tx_id);
+    auto _deadline = fc::time_point::from_iso_string(deadline);
+    auto ret = c->push_scheduled_transaction(id, _deadline, billed_cpu_time_us, false);
+    return fc::json::to_string(ret, fc::time_point::maximum());
+}
+
+void chain_proxy::load_abi(string& account) {
+    auto itr = abi_cache.find(account);
+    if (itr == abi_cache.end()) {
+        const auto& accnt = c->db().get<account_object, by_name>(account_name(account));
+        abi_def abi;
+        if(!abi_serializer::to_abi(accnt.abi, abi)) {
+            return;
+        }
+        abi_cache[account] = std::make_shared<abi_serializer>(abi, abi_serializer::create_yield_function(fc::microseconds(150000)));
+    }
+}
+
+void chain_proxy::clear_abi_cache(string& account) {
+   auto itr = abi_cache.find(account);
+   if (itr != abi_cache.end()) {
+      abi_cache.erase(itr);
+   }
+}
+
+bool chain_proxy::pack_action_args(string& name, string& action, string& _args, vector<char>& result) {
+    try {
+        auto& serializer = abi_cache[name];
+        if (!serializer) {
+            return false;
+        }
+        auto action_type = serializer->get_action_type(action_name(action));
+        EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
+
+        fc::variant args = fc::json::from_string(_args);
+        result = serializer->variant_to_binary(action_type, args, abi_serializer::create_yield_function(fc::microseconds(150000)));
+        return true;
+    } CATCH_AND_LOG_EXCEPTION(this);
+    return false;
+}
+
+string chain_proxy::unpack_action_args(string& name, string& action, string& _binargs) {
+    try {
+        auto& serializer = abi_cache[name];
+        if (!serializer) {
+            return "";
+        }
+        auto action_type = serializer->get_action_type(action_name(action));
+        EOS_ASSERT(!action_type.empty(), action_validate_exception, "Unknown action ${action}", ("action", action));
+
+        bytes binargs = bytes(_binargs.data(), _binargs.data() + _binargs.size());
+        auto v = serializer->binary_to_variant(action_type, binargs, abi_serializer::create_yield_function(fc::microseconds(150000)));
+        return fc::json::to_string(v, fc::time_point::maximum());
+    } CATCH_AND_LOG_EXCEPTION(this);
+    return "";
 }

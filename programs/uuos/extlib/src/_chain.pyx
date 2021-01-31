@@ -109,6 +109,15 @@ cdef extern from "<uuos.hpp>":
         bool all_subjective_mitigations_disabled()
         string get_scheduled_producer(string& _block_time)
 
+        void gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_keys, vector[char]& result)
+        string push_transaction(string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us)
+
+        string get_scheduled_transactions()
+        string get_scheduled_transaction(__uint128_t sender_id, string& sender)
+        string push_scheduled_transaction(string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us)
+
+        bool pack_action_args(string& name, string& action, string& _args, vector[char]& result)
+        string unpack_action_args(string& name, string& action, string& _binargs)
 
         string& get_last_error()
         void set_last_error(string& error)
@@ -536,3 +545,33 @@ def get_scheduled_producer(uint64_t ptr, string& block_time):
     returns: str
     '''
     return chain(ptr).get_scheduled_producer(block_time)
+
+def gen_transaction(uint64_t ptr, string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, string& _private_keys):
+    cdef vector[char] result
+    chain(ptr).gen_transaction(_actions, expiration, reference_block_id, _chain_id, compress, _private_keys, result)
+    return PyBytes_FromStringAndSize(result.data(), result.size())
+
+def push_transaction(uint64_t ptr, string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us):
+    return chain(ptr).push_transaction(_packed_trx, deadline, billed_cpu_time_us)
+
+def get_scheduled_transactions(uint64_t ptr):
+    return chain(ptr).get_scheduled_transactions()
+
+def get_scheduled_transaction(uint64_t ptr, object _sender_id, string& sender):
+    cdef string result
+    cdef __uint128_t sender_id
+
+    sender_id = 0
+    _PyLong_AsByteArray(<PyLongObject *><void *>_sender_id, <unsigned char *>&sender_id, sizeof(__uint128_t), 1, 0);
+    return chain(ptr).get_scheduled_transaction(sender_id, sender)
+
+def push_scheduled_transaction(uint64_t ptr, string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us):
+    return chain(ptr).push_scheduled_transaction(scheduled_tx_id, deadline, billed_cpu_time_us)
+
+def pack_action_args(uint64_t ptr, string& name, string& action, string& _args):
+    cdef vector[char] result
+    chain(ptr).pack_action_args(name, action, _args, result)
+    return PyBytes_FromStringAndSize(result.data(), result.size())
+
+def unpack_action_args(uint64_t ptr, name, action, _binargs):
+    return chain(ptr).unpack_action_args(name, action, _binargs)

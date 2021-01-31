@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <map>
 
 using namespace std;
 
@@ -9,6 +10,7 @@ namespace eosio {
     namespace chain {
         class chain_manager;
         class controller;
+        struct abi_serializer;
     }
 }
 
@@ -103,13 +105,26 @@ class chain_proxy {
         virtual bool all_subjective_mitigations_disabled();
         virtual string get_scheduled_producer(string& _block_time);
 
+        virtual void gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_keys, vector<char>& result);
+        virtual string push_transaction(string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us);
+
+        virtual string get_scheduled_transactions();
+        virtual string get_scheduled_transaction(const unsigned __int128 sender_id, string& sender);
+        virtual string push_scheduled_transaction(string& scheduled_tx_id, string& deadline, uint32_t billed_cpu_time_us);
+
+        virtual bool pack_action_args(string& name, string& action, string& _args, vector<char>& result);
+        virtual string unpack_action_args(string& name, string& action, string& _binargs);
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);
 
+        void load_abi(string& account);
+        void clear_abi_cache(string& account);
+
     private:
         std::unique_ptr<eosio::chain::chain_manager> cm;
         std::shared_ptr<eosio::chain::controller> c;
+        std::map<std::string, std::shared_ptr<eosio::chain::abi_serializer>> abi_cache;
         string last_error;
 };
 
