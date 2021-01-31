@@ -645,9 +645,10 @@ void chain_proxy::clear_abi_cache(string& account) {
    }
 }
 
-bool chain_proxy::pack_action_args(string& name, string& action, string& _args, vector<char>& result) {
+bool chain_proxy::pack_action_args(string& account, string& action, string& _args, vector<char>& result) {
     try {
-        auto& serializer = abi_cache[name];
+        load_abi(account);
+        auto& serializer = abi_cache[account];
         if (!serializer) {
             return false;
         }

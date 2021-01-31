@@ -3,6 +3,9 @@ from datetime import datetime
 
 from uuosio import _chain, _uuos
 
+def isoformat(dt):
+    return dt.isoformat(timespec='milliseconds')
+
 class Chain(object):
 
     def __init__(self, config, genesis, protocol_features_dir, snapshot_dir):
@@ -68,6 +71,8 @@ class Chain(object):
         :param int confirm_block_count
         :param list features
         """
+        if isinstance(_time, datetime):
+            _time = _time.isoformat(timespec='milliseconds')
         if features:
             if isinstance(features, list):
                 features = json.dumps(features)
@@ -395,11 +400,15 @@ class Chain(object):
         return _chain.get_unapplied_transactions(self.ptr)
  
     def push_transaction(self, packed_trx, deadline, billed_cpu_time_us):
-        ret, result = _chain.push_transaction(self.ptr, packed_trx, deadline, billed_cpu_time_us)
-        if not ret:
-            if not result:
-                result = _chain.get_last_error()
-        return ret, result
+        if isinstance(deadline, datetime):
+            deadline = deadline.isoformat(timespec='milliseconds')
+        result = _chain.push_transaction(self.ptr, packed_trx, deadline, billed_cpu_time_us)
+        if not result:
+            result = _chain.get_last_error()
+        result = json.loads(result)
+        if 'except' in result:
+            raise Exception(result)
+        return result
 
     def get_scheduled_transaction(self, sender_id, sender):
         ret = _chain.get_scheduled_transaction(self.ptr, sender_id, sender)
@@ -411,6 +420,8 @@ class Chain(object):
         return json.loads(ret)
 
     def push_scheduled_transaction(self, scheduled_tx_id, deadline, billed_cpu_time_us):
+        if isinstance(deadline, datetime):
+            deadline = deadline.isoformat(timespec='milliseconds')
         return _chain.push_scheduled_transaction(self.ptr, scheduled_tx_id, deadline, billed_cpu_time_us)
 
     def commit_block(self):
@@ -439,6 +450,9 @@ class Chain(object):
         ret = _chain.get_producer_public_keys(self.ptr)
         return json.loads(ret)
 
+    def clear_abi_cache(self, account):
+        _chain.clear_abi_cache(self.ptr, account)
+
     def pack_action_args(self, name, action, args):
         if isinstance(args, dict):
             args = json.dumps(args)
@@ -448,6 +462,14 @@ class Chain(object):
         return _chain.unpack_action_args(self.ptr, name, action, raw_args)
 
     def gen_transaction(self, _actions, expiration, reference_block_id, _id, compress, _private_keys):
+        if isinstance(expiration, datetime):
+            expiration = isoformat(expiration)
         if isinstance(_actions, dict):
             _actions = json.dumps(_actions)
-        return _chain.gen_transaction(_actions, expiration, reference_block_id, _id, compress, _private_keys)
+        return _chain.gen_transaction(self.ptr, _actions, expiration, reference_block_id, _id, compress, _private_keys)
+
+    def get_last_error(self):
+        return _chain.get_last_error(self.ptr)
+
+    def set_last_error(self, error):
+        _chain.set_last_error(self.ptr, error)
