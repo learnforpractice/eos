@@ -119,12 +119,14 @@ class chain_proxy {
 
         virtual bool pack_action_args(string& name, string& action, string& _args, vector<char>& result);
         virtual string unpack_action_args(string& name, string& action, string& _binargs);
+        virtual string get_producer_public_keys();
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);
 
         void load_abi(string& account);
         void clear_abi_cache(string& account);
+        
 
     private:
         std::unique_ptr<eosio::chain::chain_manager> cm;

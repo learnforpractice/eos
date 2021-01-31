@@ -118,6 +118,7 @@ cdef extern from "<uuos.hpp>":
 
         bool pack_action_args(string& name, string& action, string& _args, vector[char]& result)
         string unpack_action_args(string& name, string& action, string& _binargs)
+        string get_producer_public_keys()
 
         void clear_abi_cache(string& account)
 
@@ -580,3 +581,7 @@ def unpack_action_args(uint64_t ptr, name, action, _binargs):
 
 def clear_abi_cache(uint64_t ptr, string& account):
     return chain(ptr).clear_abi_cache(account)
+
+def get_producer_public_keys(uint64_t ptr):
+    return chain(ptr).get_producer_public_keys()
+

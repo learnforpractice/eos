@@ -29,6 +29,12 @@ cdef extern from "<uuos.hpp>":
         void set_log_level(string& logger_name, int level)
         void set_block_interval_ms(int ms)
 
+        string& get_last_error()
+        void set_last_error(string& error)
+
+        void pack_abi(string& msg, vector[char]& packed_message);
+
+
     uuos_proxy *get_uuos_proxy()
 
 uuosext_init()
@@ -38,3 +44,14 @@ def set_log_level(string& logger_name, int level):
 
 def set_block_interval_ms(int ms):
     get_uuos_proxy().set_block_interval_ms(ms)
+
+def get_last_error():
+    return get_uuos_proxy().get_last_error()
+
+def set_last_error(string& error):
+    get_uuos_proxy().set_last_error(error)
+
+def pack_abi(string& abi):
+    cdef vector[char] packed_abi
+    get_uuos_proxy().pack_abi(abi, packed_abi)
+    return PyBytes_FromStringAndSize(packed_abi.data(), packed_abi.size())

@@ -15,8 +15,15 @@ class uuos_proxy {
         virtual void chain_free(chain_proxy* api);
 
         virtual void set_block_interval_ms(int ms);
+        virtual void pack_abi(string& abi, vector<char>& packed_message);
+
+        virtual string& get_last_error();
+        virtual void set_last_error(string& error);
+
     private:
+        string last_error;
 
 };
 
 typedef void (*fn_init_uuos_proxy)(uuos_proxy *proxy);
+extern "C" uuos_proxy *get_uuos_proxy();

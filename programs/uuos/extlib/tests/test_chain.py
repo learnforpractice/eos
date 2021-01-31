@@ -5,7 +5,7 @@ import logging
 import tempfile
 
 from chaintest import ChainTest
-import log
+from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
 class TestSystem(object):
@@ -24,12 +24,24 @@ class TestSystem(object):
     def teardown_method(self, method):
         pass
 
-    def test_1(self):
-        args = {
-            "account": 'eosio',
-            "vmtype": 1,
-            "vmversion": 0,
-            "code": b'hello'.hex()
-        }
-        r = self.chain.push_action('eosio', 'setcode', args, {"eosio":'active'})
-        logger.info(r)
+    def test_pack_abi(self):
+        abi = '''
+{
+    "version": "eosio::abi/1.0",
+    "types": [],
+    "structs": [],
+    "actions": [{
+        "name": "sayhello",
+        "type": "string",
+        "ricardian_contract": ""
+    }],
+    "tables": [],
+    "ricardian_clauses": [],
+    "error_messages": [],
+    "abi_extensions": []
+}
+'''
+        abi = uuos.pack_abi(abi)
+        logger.info(abi)
+
+

@@ -2,6 +2,8 @@ import ujson as json
 from datetime import datetime
 
 from uuosio import _chain, _uuos
+from uuosio import log
+logger = log.get_logger(__name__)
 
 def isoformat(dt):
     return dt.isoformat(timespec='milliseconds')
@@ -473,3 +475,9 @@ class Chain(object):
 
     def set_last_error(self, error):
         _chain.set_last_error(self.ptr, error)
+
+    def get_producer_public_keys(self):
+        ret = _chain.get_producer_public_keys(self.ptr)
+        logger.info("+++producer_public_keys: %s", ret)
+        return json.loads(ret)
+

@@ -1,13 +1,13 @@
 #include "uuos_proxy.hpp"
 #include <dlfcn.h>
+static uuos_proxy *s_proxy = nullptr;
 
 extern "C" void uuos_init_chain() {
-    static uuos_proxy *proxy = nullptr;
-    if (proxy) {
+    if (s_proxy) {
         return;
     }
 
-    proxy = new uuos_proxy();
+    s_proxy = new uuos_proxy();
 
     const char *chain_api_lib = getenv("CHAIN_API_LIB");
     void *handle = dlopen(chain_api_lib, RTLD_LAZY | RTLD_GLOBAL);
@@ -23,5 +23,9 @@ extern "C" void uuos_init_chain() {
         exit(-1);
         return;
     }
-    init_uuos_proxy(proxy);
+    init_uuos_proxy(s_proxy);
+}
+
+extern "C" uuos_proxy *get_uuos_proxy() {
+    return s_proxy;
 }
