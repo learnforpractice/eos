@@ -10,6 +10,12 @@ class TestMicropython(object):
     @classmethod
     def setup_class(cls):
         cls.tester = ChainTester()
+        args = {"account": 'hello',
+            "vmtype": 1,
+            "vmversion": 0,
+            "code": int.to_bytes(int(time.time()*1000), 8, 'little').hex()
+        }
+        r = cls.tester.push_action('eosio', 'setcode', args, {'hello':'active'})
 
     @classmethod
     def teardown_class(cls):
@@ -22,13 +28,6 @@ class TestMicropython(object):
         self.tester.produce_block()
 
     def test_mpy(self):
-        args = {"account": 'hello',
-            "vmtype": 1,
-            "vmversion": 0,
-            "code": int.to_bytes(int(time.time()*1000), 8, 'little').hex()
-        }
-        r = self.tester.push_action('eosio', 'setcode', args, {'hello':'active'})
-
         code = '''
 def apply(a, b, c):
     print('hello,world')
@@ -52,12 +51,6 @@ def apply(a, b, c):
         print(r['elapsed'])
 
     def test_setcode(self):
-        args = {"account": 'hello',
-            "vmtype": 1,
-            "vmversion": 0,
-            "code": b'aa'.hex()
-        }
-        r = self.tester.push_action('eosio', 'setcode', args, {'hello':'active'})
         r = self.tester.push_action('hello', 'hellompy', b'', {'hello':'active'})
         logger.info(r['action_traces'][0]['console'])
 
