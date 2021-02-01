@@ -107,10 +107,13 @@ enum return_codes {
 
 extern "C" int start_python(int argc, char **argv);
 extern "C" void uuos_init_chain();
+extern "C" void init_new_chain_api();
 
 int main(int argc, char** argv)
 {
    uuos_init_chain();
+   init_new_chain_api();
+
    return start_python(argc, argv);
    try {
       app().set_version(eosio::nodeos::config::version);

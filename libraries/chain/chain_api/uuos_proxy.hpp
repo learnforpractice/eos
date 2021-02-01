@@ -8,7 +8,11 @@
 
 using namespace std;
 
+
+class chain_api_proxy;
 class vm_api_proxy;
+
+typedef chain_api_proxy *(*fn_new_chain_api)(eosio::chain::controller *c);
 
 class uuos_proxy {
     public:
@@ -29,6 +33,8 @@ class uuos_proxy {
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);
+
+        fn_new_chain_api new_chain_api = nullptr;
 
     private:
         string last_error;

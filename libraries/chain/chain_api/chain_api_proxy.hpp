@@ -14,9 +14,8 @@ namespace eosio {
 
 class chain_api_proxy {
     public:
-        chain_api_proxy(eosio::chain::controller* c);
+        chain_api_proxy(eosio::chain::controller *c);
         virtual ~chain_api_proxy();
-
         virtual eosio::chain::controller* chain();
 
         virtual int get_info(string& result);

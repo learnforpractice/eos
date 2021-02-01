@@ -24,7 +24,6 @@ vm_api_proxy *uuos_proxy::get_vm_api_proxy() {
 
 chain_proxy* uuos_proxy::chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
     chain_proxy *proxy = new chain_proxy(config, _genesis, protocol_features_dir, snapshot_dir);
-    proxy->init();
     return proxy;
 }
 

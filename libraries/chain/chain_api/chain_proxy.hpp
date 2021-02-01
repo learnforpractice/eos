@@ -20,7 +20,6 @@ class chain_proxy {
     public:
         chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
         virtual ~chain_proxy();
-        void init();
 
         virtual eosio::chain::controller* chain();
         virtual chain_api_proxy* api_proxy();

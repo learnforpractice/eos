@@ -14,6 +14,8 @@ using namespace eosio::chain;
 
 #include "chain_macro.hpp"
 
+extern "C" uuos_proxy *get_uuos_proxy();
+
 string& chain_proxy::get_last_error() {
     return last_error;
 }
@@ -25,16 +27,15 @@ void chain_proxy::set_last_error(string& error) {
 chain_proxy::chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir)
 {
     cm = std::make_unique<chain_manager>(config, _genesis, protocol_features_dir, snapshot_dir);
+    this->cm->init();
+    this->c = this->cm->c;
+
+    chain_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
+    this->_api_proxy = std::shared_ptr<chain_api_proxy>(api);
 }
 
 chain_proxy::~chain_proxy() {
 
-}
-
-void chain_proxy::init() {
-    this->cm->init();
-    this->c = this->cm->c;
-    this->_api_proxy = std::make_shared<chain_api_proxy>(this->c.get());
 }
 
 controller* chain_proxy::chain() {
