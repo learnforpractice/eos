@@ -369,11 +369,12 @@ class ChainTester(object):
 #        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
 
         actions = json.dumps(actions)
-        expiration = datetime.utcnow() + timedelta(seconds=60*60)
+        # expiration = datetime.utcnow() + timedelta(seconds=60*60)
 
-#        expiration = self.chain.fork_db_pending_head_block_time()
-#        expiration = datetime.strptime(expiration, "%Y-%m-%dT%H:%M:%S.%f")
-#        expiration = expiration + timedelta(seconds=60*60)
+        expiration = self.chain.fork_db_pending_head_block_time()
+        expiration = datetime.strptime(expiration, "%Y-%m-%dT%H:%M:%S.%f")
+        expiration = expiration + timedelta(seconds=60*60)
+
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_keys)
         # signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
         # logger.info(signed_trx)
