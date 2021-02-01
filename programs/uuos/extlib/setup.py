@@ -41,7 +41,7 @@ setup(
     # package_data={'': ['data/hello.txt', 'data/hello2.txt', 'uuosio/tests/*']},
     data_files = data_files,
     scripts=['bin/run-uuos'],
-    install_requires=[''],
+    install_requires=['mpy-cross'],
     tests_require=['pytest'],
     setup_requires=setup_requires,
     include_package_data=True

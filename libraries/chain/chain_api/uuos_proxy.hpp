@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include <memory>
@@ -33,6 +33,9 @@ class uuos_proxy {
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);
+
+        virtual uint64_t s2n(string& name);
+        virtual string n2s(uint64_t n);
 
         fn_new_chain_api new_chain_api = nullptr;
 

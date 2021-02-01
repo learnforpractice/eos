@@ -4,6 +4,9 @@ import pytest
 import atexit
 import logging
 import tempfile
+import mpy_cross
+import subprocess
+
 from uuosio import chain, chainapi, uuos, config
 from datetime import datetime, timedelta
 
@@ -529,3 +532,16 @@ class ChainTester(object):
             raise Exception('unpack error')
         return ret
 
+    def mp_compile(self, file_name, src):
+        tempdir = tempfile.mkdtemp()
+        py_file = os.path.join(tempdir, file_name + '.py')
+        with open(py_file, 'w') as f:
+            f.write(src)
+        mpy_file = os.path.join(tempdir, file_name + '.mpy')
+        proc = mpy_cross.run('-o', mpy_file, py_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        err = proc.stderr.read()
+        if err:
+            err = err.decode('utf8')
+            raise Exception(err)
+        with open(mpy_file, 'rb') as f:
+            return f.read()

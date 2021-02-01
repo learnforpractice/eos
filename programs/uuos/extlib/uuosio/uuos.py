@@ -29,3 +29,20 @@ def unpack_native_object(_type, packed_obj):
 
 def pack_abi(abi):
     return pack_native_object(NativeType.abi_def, abi)
+
+def s2n(s):
+    '''
+    Convert a EOSIO name to uint64_t
+    '''
+    return _uuos.s2n(s)
+
+def n2s(n):
+    '''
+    Convert int to a EOSIO name
+    '''
+    return _uuos.n2s(n)
+
+def s2b(s):
+    n = s2n(s)
+    return int.to_bytes(n, 8, 'little')
+

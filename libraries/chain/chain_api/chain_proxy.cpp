@@ -7,14 +7,15 @@
 
 #include <fc/io/json.hpp>
 
-#include "chain_proxy.hpp"
-
 #include <dlfcn.h>
-using namespace eosio::chain;
 
 #include "chain_macro.hpp"
 
+#include "uuos_proxy.hpp"
+
 extern "C" uuos_proxy *get_uuos_proxy();
+
+using namespace eosio::chain;
 
 string& chain_proxy::get_last_error() {
     return last_error;

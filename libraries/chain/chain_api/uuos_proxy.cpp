@@ -66,3 +66,10 @@ void uuos_proxy::set_last_error(string& error) {
     last_error = error;
 }
 
+uint64_t uuos_proxy::s2n(string& s) {
+    return eosio::chain::name(s).to_uint64_t();
+}
+
+string uuos_proxy::n2s(uint64_t n) {
+    return eosio::chain::name(n).to_string();
+}

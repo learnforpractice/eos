@@ -32,10 +32,13 @@ cdef extern from "<uuos.hpp>":
         string& get_last_error()
         void set_last_error(string& error)
 
-        void pack_abi(string& msg, vector[char]& packed_message);
+        void pack_abi(string& msg, vector[char]& packed_message)
 
-        void pack_native_object(int type, string& msg, vector[char]& packed_message);
-        void unpack_native_object(int type, string& packed_message, string& msg);
+        void pack_native_object(int type, string& msg, vector[char]& packed_message)
+        void unpack_native_object(int type, string& packed_message, string& msg)
+
+        uint64_t s2n(string& s)
+        string n2s(uint64_t n)
 
 
     uuos_proxy *get_uuos_proxy()
@@ -68,3 +71,10 @@ def unpack_native_object(int _type, string& packed_message):
     cdef string result
     get_uuos_proxy().unpack_native_object(_type, packed_message, result)
     return result
+
+def s2n(string& s):
+    return get_uuos_proxy().s2n(s)
+
+def n2s(uint64_t n):
+    return get_uuos_proxy().n2s(n)
+
