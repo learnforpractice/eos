@@ -34,6 +34,9 @@ cdef extern from "<uuos.hpp>":
 
         void pack_abi(string& msg, vector[char]& packed_message);
 
+        void pack_native_object(int type, string& msg, vector[char]& packed_message);
+        void unpack_native_object(int type, string& packed_message, string& msg);
+
 
     uuos_proxy *get_uuos_proxy()
 
@@ -55,3 +58,13 @@ def pack_abi(string& abi):
     cdef vector[char] packed_abi
     get_uuos_proxy().pack_abi(abi, packed_abi)
     return PyBytes_FromStringAndSize(packed_abi.data(), packed_abi.size())
+
+def pack_native_object(int _type, string& msg):
+    cdef vector[char] result
+    get_uuos_proxy().pack_native_object(_type, msg, result)
+    return PyBytes_FromStringAndSize(result.data(), result.size())
+
+def unpack_native_object(int _type, string& packed_message):
+    cdef string result
+    get_uuos_proxy().unpack_native_object(_type, packed_message, result)
+    return result

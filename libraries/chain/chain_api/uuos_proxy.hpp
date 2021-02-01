@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
 #include "chain_proxy.hpp"
 
 using namespace std;
@@ -16,6 +18,9 @@ class uuos_proxy {
 
         virtual void set_block_interval_ms(int ms);
         virtual void pack_abi(string& abi, vector<char>& packed_message);
+
+        virtual void pack_native_object(int type, string& msg, vector<char>& packed_message);
+        virtual void unpack_native_object(int type, string& packed_message, string& msg);
 
         virtual string& get_last_error();
         virtual void set_last_error(string& error);

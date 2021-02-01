@@ -24,3 +24,9 @@ class TestMicropython(object):
         r = self.chain.push_action('eosio.mpy', 'hellompy', b'', {'hello':'active'})
         logger.info(r['action_traces'][0]['console'])
         self.chain.produce_block()
+        
+        block = self.chain.chain.fetch_block_by_number(1)
+        logger.info(block)
+
+        block = self.chain.chain.fetch_block_by_number(2)
+        logger.info(block)

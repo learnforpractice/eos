@@ -112,6 +112,7 @@ add_library( eosio_chain
               chain_api/chain_proxy.cpp
               chain_api/chain_api_proxy.cpp
               chain_api/uuos_proxy.cpp
+              chain_api/native_object.cpp
               chain_api/uuos.cpp
 
               apply_context_proxy.cpp
