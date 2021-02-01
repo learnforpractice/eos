@@ -15,10 +15,12 @@ enum {
     notice_message_type,
     request_message_type,
     sync_request_message_type,
-    signed_block_type,         // which = 7
-    packed_transaction_type,
+    signed_block_v0_type,         // which = 7
+    packed_transaction_v0_type,   // which = 8
+    signed_block_type,            // which = 9
+    trx_message_v1_type,          // which = 10
+
     genesis_state_type,
     abi_def_type,
-    transaction_type,
-    signed_transaction_type,
+
 };

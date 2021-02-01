@@ -102,21 +102,17 @@ void pack_native_object_(int type, string& msg, vector<char>& packed_message) {
     switch(type) {
         PACK_CPP_OBJECT(handshake_message)
         PACK_CPP_OBJECT(chain_size_message)
-
         PACK_CPP_OBJECT_EX(go_away_message)
-
         PACK_CPP_OBJECT(time_message)
-
         PACK_CPP_OBJECT_EX(notice_message)
         PACK_CPP_OBJECT_EX(request_message)
-
         PACK_CPP_OBJECT(sync_request_message)
+        PACK_CPP_OBJECT(signed_block_v0)
+        PACK_CPP_OBJECT(packed_transaction_v0)
         PACK_CPP_OBJECT(signed_block)
-        PACK_CPP_OBJECT(packed_transaction)
+        PACK_CPP_OBJECT(trx_message_v1)
         PACK_CPP_OBJECT(genesis_state)
         PACK_CPP_OBJECT(abi_def)
-        PACK_CPP_OBJECT(transaction)
-        PACK_CPP_OBJECT(signed_transaction)
     }
 }
 
@@ -124,20 +120,16 @@ void unpack_native_object_(int type, string& packed_message, string& msg) {
     switch(type) {
         UNPACK_CPP_OBJECT(handshake_message)
         UNPACK_CPP_OBJECT(chain_size_message)
-
         UNPACK_CPP_OBJECT_EX(go_away_message)
-
         UNPACK_CPP_OBJECT(time_message)
-
         UNPACK_CPP_OBJECT_EX(notice_message)
         UNPACK_CPP_OBJECT_EX(request_message)
-
         UNPACK_CPP_OBJECT(sync_request_message)
+        UNPACK_CPP_OBJECT(signed_block_v0)
+        UNPACK_CPP_OBJECT(packed_transaction_v0)
         UNPACK_CPP_OBJECT(signed_block)
-        UNPACK_CPP_OBJECT(packed_transaction)
+        UNPACK_CPP_OBJECT(trx_message_v1)
         UNPACK_CPP_OBJECT(genesis_state)
         UNPACK_CPP_OBJECT(abi_def)
-        UNPACK_CPP_OBJECT(transaction)
-        UNPACK_CPP_OBJECT(signed_transaction)
     }
 }
