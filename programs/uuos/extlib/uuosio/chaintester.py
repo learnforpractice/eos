@@ -371,7 +371,7 @@ class ChainTester(object):
         actions = json.dumps(actions)
         # expiration = datetime.utcnow() + timedelta(seconds=60*60)
 
-        expiration = self.chain.pending_block_time()
+        expiration = self.chain.head_block_time()
         expiration = expiration + timedelta(seconds=60*60)
         raw_signed_trx = self.chain.gen_transaction(actions, expiration, ref_block_id, chain_id, False, priv_keys)
         # signed_trx = PackedTransactionMessage.unpack(raw_signed_trx)
@@ -379,6 +379,7 @@ class ChainTester(object):
         # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
         # logger.info(r)
         deadline = datetime.utcnow() + timedelta(microseconds=10000000)
+        deadline = datetime.max
         billed_cpu_time_us = 100
         result = self.chain.push_transaction(raw_signed_trx, deadline, billed_cpu_time_us)
         return result
