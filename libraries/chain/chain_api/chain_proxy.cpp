@@ -3,10 +3,12 @@
 #include <eosio/chain/chain_manager.hpp>
 #include <eosio/chain/global_property_object.hpp>
 #include <eosio/chain/generated_transaction_object.hpp>
+#include <eosio/chain/webassembly/interface.hpp>
 
 #include <fc/io/json.hpp>
 
 #include "chain_proxy.hpp"
+#include "../vm_api/vm_api_proxy.hpp"
 
 #include <dlfcn.h>
 using namespace eosio::chain;
@@ -34,6 +36,7 @@ void chain_proxy::init() {
     this->cm->init();
     this->c = this->cm->c;
     this->_api_proxy = std::make_shared<chain_api_proxy>(this->c.get());
+    this->_vm_api_proxy = std::make_shared<vm_api_proxy>();
 }
 
 controller* chain_proxy::chain() {

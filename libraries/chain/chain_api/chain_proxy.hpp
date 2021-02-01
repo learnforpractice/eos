@@ -16,6 +16,8 @@ namespace eosio {
     }
 }
 
+class vm_api_proxy;
+
 class chain_proxy {
     public:
         chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
@@ -132,6 +134,7 @@ class chain_proxy {
         std::unique_ptr<eosio::chain::chain_manager> cm;
         std::shared_ptr<eosio::chain::controller> c;
         std::shared_ptr<chain_api_proxy> _api_proxy;
+        std::shared_ptr<vm_api_proxy> _vm_api_proxy;
         std::map<std::string, std::shared_ptr<eosio::chain::abi_serializer>> abi_cache;
         string last_error;
 };
