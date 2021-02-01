@@ -1,6 +1,6 @@
 import os
 import json
-from chaintester import ChainTester
+from uuosio.chaintester import ChainTester
 from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
@@ -36,6 +36,18 @@ def apply(a, b, c):
         args = uuos.s2b('hello') + code
         self.tester.push_action('hello', 'setcode', args, {'hello':'active'})
         r = self.tester.push_action('hello', 'sayhello', b'', {'hello':'active'})
+
+        code = '''
+def apply(a, b, c):
+    print('hello,world from alice')
+'''
+        code = self.tester.mp_compile('hello', code)
+        args = uuos.s2b('alice') + code
+        self.tester.push_action('hello', 'setcode', args, {'alice':'active'})
+
+        args = uuos.s2b('alice')
+        r = self.tester.push_action('hello', 'exec', args, {'hello':'active'})
+        logger.info(r['action_traces'][0]['console'])
         print(r['elapsed'])
 
     def test_setcode(self):
