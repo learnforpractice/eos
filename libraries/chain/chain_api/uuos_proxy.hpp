@@ -2,10 +2,13 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "chain_proxy.hpp"
 
 using namespace std;
+
+class vm_api_proxy;
 
 class uuos_proxy {
     public:
@@ -27,7 +30,7 @@ class uuos_proxy {
 
     private:
         string last_error;
-
+        std::shared_ptr<vm_api_proxy> _vm_api_proxy;
 };
 
 typedef void (*fn_init_uuos_proxy)(uuos_proxy *proxy);

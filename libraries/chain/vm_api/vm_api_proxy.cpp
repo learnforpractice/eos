@@ -24,6 +24,6 @@ size_t vm_api_proxy::read_action_data(char* msg, size_t len) {
     _interface->read_action_data(std::move(s2));
 }
 
-size_t vm_api_proxy::action_data_size(void) {
+size_t vm_api_proxy::action_data_size() {
     return _interface->action_data_size();
 }

@@ -1,6 +1,5 @@
 #pragma once
-
-using namespace eosio::chain;
+#include <memory>
 
 namespace eosio { namespace chain {
     class apply_context;
@@ -9,6 +8,8 @@ namespace eosio { namespace chain {
 namespace eosio { namespace chain { namespace webassembly {
     class interface;
 }}}
+
+using namespace eosio::chain;
 
 #ifndef softfloat_types_h
    typedef struct { uint16_t v; } float16_t;
@@ -26,7 +27,7 @@ class vm_api_proxy {
         void set_apply_context(apply_context* ctx);
 
         virtual size_t read_action_data(char* msg, size_t len);
-        virtual size_t action_data_size(void);
+        virtual size_t action_data_size();
 #if 0
         void require_recipient(uint64_t name);
         void require_auth(uint64_t name);
@@ -35,8 +36,8 @@ class vm_api_proxy {
         bool is_account(uint64_t name);
         void send_inline(const char *serialized_action, size_t size);
         void send_context_free_inline(const char *serialized_action, size_t size);
-        uint64_t  publication_time(void);
-        uint64_t current_receiver(void);
+        uint64_t  publication_time();
+        uint64_t current_receiver();
         size_t get_active_producers(uint64_t* producers, size_t datalen);
 
         void assert_sha256(const char* data, size_t length, const uint8_t *hash, size_t hash_size);
@@ -172,29 +173,29 @@ class vm_api_proxy {
         size_t get_blockchain_parameters_packed(char* data, size_t datalen);
         void activate_feature(int64_t f);
 
-        void eosio_abort(void);
+        void eosio_abort();
         void eosio_assert(size_t test, const char* msg);
         void eosio_assert_message(size_t test, const char* msg, size_t msg_len);
         void eosio_assert_code(size_t test, uint64_t code);
         void eosio_exit(int32_t code);
-        uint64_t  current_time(void);
-        size_t  now(void);
+        uint64_t  current_time();
+        size_t  now();
 
-        void checktime(void);
+        void checktime();
         void check_context_free(bool context_free);
 
         void send_deferred(const __uint128* sender_id, uint64_t payer, const char *serialized_transaction, size_t size, size_t replace_existing);
         int cancel_deferred(const __uint128* sender_id);
 
         size_t read_transaction(char *buffer, size_t size);
-        size_t transaction_size(void);
-        int tapos_block_num(void);
-        int tapos_block_prefix(void);
-        size_t expiration(void);
+        size_t transaction_size();
+        int tapos_block_num();
+        int tapos_block_prefix();
+        size_t expiration();
         int get_action(size_t type, size_t index, char* buff, size_t size);
 
-        void assert_privileged(void);
-        void assert_context_free(void);
+        void assert_privileged();
+        void assert_context_free();
         int get_context_free_data(size_t index, char* buff, size_t size);
 
         void token_create(uint64_t issuer, int64_t maximum_supply, uint64_t symbol);

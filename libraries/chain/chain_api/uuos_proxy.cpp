@@ -7,9 +7,12 @@
 #include "chain_macro.hpp"
 #include "native_object.hpp"
 
+#include "../vm_api/vm_api_proxy.hpp"
+
 using namespace eosio::chain;
 
 uuos_proxy::uuos_proxy() {
+    this->_vm_api_proxy = std::make_shared<vm_api_proxy>();
 }
 
 uuos_proxy::~uuos_proxy() {
@@ -22,9 +25,10 @@ chain_proxy* uuos_proxy::chain_new(string& config, string& _genesis, string& pro
 }
 
 void uuos_proxy::chain_free(chain_proxy* c) {
-   if (c) {
-      delete c;
-   }
+    if (!c) {
+        return;
+    }
+    delete c;
 }
 
 void uuos_proxy::set_log_level(string& logger_name, int level) {
