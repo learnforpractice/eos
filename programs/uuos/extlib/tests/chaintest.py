@@ -199,7 +199,9 @@ class ChainTest(object):
         for a in systemAccounts:
             self.create_account('eosio', a, key, key)
 
+        logger.info('+++++++++deploy eosio.token')
         self.deploy_eosio_token()
+        logger.info('+++++++++deploy eosio.bios')
         self.deploy_eosio_bios()
         self.produce_block()
 
@@ -228,6 +230,7 @@ class ChainTest(object):
             except Exception as e:
                 logger.info(e)
         self.produce_block()
+        logger.info('+++++++++deploy eosio.system')
         self.deploy_eosio_system()
         self.produce_block()
 
@@ -247,8 +250,10 @@ class ChainTest(object):
 
         self.push_action('eosio', 'init', args, {'eosio':'active'})
 
-        raise Exception('oops!')
-
+        logger.info('+++++++++deploy micropython')
+        self.deploy_micropython()
+        # r = self.push_action('eosio.mpy', 'hellompy', b'', {'hello':'active'})
+        # logger.info(r['action_traces'][0]['console'])
         # self.buy_ram_bytes('eosio', 'eosio', 10*1024*1024)
         # self.delegatebw('eosio', 'eosio', 1.0, 1.0, transfer=0)
 
@@ -278,6 +283,15 @@ class ChainTest(object):
         with open(abi_path, 'rb') as f:
             abi = f.read()
         self.deploy_contract('eosio', code, abi)
+
+    def deploy_micropython(self):
+        code_path = os.path.join(test_dir, 'contracts/micropython/micropython_uuos_call_contract.wasm')
+        abi_path = os.path.join(test_dir, 'contracts/micropython/micropython.abi')
+        with open(code_path, 'rb') as f:
+            code = f.read()
+        with open(abi_path, 'rb') as f:
+            abi = f.read()
+        self.deploy_contract('eosio.mpy', code, abi)
 
     def start_block(self):
         self.chain.start_block(self.calc_pending_block_time(), 0, self.feature_digests)
@@ -491,8 +505,8 @@ class ChainTest(object):
         ret = self.push_actions(actions)
 #        logger.info('++++%s', ret)
         elapsed = ret['elapsed']
-        if show_elapse and code:
-            logger.info(f'+++++deploy contract: {account} {elapsed}')
+        # if show_elapse and code:
+        #     logger.info(f'+++++deploy contract: {account} {elapsed}')
         # logger.info(ret)
         self.chain.clear_abi_cache(account)
         return ret
