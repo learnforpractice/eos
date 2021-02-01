@@ -1,4 +1,5 @@
 import os
+import time
 import json
 from uuosio.chaintester import ChainTester
 from uuosio import log, uuos
@@ -18,13 +19,13 @@ class TestMicropython(object):
         logger.warning('test start: %s', method.__name__)
 
     def teardown_method(self, method):
-        pass
+        self.tester.produce_block()
 
     def test_mpy(self):
         args = {"account": 'hello',
             "vmtype": 1,
             "vmversion": 0,
-            "code": b'aa'.hex()
+            "code": int.to_bytes(int(time.time()*1000), 8, 'little').hex()
         }
         r = self.tester.push_action('eosio', 'setcode', args, {'hello':'active'})
 
@@ -63,5 +64,4 @@ def apply(a, b, c):
     def test_hello(self):
         r = self.tester.push_action('eosio.mpy', 'hellompy', b'', {'hello':'active'})
         logger.info(r['action_traces'][0]['console'])
-        self.tester.produce_block()
 
