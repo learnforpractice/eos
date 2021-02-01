@@ -1,6 +1,6 @@
 import os
 import json
-from chaintest import ChainTest
+from chaintester import ChainTester
 from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
@@ -8,7 +8,7 @@ class TestMicropython(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest()
+        cls.chain = ChainTester()
 
     @classmethod
     def teardown_class(cls):

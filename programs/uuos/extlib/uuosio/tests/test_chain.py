@@ -4,7 +4,7 @@ import pytest
 import logging
 import tempfile
 
-from chaintest import ChainTest
+from chaintester import ChainTester
 from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
@@ -12,7 +12,7 @@ class TestSystem(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTest()
+        cls.chain = ChainTester()
 
     @classmethod
     def teardown_class(cls):

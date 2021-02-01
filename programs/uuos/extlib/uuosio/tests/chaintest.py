@@ -151,7 +151,7 @@ producer_key_map = {
     'EOS5fVw435RSwW3YYWAX9qz548JFTWuFiBcHT3PGLryWaAMmxgjp1':'5K9AZWR2wEwtZii52vHigrxcSwCzLhhJbNpdXpVFKHP5fgFG5Tx'
 }
 
-class ChainTest(object):
+class ChainTester(object):
 
     def __init__(self):
         atexit.register(self.free)

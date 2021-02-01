@@ -87,7 +87,7 @@ genesis_test = {
   }
 }
 
-class ChainTest(object):
+class ChainTester(object):
     def __init__():
         self.data_dir = tempfile.mkdtemp()
         self.config_dir = tempfile.mkdtemp()
