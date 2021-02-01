@@ -13,6 +13,8 @@
 #include <boost/container/flat_set.hpp>
 #include <eosio/chain/kv_chainbase_objects.hpp>
 
+#include "uuos.hpp"
+
 using boost::container::flat_set;
 
 namespace eosio { namespace chain {
@@ -82,6 +84,11 @@ void apply_context::check_unprivileged_resource_usage(const char* resource, cons
 
 void apply_context::exec_one()
 {
+   auto cleanup = fc::make_scoped_exit([&](){
+      get_uuos_proxy()->get_vm_api().set_apply_context(this);
+   });
+   get_uuos_proxy()->get_vm_api().set_apply_context(nullptr);
+
    auto start = fc::time_point::now();
 
    digest_type act_digest;
