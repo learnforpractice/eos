@@ -3,8 +3,10 @@ export PROJECT_DIR=$( pwd )
 
 if [[ $ARCH == "Linux" ]]; then
 	declare NPROC=$( nproc )
+	declare DYLIB_EXT="so"
 else
 	declare NPROC=$( sysctl -n hw.logicalcpu )
+	declare DYLIB_EXT="dylib"
 fi
 
 
@@ -25,7 +27,9 @@ function build_project() {
 function build_uuos() {
 #	rsync -av --delete programs/uuos build/programs
 	rsync -av programs/uuos/extlib build/programs/uuos
-	cp build/libraries/chain_api/libchain_api.dylib build/programs/uuos/extlib/lib
+	cp build/libraries/chain_api/libchain_api.$DYLIB_EXT build/programs/uuos/extlib/lib
+	echo build/libraries/vm_api/libvm_api.$DYLIB_EXT
+	cp build/libraries/vm_api/libvm_api.$DYLIB_EXT build/programs/uuos/extlib/lib
 	cp build/programs/uuos/uuos build/programs/uuos/extlib/bin
 #	strip build/programs/uuos/extlib/bin/uuos
     pushd build/programs/uuos/extlib

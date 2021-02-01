@@ -11,9 +11,16 @@ pytest_runner = (['pytest-runner>=2.0,<3dev']
 setup_requires = pytest_runner
 
 data_files = [
-    ('lib',['lib/libchain_api.dylib']),
     ('bin', ['bin/uuos']),
 ]
+
+_system = platform.system()
+if _system == 'Darwin':
+    data_files.append(('lib', ['lib/libchain_api.dylib', 'lib/libvm_api.dylib']))
+elif _system == 'Linux':
+    data_files.append(('lib',['lib/libchain_api.so', 'lib/libvm_api.so']))
+else:
+    raise Exception(f'unsupported platform: {_system}')
 
 version = platform.python_version_tuple()
 version = '%s.%s' % (version[0], version[1])
