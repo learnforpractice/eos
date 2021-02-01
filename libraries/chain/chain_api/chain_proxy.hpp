@@ -124,9 +124,10 @@ class chain_proxy {
         virtual string& get_last_error();
         virtual void set_last_error(string& error);
 
+        virtual void clear_abi_cache(string& account);
+
+    private:
         void load_abi(string& account);
-        void clear_abi_cache(string& account);
-        
 
     private:
         std::unique_ptr<eosio::chain::chain_manager> cm;
