@@ -110,6 +110,22 @@ add_library( eosio_chain
 
 
               vm_api/vm_api_proxy.cpp
+              vm_api/action.cpp
+              vm_api/call_contract.cpp
+              vm_api/authorization.cpp
+              vm_api/cf_system.cpp
+              vm_api/cf_transaction.cpp
+              vm_api/compiler_builtins.cpp
+              vm_api/console.cpp
+              vm_api/context_free.cpp
+              vm_api/crypto.cpp
+              vm_api/database.cpp
+              vm_api/privileged.cpp
+              vm_api/permission.cpp
+              vm_api/producer.cpp
+              vm_api/system.cpp
+              vm_api/transaction.cpp
+
               chain_api/chain_manager.cpp
               chain_api/chain_proxy.cpp
               chain_api/chain_api_proxy.cpp
