@@ -3,7 +3,8 @@
  *  @copyright defined in eos/LICENSE
  *  @brief Defines C API for interfacing with blockchain database
  */
-#pragma once
+#ifndef __DB_H
+#define __DB_H
 
 #include "types.h"
 #ifdef __cplusplus
@@ -985,3 +986,7 @@ int32_t db_idx_long_double_end(capi_name code, uint64_t scope, capi_name table);
 }
 #endif
 ///@}
+
+
+#endif //__DB_H
+

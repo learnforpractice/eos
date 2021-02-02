@@ -2,7 +2,10 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+
+#ifndef __CRYPTO_H
+#define __CRYPTO_H
+
 #include "types.h"
 #ifdef __cplusplus
 extern "C" {
@@ -236,3 +239,5 @@ void assert_recover_key( const capi_checksum256* digest, const char* sig, size_t
 }
 #endif
 /// @}
+
+#endif //__CRYPTO_H

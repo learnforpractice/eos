@@ -2,7 +2,9 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+#ifndef __TRANSACTION_H
+#define __TRANSACTION_H
+
 #include "types.h"
 #ifdef __cplusplus
 extern "C" {
@@ -160,3 +162,5 @@ int get_context_free_data( uint32_t index, char* buff, size_t size );
 }
 #endif
 ///}@
+
+#endif

@@ -2,7 +2,8 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+#ifndef __TYPES_H
+#define __TYPES_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -67,3 +68,5 @@ struct ALIGNED(capi_checksum512) {
 };
 
 /// @}
+
+#endif

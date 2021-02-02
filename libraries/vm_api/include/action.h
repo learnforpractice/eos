@@ -2,7 +2,9 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+#ifndef __ACTION_H
+#define __ACTION_H
+
 #include "types.h"
 
 #ifdef __cplusplus
@@ -172,3 +174,5 @@ capi_name current_receiver();
 }
 #endif
 /// @} action
+
+#endif //__ACTION_H

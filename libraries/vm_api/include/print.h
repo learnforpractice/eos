@@ -2,7 +2,8 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+#ifndef __PRINT_H
+#define __PRINT_H
 
 #include "types.h"
 #ifdef __cplusplus
@@ -182,3 +183,5 @@ void printhex( const void* data, uint32_t datalen );
 }
 #endif
 /// @}
+
+#endif

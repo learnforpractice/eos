@@ -2,7 +2,10 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+
+#ifndef __PERMISSION_H
+#define __PERMISSION_H
+
 #include "types.h"
 #ifdef __cplusplus
 extern "C" {
@@ -83,3 +86,5 @@ int64_t get_account_creation_time( capi_name account );
 }
 #endif
 ///@}
+
+#endif

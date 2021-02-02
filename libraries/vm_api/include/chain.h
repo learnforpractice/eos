@@ -2,7 +2,8 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+#ifndef __CHAIN_H
+#define __CHAIN_H
 
 #include "types.h"
 #ifdef __cplusplus
@@ -40,3 +41,5 @@ uint32_t get_active_producers( capi_name* producers, uint32_t datalen );
 }
 #endif
 /// @}
+
+#endif //__CHAIN_H

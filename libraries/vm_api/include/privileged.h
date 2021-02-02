@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __PRIVILEGED_H
+#define __PRIVILEGED_H
+
 #include "types.h"
 #ifdef __cplusplus
 extern "C" {
@@ -115,4 +117,6 @@ void preactivate_feature( const capi_checksum256* feature_digest );
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

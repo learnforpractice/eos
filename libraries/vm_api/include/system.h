@@ -2,7 +2,9 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
-#pragma once
+#ifndef __SYSTEM_H
+#define __SYSTEM_H
+
 #include "types.h"
 #ifdef __cplusplus
 extern "C" {
@@ -97,3 +99,5 @@ capi_name get_sender();
 }
 #endif
 ///@}
+
+#endif
