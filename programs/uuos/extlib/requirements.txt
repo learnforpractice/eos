@@ -1,3 +1,2 @@
-ujson
-quart
-aioconsole
+scikit-build
+cython
