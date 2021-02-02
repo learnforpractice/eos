@@ -1,5 +1,20 @@
 add_library( vm_api SHARED
     vm_api.cpp
+    action.cpp
+    call_contract.cpp
+    authorization.cpp
+    cf_system.cpp
+    cf_transaction.cpp
+    # compiler_builtins.cpp
+    console.cpp
+    context_free.cpp
+    crypto.cpp
+    database.cpp
+    privileged.cpp
+    permission.cpp
+    producer.cpp
+    system.cpp
+    transaction.cpp
 )
 
 if (APPLE)

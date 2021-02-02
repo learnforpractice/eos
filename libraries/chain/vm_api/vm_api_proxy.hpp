@@ -276,3 +276,7 @@ class vm_api_proxy {
     private:
         std::unique_ptr<webassembly::interface> _interface;
 };
+
+extern "C" void init_vm_api(vm_api_proxy *proxy);
+extern "C" vm_api_proxy* get_vm_api();
+
