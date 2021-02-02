@@ -290,7 +290,7 @@ class ChainTester(object):
         self.deploy_contract('eosio', code, abi)
 
     def deploy_micropython(self):
-        code_path = os.path.join(test_dir, 'tests/contracts/micropython/micropython_uuos_call_contract.wasm')
+        code_path = os.path.join(test_dir, 'tests/contracts/micropython/micropython.wasm')
         abi_path = os.path.join(test_dir, 'tests/contracts/micropython/micropython.abi')
         with open(code_path, 'rb') as f:
             code = f.read()
@@ -378,7 +378,6 @@ class ChainTester(object):
         # logger.info(signed_trx)
         # r = uuos.unpack_native_object(13, bytes.fromhex(signed_trx.packed_trx))
         # logger.info(r)
-        deadline = datetime.utcnow() + timedelta(microseconds=10000000)
         deadline = datetime.max
         billed_cpu_time_us = 100
         result = self.chain.push_transaction(raw_signed_trx, deadline, billed_cpu_time_us)

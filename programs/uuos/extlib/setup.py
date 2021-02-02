@@ -26,7 +26,7 @@ version = platform.python_version_tuple()
 version = '%s.%s' % (version[0], version[1])
 
 cur_dir = os.path.dirname(__file__)
-test_dir = os.path.join(cur_dir, 'uuosio/tests')
+test_dir = os.path.join(cur_dir, 'uuosio/tests/contracts')
 for root, dirs, files in os.walk(test_dir):
     print(root)
     tests = []
