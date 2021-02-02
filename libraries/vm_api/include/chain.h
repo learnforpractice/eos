@@ -34,8 +34,7 @@ extern "C" {
   *  uint32_t bytes_populated = get_active_producers(producers, sizeof(capi_name)*21);
   *  @endcode
   */
-__attribute__((eosio_wasm_import))
-uint32_t get_active_producers( capi_name* producers, uint32_t datalen );
+VM_API uint32_t get_active_producers( capi_name* producers, uint32_t datalen );
 
 #ifdef __cplusplus
 }

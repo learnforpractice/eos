@@ -75,8 +75,7 @@ extern "C" {
  *  @pre `msg` is a valid pointer to a range of memory at least `len` bytes long
  *  @post `msg` is filled with packed action data
  */
-__attribute__((eosio_wasm_import))
-uint32_t read_action_data( void* msg, uint32_t len );
+VM_API uint32_t read_action_data( void* msg, uint32_t len );
 
 /**
  * Get the length of the current action's data field. This method is useful for dynamically sized actions
@@ -84,8 +83,7 @@ uint32_t read_action_data( void* msg, uint32_t len );
  * @brief Get the length of current action's data field
  * @return the length of the current action's data field
  */
-__attribute__((eosio_wasm_import))
-uint32_t action_data_size();
+VM_API uint32_t action_data_size();
 
 /**
  *  Add the specified account to set of accounts to be notified
@@ -93,8 +91,7 @@ uint32_t action_data_size();
  *  @brief Add the specified account to set of accounts to be notified
  *  @param name - name of the account to be verified
  */
-__attribute__((eosio_wasm_import))
-void require_recipient( capi_name name );
+VM_API void require_recipient( capi_name name );
 
 /**
  *  Verifies that name exists in the set of provided auths on a action. Throws if not found.
@@ -102,8 +99,7 @@ void require_recipient( capi_name name );
  *  @brief Verify specified account exists in the set of provided auths
  *  @param name - name of the account to be verified
  */
-__attribute__((eosio_wasm_import))
-void require_auth( capi_name name );
+VM_API void require_auth( capi_name name );
 
  /**
  *  Verifies that name has auth.
@@ -111,8 +107,7 @@ void require_auth( capi_name name );
  *  @brief Verifies that name has auth.
  *  @param name - name of the account to be verified
  */
-__attribute__((eosio_wasm_import))
-bool has_auth( capi_name name );
+VM_API bool has_auth( capi_name name );
 
 /**
  *  Verifies that name exists in the set of provided auths on a action. Throws if not found.
@@ -121,8 +116,7 @@ bool has_auth( capi_name name );
  *  @param name - name of the account to be verified
  *  @param permission - permission level to be verified
  */
-__attribute__((eosio_wasm_import))
-void require_auth2( capi_name name, capi_name permission );
+VM_API void require_auth2( capi_name name, capi_name permission );
 
 /**
  *  Verifies that @ref name is an existing account.
@@ -130,8 +124,7 @@ void require_auth2( capi_name name, capi_name permission );
  *  @brief Verifies that @ref name is an existing account.
  *  @param name - name of the account to check
  */
-__attribute__((eosio_wasm_import))
-bool is_account( capi_name name );
+VM_API bool is_account( capi_name name );
 
 /**
  *  Send an inline action in the context of this action's parent transaction
@@ -140,8 +133,7 @@ bool is_account( capi_name name );
  *  @param size - size of serialized action in bytes
  *  @pre `serialized_action` is a valid pointer to an array at least `size` bytes long
  */
-__attribute__((eosio_wasm_import))
-void send_inline(char *serialized_action, size_t size);
+VM_API void send_inline(char *serialized_action, size_t size);
 
 /**
  * /function
@@ -151,24 +143,21 @@ void send_inline(char *serialized_action, size_t size);
  *  @param size - size of serialized action in bytes
  *  @pre `serialized_action` is a valid pointer to an array at least `size` bytes long
  */
-__attribute__((eosio_wasm_import))
-void send_context_free_inline(char *serialized_action, size_t size);
+VM_API void send_context_free_inline(char *serialized_action, size_t size);
 
 /**
  *  Returns the time in microseconds from 1970 of the publication_time
  *  @brief Get the publication time
  *  @return the time in microseconds from 1970 of the publication_time
  */
-__attribute__((eosio_wasm_import))
-uint64_t  publication_time();
+VM_API uint64_t  publication_time();
 
 /**
  *  Get the current receiver of the action
  *  @brief Get the current receiver of the action
  *  @return the account which specifies the current receiver of the action
  */
-__attribute__((eosio_wasm_import))
-capi_name current_receiver();
+VM_API capi_name current_receiver();
 
 #ifdef __cplusplus
 }

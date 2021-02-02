@@ -67,6 +67,12 @@ struct ALIGNED(capi_checksum512) {
    uint8_t hash[64];
 };
 
+
+#ifdef __NATIVE
+   #define VM_API __attribute__ ((visibility ("default")))
+#else
+   #define VM_API  VM_API #endif
+
 /// @}
 
 #endif

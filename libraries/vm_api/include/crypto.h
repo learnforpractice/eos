@@ -40,8 +40,7 @@ extern "C" {
  *  eosio::print("sha256 hash generated from data equals provided hash");
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void assert_sha256( const char* data, uint32_t length, const capi_checksum256* hash );
+VM_API void assert_sha256( const char* data, uint32_t length, const capi_checksum256* hash );
 
 /**
  *  Tests if the sha1 hash generated from data matches the provided checksum.
@@ -65,8 +64,7 @@ void assert_sha256( const char* data, uint32_t length, const capi_checksum256* h
  *  eosio::print("sha1 hash generated from data equals provided hash");
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void assert_sha1( const char* data, uint32_t length, const capi_checksum160* hash );
+VM_API void assert_sha1( const char* data, uint32_t length, const capi_checksum160* hash );
 
 /**
  *  Tests if the sha512 hash generated from data matches the provided checksum.
@@ -90,8 +88,7 @@ void assert_sha1( const char* data, uint32_t length, const capi_checksum160* has
  *  eosio::print("sha512 hash generated from data equals provided hash");
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void assert_sha512( const char* data, uint32_t length, const capi_checksum512* hash );
+VM_API void assert_sha512( const char* data, uint32_t length, const capi_checksum512* hash );
 
 /**
  *  Tests if the ripemod160 hash generated from data matches the provided checksum.
@@ -114,8 +111,7 @@ void assert_sha512( const char* data, uint32_t length, const capi_checksum512* h
  *  eosio::print("ripemod160 hash generated from data equals provided hash");
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void assert_ripemd160( const char* data, uint32_t length, const capi_checksum160* hash );
+VM_API void assert_ripemd160( const char* data, uint32_t length, const capi_checksum160* hash );
 
 /**
  *  Hashes `data` using `sha256` and stores result in memory pointed to by hash.
@@ -132,8 +128,7 @@ void assert_ripemd160( const char* data, uint32_t length, const capi_checksum160
  *  eos_assert( calc_hash == hash, "invalid hash" );
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void sha256( const char* data, uint32_t length, capi_checksum256* hash );
+VM_API void sha256( const char* data, uint32_t length, capi_checksum256* hash );
 
 /**
  *  Hashes `data` using `sha1` and stores result in memory pointed to by hash.
@@ -150,8 +145,7 @@ void sha256( const char* data, uint32_t length, capi_checksum256* hash );
  *  eos_assert( calc_hash == hash, "invalid hash" );
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void sha1( const char* data, uint32_t length, capi_checksum160* hash );
+VM_API void sha1( const char* data, uint32_t length, capi_checksum160* hash );
 
 /**
  *  Hashes `data` using `sha512` and stores result in memory pointed to by hash.
@@ -168,8 +162,7 @@ void sha1( const char* data, uint32_t length, capi_checksum160* hash );
  *  eos_assert( calc_hash == hash, "invalid hash" );
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void sha512( const char* data, uint32_t length, capi_checksum512* hash );
+VM_API void sha512( const char* data, uint32_t length, capi_checksum512* hash );
 
 /**
  *  Hashes `data` using `ripemod160` and stores result in memory pointed to by hash.
@@ -186,8 +179,7 @@ void sha512( const char* data, uint32_t length, capi_checksum512* hash );
  *  eos_assert( calc_hash == hash, "invalid hash" );
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void ripemd160( const char* data, uint32_t length, capi_checksum160* hash );
+VM_API void ripemd160( const char* data, uint32_t length, capi_checksum160* hash );
 
 /**
  *  Calculates the public key used for a given signature and hash used to create a message.
@@ -204,8 +196,7 @@ void ripemd160( const char* data, uint32_t length, capi_checksum160* hash );
  *  @code
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-int recover_key( const capi_checksum256* digest, const char* sig, size_t siglen, char* pub, size_t publen );
+VM_API int recover_key( const capi_checksum256* digest, const char* sig, size_t siglen, char* pub, size_t publen );
 
 /**
  *  Tests a given public key with the generated key from digest and the signature.
@@ -232,8 +223,7 @@ int recover_key( const capi_checksum256* digest, const char* sig, size_t siglen,
  *  eosio::print("pub key matches the pub key generated from digest");
  *  @endcode
  */
-__attribute__((eosio_wasm_import))
-void assert_recover_key( const capi_checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen );
+VM_API void assert_recover_key( const capi_checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen );
 
 #ifdef __cplusplus
 }
