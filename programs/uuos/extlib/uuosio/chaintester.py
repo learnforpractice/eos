@@ -16,8 +16,6 @@ logger = log.get_logger(__name__)
 
 test_dir = os.path.dirname(__file__)
 
-data_dir = tempfile.mkdtemp()
-config_dir = tempfile.mkdtemp()
 
 chain_config = {
     'sender_bypass_whiteblacklist': [],
@@ -28,14 +26,14 @@ chain_config = {
     'action_blacklist': [],
     'key_blacklist': [],
     'blog': {
-      'log_dir': os.path.join(data_dir, 'blocks'),
+      'log_dir': 'dd/blocks',
       'retained_dir': '',
       'archive_dir': 'archive',
       'stride': 4294967295,
       'max_retained_files': 10,
       'fix_irreversible_blocks': True
     },
-    'state_dir': os.path.join(data_dir, 'state'),
+    'state_dir': 'dd/state',
     'state_size': 2147483648,
     'state_guard_size': 134217728,
     'reversible_cache_size': 356515840,
@@ -108,7 +106,7 @@ genesis_test = {
     "context_free_discount_net_usage_den": 100,
     "max_block_cpu_usage": 200000,
     "target_block_cpu_usage_pct": 1000,
-    "max_transaction_cpu_usage": 150000,
+    "max_transaction_cpu_usage": 100000,
     "min_transaction_cpu_usage": 100,
     "max_transaction_lifetime": 3600,
     "deferred_trx_expiration_window": 600,
@@ -158,6 +156,15 @@ class ChainTester(object):
 
     def __init__(self):
         atexit.register(self.free)
+
+        data_dir = tempfile.mkdtemp()
+        config_dir = tempfile.mkdtemp()
+        logger.info('++++data_dir %s', data_dir)
+        logger.info('++++config_dir %s', config_dir)
+
+        chain_config['blog']['log_dir'] = os.path.join(data_dir, 'blocks')
+        chain_config['state_dir'] = os.path.join(data_dir, 'state')
+
 
         uuos.set_log_level('default', 0)
         uuos.set_block_interval_ms(1000)
@@ -386,6 +393,8 @@ class ChainTester(object):
         deadline = datetime.max
         billed_cpu_time_us = 100
         result = self.chain.push_transaction(raw_signed_trx, deadline, billed_cpu_time_us)
+        elapsed = ret['elapsed']
+        assert elapsed < 15000
         return result
 
     def calc_pending_block_time(self):
