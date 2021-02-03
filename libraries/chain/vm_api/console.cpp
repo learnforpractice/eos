@@ -55,4 +55,3 @@ void vm_api_proxy::printhex( const char *data, size_t data_size ) {
     legacy_span<const char> _data((void *)data, data_size);
     _interface->printhex(std::move(_data));
 }
-

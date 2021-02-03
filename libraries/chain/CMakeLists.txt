@@ -115,7 +115,7 @@ add_library( eosio_chain
               vm_api/authorization.cpp
               vm_api/cf_system.cpp
               vm_api/cf_transaction.cpp
-              vm_api/compiler_builtins.cpp
+            #   vm_api/compiler_builtins.cpp
               vm_api/console.cpp
               vm_api/context_free.cpp
               vm_api/crypto.cpp

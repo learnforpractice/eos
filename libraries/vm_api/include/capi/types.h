@@ -71,7 +71,8 @@ struct ALIGNED(capi_checksum512) {
 #ifdef __NATIVE
    #define VM_API __attribute__ ((visibility ("default")))
 #else
-   #define VM_API  VM_API #endif
+   #define VM_API  __attribute__((eosio_wasm_import))
+#endif
 
 /// @}
 
