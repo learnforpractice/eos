@@ -3279,39 +3279,56 @@ read_only::get_account_results read_only::get_account( const get_account_params&
 
    const auto& code_account = db.db().get<account_object,by_name>( config::system_account_name );
 
-   abi_def abi;
-   if( abi_serializer::to_abi(code_account.abi, abi) ) {
-      abi_serializer abis( abi, abi_serializer::create_yield_function( abi_serializer_max_time ) );
+   static abi_serializer *s_abis = nullptr;
+   static uint64_t abi_sequence = (uint64_t)-1;
 
-      const auto token_code = "eosio.token"_n;
-
-      auto core_symbol = extract_core_symbol();
-
-      if (params.expected_core_symbol)
-         core_symbol = *(params.expected_core_symbol);
-
-      get_primary_key<asset>(token_code, params.account_name, "accounts"_n, core_symbol.to_symbol_code(),
-		      row_requirements::optional, row_requirements::optional, [&core_symbol,&result](const asset& bal) {
-         if( bal.get_symbol().valid() && bal.get_symbol() == core_symbol ) {
-            result.core_liquid_balance = bal;
+   const auto& account_metadata = db.db().get<account_metadata_object, by_name>( config::system_account_name );
+   if (abi_sequence != account_metadata.abi_sequence) {
+      abi_def abi;
+      if( abi_serializer::to_abi(code_account.abi, abi) ) {
+         if (s_abis) {
+            delete s_abis;
          }
-      });
-
-      result.total_resources = get_primary_key(config::system_account_name, params.account_name, "userres"_n, params.account_name.to_uint64_t(),
-		      row_requirements::optional, row_requirements::optional, "user_resources", abis); 
-
-      result.self_delegated_bandwidth = get_primary_key(config::system_account_name, params.account_name, "delband"_n, params.account_name.to_uint64_t(),
-		      row_requirements::optional, row_requirements::optional, "delegated_bandwidth", abis); 
-
-      result.refund_request = get_primary_key(config::system_account_name, params.account_name, "refunds"_n, params.account_name.to_uint64_t(),
-		      row_requirements::optional, row_requirements::optional, "refund_request", abis); 
-
-      result.voter_info = get_primary_key(config::system_account_name, config::system_account_name, "voters"_n, params.account_name.to_uint64_t(),
-		      row_requirements::optional, row_requirements::optional, "voter_info", abis); 
-
-      result.rex_info = get_primary_key(config::system_account_name, config::system_account_name, "rexbal"_n, params.account_name.to_uint64_t(),
-		      row_requirements::optional, row_requirements::optional, "rex_balance", abis); 
+         abi_sequence = account_metadata.abi_sequence;
+         s_abis = new abi_serializer( abi, abi_serializer::create_yield_function( abi_serializer_max_time ) );
+      }
    }
+
+   if (!s_abis) {
+      return result;
+   }
+
+   abi_serializer& abis = *s_abis;
+
+   const auto token_code = "eosio.token"_n;
+
+   auto core_symbol = extract_core_symbol();
+
+   if (params.expected_core_symbol)
+      core_symbol = *(params.expected_core_symbol);
+
+   get_primary_key<asset>(token_code, params.account_name, "accounts"_n, core_symbol.to_symbol_code(),
+         row_requirements::optional, row_requirements::optional, [&core_symbol,&result](const asset& bal) {
+      if( bal.get_symbol().valid() && bal.get_symbol() == core_symbol ) {
+         result.core_liquid_balance = bal;
+      }
+   });
+
+   result.total_resources = get_primary_key(config::system_account_name, params.account_name, "userres"_n, params.account_name.to_uint64_t(),
+         row_requirements::optional, row_requirements::optional, "user_resources", abis); 
+
+   result.self_delegated_bandwidth = get_primary_key(config::system_account_name, params.account_name, "delband"_n, params.account_name.to_uint64_t(),
+         row_requirements::optional, row_requirements::optional, "delegated_bandwidth", abis); 
+
+   result.refund_request = get_primary_key(config::system_account_name, params.account_name, "refunds"_n, params.account_name.to_uint64_t(),
+         row_requirements::optional, row_requirements::optional, "refund_request", abis); 
+
+   result.voter_info = get_primary_key(config::system_account_name, config::system_account_name, "voters"_n, params.account_name.to_uint64_t(),
+         row_requirements::optional, row_requirements::optional, "voter_info", abis); 
+
+   result.rex_info = get_primary_key(config::system_account_name, config::system_account_name, "rexbal"_n, params.account_name.to_uint64_t(),
+         row_requirements::optional, row_requirements::optional, "rex_balance", abis); 
+
    return result;
 }
 
@@ -3458,7 +3475,7 @@ int chain_api_proxy::get_info(string& result) {
       read_only::get_info_results results;
       auto& cc = *this->chain();
       std::optional<account_query_db> aqdb;
-      results = read_only(cc, aqdb, fc::microseconds(max_abi_time)).get_info(params);
+      results = read_only(cc, aqdb, fc::microseconds(cc.get_config().abi_serializer_max_time_us)).get_info(params);
       result = fc::json::to_string(fc::variant(results), fc::time_point::maximum());
       return 1;
     } CATCH_AND_CALL(next);
@@ -3474,7 +3491,7 @@ int chain_api_proxy::api_name(string& params, string& result) { \
       auto& cc = *this->chain(); \
       std::optional<account_query_db> aqdb; \
       auto _params = fc::json::from_string(params).as<read_only::api_name ## _params>(); \
-      auto _result = read_only(cc, aqdb, fc::microseconds(max_abi_time)).api_name(_params); \
+      auto _result = read_only(cc, aqdb, fc::microseconds(cc.get_config().abi_serializer_max_time_us)).api_name(_params); \
       result = fc::json::to_string(fc::variant(_result), fc::time_point::maximum()); \
       return 1;\
    } CATCH_AND_CALL(next); \
