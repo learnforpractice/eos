@@ -13,8 +13,9 @@
 #include <boost/container/flat_set.hpp>
 #include <eosio/chain/kv_chainbase_objects.hpp>
 
-#include "uuos.hpp"
 #include <dlfcn.h>
+
+#include "uuos.hpp"
 
 using boost::container::flat_set;
 
@@ -138,46 +139,20 @@ void apply_context::exec_one()
                   control.check_action_list( act->account, act->name );
                }
                try {
-                  bool is_debug_contract = false;
-                  do {
-                     if (get_uuos_proxy()->is_native_contracts_enabled()) {
-                        // static void *vm_api_handle = nullptr;
-                        // if (!vm_api_handle) {
-                        //    const char *vm_api_lib = getenv("VM_API_LIB");
-                        //    vm_api_handle = dlopen(vm_api_lib, RTLD_NOW | RTLD_GLOBAL);
-                        //    if (!vm_api_handle) {
-                        //       elog("++++++VM_API_LIB environment variable not set!");
-                        //       break;
-                        //    }
-                        // }
-                        auto timer_pause = fc::make_scoped_exit([&](){
-                           trx_context.resume_billing_timer();
-                        });
-                        trx_context.pause_billing_timer();
+                  bool is_native_contract_called = false;
+                  if (get_uuos_proxy()->is_native_contracts_enabled()) {
+                     auto timer_pause = fc::make_scoped_exit([&](){
+                        trx_context.resume_billing_timer();
+                     });
+                     trx_context.pause_billing_timer();
 
-                        string contract_name = get_receiver().to_string();
-                        string native_contract_lib = get_uuos_proxy()->get_native_contract(contract_name);
-                        if (!native_contract_lib.size()) {
-                           break;
-                        }
+                     uint64_t receiver = get_receiver().to_uint64_t();
+                     uint64_t first_receiver = get_action().account.to_uint64_t();
+                     uint64_t action = get_action().name.to_uint64_t();
+                     is_native_contract_called = get_uuos_proxy()->call_native_contract(receiver, first_receiver, action);
+                  }
 
-                        void* handle = dlopen(native_contract_lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
-                        typedef void (*fn_native_apply)(uint64_t a, uint64_t b, uint64_t c);
-                        fn_native_apply native_apply = (fn_native_apply)dlsym(handle, "native_apply");
-                        if (native_apply == nullptr) {
-                           elog("++++++++native_apply entry not found!");
-                           break;
-                        }
-
-                        uint64_t receiver = get_receiver().to_uint64_t();
-                        uint64_t first_receiver = get_action().account.to_uint64_t();
-                        uint64_t action = get_action().name.to_uint64_t();
-                        native_apply(receiver, first_receiver, action);
-                        is_debug_contract = true;
-                     }
-                  } while (false);
-
-                  if (!is_debug_contract) {
+                  if (!is_native_contract_called) {
                      if (receiver_account->vm_type == 0) {
                         control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this );
                      } else if (receiver_account->vm_type == 1) {

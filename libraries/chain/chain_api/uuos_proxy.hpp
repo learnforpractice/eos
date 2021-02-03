@@ -14,6 +14,13 @@ class chain_api_proxy;
 class vm_api_proxy;
 
 typedef chain_api_proxy *(*fn_new_chain_api)(eosio::chain::controller *c);
+typedef void (*fn_native_apply)(uint64_t a, uint64_t b, uint64_t c);
+
+struct native_contract {
+    string path;
+    void *handle;
+    fn_native_apply apply;
+};
 
 class uuos_proxy {
     public:
@@ -38,8 +45,9 @@ class uuos_proxy {
         virtual uint64_t s2n(string& name);
         virtual string n2s(uint64_t n);
 
-        virtual void set_native_contract(const string& contract, const string& native_contract_lib);
-        virtual string get_native_contract(const string& contract);
+        virtual void set_native_contract(uint64_t contract, const string& native_contract_lib);
+        virtual string get_native_contract(uint64_t contract);
+        virtual bool call_native_contract(uint64_t receiver, uint64_t first_receiver, uint64_t action);
         virtual void enable_native_contracts(bool debug);
         virtual bool is_native_contracts_enabled();
 
@@ -49,7 +57,7 @@ class uuos_proxy {
         string last_error;
         std::shared_ptr<vm_api_proxy> _vm_api_proxy;
         bool native_contracts_enabled = false;
-        std::map<string, string> debug_contracts;
+        std::map<uint64_t, string> debug_contracts;
 };
 
 typedef void (*fn_init_uuos_proxy)(uuos_proxy *proxy);
