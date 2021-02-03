@@ -594,6 +594,14 @@ void chain_proxy::load_abi(string& account) {
     }
 }
 
+eosio::chain::abi_serializer* chain_proxy::get_abi_cache(string& account) {
+    auto itr = abi_cache.find(account);
+   if (itr != abi_cache.end()) {
+      return itr->second.get();
+   }
+   return nullptr;
+}
+
 void chain_proxy::clear_abi_cache(string& account) {
    auto itr = abi_cache.find(account);
    if (itr != abi_cache.end()) {

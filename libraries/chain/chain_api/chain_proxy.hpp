@@ -124,6 +124,7 @@ class chain_proxy {
         virtual string& get_last_error();
         virtual void set_last_error(string& error);
 
+        virtual eosio::chain::abi_serializer* get_abi_cache(string& account);
         virtual void clear_abi_cache(string& account);
 
     private:
