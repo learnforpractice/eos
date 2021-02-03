@@ -63,7 +63,8 @@ def apply(a, b, c):
 
     def test_debug(self):
         uuos.enable_native_contracts(True)
-        uuos.set_native_contract(uuos.s2n('eosio.mpy'), '/Users/newworld/dev/eos/build/libraries/vm_api/test/libnative_contract.dylib')
+        ret = uuos.set_native_contract(uuos.s2n('eosio.mpy'), '/Users/newworld/dev/eos/build/libraries/vm_api/test/libnative_contract.dylib')
+        assert ret
 
         r = self.tester.push_action('eosio.mpy', 'hellompy', b'', {'alice':'active'})
         logger.info(r['action_traces'][0]['console'])

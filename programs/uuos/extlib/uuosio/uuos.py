@@ -47,7 +47,7 @@ def s2b(s):
     return int.to_bytes(n, 8, 'little')
 
 def set_native_contract(contract, native_contract_lib):
-    _uuos.set_native_contract(contract, native_contract_lib)
+    return _uuos.set_native_contract(contract, native_contract_lib)
 
 def get_native_contract(contract):
     return _uuos.get_native_contract(contract)

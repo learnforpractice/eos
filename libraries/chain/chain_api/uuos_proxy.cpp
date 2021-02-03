@@ -75,14 +75,27 @@ string uuos_proxy::n2s(uint64_t n) {
     return eosio::chain::name(n).to_string();
 }
 
-void uuos_proxy::set_native_contract(uint64_t contract, const string& native_contract_lib) {
+bool uuos_proxy::set_native_contract(uint64_t contract, const string& native_contract_lib) {
     if (native_contract_lib.size() == 0) {
         auto itr = debug_contracts.find(contract);
         if (itr != debug_contracts.end()) {
+            dlclose(itr->second.handle);
             debug_contracts.erase(itr);
         }
+        return true;
     } else {
-        debug_contracts[contract] = native_contract_lib;
+        void* handle = dlopen(native_contract_lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+        if (!handle) {
+            elog("++++++++${s} load failed!", ("s", native_contract_lib));
+            return false;
+        }
+        fn_native_apply native_apply = (fn_native_apply)dlsym(handle, "native_apply");
+        if (native_apply == nullptr) {
+            elog("++++++++native_apply entry not found!");
+            return false;
+        }
+        debug_contracts[contract] = {native_contract_lib, handle, native_apply};
+        return true;
     }
 }
 
@@ -91,24 +104,15 @@ string uuos_proxy::get_native_contract(uint64_t contract) {
     if (itr == debug_contracts.end()) {
         return "";
     }
-    return itr->second;
+    return itr->second.path;
 }
 
 bool uuos_proxy::call_native_contract(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
-    string native_contract_lib = get_native_contract(receiver);
-    if (!native_contract_lib.size()) {
+    auto itr = debug_contracts.find(receiver);
+    if (itr == debug_contracts.end()) {
         return false;
     }
-
-    void* handle = dlopen(native_contract_lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
-    typedef void (*fn_native_apply)(uint64_t a, uint64_t b, uint64_t c);
-    fn_native_apply native_apply = (fn_native_apply)dlsym(handle, "native_apply");
-    if (native_apply == nullptr) {
-        elog("++++++++native_apply entry not found!");
-        return false;
-    }
-
-    native_apply(receiver, first_receiver, action);
+    itr->second.apply(receiver, first_receiver, action);
     return true;
 }
 
