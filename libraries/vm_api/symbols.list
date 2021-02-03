@@ -120,3 +120,5 @@ _tapos_block_prefix
 _expiration
 _get_action
 _get_context_free_data
+_check_transaction_authorization
+_check_permission_authorization
