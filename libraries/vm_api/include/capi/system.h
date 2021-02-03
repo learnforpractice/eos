@@ -64,8 +64,8 @@ VM_API void  eosio_assert_code( uint32_t test, uint64_t code );
  *  eosio_exit(3);
  *  @endcode
  */
-__attribute__((eosio_wasm_import, noreturn))
-void eosio_exit( int32_t code );
+ 
+VM_API_NO_RETURN void eosio_exit( int32_t code );
 
 /**
  *  Returns the time in microseconds from 1970 of the current block

@@ -1,6 +1,8 @@
 #include <capi/types.h>
 #include <vm_api_proxy.hpp>
 
+extern "C" {
+
 void assert_sha256( const char* data, uint32_t length, const capi_checksum256* hash ) {
     get_vm_api()->assert_sha256(data, length, hash);
 }
@@ -39,4 +41,6 @@ int recover_key( const capi_checksum256* digest, const char* sig, size_t siglen,
 
 void assert_recover_key( const capi_checksum256* digest, const char* sig, size_t siglen, const char* pub, size_t publen ) {
     get_vm_api()->assert_recover_key(digest, sig, siglen, pub, publen);
+}
+
 }

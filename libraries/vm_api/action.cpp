@@ -1,6 +1,8 @@
 #include <capi/types.h>
 #include <vm_api_proxy.hpp>
 
+extern "C" {
+    
 uint32_t read_action_data( void* msg, uint32_t len ) {
     return get_vm_api()->read_action_data(msg, len);
 }
@@ -30,11 +32,11 @@ bool is_account( capi_name name ) {
 }
 
 void send_inline(char *serialized_action, size_t size) {
-    get_vm_api()->send_inline(*serialized_action, size);
+    get_vm_api()->send_inline(serialized_action, size);
 }
 
 void send_context_free_inline(char *serialized_action, size_t size) {
-    get_vm_api()->send_context_free_inline(*serialized_action, size);
+    get_vm_api()->send_context_free_inline(serialized_action, size);
 }
 
 uint64_t  publication_time() {
@@ -43,4 +45,6 @@ uint64_t  publication_time() {
 
 capi_name current_receiver() {
     return get_vm_api()->current_receiver();
+}
+
 }

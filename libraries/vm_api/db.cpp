@@ -1,6 +1,8 @@
 #include <capi/types.h>
 #include <vm_api_proxy.hpp>
 
+extern "C" {
+
 int32_t db_store_i64(uint64_t scope, capi_name table, capi_name payer, uint64_t id,  const void* data, uint32_t len) {
     return get_vm_api()->db_store_i64(scope, table, payer, id, data, len);
 }
@@ -13,7 +15,7 @@ void db_remove_i64(int32_t iterator) {
     get_vm_api()->db_remove_i64(iterator);
 }
 
-int32_t db_get_i64(int32_t iterator, const void* data, uint32_t len) {
+int32_t db_get_i64(int32_t iterator, void* data, uint32_t len) {
     return get_vm_api()->db_get_i64(iterator, data, len);
 }
 
@@ -239,4 +241,6 @@ int32_t db_idx_long_double_upperbound(capi_name code, uint64_t scope, capi_name 
 
 int32_t db_idx_long_double_end(capi_name code, uint64_t scope, capi_name table) {
     return get_vm_api()->db_idx_long_double_end(code, scope, table);
+}
+
 }

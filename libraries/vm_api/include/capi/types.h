@@ -68,11 +68,21 @@ struct ALIGNED(capi_checksum512) {
 };
 
 
-#ifdef __NATIVE
-   #define VM_API __attribute__ ((visibility ("default")))
-#else
+#ifdef __WASM
    #define VM_API  __attribute__((eosio_wasm_import))
+#else
+   #define VM_API __attribute__ ((visibility ("default")))
 #endif
+
+#ifdef __NATIVE
+   #define VM_API_NO_RETURN  __attribute__((eosio_wasm_import, noreturn))
+#else
+   #define VM_API_NO_RETURN __attribute__ ((visibility ("default"), noreturn))
+#endif
+
+typedef unsigned __int128 __uint128;
+typedef unsigned __int128 uint128_t;
+typedef __int128 int128_t;
 
 /// @}
 

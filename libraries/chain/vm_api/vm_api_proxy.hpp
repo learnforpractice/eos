@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <capi/types.h>
+#include "../../vm_api/include/capi/types.h"
 
 namespace eosio { namespace chain {
     class apply_context;
@@ -34,7 +34,7 @@ class vm_api_proxy {
         virtual int32_t db_store_i64(uint64_t scope, capi_name table, capi_name payer, uint64_t id,  const void* data, uint32_t len);
         virtual void db_update_i64(int32_t iterator, capi_name payer, const void* data, uint32_t len);
         virtual void db_remove_i64(int32_t iterator);
-        virtual int32_t db_get_i64(int32_t iterator, const void* data, uint32_t len);
+        virtual int32_t db_get_i64(int32_t iterator, void* data, uint32_t len);
         virtual int32_t db_next_i64(int32_t iterator, uint64_t* primary);
         virtual int32_t db_previous_i64(int32_t iterator, uint64_t* primary);
         virtual int32_t db_find_i64(capi_name code, uint64_t scope, capi_name table, uint64_t id);
@@ -128,6 +128,8 @@ class vm_api_proxy {
         virtual void send_context_free_inline(char *serialized_action, uint32_t size);
         virtual uint64_t  publication_time();
         virtual capi_name current_receiver();
+        virtual void set_action_return_value(const char *data, uint32_t data_size);
+
         //print.h
         virtual void prints( const char* cstr );
         virtual void prints_l( const char* cstr, uint32_t len);
@@ -144,20 +146,32 @@ class vm_api_proxy {
         virtual void  eosio_assert( uint32_t test, const char* msg );
         virtual void  eosio_assert_message( uint32_t test, const char* msg, uint32_t msg_len );
         virtual void  eosio_assert_code( uint32_t test, uint64_t code );
-        void eosio_exit( int32_t code );
+        virtual void eosio_exit( int32_t code );
         virtual uint64_t  current_time();
         virtual bool is_feature_activated( const capi_checksum256* feature_digest );
         virtual capi_name get_sender();
         //privileged.h
         virtual void get_resource_limits( capi_name account, int64_t* ram_bytes, int64_t* net_weight, int64_t* cpu_weight );
         virtual void set_resource_limits( capi_name account, int64_t ram_bytes, int64_t net_weight, int64_t cpu_weight );
-        virtual int64_t set_proposed_producers( char *producer_data, uint32_t producer_data_size );
-        virtual int64_t set_proposed_producers_ex( uint64_t producer_data_format, char *producer_data, uint32_t producer_data_size );
+        virtual int64_t set_proposed_producers( const char *producer_data, uint32_t producer_data_size );
+        virtual int64_t set_proposed_producers_ex( uint64_t producer_data_format, const char *producer_data, uint32_t producer_data_size );
         virtual bool is_privileged( capi_name account );
         virtual void set_privileged( capi_name account, bool is_priv );
-        virtual void set_blockchain_parameters_packed( char* data, uint32_t datalen );
+        virtual void set_blockchain_parameters_packed( const char* data, uint32_t datalen );
         virtual uint32_t get_blockchain_parameters_packed( char* data, uint32_t datalen );
         virtual void preactivate_feature( const capi_checksum256* feature_digest );
+
+        virtual int is_feature_active( int64_t feature_name );
+        virtual void activate_feature( int64_t feature_name );
+        virtual void set_resource_limit( uint64_t account, uint64_t resource, int64_t limit );
+        virtual int64_t get_resource_limit( uint64_t account, uint64_t resource );
+        virtual uint32_t get_wasm_parameters_packed( char *packed_parameters, uint32_t size, uint32_t max_version );
+        virtual void set_wasm_parameters_packed( const char *packed_parameters, uint32_t size );
+        virtual uint32_t get_parameters_packed( const char *packed_parameter_ids, uint32_t size1, char *packed_parameters, uint32_t size2);
+        virtual void set_parameters_packed( const char *packed_parameters, uint32_t size );
+        virtual uint32_t get_kv_parameters_packed( char *packed_kv_parameters, uint32_t size, uint32_t max_version );
+        virtual void set_kv_parameters_packed( const char *packed_kv_parameters, uint32_t size );
+
         //transaction.h
         virtual void send_deferred(const uint128_t sender_id, capi_name payer, const char *serialized_transaction, uint32_t size, uint32_t replace_existing = 0);
         virtual int32_t cancel_deferred(const uint128_t sender_id);
@@ -168,6 +182,11 @@ class vm_api_proxy {
         virtual uint32_t expiration();
         virtual int32_t get_action( uint32_t type, uint32_t index, char* buff, uint32_t size );
         virtual int32_t get_context_free_data( uint32_t index, char* buff, uint32_t size );
+
+        virtual void call_contract(capi_name contract, const char* args, uint32_t size1);
+        virtual uint32_t call_contract_get_args(char* args, uint32_t size1);
+        virtual uint32_t call_contract_set_results(const char* result, uint32_t size1);
+        virtual uint32_t call_contract_get_results(char* result, uint32_t size1);
 
     private:
         std::unique_ptr<webassembly::interface> _interface;

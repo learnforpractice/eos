@@ -1,6 +1,8 @@
 #include <capi/types.h>
 #include <vm_api_proxy.hpp>
 
+extern "C" {
+
 void prints( const char* cstr ) {
     get_vm_api()->prints(cstr);
 }
@@ -43,4 +45,6 @@ void printn( uint64_t name ) {
 
 void printhex( const void* data, uint32_t datalen ) {
     get_vm_api()->printhex(data, datalen);
+}
+
 }

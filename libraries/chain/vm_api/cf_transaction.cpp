@@ -2,7 +2,7 @@
 #include <eosio/vm/span.hpp>
 #include "vm_api_proxy.hpp"
 
-uint32_t vm_api_proxy::read_transaction(char *data, size_t data_size) {
+uint32_t vm_api_proxy::read_transaction(char *data, uint32_t data_size) {
     legacy_span<char> _data(data, data_size);
     return _interface->read_transaction(std::move(_data));
 }
@@ -11,7 +11,7 @@ uint32_t vm_api_proxy::transaction_size() {
     return _interface->transaction_size();
 }
 
-int32_t vm_api_proxy::expiration() {
+uint32_t vm_api_proxy::expiration() {
     return _interface->expiration();
 }
 

@@ -1,19 +1,19 @@
 add_library( vm_api SHARED
     vm_api.cpp
-    action.c
-    chain.c
-    crypto.c
-    db.c
-    permission.c
-    print.c
-    privileged.c
-    system.c
-    transaction.c
+    action.cpp
+    chain.cpp
+    crypto.cpp
+    db.cpp
+    permission.cpp
+    print.cpp
+    privileged.cpp
+    system.cpp
+    transaction.cpp
 )
 
 if (APPLE)
 else()
-    target_compile_options(vm_api PRIVATE -fPIC)
+    target_compile_options(vm_api PRIVATE -fPIC -D__NATIVE)
 endif()
 
 if (APPLE)

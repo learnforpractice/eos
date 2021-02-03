@@ -1,6 +1,8 @@
 #include <capi/types.h>
 #include <vm_api_proxy.hpp>
 
+extern "C" {
+
 void  eosio_assert( uint32_t test, const char* msg ) {
     get_vm_api()->eosio_assert(test, msg);
 }
@@ -27,4 +29,7 @@ bool is_feature_activated( const capi_checksum256* feature_digest ) {
 
 capi_name get_sender() {
     return get_vm_api()->get_sender();
+}
+
+
 }

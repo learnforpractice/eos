@@ -11,7 +11,7 @@ void vm_api_proxy::prints(const char *str) {
     _interface->prints(_str);
 }
 
-void vm_api_proxy::prints_l(const char *str, size_t str_size) {
+void vm_api_proxy::prints_l(const char *str, uint32_t str_size) {
     legacy_span<const char> _str((void *)str, str_size);
     _interface->prints_l(std::move(_str));
 }
@@ -34,15 +34,15 @@ void vm_api_proxy::printui128(const unsigned __int128 *val) {
     _interface->printui128(std::move(_val));
 }
 
-void vm_api_proxy::printsf( float32_t val ) {
-    _interface->printsf(val);
+void vm_api_proxy::printsf( float val ) {
+    _interface->printsf(*(float32_t*)&val);
 }
 
-void vm_api_proxy::printdf( float64_t val ) {
-    _interface->printdf(val);
+void vm_api_proxy::printdf( double val ) {
+    _interface->printdf(*(float64_t*)&val);
 }
 
-void vm_api_proxy::printqf( const float128_t *val ) {
+void vm_api_proxy::printqf( const long double *val ) {
     legacy_ptr<const float128_t> _val((void *)val);
     _interface->printqf(std::move(_val));
 }
@@ -51,7 +51,7 @@ void vm_api_proxy::printn(uint64_t value) {
     _interface->printn(name(value));
 }
 
-void vm_api_proxy::printhex( const char *data, size_t data_size ) {
+void vm_api_proxy::printhex( const void *data, uint32_t data_size ) {
     legacy_span<const char> _data((void *)data, data_size);
     _interface->printhex(std::move(_data));
 }

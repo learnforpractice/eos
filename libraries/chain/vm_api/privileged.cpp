@@ -9,8 +9,8 @@ void vm_api_proxy::activate_feature( int64_t feature_name ) {
    EOS_ASSERT( false, unsupported_feature, "Unsupported Hardfork Detected" );
 }
 
-void vm_api_proxy::preactivate_feature( const char *digest, size_t size ) {
-    digest_type _digest(digest, size);
+void vm_api_proxy::preactivate_feature( const capi_checksum256* digest ) {
+    digest_type _digest((char *)digest->hash, 32);
     legacy_ptr<const digest_type> feature_digest((void *)&_digest);
     _interface->preactivate_feature( std::move(feature_digest) );
 }
@@ -40,53 +40,53 @@ int64_t vm_api_proxy::get_resource_limit( uint64_t account, uint64_t resource ) 
     return _interface->get_resource_limit(name(account), name(resource));
 }
 
-uint32_t vm_api_proxy::get_wasm_parameters_packed( char *packed_parameters, size_t size, uint32_t max_version ) {
+uint32_t vm_api_proxy::get_wasm_parameters_packed( char *packed_parameters, uint32_t size, uint32_t max_version ) {
     span<char> _packed_parameters(packed_parameters, size);
     return _interface->get_wasm_parameters_packed(std::move(_packed_parameters), max_version);
 }
 
-void vm_api_proxy::set_wasm_parameters_packed( const char *packed_parameters, size_t size ) {
+void vm_api_proxy::set_wasm_parameters_packed( const char *packed_parameters, uint32_t size ) {
     span<const char> _packed_parameters(packed_parameters, size);
     _interface->set_wasm_parameters_packed(std::move(_packed_parameters));
 }
 
-int64_t vm_api_proxy::set_proposed_producers(const char *packed_producer_schedule, size_t size) {
+int64_t vm_api_proxy::set_proposed_producers(const char *packed_producer_schedule, uint32_t size) {
     legacy_span<const char> _packed_producer_schedule((void *)packed_producer_schedule, size);
     return _interface->set_proposed_producers(std::move(_packed_producer_schedule));
 }
 
-int64_t vm_api_proxy::set_proposed_producers_ex( uint64_t packed_producer_format, const char *packed_producer_schedule, size_t size) {
+int64_t vm_api_proxy::set_proposed_producers_ex( uint64_t packed_producer_format, const char *packed_producer_schedule, uint32_t size) {
     legacy_span<const char> _packed_producer_schedule((void *)packed_producer_schedule, size);
     return _interface->set_proposed_producers_ex(packed_producer_format, std::move(_packed_producer_schedule));
 }
 
-uint32_t vm_api_proxy::get_blockchain_parameters_packed( char *packed_blockchain_parameters, size_t size) {
+uint32_t vm_api_proxy::get_blockchain_parameters_packed( char *packed_blockchain_parameters, uint32_t size) {
     legacy_span<char> _packed_blockchain_parameters(packed_blockchain_parameters, size);
     return _interface->get_blockchain_parameters_packed(std::move(_packed_blockchain_parameters));
 }
 
-void vm_api_proxy::set_blockchain_parameters_packed( const char *packed_blockchain_parameters, size_t size ) {
+void vm_api_proxy::set_blockchain_parameters_packed( const char *packed_blockchain_parameters, uint32_t size ) {
     legacy_span<const char> _packed_blockchain_parameters((void *)packed_blockchain_parameters, size);
     _interface->set_blockchain_parameters_packed(std::move(_packed_blockchain_parameters));
 }
 
-uint32_t vm_api_proxy::get_parameters_packed( const char *packed_parameter_ids, size_t size1, char *packed_parameters, size_t size2) {
+uint32_t vm_api_proxy::get_parameters_packed( const char *packed_parameter_ids, uint32_t size1, char *packed_parameters, uint32_t size2) {
     span<const char> _packed_parameter_ids(packed_parameter_ids, size1);
     span<char> _packed_parameters(packed_parameters, size2);
     return _interface->get_parameters_packed(std::move(_packed_parameter_ids), std::move(_packed_parameters));
 }
 
-void vm_api_proxy::set_parameters_packed( const char *packed_parameters, size_t size ) {
+void vm_api_proxy::set_parameters_packed( const char *packed_parameters, uint32_t size ) {
     span<const char> _packed_parameters(packed_parameters, size);
     _interface->set_parameters_packed(std::move(_packed_parameters));
 }
 
-uint32_t vm_api_proxy::get_kv_parameters_packed( char *packed_kv_parameters, size_t size, uint32_t max_version ) {
+uint32_t vm_api_proxy::get_kv_parameters_packed( char *packed_kv_parameters, uint32_t size, uint32_t max_version ) {
     span<char> _packed_kv_parameters(packed_kv_parameters, size);
     return _interface->get_kv_parameters_packed(std::move(_packed_kv_parameters), max_version);
 }
 
-void vm_api_proxy::set_kv_parameters_packed( const char *packed_kv_parameters, size_t size ) {
+void vm_api_proxy::set_kv_parameters_packed( const char *packed_kv_parameters, uint32_t size ) {
     span<const char> _packed_kv_parameters(packed_kv_parameters, size);
     _interface->set_kv_parameters_packed(_packed_kv_parameters);
 }
