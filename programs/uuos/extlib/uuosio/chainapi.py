@@ -22,8 +22,9 @@ class ChainApi(object):
         args = {'account_name': account}
         args = json.dumps(args)
         ret, result = _chainapi.get_account(self.ptr, args)
-        if ret:
-            result = json.loads(result)
+        if not ret:
+            raise Exception(result)
+        result = json.loads(result)
         return ret, result
 
     def get_code(self, params):
