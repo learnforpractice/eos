@@ -307,6 +307,7 @@ class ChainTester(object):
     def find_private_key(self, actor, perm_name):
         ret, result = self.api.get_account(actor)
         if not ret:
+            raise Exception(f'actor not found {actor}')
             return None
         keys = []
         for permission in result['permissions']:
@@ -360,6 +361,10 @@ class ChainTester(object):
         for act in actions:
             for author in act['authorization']:
                 keys = self.find_private_key(author['actor'], author['permission'])
+                if not keys:
+                    actor = author['actor']
+                    perm = author['permission']
+                    raise Exception(f'private key not found: {actor} {perm}')
                 for key in keys:
                     if not key in priv_keys:
                         priv_keys.append(key)
