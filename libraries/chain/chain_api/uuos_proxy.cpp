@@ -84,7 +84,7 @@ bool uuos_proxy::set_native_contract(uint64_t contract, const string& native_con
         }
         return true;
     } else {
-        void* handle = dlopen(native_contract_lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+        void* handle = dlopen(native_contract_lib.c_str(), RTLD_LAZY | RTLD_LOCAL);
         if (!handle) {
             elog("++++++++${s} load failed!", ("s", native_contract_lib));
             return false;
