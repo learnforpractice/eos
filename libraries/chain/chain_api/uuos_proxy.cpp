@@ -73,3 +73,31 @@ uint64_t uuos_proxy::s2n(string& s) {
 string uuos_proxy::n2s(uint64_t n) {
     return eosio::chain::name(n).to_string();
 }
+
+void uuos_proxy::set_native_contract(const string& contract, const string& native_contract_lib) {
+    if (native_contract_lib.size() == 0) {
+        auto itr = debug_contracts.find(contract);
+        if (itr != debug_contracts.end()) {
+            debug_contracts.erase(itr);
+        }
+    } else {
+        debug_contracts[contract] = native_contract_lib;
+    }
+}
+
+string uuos_proxy::get_native_contract(const string& contract) {
+    auto itr = debug_contracts.find(contract);
+    if (itr == debug_contracts.end()) {
+        return "";
+    }
+    return itr->second;
+}
+
+void uuos_proxy::enable_native_contracts(bool debug) {
+    this->native_contracts_enabled = debug;
+}
+
+bool uuos_proxy::is_native_contracts_enabled() {
+    return this->native_contracts_enabled;
+}
+

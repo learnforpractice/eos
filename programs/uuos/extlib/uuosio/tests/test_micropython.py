@@ -5,6 +5,9 @@ from uuosio.chaintester import ChainTester
 from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
+print(os.getpid())
+input('<<<')
+
 class TestMicropython(object):
 
     @classmethod
@@ -55,6 +58,15 @@ def apply(a, b, c):
         logger.info(r['action_traces'][0]['console'])
 
     def test_hello(self):
-        r = self.tester.push_action('eosio.mpy', 'hellompy', b'', {'hello':'active'})
+        r = self.tester.push_action('eosio.mpy', 'hellompy', b'', {'alice':'active'})
         logger.info(r['action_traces'][0]['console'])
+
+    def test_debug(self):
+        uuos.enable_native_contracts(True)
+        uuos.set_native_contract('eosio.mpy', '/Users/newworld/dev/eos/build/libraries/vm_api/test/libnative_contract.dylib')
+
+        r = self.tester.push_action('eosio.mpy', 'hellompy', b'', {'alice':'active'})
+        logger.info(r['action_traces'][0]['console'])
+        uuos.enable_native_contracts(False)
+        uuos.set_native_contract('eosio.mpy', '')
 

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 
 #include "chain_proxy.hpp"
@@ -37,11 +38,18 @@ class uuos_proxy {
         virtual uint64_t s2n(string& name);
         virtual string n2s(uint64_t n);
 
+        virtual void set_native_contract(const string& contract, const string& native_contract_lib);
+        virtual string get_native_contract(const string& contract);
+        virtual void enable_native_contracts(bool debug);
+        virtual bool is_native_contracts_enabled();
+
         fn_new_chain_api new_chain_api = nullptr;
 
     private:
         string last_error;
         std::shared_ptr<vm_api_proxy> _vm_api_proxy;
+        bool native_contracts_enabled = false;
+        std::map<string, string> debug_contracts;
 };
 
 typedef void (*fn_init_uuos_proxy)(uuos_proxy *proxy);

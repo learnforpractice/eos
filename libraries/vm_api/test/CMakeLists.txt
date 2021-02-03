@@ -8,7 +8,7 @@ ExternalProject_Add(
    native_test_contract
    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test_contract
    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test_contract
-   CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
+   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=${EOSIO_CDT_ROOT}/lib/cmake/eosio.cdt/EosioWasmToolchain.cmake
    UPDATE_COMMAND ""
    PATCH_COMMAND ""
    TEST_COMMAND ""

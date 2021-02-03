@@ -1,4 +1,6 @@
 #include <dlfcn.h>
+#include <stacktrace.h>
+
 #include "uuos.hpp"
 
 using namespace std;
@@ -26,5 +28,11 @@ void uuosext_init() {
 }
 
 uuos_proxy* get_uuos_proxy() {
+    if (s_get_uuos_proxy == nullptr) {
+        printf("++++get_uuos_proxy not initialized\n");
+        print_stacktrace();
+        exit(-1);
+        return nullptr;
+    }
     return s_get_uuos_proxy();
 }

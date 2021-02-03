@@ -393,8 +393,6 @@ class ChainTester(object):
         deadline = datetime.max
         billed_cpu_time_us = 100
         result = self.chain.push_transaction(raw_signed_trx, deadline, billed_cpu_time_us)
-        elapsed = ret['elapsed']
-        assert elapsed < 15000
         return result
 
     def calc_pending_block_time(self):

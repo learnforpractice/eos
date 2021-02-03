@@ -40,6 +40,10 @@ cdef extern from "<uuos.hpp>":
         uint64_t s2n(string& s)
         string n2s(uint64_t n)
 
+        void set_native_contract(const string& contract, const string& native_contract_lib);
+        string get_native_contract(const string& contract);
+        void enable_native_contracts(bool debug);
+        bool is_native_contracts_enabled();
 
     uuos_proxy *get_uuos_proxy()
 
@@ -77,4 +81,17 @@ def s2n(string& s):
 
 def n2s(uint64_t n):
     return get_uuos_proxy().n2s(n)
+
+def set_native_contract(const string& contract, const string& native_contract_lib):
+    get_uuos_proxy().set_native_contract(contract, native_contract_lib)
+
+def get_native_contract(const string& contract):
+    return get_uuos_proxy().get_native_contract(contract)
+
+def enable_native_contracts(bool debug):
+    get_uuos_proxy().enable_native_contracts(debug)
+
+def is_native_contracts_enabled():
+    return get_uuos_proxy().is_native_contracts_enabled()
+
 

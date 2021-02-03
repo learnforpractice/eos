@@ -14,6 +14,7 @@
 #include <eosio/chain/kv_chainbase_objects.hpp>
 
 #include "uuos.hpp"
+#include <dlfcn.h>
 
 using boost::container::flat_set;
 
@@ -85,9 +86,9 @@ void apply_context::check_unprivileged_resource_usage(const char* resource, cons
 void apply_context::exec_one()
 {
    auto cleanup = fc::make_scoped_exit([&](){
-      get_uuos_proxy()->get_vm_api_proxy()->set_apply_context(this);
+      get_uuos_proxy()->get_vm_api_proxy()->set_apply_context(nullptr);
    });
-   get_uuos_proxy()->get_vm_api_proxy()->set_apply_context(nullptr);
+   get_uuos_proxy()->get_vm_api_proxy()->set_apply_context(this);
 
    auto start = fc::time_point::now();
 
@@ -112,7 +113,7 @@ void apply_context::exec_one()
          kv_destroyed_iterators.clear();
          if (!context_free) {
             kv_backing_store = control.kv_db().create_kv_context(receiver, create_kv_resource_manager(*this), control.get_global_properties().kv_configuration);
-        }
+         }
          receiver_account = &db.get<account_metadata_object,by_name>( receiver );
          if( !(context_free && control.skip_trx_checks()) ) {
             privileged = receiver_account->is_privileged();
@@ -137,11 +138,52 @@ void apply_context::exec_one()
                   control.check_action_list( act->account, act->name );
                }
                try {
-                  if (receiver_account->vm_type == 0) {
-                     control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this );
-                  } else if (receiver_account->vm_type == 1) {
-                     auto& mpy_account = this->db.get<account_metadata_object,by_name>( "eosio.mpy"_n );
-                     this->control.get_wasm_interface_mpy().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, *this);
+                  bool is_debug_contract = false;
+                  do {
+                     if (get_uuos_proxy()->is_native_contracts_enabled()) {
+                        // static void *vm_api_handle = nullptr;
+                        // if (!vm_api_handle) {
+                        //    const char *vm_api_lib = getenv("VM_API_LIB");
+                        //    vm_api_handle = dlopen(vm_api_lib, RTLD_NOW | RTLD_GLOBAL);
+                        //    if (!vm_api_handle) {
+                        //       elog("++++++VM_API_LIB environment variable not set!");
+                        //       break;
+                        //    }
+                        // }
+                        auto timer_pause = fc::make_scoped_exit([&](){
+                           trx_context.resume_billing_timer();
+                        });
+                        trx_context.pause_billing_timer();
+
+                        string contract_name = get_receiver().to_string();
+                        string native_contract_lib = get_uuos_proxy()->get_native_contract(contract_name);
+                        if (!native_contract_lib.size()) {
+                           break;
+                        }
+
+                        void* handle = dlopen(native_contract_lib.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+                        typedef void (*fn_native_apply)(uint64_t a, uint64_t b, uint64_t c);
+                        fn_native_apply native_apply = (fn_native_apply)dlsym(handle, "native_apply");
+                        if (native_apply == nullptr) {
+                           elog("++++++++native_apply entry not found!");
+                           break;
+                        }
+
+                        uint64_t receiver = get_receiver().to_uint64_t();
+                        uint64_t first_receiver = get_action().account.to_uint64_t();
+                        uint64_t action = get_action().name.to_uint64_t();
+                        native_apply(receiver, first_receiver, action);
+                        is_debug_contract = true;
+                     }
+                  } while (false);
+
+                  if (!is_debug_contract) {
+                     if (receiver_account->vm_type == 0) {
+                        control.get_wasm_interface().apply( receiver_account->code_hash, receiver_account->vm_type, receiver_account->vm_version, *this );
+                     } else if (receiver_account->vm_type == 1) {
+                        auto& mpy_account = this->db.get<account_metadata_object,by_name>( "eosio.mpy"_n );
+                        this->control.get_wasm_interface_mpy().apply(mpy_account.code_hash, mpy_account.vm_type, mpy_account.vm_version, *this);
+                     }
                   }
                } catch( const wasm_exit& ) {}
             }
