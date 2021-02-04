@@ -22,9 +22,6 @@ ExternalProject_Add(
    BUILD_ALWAYS 1
 )
 
-
-add_library(native_eosio_system SHARED main.cpp)
-
 if (APPLE)
       set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
       set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
@@ -33,8 +30,12 @@ else()
       set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
+add_library(native_eosio_system SHARED main.cpp)
 set_target_properties(native_eosio_system  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
-
-
 target_link_libraries(native_eosio_system PRIVATE vm_api ${CMAKE_CURRENT_BINARY_DIR}/test_contract/eosio.system/libeosio.system_native.a)
 add_dependencies(native_eosio_system native_test_contract)
+
+add_library(native_eosio_token SHARED main_token.cpp)
+set_target_properties(native_eosio_token  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+target_link_libraries(native_eosio_token PRIVATE vm_api ${CMAKE_CURRENT_BINARY_DIR}/test_contract/eosio.token/libeosio.token_native.a)
+add_dependencies(native_eosio_token native_test_contract)
