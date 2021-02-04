@@ -47,6 +47,7 @@
 # target_link_libraries(native_eosio_token PRIVATE ${VM_API_LIB} ${CMAKE_CURRENT_BINARY_DIR}/test_contract/eosio.token/libeosio.token_native.a -L${EOSIO_CDT_PATH}/lib native_c++ native_c)
 # add_dependencies(native_eosio_token native_test_contract)
 
+set( CMAKE_CXX_STANDARD 17 )
 
 set(EOSIO_SYSTEM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test_contract/eosio.system)
 set(EOSIO_HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test_contract/include)
@@ -85,7 +86,7 @@ target_include_directories( native_eosio_system2
 
 target_compile_definitions(native_eosio_system2 PRIVATE EOSIO_NATIVE)
 
-target_compile_options(native_eosio_system2 PRIVATE -Wno-unknown-attributes)
+target_compile_options(native_eosio_system2 PRIVATE -Wno-attributes)
 
 set_target_properties(native_eosio_system2  PROPERTIES LINK_FLAGS "${eosio_system_LINK_FLAGS}")
 target_link_libraries(native_eosio_system2 PRIVATE ${VM_API_LIB})
