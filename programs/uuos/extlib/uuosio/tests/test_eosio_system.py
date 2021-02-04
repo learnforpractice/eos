@@ -32,7 +32,7 @@ class TestMicropython(object):
 
     def test_native_contract(self):
         uuos.enable_native_contracts(True)
-        eosio_contract = f'build/libraries/vm_api/test/libnative_eosio_system.{self.so}'
+        eosio_contract = f'build/libraries/vm_api//test/libnative_eosio_system2.{self.so}'
         ret = uuos.set_native_contract(uuos.s2n('eosio'), eosio_contract)
         assert ret
 

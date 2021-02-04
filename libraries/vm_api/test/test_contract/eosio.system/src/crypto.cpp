@@ -2,6 +2,7 @@
  *  @file
  *  @copyright defined in eos/LICENSE
  */
+#include <string.h>
 #include <eosio/crypto.hpp>
 #include <eosio/datastream.hpp>
 
