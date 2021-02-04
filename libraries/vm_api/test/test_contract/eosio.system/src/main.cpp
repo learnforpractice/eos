@@ -1,3 +1,4 @@
+#include <string.h>
 #include "eosio.system.cpp"
 #include "delegate_bandwidth.cpp"
 #include "exchange_state.cpp"
@@ -8,4 +9,4 @@
 #include "rex.cpp"
 #include "voting.cpp"
 #include "eosiolib.cpp"
-#include "crypto.cpp"
+//#include "crypto.cpp"
