@@ -18,21 +18,9 @@ ExternalProject_Add(
 
 add_library(native_contract SHARED test.cpp)
 target_link_libraries(native_contract PRIVATE vm_api ${CMAKE_CURRENT_BINARY_DIR}/test_contract/test/libhello.a)
-
-add_library(native_eosio_system SHARED eosio.system.cpp)
-
-target_link_libraries(native_eosio_system PRIVATE vm_api 
-   ${CMAKE_CURRENT_BINARY_DIR}/test_contract/eosio.system/libeosio.system_native.a
-   # /usr/local/Cellar/eosio.cdt//1.7.0/opt/eosio.cdt/lib/libnative.a
-   # /usr/local/Cellar/eosio.cdt//1.7.0/opt/eosio.cdt/lib/libnative_eosio.a
-)
-
-target_include_directories(native_eosio_system PRIVATE
-    ${CMAKE_SOURCE_DIR}/libraries/chain/vm_api
-    ${CMAKE_SOURCE_DIR}/libraries/chain/chain_api
-)
-
-
 add_dependencies(native_contract native_test_contract)
+
+add_library(native_eosio_system SHARED main.cpp)
+target_link_libraries(native_eosio_system PRIVATE vm_api ${CMAKE_CURRENT_BINARY_DIR}/test_contract/eosio.system/libeosio.system_native.a)
 add_dependencies(native_eosio_system native_test_contract)
 

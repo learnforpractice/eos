@@ -1,33 +1,37 @@
 import os
+import time
 import json
-import pytest
-import logging
-import tempfile
-
-from chaintester import ChainTester
-import log
+from uuosio.chaintester import ChainTester
+from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
-class TestSystem(object):
+print(os.getpid())
+input('<<<')
+
+class TestMicropython(object):
 
     @classmethod
     def setup_class(cls):
-        cls.chain = ChainTester()
+        cls.tester = ChainTester()
 
     @classmethod
     def teardown_class(cls):
-        cls.chain.free()
+        cls.tester.free()
 
     def setup_method(self, method):
         logger.warning('test start: %s', method.__name__)
 
     def teardown_method(self, method):
-        pass
+        self.tester.produce_block()
 
-    def test_1(self):
-        _id = self.chain.c.get_block_id_for_num(1)
-        logger.info(_id)
+    def test_native_contract(self):
+        uuos.enable_native_contracts(True)
+        eosio_contract = 'build/libraries/vm_api/test/libnative_eosio_system.dylib'
+        ret = uuos.set_native_contract(uuos.s2n('eosio'), eosio_contract)
+        assert ret
 
-        _id = self.chain.c.id()
-        logger.info(_id)
+        self.tester.buy_ram_bytes('hello', 'hello', 10*1024*1024)
+
+        uuos.enable_native_contracts(False)
+        uuos.set_native_contract(uuos.s2n('eosio.mpy'), '')
 

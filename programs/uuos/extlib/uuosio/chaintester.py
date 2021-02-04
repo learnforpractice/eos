@@ -253,6 +253,7 @@ class ChainTester(object):
 
         self.transfer('eosio', 'alice', 5000000.0)
         self.transfer('eosio', 'bob', 5000000.0)
+        self.transfer('eosio', 'hello', 5000000.0)
 
         args = dict(version = 0,
                     core = '4,UUOS'
