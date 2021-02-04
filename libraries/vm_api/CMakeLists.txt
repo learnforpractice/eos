@@ -18,13 +18,13 @@ endif()
 
 if (APPLE)
       set(_symbols_list "${CMAKE_CURRENT_SOURCE_DIR}/symbols.list")
-      set(LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
+      set(vm_api_LINK_FLAGS "${LINK_FLAGS} -Wl,-exported_symbols_list,'${_symbols_list}'")
 else()
       set(_version_script "${CMAKE_CURRENT_SOURCE_DIR}/version.script")
-      set(LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
+      set(vm_api_LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-set_target_properties(vm_api  PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+set_target_properties(vm_api  PROPERTIES LINK_FLAGS "${vm_api_LINK_FLAGS}")
 
 target_include_directories(vm_api PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -33,5 +33,26 @@ target_include_directories(vm_api PRIVATE
     ${CMAKE_SOURCE_DIR}/libraries/chain/chain_api
 )
 
-add_subdirectory(test)
+
+# set(EOSIO_WASM_OLD_BEHAVIOR "Off")
+# find_package(eosio.cdt REQUIRED)
+
+include(ExternalProject)
+
+message( STATUS "Building contracts in directory `eosio.contracts/contracts`" )
+
+
+ExternalProject_Add(
+   native_test_contract
+   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/test_contract
+   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test/test_contract
+   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DVM_API_LIB=${CMAKE_CURRENT_BINARY_DIR}/libvm_api.dylib
+   UPDATE_COMMAND ""
+   PATCH_COMMAND ""
+   TEST_COMMAND ""
+   INSTALL_COMMAND ""
+   BUILD_ALWAYS 1
+)
+
+add_dependencies(native_test_contract vm_api)
 
