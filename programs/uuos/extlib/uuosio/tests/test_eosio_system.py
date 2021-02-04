@@ -1,6 +1,8 @@
 import os
 import time
 import json
+import platform
+
 from uuosio.chaintester import ChainTester
 from uuosio import log, uuos
 logger = log.get_logger(__name__)
@@ -13,6 +15,10 @@ class TestMicropython(object):
     @classmethod
     def setup_class(cls):
         cls.tester = ChainTester()
+        if platform.system() == 'Linux':
+            cls.so = 'so'
+        else:
+            cls.so = 'dylib'
 
     @classmethod
     def teardown_class(cls):
@@ -26,7 +32,7 @@ class TestMicropython(object):
 
     def test_native_contract(self):
         uuos.enable_native_contracts(True)
-        eosio_contract = 'build/libraries/vm_api/test/libnative_eosio_system.dylib'
+        eosio_contract = f'build/libraries/vm_api/test/libnative_eosio_system.{self.so}'
         ret = uuos.set_native_contract(uuos.s2n('eosio'), eosio_contract)
         assert ret
 
