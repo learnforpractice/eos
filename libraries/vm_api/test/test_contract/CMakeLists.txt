@@ -7,6 +7,8 @@ add_subdirectory(eosio.system)
 add_subdirectory(eosio.token)
 # add_subdirectory(test)
 
+# add_native_executable( test test.cpp )
+
 
 if( TRUE )
 

@@ -38,7 +38,9 @@ class TestMicropython(object):
         ret = uuos.set_native_contract(uuos.s2n('eosio'), eosio_contract)
         assert ret
 
+        logger.info(self.tester.api.get_account('hello'))
         self.tester.buy_ram_bytes('hello', 'hello', 10*1024*1024)
+        logger.info(self.tester.api.get_account('hello'))
 
         uuos.enable_native_contracts(False)
         uuos.set_native_contract(uuos.s2n('eosio.mpy'), '')

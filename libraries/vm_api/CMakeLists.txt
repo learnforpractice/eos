@@ -34,7 +34,29 @@ target_include_directories(vm_api PRIVATE
 )
 
 
-add_subdirectory(test)
+set(EOSIO_WASM_OLD_BEHAVIOR "Off")
+find_package(eosio.cdt REQUIRED)
+
+include(ExternalProject)
+
+message( STATUS "Building contracts in directory `eosio.contracts/contracts`" )
+
+# -DCMAKE_CXX_COMPILER="/usr/local/Cellar/eosio.cdt/1.7.0//opt/eosio.cdt/bin/clang-7"
+#-DCMAKE_C_COMPILER="/usr/local/Cellar/eosio.cdt/1.7.0//opt/eosio.cdt/bin/clang-7"
+
+ExternalProject_Add(
+   native_test_contract
+   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test
+   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test
+   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DVM_API_LIB=${CMAKE_CURRENT_BINARY_DIR}/libvm_api.dylib
+   UPDATE_COMMAND ""
+   PATCH_COMMAND ""
+   TEST_COMMAND ""
+   INSTALL_COMMAND ""
+   BUILD_ALWAYS 1
+)
+
+add_dependencies(native_test_contract vm_api)
 
 # ExternalProject_Add(
 #    native_test_contract
