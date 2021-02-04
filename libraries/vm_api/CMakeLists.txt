@@ -34,25 +34,21 @@ target_include_directories(vm_api PRIVATE
 )
 
 
-# set(EOSIO_WASM_OLD_BEHAVIOR "Off")
-# find_package(eosio.cdt REQUIRED)
+add_subdirectory(test)
 
-include(ExternalProject)
+# ExternalProject_Add(
+#    native_test_contract
+#    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/test_contract
+#    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test/test_contract
+#    CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DVM_API_LIB=${CMAKE_CURRENT_BINARY_DIR}/libvm_api.dylib
+#    UPDATE_COMMAND ""
+#    PATCH_COMMAND ""
+#    TEST_COMMAND ""
+#    INSTALL_COMMAND ""
+#    BUILD_ALWAYS 1
+# )
 
-message( STATUS "Building contracts in directory `eosio.contracts/contracts`" )
+# add_dependencies(native_test_contract vm_api)
 
 
-ExternalProject_Add(
-   native_test_contract
-   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/test_contract
-   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test/test_contract
-   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DVM_API_LIB=${CMAKE_CURRENT_BINARY_DIR}/libvm_api.dylib
-   UPDATE_COMMAND ""
-   PATCH_COMMAND ""
-   TEST_COMMAND ""
-   INSTALL_COMMAND ""
-   BUILD_ALWAYS 1
-)
-
-add_dependencies(native_test_contract vm_api)
 
