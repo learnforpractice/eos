@@ -19,6 +19,8 @@ target_include_directories(eosio.system_native
    ${CMAKE_CURRENT_SOURCE_DIR}/include
    ${CMAKE_CURRENT_SOURCE_DIR}/../eosio.token/include)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
+
 target_compile_definitions(eosio.system_native PRIVATE __NATIVE)
 
 target_compile_options(eosio.system_native PRIVATE -O=0 -no-abigen)
