@@ -219,6 +219,6 @@ class vm_api4c_proxy {
 
 };
 
-void int_vm_api4c_proxy(vm_api4c_proxy *proxy);
-vm_api4c_proxy *get_vm_api4c_proxy();
+extern "C" void int_vm_api4c_proxy(vm_api4c_proxy *proxy);
+extern "C" vm_api4c_proxy *get_vm_api4c_proxy();
 
