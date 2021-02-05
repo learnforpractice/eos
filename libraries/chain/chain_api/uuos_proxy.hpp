@@ -6,12 +6,13 @@
 #include <memory>
 
 #include "chain_proxy.hpp"
+#include "apply_context_proxy.hpp"
 
 using namespace std;
 
 
 class chain_rpc_api_proxy;
-class vm_api_proxy;
+class apply_context_proxy;
 
 typedef chain_rpc_api_proxy *(*fn_new_chain_api)(eosio::chain::controller *c);
 typedef void (*fn_native_apply)(uint64_t a, uint64_t b, uint64_t c);
@@ -27,7 +28,7 @@ class uuos_proxy {
         uuos_proxy();
         virtual ~uuos_proxy();
 
-        virtual vm_api_proxy *get_vm_api_proxy();
+        virtual apply_context_proxy *get_apply_context_proxy();
         virtual void set_log_level(string& logger_name, int level);
         
         virtual chain_proxy* chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
@@ -55,7 +56,7 @@ class uuos_proxy {
 
     private:
         string last_error;
-        std::shared_ptr<vm_api_proxy> _vm_api_proxy;
+        std::shared_ptr<apply_context_proxy> _apply_context_proxy;
         bool native_contracts_enabled = false;
         std::map<uint64_t, native_contract> debug_contracts;
 };

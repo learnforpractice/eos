@@ -87,9 +87,9 @@ void apply_context::check_unprivileged_resource_usage(const char* resource, cons
 void apply_context::exec_one()
 {
    auto cleanup = fc::make_scoped_exit([&](){
-      get_uuos_proxy()->get_vm_api_proxy()->set_apply_context(nullptr);
+      get_uuos_proxy()->get_apply_context_proxy()->set_context(nullptr);
    });
-   get_uuos_proxy()->get_vm_api_proxy()->set_apply_context(this);
+   get_uuos_proxy()->get_apply_context_proxy()->set_context(this);
 
    auto start = fc::time_point::now();
 

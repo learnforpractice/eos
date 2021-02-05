@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 
 #include "uuos_proxy.hpp"
+#include "apply_context_proxy.hpp"
 #include "../vm_api/vm_api_proxy.hpp"
 #include <stacktrace.h>
 
@@ -54,7 +55,7 @@ extern "C" void uuos_init_chain() {
         return;
     }
 
-    init_vm_api(s_proxy->get_vm_api_proxy());
+    init_vm_api(s_proxy->get_apply_context_proxy()->get_vm_api_proxy());
 }
 
 extern "C" uuos_proxy *get_uuos_proxy() {

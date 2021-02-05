@@ -7,20 +7,20 @@
 #include "uuos_proxy.hpp"
 #include "chain_macro.hpp"
 #include "native_object.hpp"
-
+#include "apply_context_proxy.hpp"
 #include "../vm_api/vm_api_proxy.hpp"
 
 using namespace eosio::chain;
 
 uuos_proxy::uuos_proxy() {
-    this->_vm_api_proxy = std::make_shared<vm_api_proxy>();
+    this->_apply_context_proxy = std::make_shared<apply_context_proxy>();
 }
 
 uuos_proxy::~uuos_proxy() {
 }
 
-vm_api_proxy *uuos_proxy::get_vm_api_proxy() {
-    return _vm_api_proxy.get();
+apply_context_proxy *uuos_proxy::get_apply_context_proxy() {
+    return _apply_context_proxy.get();
 }
 
 chain_proxy* uuos_proxy::chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
