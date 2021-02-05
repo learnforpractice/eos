@@ -7,6 +7,7 @@
 
 #include "chain_proxy.hpp"
 #include "apply_context_proxy.hpp"
+#include "../vm_api/vm_api_proxy.hpp"
 
 using namespace std;
 
@@ -29,6 +30,8 @@ class uuos_proxy {
         virtual ~uuos_proxy();
 
         virtual apply_context_proxy *get_apply_context_proxy();
+        virtual vm_api_proxy *get_vm_api_proxy();
+
         virtual void set_log_level(string& logger_name, int level);
         
         virtual chain_proxy* chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);

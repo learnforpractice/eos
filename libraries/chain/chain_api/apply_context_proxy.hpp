@@ -17,7 +17,7 @@ public:
     apply_context_proxy();
     virtual ~apply_context_proxy();
     virtual void set_context(eosio::chain::apply_context* ctx);
-    virtual eosio::chain::apply_context& get_context();
+    virtual eosio::chain::apply_context* get_context();
     virtual vm_api_proxy *get_vm_api_proxy();
     virtual void checktime();
 

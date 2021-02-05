@@ -22,9 +22,9 @@ void apply_context_proxy::set_context(apply_context* ctx) {
     this->_vm_api_proxy->set_apply_context(ctx);
 }
 
-apply_context& apply_context_proxy::get_context() {
+apply_context *apply_context_proxy::get_context() {
 //    get_vm_api()->eosio_assert(this->ctx != nullptr, "apply_context can not be null");
-    return *this->ctx;
+    return this->ctx;
 }
 
 vm_api_proxy *apply_context_proxy::get_vm_api_proxy() {
@@ -32,17 +32,17 @@ vm_api_proxy *apply_context_proxy::get_vm_api_proxy() {
 }
 
 void apply_context_proxy::timer_set_expiration_callback(void(*func)(void*), void* user) {
-    get_context().trx_context.transaction_timer.set_expiration_callback(func, user);
+    get_context()->trx_context.transaction_timer.set_expiration_callback(func, user);
 }
 
 bool apply_context_proxy::timer_expired(void(*func)(void*), void* user) {
-    return get_context().trx_context.transaction_timer.expired;
+    return get_context()->trx_context.transaction_timer.expired;
 }
 
 void apply_context_proxy::checktime() {
-    get_context().trx_context.checktime();
+    get_context()->trx_context.checktime();
 }
 
 bool apply_context_proxy::contracts_console() {
-    return get_context().control.contracts_console();
+    return get_context()->control.contracts_console();
 }

@@ -66,3 +66,11 @@ extern "C" uuos_proxy *get_uuos_proxy() {
     }
     return s_proxy;
 }
+
+extern "C" apply_context_proxy *get_apply_context_proxy() {
+    return get_uuos_proxy()->get_apply_context_proxy();
+}
+
+extern "C" vm_api_proxy *get_vm_api_proxy() {
+    return get_apply_context_proxy()->get_vm_api_proxy();
+}
