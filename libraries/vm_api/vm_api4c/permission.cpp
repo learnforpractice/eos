@@ -1,16 +1,7 @@
-extern "C" {
-/* import: 'env' 'check_transaction_authorization' */
-u32 (*Z_envZ_check_transaction_authorizationZ_iiiiiii)(u32, u32, u32, u32, u32, u32);
-/* import: 'env' 'check_permission_authorization' */
-u32 (*Z_envZ_check_permission_authorizationZ_ijjiiiij)(u64, u64, u32, u32, u32, u32, u64);
-/* import: 'env' 'get_permission_last_used' */
-u64 (*Z_envZ_get_permission_last_usedZ_jjj)(u64, u64);
-/* import: 'env' 'get_account_creation_time' */
-u64 (*Z_envZ_get_account_creation_timeZ_jj)(u64);
+#include "vm_api4c.hpp"
+#include <vm_api_proxy.hpp>
 
-}
-
-static u32 check_transaction_authorization( u32 trx_data_offset, u32 trx_size,
+u32 vm_api4c_proxy::check_transaction_authorization( u32 trx_data_offset, u32 trx_size,
                                  u32 pubkeys_data_offset, u32 pubkeys_size,
                                  u32 perms_data_offset, u32 perms_size
                                ) {
@@ -24,7 +15,7 @@ static u32 check_transaction_authorization( u32 trx_data_offset, u32 trx_size,
        );
 }
 
-static u32 check_permission_authorization( u64 account,
+u32 vm_api4c_proxy::check_permission_authorization( u64 account,
                                 u64 permission,
                                 u32 pubkeys_data_offset, u32 pubkeys_size,
                                 u32 perms_data_offset,   u32 perms_size,
@@ -41,11 +32,11 @@ static u32 check_permission_authorization( u64 account,
        );
 }
 
-static u64 get_permission_last_used( u64 account, u64 permission ) {
+u64 vm_api4c_proxy::get_permission_last_used( u64 account, u64 permission ) {
    return get_vm_api()->get_permission_last_used( account, permission );
 }
 
-static u64 get_account_creation_time( u64 account ) {
+u64 vm_api4c_proxy::get_account_creation_time( u64 account ) {
    return get_vm_api()->get_account_creation_time( account );
 }
 
