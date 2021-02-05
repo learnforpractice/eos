@@ -6,9 +6,9 @@ add_library(vm_api4c STATIC
     db.cpp
     permission.cpp
     print.cpp
+    privileged.cpp
     # softfloat.cpp
     # eosio_injection.cpp
-    # privileged.cpp
     wasm2c/wasm-rt-impl.c
     # jmp_stack.cpp
 )

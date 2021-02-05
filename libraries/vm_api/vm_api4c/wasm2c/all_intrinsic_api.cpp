@@ -1,5 +1,5 @@
-//eosio-cpp -o a.wasm -I/usr/local/Cellar/eosio.cdt//1.7.0/opt/eosio.cdt/include/eosiolib all_intrinsic_api.cpp
-
+//eosio-cpp -D__WASM -o a.wasm -I/usr/local/Cellar/eosio.cdt//1.7.0/opt/eosio.cdt/include/eosiolib all_intrinsic_api.cpp
+#include <capi/eosio/types.h>
 #include <capi/eosio/action.h>
 #include <capi/eosio/chain.h>
 #include <capi/eosio/crypto.h>
@@ -9,7 +9,6 @@
 #include <capi/eosio/privileged.h>
 #include <capi/eosio/system.h>
 #include <capi/eosio/transaction.h>
-#include <capi/eosio/types.h>
 
 extern "C" void apply(uint64_t a, uint64_t b, uint64_t c) {
             //chain.h
