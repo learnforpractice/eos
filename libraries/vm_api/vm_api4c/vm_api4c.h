@@ -223,10 +223,15 @@ extern void (*Z_envZ_eosio_assert_codeZ_vij)(u32, u64);
 extern void (*Z_envZ_eosio_exitZ_vi)(u32);
 
 
+typedef void* (*fn_offset_to_char_ptr)(u32 offset);
+typedef void* (*fn_offset_to_ptr)(u32 offset, u32 size);
+
+void init_vm_api4c();
 
 void *offset_to_ptr(u32 offset, u32 size);
 void *offset_to_char_ptr(u32 offset);
 
+void wasm_rt_on_trap(int code);
 
 #ifdef __cpulsplus
 }

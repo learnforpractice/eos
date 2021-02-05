@@ -218,3 +218,7 @@ class vm_api4c_proxy {
         virtual void preactivate_feature(u32 feature_offset);
 
 };
+
+void int_vm_api4c_proxy(vm_api4c_proxy *proxy);
+vm_api4c_proxy *get_vm_api4c_proxy();
+

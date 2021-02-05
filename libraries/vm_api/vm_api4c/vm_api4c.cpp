@@ -99,3 +99,19 @@ void assert_recover_key( u32 digest_offset, u32 sig_offset, u32 siglen, u32 pub_
    get_vm_api4c_proxy()->assert_recover_key(digest_offset, sig_offset, siglen, pub_offset, publen);
 }
 
+static fn_offset_to_ptr g_offset_to_ptr = 0;
+static fn_offset_to_char_ptr g_offset_to_char_ptr = 0;
+
+void set_memory_converter(fn_offset_to_ptr f1, fn_offset_to_char_ptr f2) {
+    g_offset_to_ptr = f1;
+    g_offset_to_char_ptr = f2;
+}
+
+void *offset_to_ptr(u32 offset, u32 size) {
+    return g_offset_to_ptr(offset, size);
+}
+
+void *offset_to_char_ptr(u32 offset) {
+    return g_offset_to_char_ptr(offset);
+}
+
