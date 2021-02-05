@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <vm_api/vm_api.h>
+#include "vm_api_proxy.hpp"
 #include "vm_api4c.h"
 
 static int is_feature_active( int64_t feature_name ) {
@@ -57,8 +57,8 @@ static void activate_feature( u64 f ) {
 }
 
 static void preactivate_feature(u32 feature_offset) {
-   char* feature = (char *)offset_to_ptr(feature_offset, 32);
-    get_vm_api()->preactivate_feature(feature, 32);
+    capi_checksum256* feature = (capi_checksum256 *)offset_to_ptr(feature_offset, 32);
+    get_vm_api()->preactivate_feature(feature);
 }
 
 

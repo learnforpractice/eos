@@ -33,19 +33,13 @@ static void _printn(u64 n) {
 }
 
 static void _printqf(u32 offset) {
-    float128_t *qf = (float128_t *)offset_to_ptr(offset, sizeof(float128_t));
+    long double *qf = (long double *)offset_to_ptr(offset, sizeof(long double));
     get_vm_api()->printqf(qf);
 }
 
 static void _prints_l(u32 s_offset, u32 size) {
     char *s = (char *)offset_to_ptr(s_offset, size);
-    if (get_vm_api()->is_in_apply_context) {
-        get_vm_api()->prints_l(s, size);
-    } else {
-      for (int i=0;i<size;i++) {
-         printf("%c", s[i]);
-      }
-    }
+    get_vm_api()->prints_l(s, size);
 }
 
 static void _printui(u64 u) {

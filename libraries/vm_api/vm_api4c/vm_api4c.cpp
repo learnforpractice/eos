@@ -3,14 +3,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "wasm-rt.h"
-#include <eosiolib/types.h>
-#include <vm_api/vm_api.h>
-//#include <chain_api.hpp>
+#include <capi/types.h>
 
-#include "src/interp.h"
+#include <uuos.hpp>
+
 #include "vm_api4c.h"
 
-using namespace wabt::interp;
+#define EOSIO_THROW(msg) get_vm_api_proxy()->eosio_assert(false, msg)
+#define EOSIO_ASSERT(test, msg) get_vm_api_proxy()->eosio_assert(test, msg)
+
 
 #define PAGE_SIZE (65536)
 
@@ -27,7 +28,7 @@ void *offset_to_char_ptr(u32 offset);
 
 
 static void _abort() {
-    get_vm_api()->eosio_abort();
+    get_vm_api()->eosio_exit(0);
 }
 
 extern "C" void vm_print_stacktrace(void);
@@ -107,17 +108,12 @@ void (*Z_envZ_abortZ_vv)(void);
 
 #include "db.cpp"
 
-static void _set_copy_memory_range(u32 start, u32 end) {
-    get_vm_api()->set_copy_memory_range((int)start, (int)end);
-}
-
 #include "action.cpp"
 #include "chain.cpp"
 #include "crypto.cpp"
 #include "permission.cpp"
 #include "system.cpp"
 #include "transaction.cpp"
-#include "token.cpp"
 #include "print.cpp"
 
 
@@ -128,13 +124,6 @@ void init_eosio_injection();
 void init_privileged();
 void init_compiler_builtins();
 
-
-u32 _call_native(u32 main_type, u32 sub_type, u32 input_offset, u32 input_size, u32 output_offset, u32 output_size) {
-    uint8_t *input = (uint8_t *)offset_to_ptr(input_offset, input_size);
-    uint8_t *output = (uint8_t *)offset_to_ptr(output_offset, output_size);
-    // return get_vm_api()->call_native(main_type, sub_type, input, input_size, output, output_size);
-}
-
 void init_vm_api4c() {
     static bool initialized = false;
     if (initialized) {
@@ -142,15 +131,12 @@ void init_vm_api4c() {
     }
     initialized = true;
 
-    Z_envZ_call_nativeZ_iiiiiii = _call_native;
-
     init_print();
 
     Z_envZ_n2sZ_ijii = _n2s;
 
     Z_envZ_get_codeZ_ijii = _get_code;
     Z_envZ_get_code_sizeZ_ij = _get_code_size;
-    Z_envZ_set_copy_memory_rangeZ_vii = _set_copy_memory_range;
     Z_envZ_s2nZ_jii = _s2n;
 
     init_action();
@@ -170,7 +156,7 @@ void init_vm_api4c() {
     init_privileged();
 
 //compiler_builtins.cpp
-    init_compiler_builtins();
+    // init_compiler_builtins();
 
 //system.cpp
     Z_envZ_eosio_assertZ_vii = eosio_assert;
@@ -179,9 +165,9 @@ void init_vm_api4c() {
     Z_envZ_current_timeZ_jv = current_time;
     Z_envZ_call_contractZ_vjii = call_contract;
     Z_envZ_call_contract_get_resultsZ_iii = call_contract_get_results;
-    Z_envZ_get_code_hashZ_ijii = get_code_hash;
+    // Z_envZ_get_code_hashZ_ijii = get_code_hash;
 
-//transaction.cpp
+// transaction.cpp
     Z_envZ_send_deferredZ_vijiii = send_deferred;
     Z_envZ_cancel_deferredZ_ii = cancel_deferred;
     Z_envZ_read_transactionZ_iii = read_transaction;
@@ -191,15 +177,6 @@ void init_vm_api4c() {
     Z_envZ_expirationZ_iv = expiration;
     Z_envZ_get_actionZ_iiiii = get_action;
     Z_envZ_get_context_free_dataZ_iiii = get_context_free_data;
-
-//token.cpp
-    Z_envZ_token_createZ_vjjj = token_create;
-    Z_envZ_token_issueZ_vjjjii = token_issue;
-    Z_envZ_token_transferZ_vjjjjii = token_transfer;
-
-    Z_envZ_token_openZ_vjjj = token_open;
-    Z_envZ_token_retireZ_vjjii = token_retire;
-    Z_envZ_token_closeZ_vjj = token_close;
 
     Z_envZ_abortZ_vv = _abort;
     Z_envZ_memcpyZ_iiii = _memcpy;

@@ -4,7 +4,7 @@
 #include <string.h>
 #include "vm_api4c.h"
 #include <softfloat.hpp>
-#include <vm_api/vm_api.h>
+#include <uuos.hpp>
 
 extern "C" {
 /* import: 'eosio_injection' 'checktime' */
@@ -85,10 +85,7 @@ void vm_checktime() {
         return;
     }
     counter = 0;
-
-    if (get_vm_api()->is_in_apply_context) {
-        get_vm_api()->checktime();
-    }
+    get_apply_context_proxy()->checktime();
 }
 
 static void call_depth_assert() {

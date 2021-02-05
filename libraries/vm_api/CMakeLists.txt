@@ -33,6 +33,8 @@ target_include_directories(vm_api PRIVATE
     ${CMAKE_SOURCE_DIR}/libraries/chain/chain_api
 )
 
+add_subdirectory(vm_api4c)
+
 # set(EOSIO_WASM_OLD_BEHAVIOR "Off")
 # find_package(eosio.cdt REQUIRED)
 

@@ -24,12 +24,12 @@ extern "C" {
 static void send_deferred(u32 sender_id_offset, u64 payer, u32 serialized_transaction_offset, u32 size, u32 replace_existing) {
    uint128_t *sender_id = (uint128_t *)offset_to_ptr(sender_id_offset, sizeof(uint128_t));
    const char *serialized_transaction = (char *)offset_to_ptr(serialized_transaction_offset, size);
-   get_vm_api()->send_deferred(sender_id, payer,serialized_transaction, size, replace_existing);
+   get_vm_api()->send_deferred(*sender_id, payer,serialized_transaction, size, replace_existing);
 }
 
 static u32 cancel_deferred(u32 sender_id_offset) {
    uint128_t *sender_id = (uint128_t *)offset_to_ptr(sender_id_offset, sizeof(uint128_t));
-   return (u32)get_vm_api()->cancel_deferred(sender_id);
+   return (u32)get_vm_api()->cancel_deferred(*sender_id);
 }
 
 static u32 read_transaction(u32 buffer_offset, u32 size) {

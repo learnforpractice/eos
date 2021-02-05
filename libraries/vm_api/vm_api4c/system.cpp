@@ -62,12 +62,3 @@ static u32 call_contract_get_results(u32 results_offset, u32 size1) {
    char *results = (char *)offset_to_ptr(results_offset, size1);
    return get_vm_api()->call_contract_get_results(results, size1);
 }
-
-static void wasm_syscall() {
-   EOSIO_ASSERT(0, "bad syscall");
-}
-
-static u32 get_code_hash(u64 contract, u32 hash_offset, u32 size) {
-   char *hash = (char *)offset_to_ptr(hash_offset, size);
-   return get_vm_api()->get_code_hash(contract, hash, size);
-}
