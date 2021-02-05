@@ -10,10 +10,10 @@
 using namespace std;
 
 
-class chain_api_proxy;
+class chain_rpc_api_proxy;
 class vm_api_proxy;
 
-typedef chain_api_proxy *(*fn_new_chain_api)(eosio::chain::controller *c);
+typedef chain_rpc_api_proxy *(*fn_new_chain_api)(eosio::chain::controller *c);
 typedef void (*fn_native_apply)(uint64_t a, uint64_t b, uint64_t c);
 
 struct native_contract {

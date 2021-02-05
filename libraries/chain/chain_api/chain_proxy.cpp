@@ -31,8 +31,8 @@ chain_proxy::chain_proxy(string& config, string& _genesis, string& protocol_feat
     this->cm->init();
     this->c = this->cm->c;
 
-    chain_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
-    this->_api_proxy = std::shared_ptr<chain_api_proxy>(api);
+    chain_rpc_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
+    this->_api_proxy = std::shared_ptr<chain_rpc_api_proxy>(api);
 }
 
 chain_proxy::~chain_proxy() {
@@ -43,7 +43,7 @@ controller* chain_proxy::chain() {
     return this->c.get();
 }
 
-chain_api_proxy* chain_proxy::api_proxy() {
+chain_rpc_api_proxy* chain_proxy::api_proxy() {
     return this->_api_proxy.get();
 }
 

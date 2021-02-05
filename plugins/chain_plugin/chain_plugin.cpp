@@ -3448,25 +3448,25 @@ eosio::chain::backing_store_type read_only::get_backing_store() const {
 
 FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ignore2)(ignore3)(core_symbol)(ignore4) )
 
-#include <chain_api_proxy.hpp>
+#include <chain_rpc_api_proxy.hpp>
 
 #define max_abi_time (10000)
 using namespace eosio::chain_apis;
 using namespace eosio;
 
-chain_api_proxy::chain_api_proxy(eosio::chain::controller *c) {
+chain_rpc_api_proxy::chain_rpc_api_proxy(eosio::chain::controller *c) {
    this->c = c;
 }
 
-chain_api_proxy::~chain_api_proxy() {
+chain_rpc_api_proxy::~chain_rpc_api_proxy() {
 
 }
 
-eosio::chain::controller* chain_api_proxy::chain() {
+eosio::chain::controller* chain_rpc_api_proxy::chain() {
     return this->c;
 }
 
-int chain_api_proxy::get_info(string& result) {
+int chain_rpc_api_proxy::get_info(string& result) {
    auto next = [&result](const fc::exception_ptr& ex) {
       result = ex->to_detail_string();
    };
@@ -3483,7 +3483,7 @@ int chain_api_proxy::get_info(string& result) {
 }
 
 #define CHAIN_API_RO(api_name) \
-int chain_api_proxy::api_name(string& params, string& result) { \
+int chain_rpc_api_proxy::api_name(string& params, string& result) { \
    auto next = [&result](const fc::exception_ptr& ex) { \
       result = ex->to_detail_string(); \
    }; \
@@ -3521,8 +3521,8 @@ CHAIN_API_RO(get_required_keys)
 CHAIN_API_RO(get_transaction_id)
 
 #include <uuos.hpp>
-chain_api_proxy *new_chain_api_proxy(eosio::chain::controller *c) {
-   return new chain_api_proxy(c);
+chain_rpc_api_proxy *new_chain_api_proxy(eosio::chain::controller *c) {
+   return new chain_rpc_api_proxy(c);
 }
 
 extern "C" void init_new_chain_api() {

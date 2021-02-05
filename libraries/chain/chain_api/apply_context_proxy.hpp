@@ -1,10 +1,12 @@
 #pragma once
+#include <string>
 #include <eosio/chain/controller.hpp>
 
 namespace eosio { namespace chain {
 
 class apply_context;
 class wasm_interface;
+class controller;
 
 class apply_context_proxy {
 

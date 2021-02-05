@@ -128,12 +128,11 @@ add_library( eosio_chain
 
               chain_api/chain_manager.cpp
               chain_api/chain_proxy.cpp
-              chain_api/chain_api_proxy.cpp
+              chain_api/chain_rpc_api_proxy.cpp
               chain_api/uuos_proxy.cpp
               chain_api/native_object.cpp
               chain_api/uuos.cpp
-
-              apply_context_proxy.cpp
+              chain_api/apply_context_proxy.cpp
 
              ${CHAIN_EOSVMOC_SOURCES}
              ${CHAIN_EOSVM_SOURCES}

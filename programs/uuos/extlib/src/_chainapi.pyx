@@ -25,14 +25,14 @@ cdef extern from "<Python.h>":
 cdef extern from "<uuos.hpp>":
     void uuosext_init()
 
-    ctypedef struct chain_api_proxy:
+    ctypedef struct chain_rpc_api_proxy:
         int get_info(string& result)
         int get_account(string& params, string& result)
 
     ctypedef struct chain_proxy:
-        chain_api_proxy* api_proxy()
+        chain_rpc_api_proxy* api_proxy()
 
-    chain_api_proxy *chain_api(uint64_t ptr)
+    chain_rpc_api_proxy *chain_api(uint64_t ptr)
 
 def get_info(uint64_t ptr):
     cdef string result

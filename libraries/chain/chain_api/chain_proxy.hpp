@@ -5,7 +5,7 @@
 #include <memory>
 #include <map>
 
-#include "chain_api_proxy.hpp"
+#include "chain_rpc_api_proxy.hpp"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class chain_proxy {
         virtual ~chain_proxy();
 
         virtual eosio::chain::controller* chain();
-        virtual chain_api_proxy* api_proxy();
+        virtual chain_rpc_api_proxy* api_proxy();
 
         virtual void say_hello();
 
@@ -133,7 +133,7 @@ class chain_proxy {
     private:
         std::unique_ptr<eosio::chain::chain_manager> cm;
         std::shared_ptr<eosio::chain::controller> c;
-        std::shared_ptr<chain_api_proxy> _api_proxy;
+        std::shared_ptr<chain_rpc_api_proxy> _api_proxy;
         std::map<std::string, std::shared_ptr<eosio::chain::abi_serializer>> abi_cache;
         string last_error;
 };

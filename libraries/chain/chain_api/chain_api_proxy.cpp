@@ -1,2 +1,2 @@
 #include <eosio/chain/controller.hpp>
-#include "chain_api_proxy.hpp"
+#include "chain_rpc_api_proxy.hpp"

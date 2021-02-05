@@ -2,7 +2,7 @@
 #include <eosio/chain/apply_context.hpp>
 #include <eosio/chain/transaction_context.hpp>
 
-#include <eosio/chain/apply_context_proxy.hpp>
+#include "apply_context_proxy.hpp"
 
 #include <dlfcn.h>
 
