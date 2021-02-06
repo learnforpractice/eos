@@ -16,6 +16,7 @@
 #include <boost/exception/diagnostic_information.hpp>
 
 #include "config.hpp"
+#include "uuos.hpp"
 
 using namespace appbase;
 using namespace eosio;
@@ -105,8 +106,14 @@ enum return_codes {
    NODE_MANAGEMENT_SUCCESS = 5
 };
 
+extern "C" int start_python(int argc, char **argv);
+extern "C" void init_new_chain_api();
+
 int main(int argc, char** argv)
 {
+   uuos_init_chain(nullptr, nullptr);
+   init_new_chain_api();
+
    try {
       app().set_version(eosio::nodeos::config::version);
       app().set_version_string(eosio::version::version_client());

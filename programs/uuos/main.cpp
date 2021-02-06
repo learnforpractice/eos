@@ -192,7 +192,7 @@ int eos_init(int argc, char** argv)
       return OTHER_FAIL;
    }
 
-   ilog("${name} successfully exiting", ("name", nodeos::config::node_executable_name));
+   ilog("${name} successfully initialized", ("name", nodeos::config::node_executable_name));
    return SUCCESS;
 }
 

@@ -1,4 +1,9 @@
+import sys
 from uuosio import uuos
 if __name__ == "__main__":
-    uuos.init()
+    ret = uuos.init()
+    print('++++ret:', ret)
+    if not ret == 0:
+        sys.exit(ret)
     uuos.exec()
+    print('done!')

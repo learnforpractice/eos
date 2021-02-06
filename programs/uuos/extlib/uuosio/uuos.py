@@ -60,7 +60,7 @@ def is_native_contracts_enabled():
     return _uuos.is_native_contracts_enabled()
 
 def init():
-    _uuos.init(sys.argv())
+    return _uuos.init(sys.argv)
 
 def exec():
     _uuos.exec()
