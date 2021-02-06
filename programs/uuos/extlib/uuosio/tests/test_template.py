@@ -4,6 +4,7 @@ import pytest
 import logging
 import tempfile
 from uuosio import chain, chainapi, uuos
+from uuosio.chaintester import ChainTester
 from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO,
@@ -11,32 +12,15 @@ logging.basicConfig(level=logging.INFO,
 
 logger=logging.getLogger(__name__)
 
-data_dir = tempfile.mkdtemp()
-config_dir = tempfile.mkdtemp()
-
-class Template(object):
+class TestTemplate(object):
 
     @classmethod
     def setup_class(cls):
-        uuos.set_log_level('default', 0)
-        uuos.set_block_interval_ms(1000)
-
-        cls.chain_config = json.dumps(chain_config)
-        cls.genesis_test = json.dumps(genesis_test)
-        uuos.set_log_level('default', 10)
-        cls.c = chain.Chain(cls.chain_config, cls.genesis_test, os.path.join(config_dir, "protocol_features"), "")
-        cls.c.startup(True)
-        cls.api = chainapi.ChainApi(cls.c.ptr)
-
-        logger.info(cls.api.get_info())
-        logger.info(cls.api.get_account('eosio'))
-
-        self.feature_digests = []
-        uuos.set_log_level('default', 0)
+        cls.tester = ChainTester()
 
     @classmethod
     def teardown_class(cls):
-        cls.c.free()
+        cls.tester.free()
 
     def setup_method(self, method):
         logger.warning('test start: %s', method.__name__)
