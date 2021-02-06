@@ -7,8 +7,8 @@ from uuosio.chaintester import ChainTester
 from uuosio import log, uuos
 logger = log.get_logger(__name__)
 
-print(os.getpid())
-input('<<<')
+# print(os.getpid())
+# input('<<<')
 
 class TestMicropython(object):
 

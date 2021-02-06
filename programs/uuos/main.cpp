@@ -17,6 +17,8 @@
 
 #include "config.hpp"
 
+#include "uuos.hpp"
+
 using namespace appbase;
 using namespace eosio;
 
@@ -106,15 +108,21 @@ enum return_codes {
 };
 
 extern "C" int start_python(int argc, char **argv);
-extern "C" void uuos_init_chain();
 extern "C" void init_new_chain_api();
+int eos_init(int argc, char** argv);
+int eos_exec();
 
 int main(int argc, char** argv)
 {
-   uuos_init_chain();
+   uuos_init_chain(eos_init, eos_exec);
    init_new_chain_api();
 
    return start_python(argc, argv);
+}
+
+
+int eos_init(int argc, char** argv)
+{
    try {
       app().set_version(eosio::nodeos::config::version);
       app().set_version_string(eosio::version::version_client());
@@ -148,6 +156,49 @@ int main(int argc, char** argv)
       ilog("${name} data directory is ${d}", ("name", nodeos::config::node_executable_name)("d", app().data_dir().string()));
       app().startup();
       app().set_thread_priority_max();
+//      app().exec();
+   } catch( const extract_genesis_state_exception& e ) {
+      return EXTRACTED_GENESIS;
+   } catch( const fixed_reversible_db_exception& e ) {
+      return FIXED_REVERSIBLE;
+   } catch( const node_management_success& e ) {
+      return NODE_MANAGEMENT_SUCCESS;
+   } catch (const std_exception_wrapper& e) {
+      try {
+         std::rethrow_exception(e.get_inner_exception());
+      } catch (const std::system_error&i) {
+         if (chainbase::db_error_code::dirty == i.code().value()) {
+            elog("Database dirty flag set (likely due to unclean shutdown): replay required" );
+            return DATABASE_DIRTY;
+         }
+      } catch (...) { }
+
+      elog( "${e}", ("e",e.to_detail_string()));
+      return OTHER_FAIL;
+   } catch( const fc::exception& e ) {
+      elog( "${e}", ("e", e.to_detail_string()));
+      return OTHER_FAIL;
+   } catch( const boost::interprocess::bad_alloc& e ) {
+      elog("bad alloc");
+      return BAD_ALLOC;
+   } catch( const boost::exception& e ) {
+      elog("${e}", ("e",boost::diagnostic_information(e)));
+      return OTHER_FAIL;
+   } catch( const std::exception& e ) {
+      elog("${e}", ("e",e.what()));
+      return OTHER_FAIL;
+   } catch( ... ) {
+      elog("unknown exception");
+      return OTHER_FAIL;
+   }
+
+   ilog("${name} successfully exiting", ("name", nodeos::config::node_executable_name));
+   return SUCCESS;
+}
+
+int eos_exec()
+{
+   try {
       app().exec();
    } catch( const extract_genesis_state_exception& e ) {
       return EXTRACTED_GENESIS;

@@ -6,6 +6,7 @@ from libcpp.vector cimport vector
 from libcpp.map cimport map
 from libcpp cimport bool
 from libc.stdlib cimport malloc
+from libc.stdlib cimport free
 
 
 cdef extern from * :
@@ -44,6 +45,9 @@ cdef extern from "<uuos.hpp>":
         string get_native_contract(uint64_t contract);
         void enable_native_contracts(bool debug);
         bool is_native_contracts_enabled();
+
+        int eos_init(int argc, char** argv);
+        int eos_exec();
 
     uuos_proxy *get_uuos_proxy()
 
@@ -94,4 +98,16 @@ def enable_native_contracts(bool debug):
 def is_native_contracts_enabled():
     return get_uuos_proxy().is_native_contracts_enabled()
 
+def init(args):
+    cdef int argc;
+    cdef char **argv
 
+    argc = len(args)
+    argv = <char **>malloc(argc * sizeof(char *))
+    for i in range(argc):
+        argv[i] = args[i]
+
+    return get_uuos_proxy().eos_init(argc, argv)
+
+def exec():
+    return get_uuos_proxy().eos_exec()

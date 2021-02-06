@@ -1,3 +1,4 @@
+import sys
 from . import _uuos
 
 class NativeType:
@@ -57,3 +58,9 @@ def enable_native_contracts(debug):
 
 def is_native_contracts_enabled():
     return _uuos.is_native_contracts_enabled()
+
+def init():
+    _uuos.init(sys.argv())
+
+def exec():
+    _uuos.exec()

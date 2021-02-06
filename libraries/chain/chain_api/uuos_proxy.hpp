@@ -24,6 +24,9 @@ struct native_contract {
     fn_native_apply apply;
 };
 
+typedef int (*fn_eos_init)(int argc, char** argv);
+typedef int (*fn_eos_exec)();
+
 class uuos_proxy {
     public:
         uuos_proxy();
@@ -56,6 +59,9 @@ class uuos_proxy {
         virtual bool is_native_contracts_enabled();
 
         fn_new_chain_api new_chain_api = nullptr;
+
+        fn_eos_init eos_init;
+        fn_eos_exec eos_exec;
 
     private:
         string last_error;
