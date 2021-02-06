@@ -25,18 +25,29 @@ void chain_proxy::set_last_error(string& error) {
     last_error = error;
 }
 
-chain_proxy::chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir)
+chain_proxy::chain_proxy()
 {
+}
+
+chain_proxy::~chain_proxy() {
+
+}
+
+int chain_proxy::init(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
     cm = std::make_unique<chain_manager>(config, _genesis, protocol_features_dir, snapshot_dir);
     this->cm->init();
     this->c = this->cm->c;
 
     chain_rpc_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
     this->_api_proxy = std::shared_ptr<chain_rpc_api_proxy>(api);
+    return 1;
 }
 
-chain_proxy::~chain_proxy() {
-
+int chain_proxy::attach(eosio::chain::controller* c) {
+    this->c = std::unique_ptr<eosio::chain::controller>(c);
+    chain_rpc_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
+    this->_api_proxy = std::shared_ptr<chain_rpc_api_proxy>(api);
+    return 1;
 }
 
 controller* chain_proxy::chain() {

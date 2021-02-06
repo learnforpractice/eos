@@ -19,8 +19,10 @@ namespace eosio {
 
 class chain_proxy {
     public:
-        chain_proxy(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+        chain_proxy();
         virtual ~chain_proxy();
+        virtual int init(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir);
+        virtual int attach(eosio::chain::controller* c);
 
         virtual eosio::chain::controller* chain();
         virtual chain_rpc_api_proxy* api_proxy();
