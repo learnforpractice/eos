@@ -25,17 +25,17 @@ else:
 version = platform.python_version_tuple()
 version = '%s.%s' % (version[0], version[1])
 
-cur_dir = os.path.dirname(__file__)
-test_dir = os.path.join(cur_dir, 'uuosio/tests/contracts')
-for root, dirs, files in os.walk(test_dir):
-    print(root)
-    tests = []
-    for file in files:
-        if file.endswith('.pyc'):
-            continue
-        tests.append(os.path.join(root, file))
-    install_dir = os.path.join(f'lib/python{version}/site-packages', root.replace(cur_dir, ''))
-    data_files.append((install_dir, tests))
+# cur_dir = os.path.dirname(__file__)
+# test_dir = os.path.join(cur_dir, 'uuosio/tests/contracts')
+# for root, dirs, files in os.walk(test_dir):
+#     print(root)
+#     tests = []
+#     for file in files:
+#         if file.endswith('.pyc'):
+#             continue
+#         tests.append(os.path.join(root, file))
+#     install_dir = os.path.join(f'lib/python{version}/site-packages', root.replace(cur_dir, ''))
+#     data_files.append((install_dir, tests))
 
 setup(
     name="uuosio",
@@ -44,11 +44,19 @@ setup(
     author='The UUOSIO Team',
     license="MIT",
     packages=['uuosio'],
-    package_dir={'uuosio': 'uuosio/', 'uuosio/tests': 'uuosio/tests'},
-    # package_data={'': ['data/hello.txt', 'data/hello2.txt', 'uuosio/tests/*']},
+    package_dir={'uuosio': 'uuosio'},
+    package_data={'uuosio': ['tests/contracts/eosio.bios/*',
+                             'tests/contracts/eosio.msig/*',
+                             'tests/contracts/eosio.system/*',
+                             'tests/contracts/eosio.token/*',
+                             'tests/contracts/eosio.wrap/*',
+                             'tests/contracts/micropython/*',
+                             'tests/test_template.py',
+                            ]
+                },
     data_files = data_files,
     scripts=['bin/run-uuos'],
-    install_requires=['mpy-cross'],
+    install_requires=['mpy-cross', 'ujson'],
     tests_require=['pytest'],
     setup_requires=setup_requires,
     include_package_data=True

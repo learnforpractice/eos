@@ -44,10 +44,7 @@ class Template(object):
     def teardown_method(self, method):
         pass
 
-    def test_1(self):
-        _id = self.c.get_block_id_for_num(1)
-        logger.info(_id)
-
-        _id = self.c.id()
-        logger.info(_id)
+    def test_hello(self):
+        r = self.tester.push_action('eosio.mpy', 'hellompy', b'', {'alice':'active'})
+        logger.info(r['action_traces'][0]['console'])
 

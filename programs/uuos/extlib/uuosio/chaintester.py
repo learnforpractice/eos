@@ -197,7 +197,7 @@ class ChainTester(object):
                 'eosio.token',
                 'eosio.vpay',
                 'eosio.rex',
-                'eosio.reserve',
+                'eosio.reserv',
                 'eosio.mpy',
 #                'uuos',
                 'hello',
