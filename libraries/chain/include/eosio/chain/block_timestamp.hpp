@@ -63,12 +63,12 @@ namespace eosio { namespace chain {
       void set_time_point(const fc::time_point& t) {
          auto micro_since_epoch = t.time_since_epoch();
          auto msec_since_epoch  = micro_since_epoch.count() / 1000;
-         slot = ( msec_since_epoch - EpochMs ) / config::get_block_interval_ms();
+         slot = ( msec_since_epoch - EpochMs ) / config::default_block_interval_ms;
       }
 
       void set_time_point(const fc::time_point_sec& t) {
          uint64_t  sec_since_epoch = t.sec_since_epoch();
-         slot = (sec_since_epoch * 1000 - EpochMs) / config::get_block_interval_ms();
+         slot = (sec_since_epoch * 1000 - EpochMs) / config::default_block_interval_ms;
       }
    }; // block_timestamp
 
