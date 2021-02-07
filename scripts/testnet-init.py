@@ -20,6 +20,7 @@ logger=logging.getLogger(__name__)
 # handler = logging.StreamHandler()
 # handler.setFormatter(formatter)
 
+cur_dir = os.path.dirname(__file__)
 
 config.setup_eos_network()
 
@@ -58,8 +59,8 @@ key2 = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
 def deploy_contract(account_name, contract_name, contracts_path=None):
     if not contracts_path:
         contracts_path = os.path.dirname(__file__)
-        contracts_path = '../../../build/externals/eosio.contracts'
-        contracts_path = '.'
+        # contracts_path = '../../../build/externals/eosio.contracts'
+        # contracts_path = '.'
         contracts_path = os.path.join(contracts_path, f'contracts/{contract_name}')
 
     code_path = os.path.join(contracts_path, f'{contract_name}.wasm')
@@ -87,9 +88,9 @@ def deploy_contract(account_name, contract_name, contracts_path=None):
 
 def deploy_micropython_contract():
     logger.info("++++++++deploy_micropython_contract")
-    code_path = './contracts/micropython/micropython_uuos.wasm'
-    code_path = './contracts/micropython/micropython_eosio.wasm'
-    abi_path = './contracts/micropython/micropython.abi'
+    code_path = os.path.join(cur_dir, './contracts/micropython/micropython_uuos.wasm')
+    code_path = os.path.join(cur_dir, './contracts/micropython/micropython.wasm')
+    abi_path = os.path.join(cur_dir, './contracts/micropython/micropython.abi')
 
     code = open(code_path, 'rb').read()
     abi = open(abi_path, 'rb').read()
@@ -308,3 +309,22 @@ while False:
     logger.info(f'AVG: {elapsed/10}')
     logger.info(uuosapi.get_balance('hello'))
     time.sleep(2.0)
+
+accounts = (
+    'hello',
+    'helloworld11',
+    'helloworld12',
+    'helloworld13',
+    'helloworld14',
+    'helloworld15',
+    'helloworld33',
+    'learnfortest'
+)
+
+from uuoskit import util
+for account in accounts:
+    print('buy ram', account)
+    util.buyrambytes('hello', account, 10*1024*1024)
+    print('buy cpu', account)
+    util.dbw('hello', account, 1.0, 1.0)
+
