@@ -4,7 +4,7 @@ from uuosio import uuos
 def run():
     ret = uuos.init()
     print('++++ret:', ret)
-    if not ret == 0:
+    if not ret == 6: #INIT_SUCCESS
         sys.exit(ret)
     uuos.exec()
     print('done!')

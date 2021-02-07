@@ -104,7 +104,8 @@ enum return_codes {
    DATABASE_DIRTY    = 2,
    FIXED_REVERSIBLE  = SUCCESS,
    EXTRACTED_GENESIS = SUCCESS,
-   NODE_MANAGEMENT_SUCCESS = 5
+   NODE_MANAGEMENT_SUCCESS = 5,
+   INIT_SUCCESS = 6
 };
 
 extern "C" int start_python(int argc, char **argv);
@@ -156,6 +157,7 @@ int eos_init(int argc, char** argv)
       ilog("${name} data directory is ${d}", ("name", nodeos::config::node_executable_name)("d", app().data_dir().string()));
       app().startup();
       app().set_thread_priority_max();
+      return INIT_SUCCESS;
 //      app().exec();
    } catch( const extract_genesis_state_exception& e ) {
       return EXTRACTED_GENESIS;
