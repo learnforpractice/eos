@@ -54,12 +54,12 @@ target_compile_options(vm_micropython PRIVATE -DWASM_RT_MAX_CALL_STACK_DEPTH=300
 #     COMMENT "Generating ${CMAKE_CURRENT_SOURCE_DIR}/pythonvm.wasm.c"
 # )
 
-add_dependencies(vm_micropython micropython)
+add_dependencies(vm_micropython micropython_eosio)
 add_dependencies(vm_micropython wasm2c)
 add_dependencies(vm_micropython wasm_injector)
 
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.c.bin
-    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython micropython_softfloat.wasm
+    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython_eosio micropython_softfloat.wasm
     COMMAND ${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c -o micropython.c micropython_softfloat.wasm
     COMMAND mv micropython.c micropython.c.bin
     COMMAND mv micropython.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython.h
@@ -69,7 +69,7 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin ${CMAKE_
     # COMMAND mv micropython_eosio.c micropython_eosio.c.bin
     # COMMAND mv micropython_eosio.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.h
 
-    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython micropython_eosio_softfloat.wasm
+    COMMAND ${CMAKE_BINARY_DIR}/libraries/vm/vm_wasm/wasm_injector micropython_eosio micropython_eosio_softfloat.wasm
     COMMAND ${CMAKE_BINARY_DIR}/libraries/wabt/wasm2c -o micropython_eosio.c micropython_eosio_softfloat.wasm
     COMMAND mv micropython_eosio.c micropython_eosio.c.bin
     COMMAND mv micropython_eosio.h ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.h
@@ -78,8 +78,8 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin ${CMAKE_
     COMMAND mv micropython.c.bin ${CMAKE_CURRENT_SOURCE_DIR}/micropython.c.bin
     COMMAND mv micropython_eosio.c.bin ${CMAKE_CURRENT_SOURCE_DIR}/micropython_eosio.c.bin
 
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/externals/micropython/ports/uuosio
-    DEPENDS micropython
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/externals/micropython/ports
+    DEPENDS micropython_eosio
     COMMENT "Generating micropython.c.bin"
 )
 

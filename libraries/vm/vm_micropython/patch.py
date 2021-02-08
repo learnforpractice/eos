@@ -170,6 +170,10 @@ with open('micropython.c.bin', 'r') as f:
     patch = 'memset(&M0, 0, sizeof(M0));wasm_rt_allocate_memory((&M0), 1, PYTHON_VM_MAX_MEMORY_SIZE/65536);'
     data = patch_micropython(data, origin, patch)
     data = data.replace('__fpclassifyl', '____fpclassifyl')
+    data = data.replace('strnlen', '_strnlen')
+    data = data.replace('fflush', '_fflush')
+    data = data.replace('fprintf', '_fprintf')
+    data = data.replace('vfprintf', '_vfprintf')
 
 with open('micropython.c.bin', 'w') as f:
     f.write(data)
@@ -182,6 +186,10 @@ with open('micropython_eosio.c.bin', 'r') as f:
     data = data.replace('void WASM_RT_ADD_PREFIX(init)(void)', 'void WASM_RT_ADD_PREFIX(init_eosio)(void)')
     data = data.replace('posix_memalign', '_posix_memalign')
     data = data.replace('__fpclassifyl', '____fpclassifyl')
+    data = data.replace('strnlen', '_strnlen')
+    data = data.replace('fflush', '_fflush')
+    data = data.replace('fprintf', '_fprintf')
+    data = data.replace('vfprintf', '_vfprintf')
 
 with open('micropython_eosio.c.bin', 'w') as f:
     f.write(data)
