@@ -444,34 +444,6 @@ class ChainTest(object):
             'authorization': auth
         }
 
-    def push_action(self, account, action, args, permissions={}):
-        auth = []
-        for actor in permissions:
-            perm = permissions[actor]
-            auth.append({'actor': actor, 'permission': perm})
-        if not auth:
-            auth.append({'actor': account, 'permission': 'active'})
-
-        logger.debug(f'{account}, {action}, {args}')
-        if not isinstance(args, bytes):
-            _args = self.chain.pack_action_args(account, action, args)
-            if not _args:
-                error = uuos.get_last_error()
-                raise Exception(f'{error}')
-            args = _args
-            # logger.error(f'++++{args}')
-        a = {
-            'account': account,
-            'name': action,
-            'data': args.hex(),
-            'authorization': auth
-        }
-        ret = self.push_actions([a])
-        elapsed = ret.elapsed
-        # if not action == 'activate':
-        #     logger.info(f'+++++{account} {action} {elapsed}')
-        return ret
-
     def push_action_with_multiple_permissions(self, account, action, args, permissions):
         if not isinstance(args, bytes):
             _args = self.chain.pack_action_args(account, action, args)
@@ -514,6 +486,34 @@ class ChainTest(object):
                         keys.append(priv_key)
         return keys
 
+    def push_action(self, account, action, args, permissions={}):
+        auth = []
+        for actor in permissions:
+            perm = permissions[actor]
+            auth.append({'actor': actor, 'permission': perm})
+        if not auth:
+            auth.append({'actor': account, 'permission': 'active'})
+
+        logger.debug(f'{account}, {action}, {args}')
+        if not isinstance(args, bytes):
+            _args = self.chain.pack_action_args(account, action, args)
+            if not _args:
+                error = uuos.get_last_error()
+                raise Exception(f'{error}')
+            args = _args
+            # logger.error(f'++++{args}')
+        a = {
+            'account': account,
+            'name': action,
+            'data': args.hex(),
+            'authorization': auth
+        }
+        ret = self.push_actions([a])
+        elapsed = ret.elapsed
+        # if not action == 'activate':
+        #     logger.info(f'+++++{account} {action} {elapsed}')
+        return ret
+
     def push_actions(self, actions):
         chain_id = self.chain.id()
         ref_block_id = self.chain.last_irreversible_block_id()
@@ -530,7 +530,7 @@ class ChainTest(object):
 #        priv_key = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
 
         actions = json.dumps(actions)
-        expiration = datetime.utcnow() + timedelta(seconds=60*60)
+        # expiration = datetime.utcnow() + timedelta(seconds=60*60)
 
         expiration = self.chain.fork_db_pending_head_block_time()
         expiration = datetime.strptime(expiration, "%Y-%m-%dT%H:%M:%S.%f")

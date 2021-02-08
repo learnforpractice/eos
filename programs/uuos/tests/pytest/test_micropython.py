@@ -7,6 +7,7 @@ import logging
 import subprocess
 import shutil
 import gc
+import platform
 
 from chaintest import ChainTest
 import uuos
