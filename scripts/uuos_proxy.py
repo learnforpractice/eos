@@ -127,3 +127,4 @@ if __name__ == '__main__':
 
     uuosapi.set_node(args.http_server_address)
     app.run(debug=args.debug, host=args.host, port=args.port)
+#    app.run(debug=args.debug, host=args.host, port=args.port, ssl_context='adhoc')
