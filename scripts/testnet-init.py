@@ -57,6 +57,7 @@ key2 = 'EOS7ent7keWbVgvptfYaMYeF2cenMBiwYKcwEuc11uCbStsFKsrmV'
 
 
 def deploy_contract(account_name, contract_name, contracts_path=None):
+    logger.info('++++deploy_contract %s %s', account_name, contract_name)
     if not contracts_path:
         contracts_path = os.path.dirname(__file__)
         # contracts_path = '../../../build/externals/eosio.contracts'
@@ -184,7 +185,8 @@ for a in accounts:
 
 try:
     uuosapi.schedule_protocol_feature_activations(['0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd']) #PREACTIVATE_FEATURE
-    time.sleep(2.0)
+    time.sleep(6.0)
+    logger.info('set PREACTIVATE_FEATURE done!')
 except Exception as e:
     logger.exception(e)
 
@@ -241,9 +243,15 @@ if not uuosapi.get_balance('eosio'):
 
 try:
     deploy_contract('eosio.msig', 'eosio.msig')
-    deploy_contract('eosio', 'eosio.system')
 except Exception as e:
     logger.exception(e)
+
+for i in range(3):
+    try:
+        if deploy_contract('eosio', 'eosio.system'):
+            break
+    except Exception as e:
+        logger.exception(e)
 
 if True:
     args = dict(version = 0,
