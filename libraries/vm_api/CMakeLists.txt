@@ -33,8 +33,6 @@ target_include_directories(vm_api PRIVATE
     ${CMAKE_SOURCE_DIR}/libraries/chain/chain_api
 )
 
-add_subdirectory(vm_api4c)
-
 # set(EOSIO_WASM_OLD_BEHAVIOR "Off")
 # find_package(eosio.cdt REQUIRED)
 
@@ -55,3 +53,6 @@ ExternalProject_Add(
 )
 
 add_dependencies(native_test_contract vm_api)
+
+add_subdirectory(vm_api4c)
+add_subdirectory(native_contracts)
