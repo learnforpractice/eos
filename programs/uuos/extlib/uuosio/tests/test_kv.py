@@ -67,12 +67,8 @@ class TestMicropython(object):
     def test_2(self):
         code = '''
 def apply(a, b, c):
-    a = float128(3.14) * float128(3.14)
-    return
     a = float128('3.14') * 5.1
-    return
     print(type(a), a)
-    return
 
     a = 5.1 * float128('3.14')
     print(type(a), a)
