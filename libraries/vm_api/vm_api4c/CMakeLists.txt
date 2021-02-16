@@ -1,12 +1,5 @@
 add_library(vm_api4c STATIC 
     vm_api4c.cpp
-    action.cpp
-    chain.cpp
-    crypto.cpp
-    db.cpp
-    permission.cpp
-    print.cpp
-    privileged.cpp
     # softfloat.cpp
     # eosio_injection.cpp
     wasm2c/wasm-rt-impl.c

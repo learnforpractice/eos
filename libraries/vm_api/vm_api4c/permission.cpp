@@ -1,7 +1,7 @@
 #include "vm_api4c.hpp"
 #include <vm_api_proxy.hpp>
 
-u32 vm_api4c_proxy::check_transaction_authorization( u32 trx_data_offset, u32 trx_size,
+u32 check_transaction_authorization( u32 trx_data_offset, u32 trx_size,
                                  u32 pubkeys_data_offset, u32 pubkeys_size,
                                  u32 perms_data_offset, u32 perms_size
                                ) {
@@ -15,7 +15,7 @@ u32 vm_api4c_proxy::check_transaction_authorization( u32 trx_data_offset, u32 tr
        );
 }
 
-u32 vm_api4c_proxy::check_permission_authorization( u64 account,
+u32 check_permission_authorization( u64 account,
                                 u64 permission,
                                 u32 pubkeys_data_offset, u32 pubkeys_size,
                                 u32 perms_data_offset,   u32 perms_size,
@@ -32,11 +32,11 @@ u32 vm_api4c_proxy::check_permission_authorization( u64 account,
        );
 }
 
-u64 vm_api4c_proxy::get_permission_last_used( u64 account, u64 permission ) {
+u64 get_permission_last_used( u64 account, u64 permission ) {
    return get_vm_api()->get_permission_last_used( account, permission );
 }
 
-u64 vm_api4c_proxy::get_account_creation_time( u64 account ) {
+u64 get_account_creation_time( u64 account ) {
    return get_vm_api()->get_account_creation_time( account );
 }
 

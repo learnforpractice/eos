@@ -10,7 +10,7 @@ else()
       set(micropython_LINK_FLAGS "${LINK_FLAGS} -Wl,--version-script,\"${_version_script}\"")
 endif (APPLE)
 
-target_include_directories( micropython_wasm2c
+target_include_directories( micropython_wasm2c  PRIVATE
     ${CMAKE_SOURCE_DIR}/libraries/vm_api/vm_api4c
 )
 
