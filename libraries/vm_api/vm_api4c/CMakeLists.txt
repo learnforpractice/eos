@@ -14,3 +14,8 @@ target_include_directories(vm_api4c PRIVATE
     PRIVATE ${CMAKE_SOURCE_DIR}/libraries/vm_api/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/wasm2c
 )
+
+if (APPLE)
+else()
+    target_compile_options(vm_api4c PRIVATE -fPIC)
+endif()
