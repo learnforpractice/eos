@@ -1,3 +1,5 @@
+build-linux
+build-mac
 cd
 dd
 *.a
