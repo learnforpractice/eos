@@ -177,15 +177,19 @@ add_subdirectory( libraries )
 add_subdirectory( plugins )
 add_subdirectory( programs )
 add_subdirectory( scripts )
-add_subdirectory( unittests )
+
+if (BUILD_TESTS)
+  add_subdirectory( unittests )
+  add_subdirectory( tests )
+endif()
+
 add_subdirectory( contracts )
-add_subdirectory( tests )
 add_subdirectory( tools )
 
-option(DISABLE_WASM_SPEC_TESTS "disable building of wasm spec unit tests" OFF)
+option(DISABLE_WASM_SPEC_TESTS "disable building of wasm spec unit tests" ON)
 
 if (NOT DISABLE_WASM_SPEC_TESTS)
-add_subdirectory( eosio-wasm-spec-tests/generated-tests )
+  add_subdirectory( eosio-wasm-spec-tests/generated-tests )
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")

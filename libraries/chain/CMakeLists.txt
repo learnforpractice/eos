@@ -190,7 +190,9 @@ if(EOSVMOC_ENABLE_DEVELOPER_OPTIONS)
    target_compile_definitions(eosio_chain PUBLIC EOSIO_EOS_VM_OC_DEVELOPER)
 endif()
 
-add_subdirectory ( backing_store/tests )
+if (BUILD_TESTS)
+   add_subdirectory ( backing_store/tests )
+endif()
 
 install( TARGETS eosio_chain
    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
