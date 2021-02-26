@@ -188,7 +188,8 @@ add_subdirectory( tools )
 
 option(DISABLE_WASM_SPEC_TESTS "disable building of wasm spec unit tests" ON)
 
-if (NOT DISABLE_WASM_SPEC_TESTS)
+#if (NOT DISABLE_WASM_SPEC_TESTS)
+if (BUILD_TESTS)
   add_subdirectory( eosio-wasm-spec-tests/generated-tests )
 endif()
 
