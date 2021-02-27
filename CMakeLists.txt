@@ -178,8 +178,9 @@ add_subdirectory( plugins )
 add_subdirectory( programs )
 add_subdirectory( scripts )
 
+add_subdirectory( unittests )
+
 if (BUILD_TESTS)
-  add_subdirectory( unittests )
   add_subdirectory( tests )
 endif()
 
