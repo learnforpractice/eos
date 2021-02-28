@@ -9,5 +9,6 @@ target_link_libraries( chain_kv
 target_include_directories( chain_kv
                             INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/../rocksdb/include"
                           )
-
-add_subdirectory(unit_tests)
+if (BUILD_TESTS)
+  add_subdirectory(unit_tests)
+endif()
