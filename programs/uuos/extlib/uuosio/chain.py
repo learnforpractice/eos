@@ -463,12 +463,12 @@ class Chain(object):
     def unpack_action_args(self, name, action, raw_args):
         return _chain.unpack_action_args(self.ptr, name, action, raw_args)
 
-    def gen_transaction(self, _actions, expiration, reference_block_id, _id, compress, _private_keys):
+    def gen_transaction(self, json, _actions, expiration, reference_block_id, _id, compress, _private_keys):
         if isinstance(expiration, datetime):
             expiration = isoformat(expiration)
         if isinstance(_actions, dict):
             _actions = json.dumps(_actions)
-        return _chain.gen_transaction(self.ptr, _actions, expiration, reference_block_id, _id, compress, _private_keys)
+        return _chain.gen_transaction(self.ptr, json, _actions, expiration, reference_block_id, _id, compress, _private_keys)
 
     def get_last_error(self):
         return _chain.get_last_error(self.ptr)

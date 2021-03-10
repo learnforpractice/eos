@@ -519,7 +519,7 @@ string chain_proxy::get_scheduled_producer(string& _block_time) {
     return fc::json::to_string(producer, fc::time_point::maximum());
 }
 
-void chain_proxy::gen_transaction(string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_keys, vector<char>& result) {
+void chain_proxy::gen_transaction(bool json, string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_keys, vector<char>& result) {
     try {
         signed_transaction trx;
         auto actions = fc::json::from_string(_actions).as<vector<eosio::chain::action>>();
@@ -541,10 +541,14 @@ void chain_proxy::gen_transaction(string& _actions, string& expiration, string& 
         } else {
             type = packed_transaction::compression_type::none;
         }
-
-        auto packed_trx = packed_transaction(std::move(trx), true, type);
-        auto v = fc::raw::pack(packed_trx);
-        result = std::move(v);
+        if (json) {
+            string s = fc::json::to_string(trx, fc::time_point::maximum());
+            result = vector<char>(s.begin(), s.end());
+        } else {
+            auto packed_trx = packed_transaction(std::move(trx), true, type);
+            auto v = fc::raw::pack(packed_trx);
+            result = std::move(v);
+        }
     } CATCH_AND_LOG_EXCEPTION(this);
 }
 
