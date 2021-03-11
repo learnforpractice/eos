@@ -41,6 +41,7 @@ class chain_rpc_api_proxy {
         virtual int get_required_keys(string& params, string& result);
         virtual int get_transaction_id(string& params, string& result);
 
+        virtual int get_kv_table_rows(string& params, string& result);
     private:
         eosio::chain::controller *c;
 };
