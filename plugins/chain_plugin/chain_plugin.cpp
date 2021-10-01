@@ -3448,6 +3448,7 @@ eosio::chain::backing_store_type read_only::get_backing_store() const {
 
 FC_REFLECT( eosio::chain_apis::detail::ram_market_exchange_state_t, (ignore1)(ignore2)(ignore3)(core_symbol)(ignore4) )
 
+#include <uuos.hpp>
 #include <chain_rpc_api_proxy.hpp>
 
 #define max_abi_time (10000)
@@ -3486,6 +3487,8 @@ int chain_rpc_api_proxy::get_info(string& result) {
 int chain_rpc_api_proxy::api_name(string& params, string& result) { \
    auto next = [&result](const fc::exception_ptr& ex) { \
       result = ex->to_detail_string(); \
+      get_uuos_proxy()->set_last_error(result); \
+      \
    }; \
    try { \
       auto& cc = *this->chain(); \
@@ -3520,7 +3523,8 @@ CHAIN_API_RO(abi_bin_to_json)
 CHAIN_API_RO(get_required_keys)
 CHAIN_API_RO(get_transaction_id)
 
-#include <uuos.hpp>
+CHAIN_API_RO(get_kv_table_rows)
+
 chain_rpc_api_proxy *new_chain_api_proxy(eosio::chain::controller *c) {
    return new chain_rpc_api_proxy(c);
 }

@@ -7,7 +7,7 @@
 #include <fc/log/logger.hpp>
 
 #include <boost/test/included/unit_test.hpp>
-
+#include <uuos.hpp>
 //extern uint32_t EOS_TESTING_GENESIS_TIMESTAMP;
 
 void translate_fc_exception(const fc::exception &e) {
@@ -16,6 +16,8 @@ void translate_fc_exception(const fc::exception &e) {
 }
 
 boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
+   uuos_init_chain(nullptr, nullptr);
+
    // Turn off blockchain logging if no --verbose parameter is not added
    // To have verbose enabled, call "tests/chain_test -- --verbose"
    bool is_verbose = false;

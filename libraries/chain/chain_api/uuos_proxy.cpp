@@ -33,10 +33,12 @@ chain_proxy* uuos_proxy::chain_new(string& config, string& _genesis, string& pro
 }
 
 void uuos_proxy::chain_free(chain_proxy* c) {
-    if (!c) {
-        return;
-    }
-    delete c;
+    try {
+        if (!c) {
+            return;
+        }
+        delete c;
+    } CATCH_AND_LOG_EXCEPTION(this);
 }
 
 void uuos_proxy::set_log_level(string& logger_name, int level) {

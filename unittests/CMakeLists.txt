@@ -50,7 +50,7 @@ target_link_libraries( unit_test eosio_chain_wrap chainbase eosio_testing fc app
 
 target_compile_options(unit_test PUBLIC -DDISABLE_EOSLIB_SERIALIZE)
 target_include_directories( unit_test PUBLIC
-                            ${CMAKE_SOURCE_DIR}/libraries/testing/include
+                            ${CMAKE_SOURCE_DIR}/libraries/chain/chain_api                            ${CMAKE_SOURCE_DIR}/libraries/testing/include
                             ${CMAKE_SOURCE_DIR}/test-contracts
                             ${CMAKE_BINARY_DIR}/contracts
                             ${CMAKE_CURRENT_SOURCE_DIR}/contracts

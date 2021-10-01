@@ -20,7 +20,7 @@ enum {
     signed_block_type,            // which = 9
     trx_message_v1_type,          // which = 10
 
-    genesis_state_type,
-    abi_def_type,
-
+    genesis_state_type,           // 11
+    abi_def_type,                 // 12
+    transaction_type              // 13
 };

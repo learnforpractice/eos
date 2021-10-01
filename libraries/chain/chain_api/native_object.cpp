@@ -113,6 +113,7 @@ void pack_native_object_(int type, string& msg, vector<char>& packed_message) {
         PACK_CPP_OBJECT(trx_message_v1)
         PACK_CPP_OBJECT(genesis_state)
         PACK_CPP_OBJECT(abi_def)
+        PACK_CPP_OBJECT(transaction)
     }
 }
 
@@ -131,5 +132,6 @@ void unpack_native_object_(int type, string& packed_message, string& msg) {
         UNPACK_CPP_OBJECT(trx_message_v1)
         UNPACK_CPP_OBJECT(genesis_state)
         UNPACK_CPP_OBJECT(abi_def)
+        UNPACK_CPP_OBJECT(transaction)
     }
 }

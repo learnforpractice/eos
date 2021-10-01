@@ -77,7 +77,7 @@ bool chain_proxy::startup(bool initdb) {
     return false;
 }
 
-void chain_proxy::start_block(string& _time, uint16_t confirm_block_count, string& _new_features) {
+int chain_proxy::start_block(string& _time, uint16_t confirm_block_count, string& _new_features) {
     try {
         auto time = fc::time_point::from_iso_string(_time);
         if (_new_features.size()) {
@@ -86,7 +86,9 @@ void chain_proxy::start_block(string& _time, uint16_t confirm_block_count, strin
         } else {
             c->start_block(block_timestamp_type(time), confirm_block_count);
         }
+        return 1;
     } CATCH_AND_LOG_EXCEPTION(this);
+    return 0;
 }
 
 int chain_proxy::abort_block() {
@@ -98,19 +100,24 @@ int chain_proxy::abort_block() {
 }
 
 void chain_proxy::finalize_block(string& _priv_keys) {
-    auto priv_keys = fc::json::from_string(_priv_keys).as<vector<string>>();
-    c->finalize_block( [&]( const digest_type d ) {
-        vector<signature_type> sigs;
-        for (auto& key: priv_keys) {
-            auto priv_key = private_key_type(key);
-            sigs.emplace_back(priv_key.sign(d));
-        }
-        return sigs;
-    } );
+    try {
+        auto priv_keys = fc::json::from_string(_priv_keys).as<vector<string>>();
+        c->finalize_block( [&]( const digest_type d ) {
+            vector<signature_type> sigs;
+            for (auto& key: priv_keys) {
+                auto priv_key = private_key_type(key);
+                sigs.emplace_back(priv_key.sign(d));
+            }
+            return sigs;
+        } );
+    } CATCH_AND_LOG_EXCEPTION(this);
+
 }
 
 void chain_proxy::commit_block() {
-    c->commit_block();
+    try {
+        c->commit_block();
+    } CATCH_AND_LOG_EXCEPTION(this);
 }
 
 string chain_proxy::get_block_id_for_num(uint32_t block_num ) {
@@ -658,12 +665,15 @@ string chain_proxy::unpack_action_args(string& name, string& action, string& _bi
 }
 
 string chain_proxy::get_producer_public_keys() {
-    const auto& auth = c->pending_block_signing_authority();
-    std::vector<public_key_type> pub_keys;
+    try {
+        const auto& auth = c->pending_block_signing_authority();
+        std::vector<public_key_type> pub_keys;
 
-    producer_authority::for_each_key(auth, [&](const public_key_type& key){
-        pub_keys.emplace_back(key);
-    });
+        producer_authority::for_each_key(auth, [&](const public_key_type& key){
+            pub_keys.emplace_back(key);
+        });
 
-    return fc::json::to_string(pub_keys, fc::time_point::maximum());
+        return fc::json::to_string(pub_keys, fc::time_point::maximum());
+    } CATCH_AND_LOG_EXCEPTION(this);
+    return "";
 }
