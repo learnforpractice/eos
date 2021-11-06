@@ -33,7 +33,7 @@ typedef uint64_t capi_name;
 /**
  * EOSIO Public Key. K1 and R1 keys are 34 bytes.  Newer keys can be variable-sized
  */
-struct __attribute__((deprecated("newer public key types cannot be represented as a fixed size structure", "char[]")))
+struct 
 capi_public_key {
    char data[34];
 };
@@ -41,7 +41,7 @@ capi_public_key {
 /**
  * EOSIO Signature. K1 and R1 signatures are 66 bytes. Newer signatures can be variable-sized
  */
-struct __attribute__((deprecated("newer signature types cannot be represented as a fixed size structure", "char[]")))
+struct 
 capi_signature {
    uint8_t data[66];
 };

@@ -16,7 +16,7 @@ void translate_fc_exception(const fc::exception &e) {
 }
 
 boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
-   uuos_init_chain(nullptr, nullptr);
+   uuos_init_proxy(nullptr, nullptr);
 
    // Turn off blockchain logging if no --verbose parameter is not added
    // To have verbose enabled, call "tests/chain_test -- --verbose"

@@ -7,7 +7,7 @@
 
 static uuos_proxy *s_proxy = nullptr;
 
-extern "C" void uuos_init_chain(fn_eos_init init, fn_eos_exec exec) {
+extern "C" void uuos_init_proxy(fn_eos_init init, fn_eos_exec exec) {
     if (s_proxy) {
         return;
     }
@@ -15,6 +15,10 @@ extern "C" void uuos_init_chain(fn_eos_init init, fn_eos_exec exec) {
     s_proxy = new uuos_proxy();
     s_proxy->eos_init = init;
     s_proxy->eos_exec = exec;
+}
+
+extern "C" void uuos_init_chain(fn_eos_init init, fn_eos_exec exec) {
+    uuos_init_proxy(init, exec);
 
     const char *chain_api_lib = getenv("CHAIN_API_LIB");
     if (!chain_api_lib) {
