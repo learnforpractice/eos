@@ -113,7 +113,7 @@ class chain_proxy {
         virtual string get_scheduled_producer(string& _block_time);
 
         virtual void gen_transaction(bool json, string& _actions, string& expiration, string& reference_block_id, string& _chain_id, bool compress, std::string& _private_keys, vector<char>& result);
-        virtual string push_transaction(string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, bool explicit_cpu_bill);
+        virtual string push_transaction(string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, bool explicit_cpu_bill, uint32_t subjective_cpu_bill_us);
 
         virtual string get_scheduled_transactions();
         virtual string get_scheduled_transaction(const unsigned __int128 sender_id, string& sender);
