@@ -40,19 +40,19 @@ include(ExternalProject)
 
 message( STATUS "Building contracts in directory `eosio.contracts/contracts`" )
 
-ExternalProject_Add(
-   native_test_contract
-   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test
-   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test
-   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DVM_API_LIB=${CMAKE_CURRENT_BINARY_DIR}/libvm_api${CMAKE_SHARED_LIBRARY_SUFFIX}
-   UPDATE_COMMAND ""
-   PATCH_COMMAND ""
-   TEST_COMMAND ""
-   INSTALL_COMMAND ""
-   BUILD_ALWAYS 1
-)
+# ExternalProject_Add(
+#    native_test_contract
+#    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test
+#    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/test
+#    CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DVM_API_LIB=${CMAKE_CURRENT_BINARY_DIR}/libvm_api${CMAKE_SHARED_LIBRARY_SUFFIX}
+#    UPDATE_COMMAND ""
+#    PATCH_COMMAND ""
+#    TEST_COMMAND ""
+#    INSTALL_COMMAND ""
+#    BUILD_ALWAYS 1
+# )
 
-add_dependencies(native_test_contract vm_api)
+# add_dependencies(native_test_contract vm_api)
 
 add_subdirectory(vm_api4c)
 add_subdirectory(native_contracts)
