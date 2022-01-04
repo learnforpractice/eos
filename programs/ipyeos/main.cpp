@@ -115,9 +115,11 @@ int eos_exec();
 
 int main(int argc, char** argv)
 {
+   printf("+++hello11\n");
+   return 0;
    uuos_init_chain(eos_init, eos_exec);
    init_new_chain_api();
-
+   printf("+++hello22\n");
    return start_python(argc, argv);
 }
 
