@@ -118,8 +118,7 @@ bool uuos_proxy::call_native_contract(uint64_t receiver, uint64_t first_receiver
     if (itr == debug_contracts.end()) {
         return false;
     }
-    itr->second.apply(receiver, first_receiver, action);
-    return true;
+    return itr->second.apply(receiver, first_receiver, action);
 }
 
 void uuos_proxy::enable_native_contracts(bool debug) {

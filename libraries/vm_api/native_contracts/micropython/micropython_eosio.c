@@ -3,7 +3,7 @@ void vm_checktime(void);
 
 #include <stdint.h>
 
-void native_apply(uint64_t a, uint64_t b, uint64_t c) {
-
+int native_apply(uint64_t a, uint64_t b, uint64_t c) {
+    return 1;
 }
 
