@@ -636,6 +636,7 @@ bool chain_proxy::pack_action_args(string& account, string& action, string& _arg
         load_abi(account);
         auto& serializer = abi_cache[account];
         if (!serializer) {
+            EOS_ASSERT(false, action_validate_exception, "ABI for {account} not found!", ("account", account));
             return false;
         }
         auto action_type = serializer->get_action_type(action_name(action));
@@ -652,6 +653,7 @@ string chain_proxy::unpack_action_args(string& name, string& action, string& _bi
     try {
         auto& serializer = abi_cache[name];
         if (!serializer) {
+            EOS_ASSERT(false, action_validate_exception, "ABI for {account} not found!", ("account", name));
             return "";
         }
         auto action_type = serializer->get_action_type(action_name(action));
