@@ -129,3 +129,10 @@ bool uuos_proxy::is_native_contracts_enabled() {
     return this->native_contracts_enabled;
 }
 
+void uuos_proxy::enable_debug(bool debug) {
+    this->debug_enabled = debug;
+}
+
+bool uuos_proxy::is_debug_enabled() {
+    return this->debug_enabled;
+}

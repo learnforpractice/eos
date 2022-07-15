@@ -58,6 +58,9 @@ class uuos_proxy {
         virtual void enable_native_contracts(bool debug);
         virtual bool is_native_contracts_enabled();
 
+        virtual void enable_debug(bool debug);
+        virtual bool is_debug_enabled();
+
         fn_new_chain_api new_chain_api = nullptr;
 
         fn_eos_init eos_init;
@@ -67,6 +70,7 @@ class uuos_proxy {
         string last_error;
         std::shared_ptr<apply_context_proxy> _apply_context_proxy;
         bool native_contracts_enabled = false;
+        bool debug_enabled = false;
         std::map<uint64_t, native_contract> debug_contracts;
 };
 

@@ -19,6 +19,9 @@
 
 #include <chrono>
 
+#include <stacktrace.h>
+#include <uuos.hpp>
+
 namespace eosio { namespace chain {
 
    transaction_checktime_timer::transaction_checktime_timer(platform_timer& timer)
@@ -391,13 +394,18 @@ namespace eosio { namespace chain {
    }
 
    void transaction_context::checktime()const {
+      if (get_uuos_proxy()->is_debug_enabled()) {
+         return;
+      }
+
       if(BOOST_LIKELY(transaction_timer.expired == false))
          return;
 
       auto now = fc::time_point::now();
       if( explicit_billed_cpu_time || deadline_exception_code == deadline_exception::code_value ) {
+         print_stacktrace();
          EOS_THROW( deadline_exception, "deadline exceeded ${billing_timer}us",
-                     ("billing_timer", now - pseudo_start)("now", now)("deadline", _deadline)("start", start) );
+                     ("billing_timer", now - pseudo_start)("now", now)("deadline", _deadline)("start", start)("explicit_billed_cpu_time", explicit_billed_cpu_time)("deadline_exception_code", deadline_exception_code) );
       } else if( deadline_exception_code == block_cpu_usage_exceeded::code_value ) {
          EOS_THROW( block_cpu_usage_exceeded,
                      "not enough time left in block to complete executing transaction ${billing_timer}us",
