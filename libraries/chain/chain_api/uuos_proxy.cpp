@@ -114,6 +114,10 @@ string uuos_proxy::get_native_contract(uint64_t contract) {
 }
 
 bool uuos_proxy::call_native_contract(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
+    if (!this->native_contracts_enabled) {
+        return false;
+    }
+
     auto itr = debug_contracts.find(receiver);
     if (itr == debug_contracts.end()) {
         return false;
