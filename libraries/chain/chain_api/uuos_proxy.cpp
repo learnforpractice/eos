@@ -11,6 +11,25 @@
 
 using namespace eosio::chain;
 
+
+static string last_error;
+
+string& get_last_error() {
+    return last_error;
+}
+
+void set_last_error(string& error) {
+    last_error = error;
+}
+
+string& uuos_proxy::get_last_error() {
+    return ::get_last_error();
+}
+
+void uuos_proxy::set_last_error(string& error) {
+    ::set_last_error(error);
+}
+
 uuos_proxy::uuos_proxy() {
     this->_apply_context_proxy = std::make_shared<apply_context_proxy>();
 }
@@ -65,13 +84,6 @@ void uuos_proxy::unpack_native_object(int type, string& packed_obj, string& resu
     unpack_native_object_(type, packed_obj, result);
 }
 
-string& uuos_proxy::get_last_error() {
-    return last_error;
-}
-
-void uuos_proxy::set_last_error(string& error) {
-    last_error = error;
-}
 
 uint64_t uuos_proxy::s2n(string& s) {
     return eosio::chain::name(s).to_uint64_t();

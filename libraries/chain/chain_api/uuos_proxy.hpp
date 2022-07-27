@@ -74,5 +74,8 @@ class uuos_proxy {
         std::map<uint64_t, native_contract> debug_contracts;
 };
 
+string& get_last_error();
+void set_last_error(string& error);
+
 typedef void (*fn_init_uuos_proxy)(uuos_proxy *proxy);
 extern "C" uuos_proxy *get_uuos_proxy();
