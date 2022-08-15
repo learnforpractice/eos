@@ -11,8 +11,6 @@
 #include "native_object.hpp"
 #include "apply_context_proxy.hpp"
 
-#include <format>
-
 using namespace eosio::chain;
 
 
