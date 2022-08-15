@@ -60,7 +60,9 @@ class ipyeos_proxy {
 
         virtual void enable_debug(bool debug);
         virtual bool is_debug_enabled();
+
         virtual string create_key(string &key_type);
+        virtual string get_public_key(string &priv_key);
 
         fn_new_chain_api new_chain_api = nullptr;
 

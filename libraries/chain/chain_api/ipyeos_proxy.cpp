@@ -177,3 +177,8 @@ string ipyeos_proxy::create_key(string &key_type) {
     return string(buf);
 }
 
+string ipyeos_proxy::get_public_key(string &priv_key) {
+    auto priv = fc::json::from_string(priv_key).as<fc::crypto::private_key>();
+    return priv.get_public_key().to_string();
+}
+
