@@ -4,7 +4,7 @@
 #include <string.h>
 #include "vm_api4c.h"
 #include <softfloat.hpp>
-#include <uuos.hpp>
+#include <ipyeos.hpp>
 
 extern "C" {
 /* import: 'eosio_injection' 'checktime' */

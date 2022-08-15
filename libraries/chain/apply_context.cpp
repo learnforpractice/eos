@@ -15,7 +15,7 @@
 
 #include <dlfcn.h>
 
-#include "uuos.hpp"
+#include "ipyeos.hpp"
 
 using boost::container::flat_set;
 
@@ -87,9 +87,9 @@ void apply_context::check_unprivileged_resource_usage(const char* resource, cons
 void apply_context::exec_one()
 {
    auto cleanup = fc::make_scoped_exit([&](){
-      get_uuos_proxy()->get_apply_context_proxy()->set_context(nullptr);
+      get_ipyeos_proxy()->get_apply_context_proxy()->set_context(nullptr);
    });
-   get_uuos_proxy()->get_apply_context_proxy()->set_context(this);
+   get_ipyeos_proxy()->get_apply_context_proxy()->set_context(this);
 
    auto start = fc::time_point::now();
 
@@ -140,7 +140,7 @@ void apply_context::exec_one()
                }
                try {
                   bool is_native_contract_called = false;
-                  if (get_uuos_proxy()->is_native_contracts_enabled()) {
+                  if (get_ipyeos_proxy()->is_native_contracts_enabled()) {
                      auto timer_pause = fc::make_scoped_exit([&](){
                         trx_context.resume_billing_timer();
                      });
@@ -149,7 +149,7 @@ void apply_context::exec_one()
                      uint64_t receiver = get_receiver().to_uint64_t();
                      uint64_t first_receiver = get_action().account.to_uint64_t();
                      uint64_t action = get_action().name.to_uint64_t();
-                     is_native_contract_called = get_uuos_proxy()->call_native_contract(receiver, first_receiver, action);
+                     is_native_contract_called = get_ipyeos_proxy()->call_native_contract(receiver, first_receiver, action);
                   }
 
                   if (!is_native_contract_called) {

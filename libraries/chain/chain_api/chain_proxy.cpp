@@ -11,9 +11,9 @@
 
 #include "chain_macro.hpp"
 
-#include "uuos_proxy.hpp"
+#include "ipyeos_proxy.hpp"
 
-extern "C" uuos_proxy *get_uuos_proxy();
+extern "C" ipyeos_proxy *get_ipyeos_proxy();
 
 using namespace eosio::chain;
 
@@ -41,14 +41,14 @@ int chain_proxy::init(string& config, string& _genesis, string& protocol_feature
     this->cm->init();
     this->c = this->cm->c;
 
-    chain_rpc_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
+    chain_rpc_api_proxy *api = get_ipyeos_proxy()->new_chain_api(this->c.get());
     this->_api_proxy = std::shared_ptr<chain_rpc_api_proxy>(api);
     return 1;
 }
 
 int chain_proxy::attach(eosio::chain::controller* c) {
     this->c = std::unique_ptr<eosio::chain::controller>(c);
-    chain_rpc_api_proxy *api = get_uuos_proxy()->new_chain_api(this->c.get());
+    chain_rpc_api_proxy *api = get_ipyeos_proxy()->new_chain_api(this->c.get());
     this->_api_proxy = std::shared_ptr<chain_rpc_api_proxy>(api);
     return 1;
 }

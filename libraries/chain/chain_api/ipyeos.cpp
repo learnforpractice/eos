@@ -1,18 +1,18 @@
 #include <dlfcn.h>
 
-#include "uuos_proxy.hpp"
+#include "ipyeos_proxy.hpp"
 #include "apply_context_proxy.hpp"
 #include "../vm_api/vm_api_proxy.hpp"
 #include <stacktrace.h>
 
-static uuos_proxy *s_proxy = nullptr;
+static ipyeos_proxy *s_proxy = nullptr;
 
 extern "C" void uuos_init_proxy(fn_eos_init init, fn_eos_exec exec) {
     if (s_proxy) {
         return;
     }
 
-    s_proxy = new uuos_proxy();
+    s_proxy = new ipyeos_proxy();
     s_proxy->eos_init = init;
     s_proxy->eos_exec = exec;
 }
@@ -33,13 +33,13 @@ extern "C" void uuos_init_chain(fn_eos_init init, fn_eos_exec exec) {
         return;
     }
 
-    fn_init_uuos_proxy init_uuos_proxy = (fn_init_uuos_proxy)dlsym(handle, "init_uuos_proxy");
-    if (!init_uuos_proxy) {
-        printf("loading init_uuos_proxy failed! error: %s\n", dlerror());
+    fn_init_ipyeos_proxy init_ipyeos_proxy = (fn_init_ipyeos_proxy)dlsym(handle, "init_ipyeos_proxy");
+    if (!init_ipyeos_proxy) {
+        printf("loading init_ipyeos_proxy failed! error: %s\n", dlerror());
         exit(-1);
         return;
     }
-    init_uuos_proxy(s_proxy);
+    init_ipyeos_proxy(s_proxy);
 
     const char *vm_api_lib = getenv("VM_API_LIB");
     if (!vm_api_lib) {
@@ -64,17 +64,17 @@ extern "C" void uuos_init_chain(fn_eos_init init, fn_eos_exec exec) {
     init_vm_api(s_proxy->get_apply_context_proxy()->get_vm_api_proxy());
 }
 
-extern "C" uuos_proxy *get_uuos_proxy() {
+extern "C" ipyeos_proxy *get_ipyeos_proxy() {
     if (s_proxy == nullptr) {
         print_stacktrace();
-        printf("uuos_proxy ptr is null\n");
+        printf("ipyeos_proxy ptr is null\n");
         exit(-1);
     }
     return s_proxy;
 }
 
 extern "C" apply_context_proxy *get_apply_context_proxy() {
-    return get_uuos_proxy()->get_apply_context_proxy();
+    return get_ipyeos_proxy()->get_apply_context_proxy();
 }
 
 extern "C" vm_api_proxy *get_vm_api_proxy() {

@@ -20,7 +20,7 @@
 #include <chrono>
 
 #include <stacktrace.h>
-#include <uuos.hpp>
+#include <ipyeos.hpp>
 
 namespace eosio { namespace chain {
 
@@ -394,7 +394,7 @@ namespace eosio { namespace chain {
    }
 
    void transaction_context::checktime()const {
-      if (get_uuos_proxy()->is_debug_enabled()) {
+      if (get_ipyeos_proxy()->is_debug_enabled()) {
          return;
       }
 

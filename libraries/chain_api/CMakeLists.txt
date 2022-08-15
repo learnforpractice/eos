@@ -1,5 +1,5 @@
 add_library( chain_api SHARED
-    uuos.cpp
+    ipyeos.cpp
 )
 
 if (APPLE)

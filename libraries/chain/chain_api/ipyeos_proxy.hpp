@@ -27,10 +27,10 @@ struct native_contract {
 typedef int (*fn_eos_init)(int argc, char** argv);
 typedef int (*fn_eos_exec)();
 
-class uuos_proxy {
+class ipyeos_proxy {
     public:
-        uuos_proxy();
-        virtual ~uuos_proxy();
+        ipyeos_proxy();
+        virtual ~ipyeos_proxy();
 
         virtual apply_context_proxy *get_apply_context_proxy();
         virtual vm_api_proxy *get_vm_api_proxy();
@@ -60,6 +60,7 @@ class uuos_proxy {
 
         virtual void enable_debug(bool debug);
         virtual bool is_debug_enabled();
+        virtual string create_key(string &key_type);
 
         fn_new_chain_api new_chain_api = nullptr;
 
@@ -77,5 +78,5 @@ class uuos_proxy {
 string& get_last_error();
 void set_last_error(string& error);
 
-typedef void (*fn_init_uuos_proxy)(uuos_proxy *proxy);
-extern "C" uuos_proxy *get_uuos_proxy();
+typedef void (*fn_init_ipyeos_proxy)(ipyeos_proxy *proxy);
+extern "C" ipyeos_proxy *get_ipyeos_proxy();

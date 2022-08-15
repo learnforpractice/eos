@@ -1,4 +1,4 @@
 CODEABI_1.0 {
-    global: init_uuos_proxy;get_uuos_proxy;
+    global: init_ipyeos_proxy;get_ipyeos_proxy;
     local: *;
 };

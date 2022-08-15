@@ -17,7 +17,7 @@
 
 #include "config.hpp"
 
-#include "uuos.hpp"
+#include "ipyeos.hpp"
 
 using namespace appbase;
 using namespace eosio;

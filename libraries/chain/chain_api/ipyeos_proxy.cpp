@@ -1,13 +1,17 @@
 #include <fc/log/logger.hpp>
 #include <eosio/chain/config.hpp>
 #include <eosio/chain/abi_def.hpp>
+#include <eosio/chain/exceptions.hpp>
+
 #include <fc/io/json.hpp>
 #include <dlfcn.h>
 
-#include "uuos_proxy.hpp"
+#include "ipyeos_proxy.hpp"
 #include "chain_macro.hpp"
 #include "native_object.hpp"
 #include "apply_context_proxy.hpp"
+
+#include <format>
 
 using namespace eosio::chain;
 
@@ -22,36 +26,36 @@ void set_last_error(string& error) {
     last_error = error;
 }
 
-string& uuos_proxy::get_last_error() {
+string& ipyeos_proxy::get_last_error() {
     return ::get_last_error();
 }
 
-void uuos_proxy::set_last_error(string& error) {
+void ipyeos_proxy::set_last_error(string& error) {
     ::set_last_error(error);
 }
 
-uuos_proxy::uuos_proxy() {
+ipyeos_proxy::ipyeos_proxy() {
     this->_apply_context_proxy = std::make_shared<apply_context_proxy>();
 }
 
-uuos_proxy::~uuos_proxy() {
+ipyeos_proxy::~ipyeos_proxy() {
 }
 
-apply_context_proxy *uuos_proxy::get_apply_context_proxy() {
+apply_context_proxy *ipyeos_proxy::get_apply_context_proxy() {
     return _apply_context_proxy.get();
 }
 
-vm_api_proxy *uuos_proxy::get_vm_api_proxy() {
+vm_api_proxy *ipyeos_proxy::get_vm_api_proxy() {
     return _apply_context_proxy->get_vm_api_proxy();
 }
 
-chain_proxy* uuos_proxy::chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
+chain_proxy* ipyeos_proxy::chain_new(string& config, string& _genesis, string& protocol_features_dir, string& snapshot_dir) {
     chain_proxy *proxy = new chain_proxy();
     proxy->init(config, _genesis, protocol_features_dir, snapshot_dir);
     return proxy;
 }
 
-void uuos_proxy::chain_free(chain_proxy* c) {
+void ipyeos_proxy::chain_free(chain_proxy* c) {
     try {
         if (!c) {
             return;
@@ -60,15 +64,15 @@ void uuos_proxy::chain_free(chain_proxy* c) {
     } CATCH_AND_LOG_EXCEPTION(this);
 }
 
-void uuos_proxy::set_log_level(string& logger_name, int level) {
+void ipyeos_proxy::set_log_level(string& logger_name, int level) {
     fc::logger::get(logger_name).set_log_level(fc::log_level(level));
 }
 
-void uuos_proxy::set_block_interval_ms(int ms) {
+void ipyeos_proxy::set_block_interval_ms(int ms) {
     eosio::chain::config::set_block_interval_ms(ms);
 }
 
-void uuos_proxy::pack_abi(string& abi, vector<char>& packed_obj)
+void ipyeos_proxy::pack_abi(string& abi, vector<char>& packed_obj)
 {
     try {
         auto _abi = fc::json::from_string(abi).as<abi_def>();
@@ -76,24 +80,24 @@ void uuos_proxy::pack_abi(string& abi, vector<char>& packed_obj)
     } CATCH_AND_LOG_EXCEPTION(this);
 }
 
-void uuos_proxy::pack_native_object(int type, string& msg, vector<char>& packed_obj) {
+void ipyeos_proxy::pack_native_object(int type, string& msg, vector<char>& packed_obj) {
     pack_native_object_(type, msg, packed_obj);
 }
 
-void uuos_proxy::unpack_native_object(int type, string& packed_obj, string& result) {
+void ipyeos_proxy::unpack_native_object(int type, string& packed_obj, string& result) {
     unpack_native_object_(type, packed_obj, result);
 }
 
 
-uint64_t uuos_proxy::s2n(string& s) {
+uint64_t ipyeos_proxy::s2n(string& s) {
     return eosio::chain::name(s).to_uint64_t();
 }
 
-string uuos_proxy::n2s(uint64_t n) {
+string ipyeos_proxy::n2s(uint64_t n) {
     return eosio::chain::name(n).to_string();
 }
 
-bool uuos_proxy::set_native_contract(uint64_t contract, const string& native_contract_lib) {
+bool ipyeos_proxy::set_native_contract(uint64_t contract, const string& native_contract_lib) {
     if (native_contract_lib.size() == 0) {
         auto itr = debug_contracts.find(contract);
         if (itr != debug_contracts.end()) {
@@ -117,7 +121,7 @@ bool uuos_proxy::set_native_contract(uint64_t contract, const string& native_con
     }
 }
 
-string uuos_proxy::get_native_contract(uint64_t contract) {
+string ipyeos_proxy::get_native_contract(uint64_t contract) {
     auto itr = debug_contracts.find(contract);
     if (itr == debug_contracts.end()) {
         return "";
@@ -125,7 +129,7 @@ string uuos_proxy::get_native_contract(uint64_t contract) {
     return itr->second.path;
 }
 
-bool uuos_proxy::call_native_contract(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
+bool ipyeos_proxy::call_native_contract(uint64_t receiver, uint64_t first_receiver, uint64_t action) {
     if (!this->native_contracts_enabled) {
         return false;
     }
@@ -137,18 +141,39 @@ bool uuos_proxy::call_native_contract(uint64_t receiver, uint64_t first_receiver
     return itr->second.apply(receiver, first_receiver, action);
 }
 
-void uuos_proxy::enable_native_contracts(bool debug) {
+void ipyeos_proxy::enable_native_contracts(bool debug) {
     this->native_contracts_enabled = debug;
 }
 
-bool uuos_proxy::is_native_contracts_enabled() {
+bool ipyeos_proxy::is_native_contracts_enabled() {
     return this->native_contracts_enabled;
 }
 
-void uuos_proxy::enable_debug(bool debug) {
+void ipyeos_proxy::enable_debug(bool debug) {
     this->debug_enabled = debug;
 }
 
-bool uuos_proxy::is_debug_enabled() {
+bool ipyeos_proxy::is_debug_enabled() {
     return this->debug_enabled;
 }
+
+string ipyeos_proxy::create_key(string &key_type) {
+    if(key_type.empty()) {
+        key_type = string("K1");
+    }
+
+    private_key_type priv_key;
+    if(key_type == "K1") {
+        priv_key = fc::crypto::private_key::generate<fc::ecc::private_key_shim>();
+    } else if(key_type == "R1") {
+        priv_key = fc::crypto::private_key::generate<fc::crypto::r1::private_key_shim>();
+    } else {
+        EOS_THROW(eosio::chain::unsupported_key_type_exception, "Key type \"${kt}\" not supported by software wallet", ("kt", key_type));
+    }
+    char buf[1024];
+    memset(buf, 0, sizeof(buf));
+    snprintf(buf, sizeof(buf), "{\"public\":\"%s\", \"private\": \"%s\"}", priv_key.get_public_key().to_string().c_str(), priv_key.to_string().c_str());
+
+    return string(buf);
+}
+
