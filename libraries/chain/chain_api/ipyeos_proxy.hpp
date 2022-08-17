@@ -64,6 +64,8 @@ class ipyeos_proxy {
         virtual string create_key(string &key_type);
         virtual string get_public_key(string &priv_key);
 
+        virtual string sign_digest(string &priv_key, string &digest);
+
         fn_new_chain_api new_chain_api = nullptr;
 
         fn_eos_init eos_init;
@@ -76,9 +78,6 @@ class ipyeos_proxy {
         bool debug_enabled = false;
         std::map<uint64_t, native_contract> debug_contracts;
 };
-
-string& get_last_error();
-void set_last_error(string& error);
 
 typedef void (*fn_init_ipyeos_proxy)(ipyeos_proxy *proxy);
 extern "C" ipyeos_proxy *get_ipyeos_proxy();

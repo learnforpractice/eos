@@ -59,7 +59,7 @@ void ipyeos_proxy::chain_free(chain_proxy* c) {
             return;
         }
         delete c;
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 void ipyeos_proxy::set_log_level(string& logger_name, int level) {
@@ -75,7 +75,7 @@ void ipyeos_proxy::pack_abi(string& abi, vector<char>& packed_obj)
     try {
         auto _abi = fc::json::from_string(abi).as<abi_def>();
         packed_obj = fc::raw::pack<abi_def>(_abi);
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 void ipyeos_proxy::pack_native_object(int type, string& msg, vector<char>& packed_obj) {
@@ -176,7 +176,18 @@ string ipyeos_proxy::create_key(string &key_type) {
 }
 
 string ipyeos_proxy::get_public_key(string &priv_key) {
-    auto priv = fc::json::from_string(priv_key).as<fc::crypto::private_key>();
-    return priv.get_public_key().to_string();
+    try {
+        auto priv = fc::json::from_string(priv_key).as<fc::crypto::private_key>();
+        return priv.get_public_key().to_string();
+    } CATCH_AND_LOG_EXCEPTION();
+    return "";
 }
 
+string ipyeos_proxy::sign_digest(string &priv_key, string &digest) {
+    try {
+        auto _priv_key = fc::json::from_string(priv_key).as<fc::crypto::private_key>();
+        digest_type _digest = fc::json::from_string(digest).as<eosio::chain::digest_type>();
+        return fc::json::to_string(_priv_key.sign(_digest), fc::time_point::maximum());
+    } CATCH_AND_LOG_EXCEPTION();
+    return "";
+}
