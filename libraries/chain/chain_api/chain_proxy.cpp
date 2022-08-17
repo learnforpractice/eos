@@ -68,14 +68,14 @@ void chain_proxy::say_hello() {
 void chain_proxy::id(string& chain_id) {
     try {
         chain_id = c->get_chain_id().str();
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 bool chain_proxy::startup(bool initdb) {
     try {
         cm->startup(initdb);
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
     cm.reset();
     return false;
 }
@@ -90,7 +90,7 @@ int chain_proxy::start_block(string& _time, uint16_t confirm_block_count, string
             c->start_block(block_timestamp_type(time), confirm_block_count);
         }
         return 1;
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
     return 0;
 }
 
@@ -98,7 +98,7 @@ int chain_proxy::abort_block() {
    try {
         c->abort_block();
         return 1;
-   } CATCH_AND_LOG_EXCEPTION(this);
+   } CATCH_AND_LOG_EXCEPTION();
    return 0;
 }
 
@@ -113,14 +113,14 @@ void chain_proxy::finalize_block(string& _priv_keys) {
             }
             return sigs;
         } );
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
 
 }
 
 void chain_proxy::commit_block() {
     try {
         c->commit_block();
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 string chain_proxy::get_block_id_for_num(uint32_t block_num ) {
@@ -137,7 +137,7 @@ string chain_proxy::get_dynamic_global_properties() {
     try {
         auto& obj = c->get_dynamic_global_properties();
         return fc::json::to_string(obj, fc::time_point::maximum());
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return "";
 }
 
@@ -233,7 +233,7 @@ string chain_proxy::fork_db_head_block_producer() {
 uint32_t chain_proxy::fork_db_pending_head_block_num() {
     try {
         return c->fork_db_pending_head_block_num();
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return 0;
 }
 
@@ -288,7 +288,7 @@ uint32_t chain_proxy::last_irreversible_block_num() {
 string chain_proxy::last_irreversible_block_id() {
     try {
         return c->last_irreversible_block_id().str();
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return "";
 }
 
@@ -300,7 +300,7 @@ string chain_proxy::fetch_block_by_number(uint32_t block_num) {
         }
         auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
         return string(_raw_block.data(), _raw_block.size());
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return "";
 }
 
@@ -313,7 +313,7 @@ string chain_proxy::fetch_block_by_id(string& params) {
         }
         auto _raw_block = fc::raw::pack<eosio::chain::signed_block>(*block_ptr);
         return string(_raw_block.data(), _raw_block.size());
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return "";
 }
 
@@ -325,7 +325,7 @@ string chain_proxy::fetch_block_state_by_number(uint32_t block_num) {
         }
         auto _raw_block_state = fc::raw::pack<eosio::chain::block_state>(*block_ptr);
         return string(_raw_block_state.data(), _raw_block_state.size());
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return "";
 }
 
@@ -338,7 +338,7 @@ string chain_proxy::fetch_block_state_by_id(string& params) {
         }
         auto _raw_block_state = fc::raw::pack<eosio::chain::block_state>(*block_ptr);
         return string(_raw_block_state.data(), _raw_block_state.size());
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return "";
 }
 
@@ -360,7 +360,7 @@ bool chain_proxy::check_actor_list(string& param) {
         auto _param = fc::json::from_string(param).as<flat_set<account_name>>();
         c->check_actor_list(_param);
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -369,7 +369,7 @@ bool chain_proxy::check_contract_list(string& param) {
         auto _param = fc::json::from_string(param).as<account_name>();
         c->check_contract_list(_param);
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -377,7 +377,7 @@ bool chain_proxy::check_action_list(string& code, string& action) {
     try {
         c->check_action_list(name(code), name(action));
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -386,7 +386,7 @@ bool chain_proxy::check_key_list(string& param) {
         auto _param = fc::json::from_string(param).as<public_key_type>();
         c->check_key_list(_param);
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -427,7 +427,7 @@ bool chain_proxy::validate_expiration(string& param) {
         auto trx = fc::json::from_string(param).as<transaction>();
         c->validate_expiration(trx);
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -436,7 +436,7 @@ bool chain_proxy::validate_tapos(string& param) {
         auto trx = fc::json::from_string(param).as<transaction>();
         c->validate_tapos(trx);
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -444,7 +444,7 @@ bool chain_proxy::validate_db_available_size() {
     try {
         c->validate_db_available_size();
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -452,7 +452,7 @@ bool chain_proxy::validate_reversible_available_size() {
     try {
         c->validate_reversible_available_size();
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this)
+    } CATCH_AND_LOG_EXCEPTION()
     return false;
 }
 
@@ -559,7 +559,7 @@ void chain_proxy::gen_transaction(bool json, string& _actions, string& expiratio
             auto v = fc::raw::pack(packed_trx);
             result = std::move(v);
         }
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 string chain_proxy::push_transaction(string& _packed_trx, string& deadline, uint32_t billed_cpu_time_us, bool explicit_cpu_bill, uint32_t subjective_cpu_bill_us) {
@@ -576,7 +576,7 @@ string chain_proxy::push_transaction(string& _packed_trx, string& deadline, uint
         // if (ret->except) {
         //     return false;
         // }
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
     return "";
 }
 
@@ -648,7 +648,7 @@ bool chain_proxy::pack_action_args(string& account, string& action, string& _arg
         fc::variant args = fc::json::from_string(_args);
         result = serializer->variant_to_binary(action_type, args, abi_serializer::create_yield_function(fc::microseconds(150000)));
         return true;
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
     return false;
 }
 
@@ -665,7 +665,7 @@ string chain_proxy::unpack_action_args(string& name, string& action, string& _bi
         bytes binargs = bytes(_binargs.data(), _binargs.data() + _binargs.size());
         auto v = serializer->binary_to_variant(action_type, binargs, abi_serializer::create_yield_function(fc::microseconds(150000)));
         return fc::json::to_string(v, fc::time_point::maximum());
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
     return "";
 }
 
@@ -679,6 +679,6 @@ string chain_proxy::get_producer_public_keys() {
         });
 
         return fc::json::to_string(pub_keys, fc::time_point::maximum());
-    } CATCH_AND_LOG_EXCEPTION(this);
+    } CATCH_AND_LOG_EXCEPTION();
     return "";
 }
