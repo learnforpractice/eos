@@ -123,9 +123,6 @@ class chain_proxy {
         virtual string unpack_action_args(string& name, string& action, string& _binargs);
         virtual string get_producer_public_keys();
 
-        virtual string& get_last_error();
-        virtual void set_last_error(string& error);
-
         virtual eosio::chain::abi_serializer* get_abi_cache(string& account);
         virtual void clear_abi_cache(string& account);
 

@@ -17,17 +17,6 @@ extern "C" ipyeos_proxy *get_ipyeos_proxy();
 
 using namespace eosio::chain;
 
-string& get_last_error();
-void set_last_error(string& error);
-
-string& chain_proxy::get_last_error() {
-    return ::get_last_error();
-}
-
-void chain_proxy::set_last_error(string& error) {
-    ::set_last_error(error);
-}
-
 chain_proxy::chain_proxy()
 {
 }
