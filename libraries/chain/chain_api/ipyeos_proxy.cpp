@@ -177,7 +177,7 @@ string ipyeos_proxy::create_key(string &key_type) {
 
 string ipyeos_proxy::get_public_key(string &priv_key) {
     try {
-        auto priv = fc::json::from_string(priv_key).as<fc::crypto::private_key>();
+        auto priv = fc::variant(priv_key).as<fc::crypto::private_key>();
         return priv.get_public_key().to_string();
     } CATCH_AND_LOG_EXCEPTION();
     return "";
@@ -185,8 +185,8 @@ string ipyeos_proxy::get_public_key(string &priv_key) {
 
 string ipyeos_proxy::sign_digest(string &priv_key, string &digest) {
     try {
-        auto _priv_key = fc::json::from_string(priv_key).as<fc::crypto::private_key>();
-        digest_type _digest = fc::json::from_string(digest).as<eosio::chain::digest_type>();
+        auto _priv_key = fc::variant(priv_key).as<fc::crypto::private_key>();
+        digest_type _digest = fc::variant(digest).as<eosio::chain::digest_type>();
         return fc::json::to_string(_priv_key.sign(_digest), fc::time_point::maximum());
     } CATCH_AND_LOG_EXCEPTION();
     return "";

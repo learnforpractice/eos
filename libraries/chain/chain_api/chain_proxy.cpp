@@ -295,7 +295,7 @@ string chain_proxy::fetch_block_by_number(uint32_t block_num) {
 
 string chain_proxy::fetch_block_by_id(string& params) {
     try {
-        auto block_id = fc::json::from_string(params).as<block_id_type>();
+        auto block_id = fc::variant(params).as<block_id_type>();
         auto block_ptr = c->fetch_block_by_id(block_id);
         if (!block_ptr) {
             return "";
@@ -355,7 +355,7 @@ bool chain_proxy::check_actor_list(string& param) {
 
 bool chain_proxy::check_contract_list(string& param) {
     try {
-        auto _param = fc::json::from_string(param).as<account_name>();
+        auto _param = fc::variant(param).as<account_name>();
         c->check_contract_list(_param);
         return true;
     } CATCH_AND_LOG_EXCEPTION()
@@ -446,7 +446,7 @@ bool chain_proxy::validate_reversible_available_size() {
 }
 
 bool chain_proxy::is_protocol_feature_activated(string& param) {
-    auto digest = fc::json::from_string(param).as<digest_type>();
+    auto digest = fc::variant(param).as<digest_type>();
     return c->is_protocol_feature_activated(digest);
 }
 
