@@ -10,6 +10,7 @@
 #include "../../../plugins/net_plugin/include/eosio/net_plugin/protocol.hpp"
 
 #include "native_object.hpp"
+#include "chain_macro.hpp"
 
 using namespace std;
 using namespace eosio;
@@ -65,7 +66,7 @@ static void pack_cpp_object(string& msg, vector<char>& packed_message)
     try {
         auto _msg = fc::json::from_string(msg).as<T>();
         packed_message = fc::raw::pack<T>(_msg);
-    } FC_LOG_AND_DROP();
+    } CATCH_AND_LOG_EXCEPTION();
 }
 
 template<typename T>
@@ -75,7 +76,7 @@ static void unpack_cpp_object(string& packed_message, string& result) {
         fc::datastream<const char*> ds( packed_message.c_str(), packed_message.size() );
         fc::raw::unpack(ds, obj);
         result = fc::json::to_string(obj, fc::time_point::maximum());
-    }FC_LOG_AND_DROP();
+    }CATCH_AND_LOG_EXCEPTION();
 }
 
 #define PACK_CPP_OBJECT(obj) \

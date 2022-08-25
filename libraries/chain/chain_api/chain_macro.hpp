@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+
+using namespace std;
 
 string& get_last_error();
 void set_last_error(string& error);
